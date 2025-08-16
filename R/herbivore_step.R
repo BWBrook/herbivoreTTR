@@ -1,12 +1,18 @@
 # Perform a single herbivore behavioural step (movement & eating)
-herbivore_step <- function(herbivore, plants, bite_size, gut_capacity, handling_time, desired_dp_dc_ratio) {
+# Standardised to accept only (herbivore, plants);
+# scalar parameters are read from herbivore fields or CONSTANTS.
+herbivore_step <- function(herbivore, plants) {
   
   plot_width <- sqrt(CONSTANTS$PLOT_SIZE)
   plot_height <- sqrt(CONSTANTS$PLOT_SIZE)
+  desired_dp_dc_ratio <- CONSTANTS$DP_TO_DC_TARGET
+  bite_size <- herbivore$bite_size
+  gut_capacity <- herbivore$gut_capacity
+  handling_time <- herbivore$handling_time
   
   # State: MOVING
   if (is.na(herbivore$selected_plant_id) || herbivore$behaviour == "MOVING") {
-    plants_in_range <- get_plants_within_range(herbivore, plants, CONSTANTS$DETECTION_DISTANCE, CONSTANTS$PLOT_SIZE)
+    plants_in_range <- get_plants_within_range(herbivore, plants)
     
     if (nrow(plants_in_range) == 0) {
       # No plants nearby, move randomly
@@ -22,7 +28,7 @@ herbivore_step <- function(herbivore, plants, bite_size, gut_capacity, handling_
         herbivore$selected_plant_id <- selected_id
         selected_plant <- plants[plants$plant_id == selected_id, ]
         
-        distance_to_plant <- calc_distance(
+        distance_to_plant <- calc_toroidal_distance(
           herbivore$xcor, herbivore$ycor,
           selected_plant$xcor, selected_plant$ycor,
           plot_width, plot_height
@@ -54,7 +60,7 @@ herbivore_step <- function(herbivore, plants, bite_size, gut_capacity, handling_
   # State: EATING
   if (herbivore$behaviour == "EATING" && !is.na(herbivore$selected_plant_id)) {
     selected_plant <- plants[plants$plant_id == herbivore$selected_plant_id, ]
-    distance_to_plant <- calc_distance(
+    distance_to_plant <- calc_toroidal_distance(
       herbivore$xcor, herbivore$ycor,
       selected_plant$xcor, selected_plant$ycor,
       plot_width, plot_height

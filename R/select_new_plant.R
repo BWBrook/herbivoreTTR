@@ -2,7 +2,7 @@
 # plant size, distance, nutrition, and defenses
 select_new_plant <- function(herbivore, plants) {
 
-  world_dim <- sqrt(CONSTANT$PLOT_SIZE)
+  world_dim <- sqrt(CONSTANTS$PLOT_SIZE)
   
   # Compute distances to all plants considering toroidal wrapping
   distances <- plants %>%
@@ -13,7 +13,7 @@ select_new_plant <- function(herbivore, plants) {
       distance = sqrt(dx^2 + dy^2)
     ) %>%
     ungroup() %>%
-    filter(ms > CONSTANT$MIN_SHOOT, distance <= CONSTANT$DETECTION_DISTANCE)
+    filter(ms > CONSTANTS$MIN_SHOOT, distance <= CONSTANTS$DETECTION_DISTANCE)
   
   if (nrow(distances) == 0) {
     herbivore$selected_plant_id <- NA
@@ -23,7 +23,7 @@ select_new_plant <- function(herbivore, plants) {
   # Calculate tastiness scores
   distances <- distances %>%
     mutate(
-      ratio_diff = abs(CONSTANT$dp_to_dc_target - (ns / CONSTANT$N_TO_PROTEIN) / (cs * CONSTANT$PROP_DIGEST_SC)),
+      ratio_diff = abs(CONSTANTS$DP_TO_DC_TARGET - (ns / CONSTANTS$N_TO_PROTEIN) / (cs * CONSTANTS$PROP_DIGEST_SC)),
       tastiness = 1 / (ratio_diff + b_def + distance)
     )
   

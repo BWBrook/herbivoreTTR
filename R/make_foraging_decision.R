@@ -9,7 +9,7 @@ make_foraging_decision <- function(herbivore, plants) {
 
   if (herbivore$gut_content + CONSTANTS$TOLERANCE <= herbivore$gut_capacity && can_continue_eating) {
     
-    ratio_diff <- abs(CONSTANT$DP_TO_DC_TARGET - 
+    ratio_diff <- abs(CONSTANTS$DP_TO_DC_TARGET - 
                       (current_plant$ns / CONSTANTS$N_TO_PROTEIN) / 
                       (current_plant$cs * CONSTANTS$PROP_DIGEST_SC))
                       
