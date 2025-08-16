@@ -103,3 +103,23 @@ Rationale: Cleanly orchestrate plant growth and herbivory with a controllable sp
 - Tests: `tests/testthat/test_constants_audit.R` asserts presence and numeric finiteness.
 
 Rationale: Ensure R implementation mirrors C++ constants with clear units, preventing missing-constant errors and aiding maintainability.
+
+## Module 8 — Output Writers for Parity (Optional)
+
+- Added `R/io_write.R` with:
+  - `write_plants_daily(plants, day, year, path)` producing semicolon-delimited CSV with exact header order: `Year;Day;Plant;VegType;Height;BLeaf;BStem;BDef;Ms;Ns;Cs;Mr;Cr;Nr`.
+  - `write_herbivores_daily(herbivore, day, year, path)` with exact header order: `Year;Day;HerbType;Mass;xcor;ycor;DailyDistMoved;DailyPEI;DailyNPEI;DailyDMI;DailyForageWater;TotalDMI;WaterBalance;EnergyBalance`.
+  - Strict validation: required columns present, all values finite, no NA/Inf/NaN; overwrite files; UTF-8; headers always included.
+- Tests: `tests/testthat/test_io_write.R` verifies headers, delimiters, finiteness, and error on invalid input.
+
+Rationale: Enable diff-style parity checks between R and reference C++ outputs.
+
+## Module 9 — Tests & Smoke Validation
+
+- Added smoke and regression tests under `tests/testthat/`:
+  - Helper/math coverage already present (bounds, finiteness, zero-mass guards).
+  - Interface test ensures a single-minute eat event reduces plant mass by Δ kg and increases gut by Δ×1000 g.
+  - Daily run tests for 1 day and 7 days: energy/water balances finite; plant biomass non-negative; pools remain finite and bounded.
+  - Spin-up vs post-spin-up behaviour validated.
+
+Rationale: Provide a minimal, fast harness to catch regressions while wiring the model.

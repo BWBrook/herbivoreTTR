@@ -39,3 +39,21 @@ lib <- function() {
   })
   invisible(TRUE)
 }
+
+#' Bootstrap renv for this project (interactive use)
+#' @param action One of "restore" (default) or "init".
+#' @param lockfile Path to lockfile; used for restore if present.
+#' @param bare Logical; if TRUE, creates a bare project when initialising.
+#' @return Invisibly TRUE.
+bootstrap_renv <- function(action = c("restore", "init"), lockfile = "renv.lock", bare = TRUE) {
+  action <- match.arg(action)
+  if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
+  if (action == "restore" && file.exists(lockfile)) {
+    renv::restore(lockfile = lockfile, prompt = FALSE)
+  } else if (action == "init") {
+    renv::init(bare = bare)
+  } else {
+    message("Lockfile not found; call bootstrap_renv('init') to initialise.")
+  }
+  invisible(TRUE)
+}

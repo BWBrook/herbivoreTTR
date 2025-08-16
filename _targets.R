@@ -1,65 +1,72 @@
-## Targets pipeline definition
-##
-## This is the entry point for your {targets} workflow.  It sources
-## package bootstrap and global options, sets pipeline-wide defaults via
-## `tar_option_set()`, defines helper functions, and enumerates the
-## targets that constitute your DAG.  Replace the placeholders with
-## real logic as your project evolves.
+## Minimal {targets} pipeline to run a short simulation and emit parity CSVs
 
-source("R/packages.R"); lib()
+if (!requireNamespace("targets", quietly = TRUE)) stop("Install the 'targets' package to run the pipeline.")
+
+source("R/packages.R")
 source("R/options.R")
 
-tar_option_set(
-  packages = character(),         # packages loaded via lib()
-  format = "qs",                  # use the fast qs format for local targets
+# Source project R files (constants first)
+source("R/constants.R")
+for (f in setdiff(list.files("R", full.names = TRUE), file.path("R", "constants.R"))) source(f)
+
+targets::tar_option_set(
+  packages = character(), # functions sourced above; avoid auto-attaching packages
+  format = "rds",
   memory = "transient",
   garbage_collection = TRUE
 )
 
-## Helper to read a delimited file quickly.  `vroom` streams data from
-## disk and infers column types; disable column type messages via
-## options in options.R.
-lread <- function(path) vroom::vroom(path, show_col_types = FALSE)
-
 list(
-  ## Configuration: read YAML into a list.  Use config::get() to
-  ## select profile-specific settings (see config/config.yaml).
-  tar_target(cfg, config::get(file = "config/config.yaml")),
+  targets::tar_target(conditions, init_conditions(mode = "flat")),
+  targets::tar_target(plants0, init_plants(veg_types = c(0, 1, 2))),
+  targets::tar_target(herb0, init_herbivore(mass = 5e5)),
+  targets::tar_target(day_after_spinup, CONSTANTS$SPIN_UP_LENGTH * nrow(conditions) + 1L),
 
-  ## Manifest: a CSV enumerating the raw data files.  Each row should
-  ## include at least a `path` column pointing to a file under
-  ## data/raw/.  Add other columns as needed (id, checksum, etc.).
-  tar_target(raw_manifest, "metadata/data_manifest.csv", format = "file"),
-  tar_target(raw_files, readr::read_csv(raw_manifest, show_col_types = FALSE)),
+  # One-day simulation snapshot
+  targets::tar_target(sim_day1, run_daily_herbivore_simulation(
+    herbivore = herb0,
+    plants = plants0,
+    conditions = conditions,
+    day_of_simulation = day_after_spinup,
+    minute_limit = 60
+  )),
 
-  ## Ingest raw CSVs listed in the manifest.  Pattern maps over rows.
-  tar_target(raw_tbl, lread(raw_files$path), pattern = map(raw_files), iteration = "list"),
-
-  ## Validate schema early.  Here we check for required columns; replace
-  ## with pointblank/validate calls for richer assertions.  Failing
-  ## validations should stop the pipeline.
-  tar_target(validated, {
-    stopifnot(all(c("id","date","value") %in% names(raw_tbl)))
-    raw_tbl
-  }, pattern = map(raw_tbl), iteration = "list"),
-
-  ## Write each validated table to a Parquet file in data/interim/ and
-  ## return the file path.  Downstream tasks can read from these
-  ## columnar stores.  Avoid serialising large objects into RDS files.
-  tar_target(interim_parquet, {
-    dir.create("data/interim", showWarnings = FALSE, recursive = TRUE)
-    path <- file.path("data/interim", paste0("data_", tar_group(), ".parquet"))
-    arrow::write_parquet(validated, path)
+  # Write CSVs for parity checks
+  targets::tar_target(plants_day1_csv, {
+    dir.create("data/outputs", recursive = TRUE, showWarnings = FALSE)
+    path <- file.path("data/outputs", sprintf("plants_day%03d.csv", day_after_spinup))
+    write_plants_daily(sim_day1$plants, day = day_after_spinup, year = 1, path = path)
     path
-  }, pattern = map(validated), format = "file"),
+  }, format = "file"),
 
-  ## Placeholder analysis: compute summary statistics or fit models.
-  tar_target(model_fit, {
-    list(n_rows = sum(vapply(validated, nrow, integer(1))))
+  targets::tar_target(herb_day1_csv, {
+    dir.create("data/outputs", recursive = TRUE, showWarnings = FALSE)
+    path <- file.path("data/outputs", sprintf("herb_day%03d.csv", day_after_spinup))
+    write_herbivores_daily(sim_day1$herbivore, day = day_after_spinup, year = 1, path = path)
+    path
+  }, format = "file"),
+
+  # 7-day continuation (optional aggregation)
+  targets::tar_target(sim_day7, {
+    h <- sim_day1$herbivore; p <- sim_day1$plants
+    for (k in 1:6) {
+      r <- run_daily_herbivore_simulation(h, p, conditions, day_of_simulation = day_after_spinup + k, minute_limit = 60)
+      h <- r$herbivore; p <- r$plants
+    }
+    list(herbivore = h, plants = p)
   }),
 
-  ## Render the Quarto report after all upstream targets.  The
-  ## `tar_quarto()` function caches the output and re-runs only when
-  ## inputs change.  Create `reports/paper.qmd` with your analysis.
-  tar_quarto(report, path = "reports/paper.qmd")
+  targets::tar_target(plants_day7_csv, {
+    dir.create("data/outputs", recursive = TRUE, showWarnings = FALSE)
+    path <- file.path("data/outputs", sprintf("plants_day%03d.csv", day_after_spinup + 6L))
+    write_plants_daily(sim_day7$plants, day = day_after_spinup + 6L, year = 1, path = path)
+    path
+  }, format = "file"),
+
+  targets::tar_target(herb_day7_csv, {
+    dir.create("data/outputs", recursive = TRUE, showWarnings = FALSE)
+    path <- file.path("data/outputs", sprintf("herb_day%03d.csv", day_after_spinup + 6L))
+    write_herbivores_daily(sim_day7$herbivore, day = day_after_spinup + 6L, year = 1, path = path)
+    path
+  }, format = "file")
 )
