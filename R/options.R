@@ -1,22 +1,25 @@
-## Global options and reproducibility settings
+## Global options and reproducibility settings (no side-effects on source)
 ##
-## This file is sourced at the top of `_targets.R` to define runtime
-## defaults.  Use it to set the random number generator (RNG), seeds,
-## logging levels, and other options that should apply across your
-## pipeline.  Avoid side‑effects beyond options and seeding.
+## Define a function to set runtime defaults for pipelines or
+## interactive sessions. Not executed automatically on package load.
 
-## Use a reproducible, parallel‑safe RNG and a fixed project seed
-RNGkind("L'Ecuyer-CMRG")
-set.seed(20250811L)  # project-wide seed; update as needed
-
-## Set CRAN mirror and suppress scientific notation in output
-options(
-  repos = c(CRAN = "https://packagemanager.posit.co/cran/latest"),
-  readr.show_col_types = FALSE,
-  scipen = 999
-)
-
-## Setup logging with lgr and enable progressr globally
-logger <- lgr::get_logger("diamond")
-logger$set_threshold("info")
-progressr::handlers(global = TRUE)
+#' Initialize project-wide options (interactive use)
+#' @param seed Integer seed to set for RNG.
+#' @return Invisibly TRUE.
+init_project_options <- function(seed = 20250811L) {
+  RNGkind("L'Ecuyer-CMRG")
+  set.seed(as.integer(seed))
+  options(
+    repos = c(CRAN = "https://packagemanager.posit.co/cran/latest"),
+    readr.show_col_types = FALSE,
+    scipen = 999
+  )
+  if (requireNamespace("lgr", quietly = TRUE)) {
+    logger <- lgr::get_logger("diamond")
+    logger$set_threshold("info")
+  }
+  if (requireNamespace("progressr", quietly = TRUE)) {
+    progressr::handlers(global = TRUE)
+  }
+  invisible(TRUE)
+}

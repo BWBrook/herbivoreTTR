@@ -1,33 +1,41 @@
-## Package bootstrap and centralised library attaches
+## Package bootstrap helpers (no side-effects on source)
 ##
-## This file defines a small helper to ensure that all packages are
-## installed via pak and then loaded consistently.  Keeping package
-## installation here helps ensure reproducibility because you can track
-## package versions via `renv` and avoid installing ad hoc inside your
-## pipeline.
+## This file declares helper functions for interactive workflows.
+## It MUST NOT install or attach packages at top-level to keep the
+## package load deterministic and offline-friendly.
 
-if (!"pak" %in% rownames(installed.packages())) install.packages("pak")
-pkgs <- c(
-  "targets","tarchetypes","renv","arrow","duckdb","vroom","dplyr",
-  "readr","purrr","tidyr","sf","terra","yaml","config","qs",
-  "lgr","progressr","checkmate","janitor",
-  "testthat","lintr","styler","quarto","precommit"
-)
-pak::pak(pkgs, ask = FALSE)
+#' Ensure required packages are installed (interactive use)
+#' @param pkgs Character vector of package names.
+#' @return Invisibly TRUE. No-op if pkgs is NULL/empty.
+ensure_packages_installed <- function(pkgs = NULL) {
+  if (is.null(pkgs) || length(pkgs) == 0) return(invisible(TRUE))
+  if (!requireNamespace("pak", quietly = TRUE)) {
+    install.packages("pak")
+  }
+  pak::pak(pkgs, ask = FALSE)
+  invisible(TRUE)
+}
 
-## Define a function `lib()` to attach packages.  Use this instead of
-## repeated library() calls scattered across your scripts.  Keep
-## side‑effects minimal: attaching packages in functions avoids
-## polluting the global environment when the file is sourced.
-
+#' Attach common analysis packages (interactive use)
+#' @return Invisibly TRUE.
 lib <- function() {
   op <- options(stringsAsFactors = FALSE)
   on.exit(options(op), add = TRUE)
   suppressPackageStartupMessages({
-    library(targets); library(tarchetypes); library(dplyr); library(readr)
-    library(purrr); library(tidyr); library(sf); library(terra)
-    library(arrow); library(duckdb); library(config); library(qs)
-    library(lgr); library(progressr)
+    if (requireNamespace("targets", quietly = TRUE)) library(targets)
+    if (requireNamespace("tarchetypes", quietly = TRUE)) library(tarchetypes)
+    if (requireNamespace("dplyr", quietly = TRUE)) library(dplyr)
+    if (requireNamespace("readr", quietly = TRUE)) library(readr)
+    if (requireNamespace("purrr", quietly = TRUE)) library(purrr)
+    if (requireNamespace("tidyr", quietly = TRUE)) library(tidyr)
+    if (requireNamespace("sf", quietly = TRUE)) library(sf)
+    if (requireNamespace("terra", quietly = TRUE)) library(terra)
+    if (requireNamespace("arrow", quietly = TRUE)) library(arrow)
+    if (requireNamespace("duckdb", quietly = TRUE)) library(duckdb)
+    if (requireNamespace("config", quietly = TRUE)) library(config)
+    if (requireNamespace("qs", quietly = TRUE)) library(qs)
+    if (requireNamespace("lgr", quietly = TRUE)) library(lgr)
+    if (requireNamespace("progressr", quietly = TRUE)) library(progressr)
   })
   invisible(TRUE)
 }

@@ -9,7 +9,8 @@
 #' @return numeric scalar (stub returns NA_real_).
 #' @note Write-target: used upstream by uptake/growth; does not write plant columns directly.
 calc_SWforcer <- function(sw, sw_w, sw_star) {
-  NA_real_
+  # Vectorized via trap1; clamps to [0, 1]
+  trap1(sw, sw_w, sw_star)
 }
 
 #' Trapezoid envelope 1 (skeleton)
@@ -21,7 +22,12 @@ calc_SWforcer <- function(sw, sw_w, sw_star) {
 #' @return numeric scalar (stub returns NA_real_).
 #' @note Helper; no direct write-targets.
 trap1 <- function(x, a, b) {
-  NA_real_
+  den <- b - a
+  # Avoid division by zero or negative widths
+  den <- ifelse(den <= 0, Inf, den)
+  val <- (x - a) / den
+  # Clamp to [0, 1]
+  pmax(pmin(val, 1), 0)
 }
 
 #' Trapezoid envelope 2 (skeleton)
@@ -33,7 +39,16 @@ trap1 <- function(x, a, b) {
 #' @return numeric scalar (stub returns NA_real_).
 #' @note Helper; no direct write-targets.
 trap2 <- function(x, a, b, c, d) {
-  NA_real_
+  den1 <- b - a
+  den2 <- d - c
+  den1 <- ifelse(den1 <= 0, Inf, den1)
+  den2 <- ifelse(den2 <= 0, Inf, den2)
+  up <- (x - a) / den1
+  down <- (d - x) / den2
+  # Clamp each component, then overall clamp to [0, 1]
+  val <- pmin(pmax(up, 0), 1)
+  val <- pmin(val, pmax(down, 0))
+  pmax(pmin(val, 1), 0)
 }
 
 #' Monod relation (skeleton)
@@ -45,6 +60,11 @@ trap2 <- function(x, a, b, c, d) {
 #' @return numeric scalar (stub returns NA_real_).
 #' @note Guard denominators to avoid division by zero in implementation.
 monod <- function(R, k) {
-  NA_real_
+  R <- pmax(R, 0)
+  k <- pmax(k, 0)
+  denom <- R + k
+  res <- ifelse(denom == 0, 0, R / denom)
+  # Numeric safety and bounds
+  res[!is.finite(res)] <- 0
+  pmax(pmin(res, 1), 0)
 }
-

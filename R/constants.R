@@ -40,7 +40,7 @@ CONSTANTS <- list(
   # Plot settings
   PLANTS_IN_X = 60,
   PLANTS_IN_Y = 60,
-  PLANTS_PER_PLOT = PLANTS_IN_X * PLANTS_IN_Y, # total plants in plot prior to density correction
+  PLANTS_PER_PLOT = NA_integer_,               # set after list construction to avoid self-reference
   PLOT_SIZE = 10000,                           # m^2 = 1 ha
   PLANT_INITIAL_MASS_MIN = 1,                  # kg DM
   PLANT_INITIAL_MASS_MAX = 100,                # kg DM
@@ -53,3 +53,6 @@ CONSTANTS <- list(
   # OTHER SETTINGS
   TOLERANCE = 0.0001 # calculation buffer
 )
+
+# set derived constants after list construction (avoid self-reference during list eval)
+CONSTANTS$PLANTS_PER_PLOT <- CONSTANTS$PLANTS_IN_X * CONSTANTS$PLANTS_IN_Y

@@ -6,7 +6,7 @@ herbivore_move <- function(herbivore, plants, time_step_minutes = 1) {
   max_distance <- herbivore$fv_max * 60 * time_step_minutes
   
   if (!is.na(herbivore$selected_plant_id)) {
-    target_plant <- plants %>% filter(plant_id == herbivore$selected_plant_id)
+    target_plant <- plants %>% dplyr::filter(plant_id == herbivore$selected_plant_id)
 
     dx <- target_plant$xcor - herbivore$xcor
     dy <- target_plant$ycor - herbivore$ycor

@@ -23,3 +23,25 @@ All notable changes in this module are documented here.
 Notes:
 - TTR-related functions were not modified per scope.
 - Behavioural logic unchanged aside from signature standardisation and deterministic distance geometry.
+
+## Module 2 – TTR Helpers & Resistances
+
+- ttr_forcing: implement pure helpers (trap1, trap2, monod, calc_SWforcer)
+  - Vectorized, bounded [0,1], guards for zero-width and zero denominators.
+- ttr_resistance: implement resistances (calc_RsC, calc_RrC, calc_RdC, calc_RsN, calc_RrN, calc_RdN)
+  - Guard Ms/Mr/Md <= 0 by returning capped large values (finite) to mimic limiting behavior without Inf/NaN.
+  - Ensure non-negative, unitless outputs; vectorized across inputs.
+- tests: add comprehensive unit tests for helpers and resistances
+  - Verify bounds, vectorization, and robustness for zero-mass/edge cases.
+
+Rationale: Provide numerically robust, deterministic math primitives used by TTR while matching C++ shape and avoiding NaN/Inf.
+
+## Hygiene Pass – Loading safety and naming consistency
+
+- constants: fix self-reference in `CONSTANTS` (compute `PLANTS_PER_PLOT` after list construction) to avoid "object not found" on source.
+- utils/behaviour: standardize defence biomass column to `bdef` across functions (`calc_plant_tastiness`, `select_new_plant`, `herbivore_eat`).
+- dplyr usage: replace unqualified `%>%`, `filter`, `mutate`, `rowwise`, `ungroup` with `dplyr::`-qualified calls.
+- packages: remove top-level installation/attach side-effects from `R/packages.R`; provide `ensure_packages_installed()` and `lib()` helpers only.
+- options: wrap global side-effects into `init_project_options()` in `R/options.R` (no auto-execution).
+- main script: move `R/main.R` to `inst/scripts/main.R` to keep package load path clean.
+- tests: add `tests/testthat/test_hygiene.R` to validate constants derivation, helper availability, and tastiness computation with `bdef`.

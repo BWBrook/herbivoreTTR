@@ -2,7 +2,7 @@
 # or selects a new plant based on nutrient and density criteria
 make_foraging_decision <- function(herbivore, plants) {
   
-  current_plant <- plants %>% filter(plant_id == herbivore$selected_plant_id)
+  current_plant <- plants %>% dplyr::filter(plant_id == herbivore$selected_plant_id)
 
   # Check if current plant is still edible (above minimal shoot biomass)
   can_continue_eating <- current_plant$ms > CONSTANTS$MIN_SHOOT

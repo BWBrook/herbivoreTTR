@@ -6,14 +6,14 @@ select_new_plant <- function(herbivore, plants) {
   
   # Compute distances to all plants considering toroidal wrapping
   distances <- plants %>%
-    rowwise() %>%
-    mutate(
+    dplyr::rowwise() %>%
+    dplyr::mutate(
       dx = min(abs(xcor - herbivore$xcor), world_dim - abs(xcor - herbivore$xcor)),
       dy = min(abs(ycor - herbivore$ycor), world_dim - abs(ycor - herbivore$ycor)),
       distance = sqrt(dx^2 + dy^2)
     ) %>%
-    ungroup() %>%
-    filter(ms > CONSTANTS$MIN_SHOOT, distance <= CONSTANTS$DETECTION_DISTANCE)
+    dplyr::ungroup() %>%
+    dplyr::filter(ms > CONSTANTS$MIN_SHOOT, distance <= CONSTANTS$DETECTION_DISTANCE)
   
   if (nrow(distances) == 0) {
     herbivore$selected_plant_id <- NA
@@ -22,9 +22,9 @@ select_new_plant <- function(herbivore, plants) {
 
   # Calculate tastiness scores
   distances <- distances %>%
-    mutate(
+    dplyr::mutate(
       ratio_diff = abs(CONSTANTS$DP_TO_DC_TARGET - (ns / CONSTANTS$N_TO_PROTEIN) / (cs * CONSTANTS$PROP_DIGEST_SC)),
-      tastiness = 1 / (ratio_diff + b_def + distance)
+      tastiness = 1 / (ratio_diff + bdef + distance)
     )
   
   # Normalize scores to probabilities
