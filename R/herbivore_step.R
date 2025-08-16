@@ -12,6 +12,10 @@ herbivore_step <- function(herbivore, plants) {
   
   # State: MOVING
   if (is.na(herbivore$selected_plant_id) || herbivore$behaviour == "MOVING") {
+    # ~10% chance to discard current target while moving
+    if (herbivore$behaviour == "MOVING" && !is.na(herbivore$selected_plant_id) && runif(1) < 0.1) {
+      herbivore$selected_plant_id <- NA_integer_
+    }
     plants_in_range <- get_plants_within_range(herbivore, plants)
     
     if (nrow(plants_in_range) == 0) {
@@ -67,25 +71,17 @@ herbivore_step <- function(herbivore, plants) {
     )
     
     if (distance_to_plant <= CONSTANTS$EAT_RADIUS && selected_plant$ms > 0) {
+      # Delegate intake to herbivore_eat(), which handles kg↔g conversions and gut vectors
+      eat_res <- herbivore_eat(herbivore, plants)
+      herbivore <- eat_res$herbivore
+      plants <- eat_res$plants
       
-      # Amount the herbivore can eat this minute
-      intake_possible <- min(
-        (1 / handling_time) / 1000,      # kg DM/min
-        bite_size / 1000,                # g to kg conversion
-        gut_capacity - herbivore$gut_content, 
-        selected_plant$ms
-      )
-      
-      # Update plant biomass
-      plants$ms[plants$plant_id == herbivore$selected_plant_id] <- selected_plant$ms - intake_possible
-      
-      # Update herbivore gut content
-      herbivore$gut_content <- herbivore$gut_content + intake_possible
-      
-      if (herbivore$gut_content >= gut_capacity) {
+      # Capacity check (gut in g, capacity in g)
+      if (herbivore$gut_content + CONSTANTS$TOLERANCE >= gut_capacity) {
         herbivore$behaviour <- "REST"
+      } else {
+        herbivore$behaviour <- "EATING"
       }
-      
     } else {
       herbivore$behaviour <- "MOVING"
     }

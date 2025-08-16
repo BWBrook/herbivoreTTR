@@ -69,3 +69,15 @@ Rationale: Complete core TTR math with robust guards, mirroring the reference C+
   - `tests/testthat/test_ttr_wire.R` verifies `run_daily_herbivore_simulation()` calls the orchestrator by asserting new columns (`uc`, `gs`) are present with non-negative masses.
 
 Rationale: Wire together the previously implemented pure functions to perform a daily plant update consistent with the reference C++ algorithm.
+
+## Module 5 — Herbivore–Plant Interface Fixes (Units & Behaviour)
+
+- Units: Standardised kg↔g conversions at the interface:
+  - `herbivore_eat()` now decrements plant masses in kg and pushes intakes to gut vectors in grams; updates `gut_content` accordingly.
+  - Capacity checks use gut in g; available capacity converted to kg for intake calculations.
+- Behaviour: Finalised step logic and filters:
+  - `herbivore_step()` delegates consumption to `herbivore_eat()`, enforces capacity tolerance, and adds ~10% re-target probability while moving.
+  - `get_plants_within_range()` enforces browse height constraint for browsers (`LEAF_HEIGHT * height <= BROWSE_HEIGHT`).
+- Tests: Added `tests/testthat/test_module5_interface.R` covering kg↔g consistency, browser filter, and step consumption bounds.
+
+Rationale: Ensure consistent units across herbivore–plant interactions and align behaviour with specification while maintaining deterministic operation.
