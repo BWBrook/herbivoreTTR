@@ -55,7 +55,7 @@ vignettes/*.pdf
 .Renviron
 
 # pkgdown site
-docs/
+#docs/
 
 # pkgdown site
 misc/
@@ -85,3 +85,4 @@ outputs/
 *.aux
 *.toc
 *.pdf
+*.zip

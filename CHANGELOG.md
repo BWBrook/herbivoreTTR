@@ -131,3 +131,15 @@ Rationale: Provide a minimal, fast harness to catch regressions while wiring the
   `options(renv.config.pak.enabled = TRUE)` and `RENV_CONFIG_PAK_ENABLED=TRUE` in `renv/activate.R`.
 
 Rationale: Improve developer experience by removing spurious warnings and enabling fast installs via pak.
+
+## Docs — Closure Tests Protocol
+
+- Added `docs/closure_tests.md` outlining unit sanity, integration, and determinism tests for validating parity with the C++ implementation.
+
+Rationale: Provide a concise, versioned protocol for end-to-end verification and future regression triage.
+
+## Docs — Developer Quickstart
+
+- Added `docs/README-dev.md` with a compact guide for renv bootstrap, running tests, executing the minimal {targets} pipeline, and producing parity CSVs.
+
+Rationale: Help collaborators get productive quickly with consistent, reproducible project workflows.
