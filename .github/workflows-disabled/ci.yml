@@ -1,0 +1,10 @@
+name: CI (disabled)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  disabled:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "CI temporarily disabled. Enable by moving this workflow back to .github/workflows."

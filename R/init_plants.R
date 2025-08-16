@@ -30,6 +30,10 @@ init_plants <- function(veg_types = c(0, 1, 2)) {
   plant_grid$ns <- plant_grid$ms * init_N # shoot N content [kg]
   plant_grid$nr <- plant_grid$mr * init_N # root N content [kg]
   
+  # Placeholder pools for defence C and N (not yet used by orchestrator)
+  plant_grid$cd <- 0 # defence C content [kg]
+  plant_grid$nd <- 0 # defence N content [kg]
+  
   plant_grid$bleaf  <- ifelse(plant_grid$veg_type == 2, plant_grid$ms * 0.5, plant_grid$ms) # leaf biomass [kg dry mass]
   plant_grid$bstem  <- ifelse(plant_grid$veg_type == 2, plant_grid$ms * 0.5, 0) # stem biomass [kg dry mass]
   plant_grid$broot  <- plant_grid$mr # root biomass [kg dry mass]

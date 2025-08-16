@@ -26,3 +26,15 @@ test_that("packages and options helpers are defined without side-effects", {
   expect_true(exists("lib", mode = "function"))
   expect_true(exists("init_project_options", mode = "function"))
 })
+
+test_that("init_plants includes defence pools cd/nd placeholders", {
+  sys.source(file.path(testthat::test_path("..", ".."), "R", "constants.R"), envir = topenv())
+  sys.source(file.path(testthat::test_path("..", ".."), "R", "utils.R"), envir = topenv())
+  sys.source(file.path(testthat::test_path("..", ".."), "R", "init_plants.R"), envir = topenv())
+  p <- init_plants(veg_types = c(0,1,2))
+  expect_true(all(c("cd","nd","md","bdef") %in% names(p)))
+  expect_true(all(is.finite(p$cd)))
+  expect_true(all(is.finite(p$nd)))
+  expect_true(all(p$cd >= 0))
+  expect_true(all(p$nd >= 0))
+})

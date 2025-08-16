@@ -45,3 +45,14 @@ Rationale: Provide numerically robust, deterministic math primitives used by TTR
 - options: wrap global side-effects into `init_project_options()` in `R/options.R` (no auto-execution).
 - main script: move `R/main.R` to `inst/scripts/main.R` to keep package load path clean.
 - tests: add `tests/testthat/test_hygiene.R` to validate constants derivation, helper availability, and tastiness computation with `bdef`.
+
+## Module 3 — TTR Transport, Uptake, Growth, and RHS
+
+- Implemented pure, rowwise functions matching C++ logic:
+  - ttr_transport: `calc_tauC`, `calc_tauN`, `calc_tauCd`, `calc_tauNd` with guards for zero masses and zero total resistance (return 0 to avoid division errors).
+  - ttr_uptake_growth: `calc_UC`, `calc_UN`, `sf`, `calc_Gs`, `calc_Gr`, `calc_Gd`, and ODE RHS terms `calc_dCs_dt`, `calc_dCr_dt`, `calc_dCd_dt`, `calc_dNs_dt`, `calc_dNr_dt`, `calc_dNd_dt`.
+  - Functions ensure finite outputs and respect kg/day semantics per C++.
+- Added tests verifying finiteness, boundedness, vectorization, and correct sign behavior for toy cases.
+  - `tests/testthat/test_ttr_transport_growth.R`.
+
+Rationale: Complete core TTR math with robust guards, mirroring the reference C++ while ensuring safe numeric behavior for zero/edge cases.
