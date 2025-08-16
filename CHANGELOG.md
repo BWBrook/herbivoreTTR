@@ -81,3 +81,14 @@ Rationale: Wire together the previously implemented pure functions to perform a 
 - Tests: Added `tests/testthat/test_module5_interface.R` covering kg↔g consistency, browser filter, and step consumption bounds.
 
 Rationale: Ensure consistent units across herbivore–plant interactions and align behaviour with specification while maintaining deterministic operation.
+
+## Module 6 — Daily Loop Integration (Spin-up, Orchestration)
+
+- Added `CONSTANTS$HERBIVORY` control and integrated a spin-up gate in `run_daily_herbivore_simulation()`:
+  - Runs `transport_resistance()` every day before any herbivory.
+  - Skips the minute-by-minute herbivory loop during spin-up days (SPIN_UP_LENGTH × days_in_year) or when HERBIVORY == 0.
+  - Preserves existing temperature-scaled water requirement logic after minute loops.
+- Tests:
+  - `tests/testthat/test_spinup_integration.R` demonstrates no intake/movement during spin-up and observable intake plus plant mass reduction post spin up (under no-growth conditions).
+
+Rationale: Cleanly orchestrate plant growth and herbivory with a controllable spin-up phase, matching the original model sequencing.

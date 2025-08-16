@@ -21,8 +21,12 @@ run_daily_herbivore_simulation <- function(herbivore, plants, conditions,
   # 4) Prepare a container for minute-by-minute records (if desired)
   daily_record <- vector("list", minute_limit)
 
-  # 5) Loop through each minute
-  for (minute in seq_len(minute_limit)) {
+  # Determine if herbivory is active (post spin-up and not disabled)
+  spin_up_days <- CONSTANTS$SPIN_UP_LENGTH * nrow(conditions)
+  herbivory_active <- isTRUE(CONSTANTS$HERBIVORY != 0) && (day_of_simulation > spin_up_days)
+
+  # 5) Loop through each minute (only if herbivory is active)
+  if (herbivory_active) for (minute in seq_len(minute_limit)) {
 
     # (a) Hourly digestion and energy incorporation
     if (minute %% 60 == 0) {
@@ -51,7 +55,7 @@ run_daily_herbivore_simulation <- function(herbivore, plants, conditions,
       energy_balance    = herbivore$energy_balance,
       water_balance     = herbivore$water_balance
     )
-  } # end for
+  } # end herbivory loop
 
   # 6) At the end of day: check water, finalize energy
   # Set water turnover to depend on temperature
