@@ -92,3 +92,14 @@ Rationale: Ensure consistent units across herbivore–plant interactions and ali
   - `tests/testthat/test_spinup_integration.R` demonstrates no intake/movement during spin-up and observable intake plus plant mass reduction post spin up (under no-growth conditions).
 
 Rationale: Cleanly orchestrate plant growth and herbivory with a controllable spin-up phase, matching the original model sequencing.
+
+## Module 7 — Constants Audit for TTR (Add & Document)
+
+- Added missing TTR constants to `R/constants.R` with inline unit documentation:
+  `K_LITTER`, `K_M_LITTER`, `G_SHOOT`, `G_ROOT`, `G_DEFENCE`, `K_C`, `K_N`, `K_M`,
+  `PI_C`, `PI_N`, `Q_SCP`, `TR_C`, `TR_N`, `FRACTION_C`, `FRACTION_N`, `PHENO_SWITCH`,
+  `ACCEL_LEAF_LOSS`, `INIT_SW`, `INIT_N`, `TEMP_GROWTH_1..4`, `TEMP_PHOTO_1..4`.
+- Confirmed usage in TTR functions (`ttr_daily.R`, `ttr_uptake_growth.R`, `ttr_transport.R`).
+- Tests: `tests/testthat/test_constants_audit.R` asserts presence and numeric finiteness.
+
+Rationale: Ensure R implementation mirrors C++ constants with clear units, preventing missing-constant errors and aiding maintainability.
