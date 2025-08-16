@@ -1,6 +1,21 @@
-# History files
+# History and session files
 .Rhistory
 .Rapp.history
+.Rproj.user
+.Ruserdata
+.DS_Store
+
+# Data caches and logs
+data/interim/
+data/processed/
+logs/
+
+# Binary columnar files
+*.parquet
+*.duckdb
+
+# Secrets (define in .env.example and never commit .env)
+.env
 
 # Session Data files
 .RData
@@ -47,3 +62,23 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# renv
+renv/library/
+renv/staging/
+
+# _targets
+/_targets/*
+
+# output files
+outputs/
+
+# Quarto / rmarkdown artefacts
+*.html
+*.knit.md
+/report_files
+*.tex
+*.log
+*.aux
+*.toc
+*.pdf

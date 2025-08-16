@@ -1,0 +1,21 @@
+---
+title: "Project report"
+format: html
+execute:
+  echo: false
+---
+
+# Introduction
+
+This Quarto document is a placeholder for your analysis report.  You can
+embed text, code chunks, and figures.  The pipeline defined in
+`_targets.R` should generate all necessary intermediate data; in this
+document you can read those data via the targets API or by loading
+files under `data/processed/`.
+
+```{r}
+#| label: load-packages
+#| message: false
+library(dplyr)
+# Add code here to summarise your results
+```

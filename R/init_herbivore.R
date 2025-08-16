@@ -1,0 +1,47 @@
+# Initialise a herbivore agent
+init_herbivore <- function(mass = 5e5, herb_type = 0, MRT = 48) {
+  
+  herbivore <- list(
+    mass = mass,                                   # [g] average white rhino is 2.18e6 (Steuer et al. 2010)
+    herb_type = herb_type,                         # GRAZER, BROWSER, MIXED
+    xcor = runif(1, 0, sqrt(CONSTANTS$PLOT_SIZE)), # x-coordinate
+    ycor = runif(1, 0, sqrt(CONSTANTS$PLOT_SIZE)), # y-coordinate
+    current_hour = 0,                              # hour the herbivore is currently foraging in (continuous across days)
+    last_hour = 0,                                 # hour the herbivore was foraging in last time step (continuous across days)
+    MRT = MRT,                                     # mean time to digest food in gut [hrs]
+    behaviour = "MOVING",                          # MOVING, EATING, REST
+    selected_plant_id = NA_integer_,               # ID of selected plant
+    selected_plant_dist = NA_real_,                # distance from herbivore to selected plant [m]
+    gut_content = 0,                               # current mass of gut content [g]
+    distance_moved = 0,                            # distance moved in a day [m]
+    time_spent_foraging = 12,                      # time spent foraging in a day [hrs]
+    intake_total_day = 0,                          # total daily intake [g DM]
+    intake_digest_carbs_day = 0,                   # total daily digestible carbohydrate intake [g DM]
+    intake_digest_protein_day = 0,                 # total daily digestible protein intake [g DM]
+    intake_PE_day = 0,                             # total daily protein energy intake [kJ]
+    intake_NPE_day = 0,                            # total daily non-protein energy intake [kJ]
+    intake_defence_day = 0,                        # total daily plant defence intake [g DM]
+    intake_total = 0,                              # total intake over simulation [g DM]
+    metabolic_water_day = 0,                       # total daily metabolic water produced [g]
+    intake_water_forage = 0,                       # total daily water intake from forage [g]
+    intake_water_drinking = 0,                     # total daily water intake from drinking [g]
+    energy_balance = 0,                            # energy balance [kJ]
+    water_balance = 0,                             # water balance [g]
+    digestion = list(
+      bleaf = numeric(MRT),                        # leaf biomass
+      bstem = numeric(MRT),                        # stem biomass
+      bdef = numeric(MRT),                         # defence biomass
+      dc_leaf = numeric(MRT),                      # digestion of digestible carbohydrates in leaf biomass
+      dc_stem = numeric(MRT),                      # digestion of digestible carbohydrates in stem biomass
+      dp_leaf = numeric(MRT),                      # digestion of digestible proteins in leaf biomass
+      dp_stem = numeric(MRT),                      # digestion of digestible proteins in stem biomass
+      dp_def = numeric(MRT)                        # digestion of digestible proteins in defence biomass
+    )
+  )
+
+  # Calculated parameters
+  herbivore <- calc_foraging_traits(herbivore)
+  herbivore$daily_water_requirement <- calc_water_requirement(mass)
+  
+  return(herbivore)
+}

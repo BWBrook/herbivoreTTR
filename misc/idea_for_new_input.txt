@@ -1,0 +1,76 @@
+input<-list()
+
+input$single_point_run = 1 #run only for a single point location
+input$lon = -22.0 # in case of single point location run use these coordinates
+input$lat =  25.0 # in case of single point location run use these coordinates
+input$Minimum_longitude = 30.5 # coordinates for block run, solution defined by netcdf file resolution
+input$Maximum_longitude = 31.5 
+input$Minimum_latitude = -22.5
+input$Maximum_latitude = -22.5
+
+input$fire = 0       # 0 or 1 for without and with fire
+input$herbivory = 0  # 0 or 1 for without and with herbivory
+
+#currently seet in constants.hpp
+#@ TS would it be possible to do away with single_plant and define PLANTS_IN_X and PLANTS_IN_Y and PLOT_SIZE as for example 1, 1, 1.5 * 1.5
+input$PLANTS_IN_X = 60  #how many rows of plants to simulate
+input$PLANTS_IN_Y = 60  #how many columns of plants to simulate
+input$PLOT_SIZE = 100 * 100  # large is the plot in m2
+
+input$tree_probability_when_initialising = 1.0 # initialise with this proportion of trees
+input$C4_Grass_probability_when_initialising = 0.0    # initialise with this proportion of C4 grasses
+input$C3_Grass_probability_when_initialising = 0.0    # initialise with this proportion of C3 grasses
+
+input$mutation_probability = 0.01 # GOA  parameters, user will seldom need to adjust these
+input$mutation_rate = 0.05        
+input$mutation_rate_low = 0.95    
+input$mutation_rate_up = 1.05     
+input$crossover_cr = 0.5
+
+input$species_num_tree = 50      # number of species labels at startup = maximum potential species number in a grid cell
+input$species_num_C3_grass = 50
+input$species_num_C4_grass = 50
+
+input$gcm_name = "GFDL-ESM2M"    # subdirectory name of the climate model to use
+input$spinup_name = "historical" # substring of climate senario name for spin up
+input$run_name = "rcp85"    # substring of climate senario name for main run
+
+
+#---define how many years you want to simulate to get "rid" of initial condition effects
+#---in this example 100 years are simulated from using the 1950 decade's climate
+input$spinup_year_to_start = 1951
+input$spinup_year_to_finish = 1960
+input$spinup_number_of_cycles = 10
+
+#---the actual simulation that is run
+input$run_year_to_start = 2006
+input$run_year_to_finish = 2099
+
+#--
+input$last_block_start = 2081
+input$last_block_finish = 2099
+input$lat_block_number_of_cycles = 2 
+
+#-output defnition
+input$years_to_output = 100 # output the last year 100 years of the simulation
+input$pop_file = 1          # output the pop file
+input$trait_file = 1        # output the trait file
+input$text_files = 1        # text file output as in single_plant
+
+#for single site runs provide the following data (one column, one day per row)
+input$spr_tas = "tas.txt"    # surface  temperature data 
+input$spr_tasmin = "tasmin.txt"
+input$spr_tasmax = "tasmax.txt"
+input$spr_pr = "pr.txt"
+input$spr_rsds = "rsds.txt"
+input$spr_rlds = "rlds.txt"
+input$spr_ps = "ps.txt"
+input$spr_rhs = "rhs.txt"
+input$CO2 = "CO2.txt"
+
+#input$additional_herbivory_parameters = xx
+
+write.table(as.character(input),"s001_input.txt",row.names = F, col.names=F,quote=F)
+# you can now use the system call to for example do 
+# system( "g++ -Wall -std=c++11 -lm main.cpp -lnetcdf -lstdc++fs -o main")
+# system( "./main s001_input.txt")
