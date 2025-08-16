@@ -6,7 +6,7 @@ Authors@R: c(
     person(given = "Barry", family = "Brook", role = c("aut", "cre"),
            email = "barry.brook@utas.edu.au"),
     person(given = "GPT-5",  family = "Assistant", role = "ctb")
-)
+ )
 Description: A quantitative plant–herbivore simulation model ported from C++.
     Implements a Thornley Transport Resistance (TTR) model for plant growth
     coupled with individual-based herbivore foraging behaviour.  This package

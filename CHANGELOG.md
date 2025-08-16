@@ -123,3 +123,11 @@ Rationale: Enable diff-style parity checks between R and reference C++ outputs.
   - Spin-up vs post-spin-up behaviour validated.
 
 Rationale: Provide a minimal, fast harness to catch regressions while wiring the model.
+
+## DevOps — renv + pak bootstrap and DESCRIPTION newline
+
+- Fix: ensure DESCRIPTION ends with a newline to silence renv::status() warning.
+- Configure renv autoloader to prefer pak as the package manager by setting
+  `options(renv.config.pak.enabled = TRUE)` and `RENV_CONFIG_PAK_ENABLED=TRUE` in `renv/activate.R`.
+
+Rationale: Improve developer experience by removing spurious warnings and enabling fast installs via pak.
