@@ -56,3 +56,16 @@ Rationale: Provide numerically robust, deterministic math primitives used by TTR
   - `tests/testthat/test_ttr_transport_growth.R`.
 
 Rationale: Complete core TTR math with robust guards, mirroring the reference C++ while ensuring safe numeric behavior for zero/edge cases.
+
+## Module 4 — TTR Orchestrator: transport_resistance()
+
+- Implemented full per-day TTR update in `R/ttr_daily.R`:
+  - Computes environmental forcing from `conditions` via `calc_SWforcer`, `trap2`, `monod`.
+  - Calculates resistances (shoot/root), transport (tauC, tauN), uptake (UC/UN), and growth (Gs/Gr) with robust guards.
+  - Applies litter losses with phenology switch; updates C/N pools and structural masses; updates `bleaf`, `bstem`, `bdef`, `brepr`, and `broot`, and recomputes `ms`.
+  - Defence transport/growth/pools are disabled to mirror the C++ code path.
+- Added TTR constants to `R/constants.R` mirroring C++ (K_LITTER, K_M_LITTER, G_*, K_*, PI_*, Q_SCP, TR_*, FRACTION_*, TEMP_* envelopes, PHENO_SWITCH, ACCEL_LEAF_LOSS).
+- Tests: `tests/testthat/test_ttr_daily.R` ensures finiteness and non-negativity of masses after one-day update on a toy case.
+  - `tests/testthat/test_ttr_wire.R` verifies `run_daily_herbivore_simulation()` calls the orchestrator by asserting new columns (`uc`, `gs`) are present with non-negative masses.
+
+Rationale: Wire together the previously implemented pure functions to perform a daily plant update consistent with the reference C++ algorithm.

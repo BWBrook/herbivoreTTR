@@ -5,6 +5,9 @@ run_daily_herbivore_simulation <- function(herbivore, plants, conditions,
                                             
   day_index <- ((day_of_simulation - 1) %% nrow(conditions)) + 1
   today_temp <- conditions$temp_mean[day_index]
+
+  # Update plants via TTR orchestrator for this day before herbivory
+  plants <- transport_resistance(plants, conditions, day_index)
   
   # 1) Reset daily variables for herbivore
   herbivore <- reset_daily_variables(herbivore)
