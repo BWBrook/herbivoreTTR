@@ -1,6 +1,7 @@
 local({
   # source only necessary files
   base <- testthat::test_path("..", "..")
+  # need to update, some of these files no longer exist because helpers have been split into individual scripts
   sys.source(file.path(base, "R", "ttr_transport.R"), envir = topenv())
   sys.source(file.path(base, "R", "ttr_uptake_growth.R"), envir = topenv())
 })

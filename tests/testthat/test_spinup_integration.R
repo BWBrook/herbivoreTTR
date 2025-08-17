@@ -1,5 +1,7 @@
 local({
   base <- testthat::test_path("..", "..")
+  # need to update, some of these files no longer exist because helpers have been split into individual scripts
+  # suggest sourcing all .R functions in R/
   sys.source(file.path(base, "R", "constants.R"), envir = topenv())
   sys.source(file.path(base, "R", "utils.R"), envir = topenv())
   sys.source(file.path(base, "R", "init_herbivore.R"), envir = topenv())

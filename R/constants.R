@@ -46,7 +46,37 @@ CONSTANTS <- list(
   PLANT_INITIAL_MASS_MAX = 100,                # kg DM
   HERBIVORES_PER_PLOT = 1,                     # number of herbivores in a plot
   
-  # Time settings
+  # Thornley Transport Resistance (TTR) constants (mirroring C++ reference)
+  K_LITTER        = 0.05,   # per day: litter production rate (proportion/day)
+  K_M_LITTER      = 2.5,    # kg XDM: litter mass scale parameter
+  G_SHOOT         = 200,    # per day scaling: shoot growth [kg C/kg N/kg XDM^2]/day
+  G_ROOT          = 200,    # per day scaling: root growth [kg C/kg N/kg XDM^2]/day
+  G_DEFENCE       = 10,     # per day scaling: defence growth [kg C/kg N/kg XDM^2]/day
+  K_C             = 0.1,    # per day: C input rate [kg C/kg shoot XDM/day]
+  K_N             = 0.01,   # per day: N input rate [kg N/kg shoot XDM/day]
+  K_M             = 10,     # kg XDM: mass scale for uptake saturation
+  PI_C            = 0.1,    # kg C/kg XDM: product inhibition for C uptake
+  PI_N            = 0.01,   # kg N/kg XDM: product inhibition for N uptake
+  Q_SCP           = 2/3,    # unitless: transport resistance exponent
+  TR_C            = 1.0,    # XDM^(Q_SCP-1)/day: C transport resistance scale
+  TR_N            = 1.0,    # XDM^(Q_SCP-1)/day: N transport resistance scale
+  FRACTION_C      = 0.5,    # kg C/kg XDM: carbon fraction of dry matter
+  FRACTION_N      = 0.025,  # kg N/kg XDM: nitrogen fraction of dry matter
+  PHENO_SWITCH    = 10,     # deg C: phenology temperature threshold
+  ACCEL_LEAF_LOSS = 10,     # unitless multiplier: accelerated leaf loss factor
+  TEMP_GROWTH_1   = 1,      # deg C: growth envelope parameter
+  TEMP_GROWTH_2   = 24,     # deg C: growth envelope parameter
+  TEMP_GROWTH_3   = 26,     # deg C: growth envelope parameter
+  TEMP_GROWTH_4   = 40,     # deg C: growth envelope parameter
+  TEMP_PHOTO_1    = 1,      # deg C: photosynthesis envelope parameter
+  TEMP_PHOTO_2    = 15,     # deg C: photosynthesis envelope parameter
+  TEMP_PHOTO_3    = 25,     # deg C: photosynthesis envelope parameter
+  TEMP_PHOTO_4    = 35,     # deg C: photosynthesis envelope parameter
+  INIT_SW         = 500,    # L: initial standing water (for scenarios)
+  INIT_N          = 3.75,   # kg N: initial soil N availability (for scenarios)
+  HERBIVORY       = 1,      # 0/1 switch: enable herbivory in daily loop
+
+    # Time settings
   SPIN_UP_LENGTH = 5, # number of years to run vegetation model before herbivory switches on
   HERBIVORE_MRT = 28, # mean gut retention time in hours
 
@@ -55,34 +85,4 @@ CONSTANTS <- list(
 )
 
 # set derived constants after list construction (avoid self-reference during list eval)
-CONSTANTS$PLANTS_PER_PLOT <- CONSTANTS$PLANTS_IN_X * CONSTANTS$PLANTS_IN_Y
-
-# Thornley Transport Resistance (TTR) constants (mirroring C++ reference)
-CONSTANTS$K_LITTER        <- 0.05   # per day: litter production rate (proportion/day)
-CONSTANTS$K_M_LITTER      <- 2.5    # kg XDM: litter mass scale parameter
-CONSTANTS$G_SHOOT         <- 200    # per day scaling: shoot growth [kg C/kg N/kg XDM^2]/day
-CONSTANTS$G_ROOT          <- 200    # per day scaling: root growth [kg C/kg N/kg XDM^2]/day
-CONSTANTS$G_DEFENCE       <- 10     # per day scaling: defence growth [kg C/kg N/kg XDM^2]/day
-CONSTANTS$K_C             <- 0.1    # per day: C input rate [kg C/kg shoot XDM/day]
-CONSTANTS$K_N             <- 0.01   # per day: N input rate [kg N/kg shoot XDM/day]
-CONSTANTS$K_M             <- 10     # kg XDM: mass scale for uptake saturation
-CONSTANTS$PI_C            <- 0.1    # kg C/kg XDM: product inhibition for C uptake
-CONSTANTS$PI_N            <- 0.01   # kg N/kg XDM: product inhibition for N uptake
-CONSTANTS$Q_SCP           <- 2/3    # unitless: transport resistance exponent
-CONSTANTS$TR_C            <- 1.0    # XDM^(Q_SCP-1)/day: C transport resistance scale
-CONSTANTS$TR_N            <- 1.0    # XDM^(Q_SCP-1)/day: N transport resistance scale
-CONSTANTS$FRACTION_C      <- 0.5    # kg C/kg XDM: carbon fraction of dry matter
-CONSTANTS$FRACTION_N      <- 0.025  # kg N/kg XDM: nitrogen fraction of dry matter
-CONSTANTS$PHENO_SWITCH    <- 10     # deg C: phenology temperature threshold
-CONSTANTS$ACCEL_LEAF_LOSS <- 10     # unitless multiplier: accelerated leaf loss factor
-CONSTANTS$TEMP_GROWTH_1   <- 1      # deg C: growth envelope parameter
-CONSTANTS$TEMP_GROWTH_2   <- 24     # deg C: growth envelope parameter
-CONSTANTS$TEMP_GROWTH_3   <- 26     # deg C: growth envelope parameter
-CONSTANTS$TEMP_GROWTH_4   <- 40     # deg C: growth envelope parameter
-CONSTANTS$TEMP_PHOTO_1    <- 1      # deg C: photosynthesis envelope parameter
-CONSTANTS$TEMP_PHOTO_2    <- 15     # deg C: photosynthesis envelope parameter
-CONSTANTS$TEMP_PHOTO_3    <- 25     # deg C: photosynthesis envelope parameter
-CONSTANTS$TEMP_PHOTO_4    <- 35     # deg C: photosynthesis envelope parameter
-CONSTANTS$INIT_SW         <- 500    # L: initial standing water (for scenarios)
-CONSTANTS$INIT_N          <- 3.75   # kg N: initial soil N availability (for scenarios)
-CONSTANTS$HERBIVORY       <- 1      # 0/1 switch: enable herbivory in daily loop
+CONSTANTS$PLANTS_PER_PLOT = CONSTANTS$PLANTS_IN_X * CONSTANTS$PLANTS_IN_Y
