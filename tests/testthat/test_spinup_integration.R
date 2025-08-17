@@ -1,24 +1,4 @@
-local({
-  base <- testthat::test_path("..", "..")
-  # need to update, some of these files no longer exist because helpers have been split into individual scripts
-  # suggest sourcing all .R functions in R/
-  sys.source(file.path(base, "R", "constants.R"), envir = topenv())
-  sys.source(file.path(base, "R", "utils.R"), envir = topenv())
-  sys.source(file.path(base, "R", "init_herbivore.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_forcing.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_resistance.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_transport.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_uptake_growth.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_daily.R"), envir = topenv())
-  sys.source(file.path(base, "R", "run_daily_herbivore_simulation.R"), envir = topenv())
-  sys.source(file.path(base, "R", "calc_foraging_traits.R"), envir = topenv())
-  sys.source(file.path(base, "R", "reset_daily_variables.R"), envir = topenv())
-  sys.source(file.path(base, "R", "update_gut_content.R"), envir = topenv())
-  sys.source(file.path(base, "R", "hourly_digestion_step.R"), envir = topenv())
-  sys.source(file.path(base, "R", "herbivore_eat.R"), envir = topenv())
-  sys.source(file.path(base, "R", "herbivore_step.R"), envir = topenv())
-  sys.source(file.path(base, "R", "get_plants_within_range.R"), envir = topenv())
-})
+## Internals available via helper-ttr.R (source_all_R)
 
 make_one_plant <- function(ms = 2.0, x = 0, y = 0) {
   data.frame(
@@ -58,4 +38,3 @@ test_that("post-spin-up: herbivory active with intake and plant reduction", {
   expect_gt(res$herbivore$intake_total_day, 0)
   expect_lt(res$plants$ms[1], before_ms)
 })
-

@@ -1,32 +1,4 @@
-local({
-  base <- testthat::test_path("..", "..")
-  # Core sources for simulation
-  # need to update, some of these files no longer exist because helpers have been split into individual scripts
-  # suggest sourcing all .R functions in R/
-  sys.source(file.path(base, "R", "constants.R"), envir = topenv())
-  sys.source(file.path(base, "R", "utils.R"), envir = topenv())
-  sys.source(file.path(base, "R", "init_plants.R"), envir = topenv())
-  sys.source(file.path(base, "R", "init_herbivore.R"), envir = topenv())
-  sys.source(file.path(base, "R", "init_conditions.R"), envir = topenv())
-  sys.source(file.path(base, "R", "calc_foraging_traits.R"), envir = topenv())
-  sys.source(file.path(base, "R", "reset_daily_variables.R"), envir = topenv())
-  sys.source(file.path(base, "R", "update_gut_content.R"), envir = topenv())
-  sys.source(file.path(base, "R", "hourly_digestion_step.R"), envir = topenv())
-  sys.source(file.path(base, "R", "calc_plant_tastiness.R"), envir = topenv())
-  sys.source(file.path(base, "R", "pick_a_plant.R"), envir = topenv())
-  sys.source(file.path(base, "R", "get_plants_within_range.R"), envir = topenv())
-  sys.source(file.path(base, "R", "herbivore_eat.R"), envir = topenv())
-  sys.source(file.path(base, "R", "herbivore_step.R"), envir = topenv())
-  sys.source(file.path(base, "R", "herbivore_move.R"), envir = topenv())
-  # TTR
-  sys.source(file.path(base, "R", "ttr_forcing.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_resistance.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_transport.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_uptake_growth.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_daily.R"), envir = topenv())
-  # Runner
-  sys.source(file.path(base, "R", "run_daily_herbivore_simulation.R"), envir = topenv())
-})
+## Internals available via helper-ttr.R (source_all_R)
 
 test_that("single-minute eat: plant decreases by d kg, gut increases by d*1000 g", {
   plants <- data.frame(
@@ -82,4 +54,3 @@ test_that("daily runs: 1 day and 7 days remain finite and non-negative", {
   expect_true(all(is.finite(pools)))
   expect_true(all(pools < 1e6))
 })
-

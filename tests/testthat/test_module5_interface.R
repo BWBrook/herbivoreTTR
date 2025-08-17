@@ -1,14 +1,4 @@
-local({
-  base <- testthat::test_path("..", "..")
-  sys.source(file.path(base, "R", "constants.R"), envir = topenv())
-  sys.source(file.path(base, "R", "utils.R"), envir = topenv())
-  sys.source(file.path(base, "R", "init_plants.R"), envir = topenv())
-  sys.source(file.path(base, "R", "init_herbivore.R"), envir = topenv())
-  sys.source(file.path(base, "R", "calc_foraging_traits.R"), envir = topenv())
-  sys.source(file.path(base, "R", "herbivore_eat.R"), envir = topenv())
-  sys.source(file.path(base, "R", "herbivore_step.R"), envir = topenv())
-  sys.source(file.path(base, "R", "get_plants_within_range.R"), envir = topenv())
-})
+## Internals available via helper-ttr.R (source_all_R)
 
 test_that("herbivore_eat converts kg intake to g in gut and reduces plant in kg", {
   # Single plant setup
@@ -71,4 +61,3 @@ test_that("herbivore_step calls eat and updates kg/g consistently", {
   expect_true(res$plants$ms <= plants$ms)
   expect_true(res$herbivore$gut_content <= res$herbivore$gut_capacity + CONSTANTS$TOLERANCE)
 })
-

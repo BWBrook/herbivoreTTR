@@ -1,19 +1,4 @@
-local({
-  base <- testthat::test_path("..", "..")
-  # need to update, some of these files no longer exist because helpers have been split into individual scripts
-  # suggest sourcing all .R functions in R/
-  sys.source(file.path(base, "R", "constants.R"), envir = topenv())
-  sys.source(file.path(base, "R", "utils.R"), envir = topenv())
-  sys.source(file.path(base, "R", "init_plants.R"), envir = topenv())
-  sys.source(file.path(base, "R", "init_herbivore.R"), envir = topenv())
-  sys.source(file.path(base, "R", "init_conditions.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_forcing.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_resistance.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_transport.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_uptake_growth.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_daily.R"), envir = topenv())
-  sys.source(file.path(base, "R", "run_daily_herbivore_simulation.R"), envir = topenv())
-})
+## Internals available via helper-ttr.R (source_all_R)
 
 test_that("run_daily_herbivore_simulation wires TTR and returns uc/gs columns", {
   cond <- init_conditions(days_in_year = 10, mode = "flat", mean_temp = 20, amplitude = 0)
@@ -25,4 +10,3 @@ test_that("run_daily_herbivore_simulation wires TTR and returns uc/gs columns", 
   expect_true(all(is.finite(res$plants$ms)))
   expect_true(all(res$plants$ms >= 0))
 })
-

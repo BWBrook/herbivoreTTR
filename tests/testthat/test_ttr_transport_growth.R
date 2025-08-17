@@ -1,10 +1,4 @@
-local({
-  # source only necessary files
-  base <- testthat::test_path("..", "..")
-  # need to update, some of these files no longer exist because helpers have been split into individual scripts
-  sys.source(file.path(base, "R", "ttr_transport.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_uptake_growth.R"), envir = topenv())
-})
+## Internals available via helper-ttr.R (source_all_R)
 
 toy_plant <- function() {
   list(
@@ -70,4 +64,3 @@ test_that("RHS terms finite and preserve reasonable signs", {
 
   expect_true(all(is.finite(c(dc_s, dn_s, dc_r, dn_r))))
 })
-

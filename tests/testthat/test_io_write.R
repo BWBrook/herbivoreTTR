@@ -1,7 +1,4 @@
-local({
-  base <- testthat::test_path("..", "..")
-  sys.source(file.path(base, "R", "io_write.R"), envir = topenv()) # need to update, this file no longer exists because helpers have been split into individual scripts
-})
+## Internals available via helper-ttr.R (source_all_R)
 
 make_plants <- function() data.frame(
   plant_id = 1:2,
@@ -56,4 +53,3 @@ test_that("writers error on missing columns/fields", {
   herb_bad <- make_herb(); herb_bad$mass <- NA_real_
   expect_error(write_herbivores_daily(herb_bad, 1, 1, f))
 })
-

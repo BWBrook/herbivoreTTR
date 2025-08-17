@@ -1,17 +1,4 @@
-local({
-  base <- testthat::test_path("..", "..")
-  # need to update, some of these files no longer exist because helpers have been split into individual scripts
-  # suggest sourcing all .R functions in R/
-  sys.source(file.path(base, "R", "constants.R"), envir = topenv())
-  sys.source(file.path(base, "R", "utils.R"), envir = topenv())
-  sys.source(file.path(base, "R", "init_plants.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_forcing.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_resistance.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_transport.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_uptake_growth.R"), envir = topenv())
-  sys.source(file.path(base, "R", "ttr_daily.R"), envir = topenv())
-  sys.source(file.path(base, "R", "init_conditions.R"), envir = topenv())
-})
+## Internals available via helper-ttr.R (source_all_R)
 
 test_that("transport_resistance updates plants without NaN/Inf and keeps non-negative masses", {
   cond <- init_conditions(days_in_year = 10, mode = "flat", mean_temp = 20, amplitude = 0)
@@ -25,4 +12,3 @@ test_that("transport_resistance updates plants without NaN/Inf and keeps non-neg
   # Check that some state likely changed sensibly (not mandatory to increase/decrease consistently)
   expect_true(is.numeric(out$ms))
 })
-
