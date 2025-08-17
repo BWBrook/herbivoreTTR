@@ -11,7 +11,7 @@ Description: A quantitative plan-herbivore simulation model ported from C++.
     Implements a Thornley Transport Resistance (TTR) model for plant growth
     coupled with individual-based herbivore foraging behaviour.  This package
     aims to facilitate testing, calibration, and extension within the R ecosystem.
-License: GPL-3
+License: MIT
 Depends:
     R (>= 3.5)
 Encoding: UTF-8
