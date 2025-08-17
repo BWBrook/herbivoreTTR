@@ -1,4 +1,22 @@
-# Coordinates daily behavioural logic: making decisions, foraging, moving, selecting plants, and interaction with plants
+#' Run one simulated herbivore day
+#'
+#' Coordinates daily behaviour (decision, movement, feeding) and interactions
+#' with plants. Also advances the plant TTR state at the start of the day via
+#' `transport_resistance()` and updates daily energy and water balances.
+#'
+#' @param herbivore Herbivore state list.
+#' @param plants data.frame of plant state.
+#' @param conditions data.frame of environmental drivers with columns
+#'   `temp_mean`, `sw`, `N`.
+#' @param day_of_simulation Positive integer day index.
+#' @param minute_limit Number of minutes to simulate (default 1440).
+#' @return List with updated `herbivore`, `plants`, `daily_record` (optional
+#'   minute-by-minute snapshots), and `daily_summary`.
+#' @examples
+#' sim <- init_simulation()
+#' res <- run_daily_herbivore_simulation(sim$herbivore, sim$plants, sim$conditions)
+#' names(res)
+#' @export
 run_daily_herbivore_simulation <- function(herbivore, plants, conditions, 
                                            day_of_simulation = 1, 
                                            minute_limit = 1440) {

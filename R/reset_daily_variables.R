@@ -1,5 +1,13 @@
-# Resets the daily variables tied directly to the herbivore state (energy, water balance, daily intake, etc.) 
-# for the herbivore at the start of each simulated day
+#' Reset daily herbivore variables
+#'
+#' Clears daily intake and balance trackers, resets movement counters, and
+#' sets behaviour to "MOVING" at the start of each simulated day.
+#'
+#' @param herbivore Herbivore state list.
+#' @return Updated `herbivore` list with daily fields zeroed and behaviour reset.
+#' @examples
+#' # herbivore <- reset_daily_variables(herbivore)
+#' @export
 reset_daily_variables <- function(herbivore) {
   herbivore$intake_defence_day <- 0
   herbivore$intake_digest_carbs_day <- 0

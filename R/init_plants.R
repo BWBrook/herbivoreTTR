@@ -1,4 +1,16 @@
-# Initialises plant traits and spatial arrangement
+#' Initialise plant grid and traits
+#'
+#' Lays out plants on a rectangular grid, assigns vegetation types, biomass
+#' pools, and initial fluxes/transport parameters.
+#'
+#' @param veg_types Integer vector of vegetation types to include (0=C3 grass,
+#'   1=C4 grass, 2=tree/shrub).
+#' @return data.frame of plants with identifiers, coordinates, biomass pools,
+#'   and state/flux columns used by the TTR model.
+#' @examples
+#' plants <- init_plants()
+#' head(plants)
+#' @export
 init_plants <- function(veg_types = c(0, 1, 2)) {
   
   inter_plant_distance_x <- sqrt(CONSTANTS$PLOT_SIZE) / CONSTANTS$PLANTS_IN_X

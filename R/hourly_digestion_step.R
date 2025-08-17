@@ -1,6 +1,16 @@
-# Moves the contents of the herbivore's gut forward along the digestion process, incorporates energy from digested 
-# materials, excretes waste.
-# TODO: maybe this step could add N/C back into soil also.
+#' Advance digestion by one hour
+#'
+#' Shifts gut content through hourly compartments, accumulates digestible
+#' carbohydrate and protein energy, and accounts for metabolic water
+#' production.
+#'
+#' @param herbivore Herbivore state list containing `MRT` and `digestion`
+#'   vectors (`bleaf`, `bstem`, `bdef`, `dc_leaf`, `dc_stem`, `dp_leaf`,
+#'   `dp_stem`, `dp_def`).
+#' @return Updated `herbivore` list with intake and water fields increased.
+#' @examples
+#' # herbivore <- hourly_digestion_step(herbivore)
+#' @export
 hourly_digestion_step <- function(herbivore) {
   MRT <- herbivore$MRT
   

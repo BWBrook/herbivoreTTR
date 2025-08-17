@@ -7,11 +7,13 @@ Authors@R: c(
            email = "barry.brook@utas.edu.au"),
     person(given = "GPT-5",  family = "Assistant", role = "ctb")
  )
-Description: A quantitative plant–herbivore simulation model ported from C++.
+Description: A quantitative plan-herbivore simulation model ported from C++.
     Implements a Thornley Transport Resistance (TTR) model for plant growth
     coupled with individual-based herbivore foraging behaviour.  This package
     aims to facilitate testing, calibration, and extension within the R ecosystem.
 License: GPL-3
+Depends:
+    R (>= 3.5)
 Encoding: UTF-8
 LazyData: true
 Imports:
@@ -19,3 +21,10 @@ Imports:
     magrittr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Suggests:
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Language: en-US
+Config/testthat/edition: 3

@@ -1,5 +1,12 @@
-# Chooses a new plant to move towards, based on weighted probability calculations involving 
-# plant size, distance, nutrition, and defenses
+#' Select a new target plant (internal)
+#'
+#' Weighted sampling of a new plant target using distance, size, nutrition,
+#' and defence. Returns the herbivore with `selected_plant_id` set.
+#'
+#' @param herbivore Herbivore state list.
+#' @param plants data.frame of plant state.
+#' @return Updated `herbivore` list.
+#' @keywords internal
 select_new_plant <- function(herbivore, plants) {
 
   world_dim <- sqrt(CONSTANTS$PLOT_SIZE)

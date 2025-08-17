@@ -1,4 +1,21 @@
-# Identify plants within detection range
+#' Get plants within detection range
+#'
+#' Computes toroidal distances from the herbivore to all plants and returns
+#' those within `CONSTANTS$DETECTION_DISTANCE`, optionally filtering by browse
+#' height for browsers (herb_type == 1). Adds a `distance` column to the
+#' returned data frame.
+#'
+#' @param herbivore List representing the herbivore state; must include
+#'   `xcor`, `ycor`, and optionally `herb_type`.
+#' @param plants data.frame of plant state with at least columns `plant_id`,
+#'   `xcor`, `ycor`, `ms`, and optionally `height`.
+#' @return data.frame subset of `plants` within range, with an added
+#'   numeric `distance` column (meters).
+#' @examples
+#' 
+#' # Assuming `herb` and `plants` created via init_* helpers:
+#' # near <- get_plants_within_range(herb, plants)
+#' @export
 get_plants_within_range <- function(herbivore, plants) {
   plot_width <- sqrt(CONSTANTS$PLOT_SIZE)
   plot_height <- sqrt(CONSTANTS$PLOT_SIZE)

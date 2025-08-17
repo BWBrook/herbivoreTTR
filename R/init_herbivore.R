@@ -1,4 +1,15 @@
-# Initialise a herbivore agent
+#' Initialise a herbivore agent
+#'
+#' Constructs a herbivore list with spatial state, gut compartments, and
+#' daily trackers. Derived foraging traits are computed from mass.
+#'
+#' @param mass Herbivore mass (g).
+#' @param herb_type Integer behaviour type (0=grazer, 1=browser, 2=mixed).
+#' @param MRT Mean retention time (hours) for gut compartments.
+#' @return Herbivore state list ready for simulation.
+#' @examples
+#' h <- init_herbivore()
+#' @export
 init_herbivore <- function(mass = 5e5, herb_type = 0, MRT = 48) {
   
   herbivore <- list(

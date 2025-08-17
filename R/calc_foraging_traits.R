@@ -1,5 +1,15 @@
-# Calculates bite size, gut capacity, handling time, and foraging velocity—traits related to the physiological 
-# and morphological calculations for herbivores
+#' Compute herbivore foraging traits
+#'
+#' Calculates bite size, gut capacity, handling time, and foraging velocity
+#' from the herbivore mass using allometric relations.
+#'
+#' @param herbivore Herbivore state list with `mass` (g).
+#' @return Updated `herbivore` list with fields `gut_capacity` (g),
+#'   `bite_size` (g), `handling_time` (min/g), and `fv_max` (m/s).
+#' @examples
+#' h <- init_herbivore(5e5)
+#' h <- calc_foraging_traits(h)
+#' @export
 calc_foraging_traits <- function(herbivore) {
   herbivore$gut_capacity   <- calc_gut_capacity(herbivore$mass) # maximum gut capacity [kg DM]
   herbivore$bite_size      <- calc_bite_size(herbivore$mass) # bite size [g DM/bite]

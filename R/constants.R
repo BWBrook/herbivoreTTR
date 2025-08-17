@@ -1,3 +1,16 @@
+#' Package constants
+#'
+#' Collection of simulation and model constants used throughout the package,
+#' including herbivore allometries, energy and water conversions, simulation
+#' geometry, and TTR model parameters.
+#'
+#' Units are indicated inline where applicable. Some parameters (e.g.
+#' seasonal temperature envelopes) are used to construct forcing functions.
+#'
+#' @format A named list of numeric scalars.
+#' @name CONSTANTS
+NULL
+
 # Simulation and model constants
 CONSTANTS <- list(
 

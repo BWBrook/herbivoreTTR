@@ -1,5 +1,13 @@
-# Computes the net energy balance by subtracting energy expenditures (maintenance, locomotion) 
-# from energy intake
+#' Compute daily energy balance
+#'
+#' Calculates energy intake (protein + non-protein) and subtracts
+#' maintenance and locomotion costs to update `herbivore$energy_balance`.
+#'
+#' @param herbivore Herbivore state list with energy intake and distance.
+#' @return Updated `herbivore` list.
+#' @examples
+#' # herbivore <- calc_daily_energy_balance(herbivore)
+#' @export
 calc_daily_energy_balance <- function(herbivore) {
   
   maintenance_cost <- CONSTANTS$ENERGY_MAINTENANCE_A * (herbivore$mass ^ CONSTANTS$ENERGY_MAINTENANCE_B)

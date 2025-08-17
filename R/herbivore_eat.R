@@ -1,5 +1,16 @@
-# Handles the actual process of consuming biomass from the selected plant, updates both 
-# plant and herbivore state
+#' Consume biomass from the selected plant
+#'
+#' Internal helper that transfers intake from a selected plant to the
+#' herbivore's gut and updates plant biomass. Handles basic constraints
+#' (bite size, handling time, gut capacity, remaining plant biomass).
+#'
+#' @param herbivore Herbivore state list; requires `selected_plant_id`,
+#'   `handling_time`, `bite_size`, `gut_capacity`, `gut_content`, and
+#'   `digestion` vectors.
+#' @param plants data.frame of plants with `plant_id`, `ms`, `bdef`, `xcor`,
+#'   `ycor`.
+#' @return List with updated `herbivore` and `plants`.
+#' @keywords internal
 herbivore_eat <- function(herbivore, plants) {
 
   plant <- plants %>% dplyr::filter(plant_id == herbivore$selected_plant_id)

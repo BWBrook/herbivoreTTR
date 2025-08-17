@@ -4,6 +4,7 @@
 #' 
 #' @param vec A non-empty vector to sample from.
 #' @return A length-1 vector containing a single sampled element.
+#' @export
 select_randomly <- function(vec) sample(vec, 1, replace = FALSE)
 
 #' Toroidal (wrap-around) Euclidean distance in a rectangular world
@@ -16,6 +17,7 @@ select_randomly <- function(vec) sample(vec, 1, replace = FALSE)
 #' @param x2,y2 Numeric scalars or vectors: target coordinates (m).
 #' @param plot_width,plot_height Numeric scalars: plot dimensions (m).
 #' @return Numeric vector of shortest toroidal distances (m).
+#' @export
 calc_toroidal_distance <- function(x1, y1, x2, y2, plot_width, plot_height) {
   dx <- pmin(abs(x1 - x2), plot_width - abs(x1 - x2))
   dy <- pmin(abs(y1 - y2), plot_height - abs(y1 - y2))

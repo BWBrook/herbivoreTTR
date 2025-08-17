@@ -1,5 +1,15 @@
-# Checks if water needs were met through forage and metabolic water; if not, adds 
-# travel cost to water sources
+#' Check daily water balance
+#'
+#' Computes water balance from metabolic water and forage intake, and adds
+#' drinking to close any deficit. Adds a distance penalty for traveling to
+#' water when drinking occurs.
+#'
+#' @param herbivore Herbivore state list with `daily_water_requirement`,
+#'   `metabolic_water_day`, `intake_water_forage`, and tracking fields.
+#' @return Updated `herbivore` list.
+#' @examples
+#' # herbivore <- check_daily_water_balance(herbivore)
+#' @export
 check_daily_water_balance <- function(herbivore) {
   
   water_deficit <- herbivore$daily_water_requirement - 

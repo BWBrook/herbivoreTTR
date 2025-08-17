@@ -1,4 +1,17 @@
-# Initializes annual environmental conditions
+#' Initialise annual environmental conditions
+#'
+#' Generates daily temperature, available soil N, and standing water series
+#' using simple deterministic or stochastic patterns.
+#'
+#' @param days_in_year Number of days to generate.
+#' @param mode One of "flat", "stochastic", or "seasonal".
+#' @param mean_temp Mean temperature (deg C) baseline for sinusoid.
+#' @param amplitude Amplitude (deg C) for seasonal temperature pattern.
+#' @return data.frame with columns `day`, `temp_mean`, `sw`, `N`.
+#' @examples
+#' conditions <- init_conditions(mode = "seasonal")
+#' head(conditions)
+#' @export
 init_conditions <- function(days_in_year = 365,
                             mode = "flat",
                             mean_temp = 15,

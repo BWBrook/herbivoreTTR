@@ -1,6 +1,17 @@
-# Perform a single herbivore behavioural step (movement & eating)
-# Standardised to accept only (herbivore, plants);
-# scalar parameters are read from herbivore fields or CONSTANTS.
+#' One behavioural step (move/eat)
+#'
+#' Performs one minute of behaviour: selects target, moves toward it, and
+#' eats when within `CONSTANTS$EAT_RADIUS`, updating both herbivore and plant
+#' state. Scalar parameters are read from the `herbivore` object and
+#' `CONSTANTS`.
+#'
+#' @param herbivore List of herbivore state.
+#' @param plants data.frame of plant state.
+#' @return List with `herbivore` and `plants` entries (both updated).
+#' @examples
+#' # res <- herbivore_step(herbivore, plants)
+#' # str(res)
+#' @export
 herbivore_step <- function(herbivore, plants) {
   
   plot_width <- sqrt(CONSTANTS$PLOT_SIZE)

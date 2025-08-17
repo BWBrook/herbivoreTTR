@@ -1,0 +1,64 @@
+---
+title: "Getting Started with herbivoreTTR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with herbivoreTTR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```r
+#| label: setup
+#| include: false
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+Introduction
+------------
+
+The herbivoreTTR package couples a simple herbivore foraging model with a
+Thornley Transport Resistance (TTR) plant growth model. This vignette shows
+how to initialise a small simulation and run a single day.
+
+Installation
+------------
+
+Install from source (e.g., using `devtools::install()` in this repo).
+
+Quick start
+-----------
+
+```r
+library(herbivoreTTR)
+
+# Initialise conditions, plant grid, and herbivore
+sim <- init_simulation(temp_mode = "flat", veg_types = c(0, 1, 2), herbivore_mass = 5e5)
+
+str(sim, max.level = 1)
+
+# Run one day of simulation
+out <- run_daily_herbivore_simulation(sim$herbivore, sim$plants, sim$conditions,
+                                      day_of_simulation = 1, minute_limit = 120)
+
+names(out)
+out$daily_summary
+```
+
+Model notes
+-----------
+
+- Plant growth for a day is advanced with `transport_resistance()` before herbivory.
+- Herbivore behaviour alternates between movement and feeding via `herbivore_step()`.
+- Energy and water budgets are tallied at the end of the day.
+
+Key functions
+-------------
+
+- `init_conditions()`, `init_plants()`, `init_herbivore()`, `init_simulation()`
+- `run_daily_herbivore_simulation()`
+- `calc_foraging_traits()`, `get_plants_within_range()`, `calc_plant_tastiness()`
+
+```r
+sessionInfo()
+```
+

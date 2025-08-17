@@ -1,6 +1,17 @@
-# Determines the movement of the herbivore toward a chosen plant or a random point if no 
-# suitable plant is found within reach. This implements toroidal (wrap-around) logic to keep 
-# movement continuous within the world.
+#' Move the herbivore one step
+#'
+#' Moves toward the selected plant if any, otherwise performs a random step.
+#' Movement respects toroidal (wrap-around) boundaries and caps step length
+#' by `fv_max * 60 * time_step_minutes`.
+#'
+#' @param herbivore List representing the herbivore state; uses fields
+#'   `xcor`, `ycor`, `selected_plant_id`, `fv_max`, and `distance_moved`.
+#' @param plants data.frame of plants with `plant_id`, `xcor`, `ycor`.
+#' @param time_step_minutes Numeric timestep in minutes (default 1).
+#' @return Updated `herbivore` list with new position and `distance_moved`.
+#' @examples
+#' # herbivore <- herbivore_move(herbivore, plants)
+#' @export
 herbivore_move <- function(herbivore, plants, time_step_minutes = 1) {
   
   max_distance <- herbivore$fv_max * 60 * time_step_minutes
