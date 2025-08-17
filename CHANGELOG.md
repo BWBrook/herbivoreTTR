@@ -143,3 +143,25 @@ Rationale: Provide a concise, versioned protocol for end-to-end verification and
 - Added `docs/README-dev.md` with a compact guide for renv bootstrap, running tests, executing the minimal {targets} pipeline, and producing parity CSVs.
 
 Rationale: Help collaborators get productive quickly with consistent, reproducible project workflows.
+
+## Unreleased
+
+### Added
+- Roxygen2 docs expanded; package doc; examples for exports.
+- Vignette `vignettes/herbivoreTTR-intro.Rmd` (getting started).
+- GitHub Actions `R-CMD-check` workflow enabled.
+- Test helper prefers `pkgload::load_all(".")` with fallback to sourcing `R/*.R`.
+- Wiring test plan `docs/wiring_test.md`.
+- New tests for energy wiring and defence transport/growth.
+
+### Changed
+- README.md rewritten and hard-wrapped to 100 columns.
+- DESCRIPTION Suggests/VignetteBuilder/Language updated.
+- Standardized energy units to kJ in `hourly_digestion_step()` (no extra 1000× factor).
+- Herbivore intake partitions across `bleaf/bstem/bdef`; `ms` recalculated post-intake.
+- Digestion scheduling now populates `dc_*` and `dp_*` at intake.
+- Tests updated to avoid legacy `sys.source()` paths; rely on helper loader.
+
+### Optional wiring
+- Added `CONSTANTS$DEFENCE_ENABLED` (default 0) to enable `rdC/rdN`, `tauCd/tauNd`, and `gd`
+  when true.

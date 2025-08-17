@@ -23,8 +23,11 @@ hourly_digestion_step <- function(herbivore) {
   herbivore$intake_digest_carbs_day <- herbivore$intake_digest_carbs_day + digested_carbs
   herbivore$intake_digest_protein_day <- herbivore$intake_digest_protein_day + digested_proteins
 
-  herbivore$intake_NPE_day <- herbivore$intake_NPE_day + digested_carbs * CONSTANTS$CARB_TO_ENERGY * 1000
-  herbivore$intake_PE_day  <- herbivore$intake_PE_day + digested_proteins * CONSTANTS$PROTEIN_TO_ENERGY * 1000
+  # Energy: digested mass is in grams; constants are kJ per gram -> energy in kJ
+  herbivore$intake_NPE_day <- herbivore$intake_NPE_day +
+    digested_carbs * CONSTANTS$CARB_TO_ENERGY
+  herbivore$intake_PE_day  <- herbivore$intake_PE_day +
+    digested_proteins * CONSTANTS$PROTEIN_TO_ENERGY
   
   # Calculate metabolic water
   herbivore$metabolic_water_day <- herbivore$metabolic_water_day +

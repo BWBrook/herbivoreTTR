@@ -79,8 +79,7 @@ init_project_options()
 
 See `docs/closure_tests.md` for structured unit + integration checks, determinism tests, and troubleshooting tips.
 
-## 8) Re-enabling CI later
+## 8) Continuous Integration
 
-- Workflows are temporarily disabled (moved to `.github/workflows-disabled/`).
-- When ready, move them back to `.github/workflows/` and ensure the renv lockfile is up-to-date.
-
+- GitHub Actions is enabled via `.github/workflows/R-CMD-check.yaml`.
+- Ensure `renv.lock` is current before pushing to keep CI reproducible.

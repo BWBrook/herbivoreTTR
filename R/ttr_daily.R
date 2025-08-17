@@ -46,18 +46,31 @@ transport_resistance <- function(plants, conditions, day_index) {
     # Resistances (defence terms optional; keep zero unless present)
     plants$rsC[i] <- calc_RsC(CONSTANTS$TR_C, pr$ms, CONSTANTS$Q_SCP)
     plants$rrC[i] <- calc_RrC(CONSTANTS$TR_C, pr$mr, CONSTANTS$Q_SCP)
-    # plants$rdC[i] <- calc_RdC(CONSTANTS$TR_C, pr$md, CONSTANTS$Q_SCP)
     plants$rsN[i] <- calc_RsN(CONSTANTS$TR_N, pr$ms, CONSTANTS$Q_SCP)
     plants$rrN[i] <- calc_RrN(CONSTANTS$TR_N, pr$mr, CONSTANTS$Q_SCP)
-    # plants$rdN[i] <- calc_RdN(CONSTANTS$TR_N, pr$md, CONSTANTS$Q_SCP)
+    if (isTRUE(CONSTANTS$DEFENCE_ENABLED)) {
+      md_val <- if (is.null(pr$md)) 0 else pr$md
+      plants$rdC[i] <- calc_RdC(CONSTANTS$TR_C, md_val, CONSTANTS$Q_SCP)
+      plants$rdN[i] <- calc_RdN(CONSTANTS$TR_N, md_val, CONSTANTS$Q_SCP)
+    } else {
+      plants$rdC[i] <- 0
+      plants$rdN[i] <- 0
+    }
 
     # Transport (defence disabled to mirror C++)
     pr$rsC <- plants$rsC[i]; pr$rrC <- plants$rrC[i]
     pr$rsN <- plants$rsN[i]; pr$rrN <- plants$rrN[i]
     plants$tauC[i] <- calc_tauC(pr)
     plants$tauN[i] <- calc_tauN(pr)
-    plants$tauCd[i] <- 0
-    plants$tauNd[i] <- 0
+    if (isTRUE(CONSTANTS$DEFENCE_ENABLED)) {
+      pr$rdC <- plants$rdC[i]
+      pr$rdN <- plants$rdN[i]
+      plants$tauCd[i] <- calc_tauCd(pr)
+      plants$tauNd[i] <- calc_tauNd(pr)
+    } else {
+      plants$tauCd[i] <- 0
+      plants$tauNd[i] <- 0
+    }
 
     # Uptake
     denom <- pr$bstem + pr$bleaf
@@ -69,7 +82,7 @@ transport_resistance <- function(plants, conditions, day_index) {
     # Growth
     plants$gs[i] <- calc_Gs(pr, g_forced_shoot)
     plants$gr[i] <- calc_Gr(pr, g_forced_root)
-    plants$gd[i] <- 0 # defence growth disabled to mirror C++
+    plants$gd[i] <- if (isTRUE(CONSTANTS$DEFENCE_ENABLED)) calc_Gd(pr, g_forced_def) else 0
 
     # Litter losses
     loss_root <- CONSTANTS$K_LITTER

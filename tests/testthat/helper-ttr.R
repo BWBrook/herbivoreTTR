@@ -7,8 +7,29 @@ source_all_R <- function() {
   for (f in files) {
     sys.source(f, envir = topenv())
   }
+  # Ensure the magrittr pipe is available for any sourced code using %>%.
+  if (!exists("%>%", inherits = TRUE)) {
+    if (requireNamespace("magrittr", quietly = TRUE)) {
+      `%>%` <<- magrittr::`%>%`
+    }
+  }
   invisible(TRUE)
 }
 
 # Automatically source all R files when tests start.
-source_all_R()
+load_pkg_or_source <- function() {
+  if (requireNamespace("pkgload", quietly = TRUE)) {
+    # Try to load the package in dev mode; fall back to sourcing on error
+    ok <- TRUE
+    tryCatch({
+      pkgload::load_all(".", quiet = TRUE, helpers = FALSE)
+    }, error = function(e) {
+      ok <<- FALSE
+    })
+    if (ok) return(invisible(TRUE))
+  }
+  source_all_R()
+}
+
+# Prefer dev-mode load; otherwise source R/ directly
+load_pkg_or_source()

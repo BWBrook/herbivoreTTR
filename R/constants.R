@@ -88,6 +88,7 @@ CONSTANTS <- list(
   INIT_SW         = 500,    # L: initial standing water (for scenarios)
   INIT_N          = 3.75,   # kg N: initial soil N availability (for scenarios)
   HERBIVORY       = 1,      # 0/1 switch: enable herbivory in daily loop
+  DEFENCE_ENABLED = 0,      # 0/1 switch: enable defence transport/growth wiring
 
     # Time settings
   SPIN_UP_LENGTH = 5, # number of years to run vegetation model before herbivory switches on

@@ -251,4 +251,5 @@ Vignettes
 
 - Getting Started: [vignettes/herbivoreTTR-intro.Rmd](vignettes/herbivoreTTR-intro.Rmd)
   (basic setup and one-day run).
-  [TODO: Add rendered HTML or expand with a multi-day walkthrough.]
+- Multi-day Simulation: [vignettes/herbivoreTTR-multiday.Rmd](vignettes/herbivoreTTR-multiday.Rmd)
+  (7-day run with simple plots).
