@@ -87,4 +87,4 @@ outputs/
 *.toc
 *.pdf
 *.zip
-a*.md
+AGENTS.md
