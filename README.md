@@ -41,17 +41,15 @@ Minimum suggested environment: R >= 4.5.
 Basic quick start (initialise a small simulation and run one day):
 
 ```r
-library(herbivoreTTR)
-
 # Set up default conditions, plants, and a herbivore
-sim <- init_simulation(
+sim <- herbivoreTTR::init_simulation(
   temp_mode = "flat",
   veg_types = c(0, 1, 2),
   herbivore_mass = 5e5
 )
 
 # Run one day (2 hours shown here to keep output short)
-res <- run_daily_herbivore_simulation(
+res <- herbivoreTTR::run_daily_herbivore_simulation(
   sim$herbivore,
   sim$plants,
   sim$conditions,
@@ -67,8 +65,8 @@ res$daily_summary
 Derive herbivore traits from mass (allometric relations):
 
 ```r
-h <- init_herbivore(mass = 5e5)
-h <- calc_foraging_traits(h)
+h <- herbivoreTTR::init_herbivore(mass = 5e5)
+h <- herbivoreTTR::calc_foraging_traits(h)
 list(
   bite_size = h$bite_size,
   gut_capacity = h$gut_capacity,
@@ -80,8 +78,8 @@ list(
 Find nearby plants and compute tastiness:
 
 ```r
-near <- get_plants_within_range(h, sim$plants)
-scores <- calc_plant_tastiness(near, h, desired_dp_dc_ratio = 0.2)
+near <- herbivoreTTR::get_plants_within_range(h, sim$plants)
+scores <- herbivoreTTR::calc_plant_tastiness(near, h, desired_dp_dc_ratio = 0.2)
 head(data.frame(
   plant_id = near$plant_id,
   distance = near$distance,

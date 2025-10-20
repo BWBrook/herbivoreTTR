@@ -38,12 +38,12 @@ write_plants_daily <- function(plants, day, year, path) {
 
   # Validation: finite numerics, no NA/Inf/NaN
   # Year/Day/Plant/VegType can be integer; coerce to numeric for finiteness check
-  is_bad <- function(v) {
-    if (is.numeric(v)) return(!is.finite(v))
-    FALSE
-  }
-  bad <- vapply(out, is_bad, logical(1L))
-  if (anyNA(out) || any(unlist(lapply(out[bad], function(x) any(!is.finite(x)))))) {
+  any_bad_numeric <- vapply(
+    out,
+    function(v) is.numeric(v) && any(!is.finite(v)),
+    logical(1L)
+  )
+  if (anyNA(out) || any(any_bad_numeric)) {
     stop("Non-finite or NA values present in plant output; refusing to write")
   }
 

@@ -1,20 +1,18 @@
 ## Minimal {targets} pipeline to run a short simulation and emit parity CSVs
 
-if (!requireNamespace("targets", quietly = TRUE)) stop("Install the 'targets' package to run the pipeline.")
-
-source("R/packages.R")
-source("R/options.R")
-
-# Source project R files (constants first)
-source("R/constants.R")
-for (f in setdiff(list.files("R", full.names = TRUE), file.path("R", "constants.R"))) source(f)
+if (!requireNamespace("targets", quietly = TRUE)) {
+  stop("Install the 'targets' package to run the pipeline.")
+}
 
 targets::tar_option_set(
-  packages = character(), # functions sourced above; avoid auto-attaching packages
+  packages = character(), # functions defined under R/; avoid auto-attaching packages
   format = "rds",
   memory = "transient",
-  garbage_collection = TRUE
+  garbage_collection = TRUE,
+  seed = 1L
 )
+
+targets::tar_source("R")
 
 list(
   targets::tar_target(conditions, init_conditions(mode = "flat")),

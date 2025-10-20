@@ -16,6 +16,5 @@ files under `data/processed/`.
 ```{r}
 #| label: load-packages
 #| message: false
-library(dplyr)
-# Add code here to summarise your results
+# Use explicit namespace calls, e.g. dplyr::summarise()
 ```

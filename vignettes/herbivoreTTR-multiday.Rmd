@@ -24,13 +24,17 @@ Setup
 -----
 
 ```r
-library(herbivoreTTR)
-
 # Initialise a default scenario
-sim <- init_simulation(temp_mode = "flat", veg_types = c(0, 1, 2), herbivore_mass = 5e5)
+sim <- herbivoreTTR::init_simulation(
+  temp_mode = "flat",
+  veg_types = c(0, 1, 2),
+  herbivore_mass = 5e5
+)
+
+constants <- get("CONSTANTS", envir = asNamespace("herbivoreTTR"))
 
 # Choose a start day immediately after spin-up so herbivory is active
-spinup_days <- CONSTANTS$SPIN_UP_LENGTH * nrow(sim$conditions)
+spinup_days <- constants$SPIN_UP_LENGTH * nrow(sim$conditions)
 day0 <- spinup_days + 1L
 
 # Run a short 7-day sequence at 60-minute resolution for speed
@@ -53,7 +57,7 @@ daily <- data.frame(
 )
 
 for (k in seq_len(n_days)) {
-  res <- run_daily_herbivore_simulation(
+  res <- herbivoreTTR::run_daily_herbivore_simulation(
     herbivore = herb,
     plants = plants,
     conditions = cond,
@@ -131,4 +135,3 @@ Notes
   re-run the simulation.
 - Increase `minute_limit` (up to 1440) for more detailed intra-day dynamics.
 - Results will vary with different `veg_types`, herbivore mass, and environmental settings.
-

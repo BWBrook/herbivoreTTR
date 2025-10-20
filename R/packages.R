@@ -16,28 +16,30 @@ ensure_packages_installed <- function(pkgs = NULL) {
   invisible(TRUE)
 }
 
-#' Attach common analysis packages (interactive use)
-#' @return Invisibly TRUE.
-lib <- function() {
-  op <- options(stringsAsFactors = FALSE)
-  on.exit(options(op), add = TRUE)
-  suppressPackageStartupMessages({
-    if (requireNamespace("targets", quietly = TRUE)) library(targets)
-    if (requireNamespace("tarchetypes", quietly = TRUE)) library(tarchetypes)
-    if (requireNamespace("dplyr", quietly = TRUE)) library(dplyr)
-    if (requireNamespace("readr", quietly = TRUE)) library(readr)
-    if (requireNamespace("purrr", quietly = TRUE)) library(purrr)
-    if (requireNamespace("tidyr", quietly = TRUE)) library(tidyr)
-    if (requireNamespace("sf", quietly = TRUE)) library(sf)
-    if (requireNamespace("terra", quietly = TRUE)) library(terra)
-    if (requireNamespace("arrow", quietly = TRUE)) library(arrow)
-    if (requireNamespace("duckdb", quietly = TRUE)) library(duckdb)
-    if (requireNamespace("config", quietly = TRUE)) library(config)
-    if (requireNamespace("qs", quietly = TRUE)) library(qs)
-    if (requireNamespace("lgr", quietly = TRUE)) library(lgr)
-    if (requireNamespace("progressr", quietly = TRUE)) library(progressr)
-  })
-  invisible(TRUE)
+#' Ensure common analysis packages are available (interactive use)
+#'
+#' This helper silently checks that packages are installed and loads their
+#' namespaces (without attaching them to the search path). Users should access
+#' functions via `pkg::fun()` or `import::from()`.
+#'
+#' @param pkgs Character vector of package names. Defaults to a curated set used
+#'   during development.
+#' @return Invisibly returns the vector of packages whose namespaces were loaded.
+lib <- function(pkgs = c(
+                      "targets", "tarchetypes", "dplyr", "readr", "purrr", "tidyr",
+                      "sf", "terra", "arrow", "duckdb", "config", "qs", "lgr", "progressr"
+                    )) {
+  if (is.null(pkgs) || length(pkgs) == 0) return(invisible(character()))
+  ensure_packages_installed(pkgs)
+  loaded <- vapply(
+    pkgs,
+    function(pkg) {
+      requireNamespace(pkg, quietly = TRUE)
+      pkg
+    },
+    character(1)
+  )
+  invisible(loaded)
 }
 
 #' Bootstrap renv for this project (interactive use)

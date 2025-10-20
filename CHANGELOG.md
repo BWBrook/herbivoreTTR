@@ -161,6 +161,9 @@ Rationale: Help collaborators get productive quickly with consistent, reproducib
 - Herbivore intake partitions across `bleaf/bstem/bdef`; `ms` recalculated post-intake.
 - Digestion scheduling now populates `dc_*` and `dp_*` at intake.
 - Tests updated to avoid legacy `sys.source()` paths; rely on helper loader.
+- `_targets.R` sources package code via `targets::tar_source("R")` and sets a deterministic seed.
+- `R/packages.R::lib()` now loads namespaces without attaching; docs/scripts use explicit
+  package-qualified calls.
 
 ### Optional wiring
 - Added `CONSTANTS$DEFENCE_ENABLED` (default 0) to enable `rdC/rdN`, `tauCd/tauNd`, and `gd`

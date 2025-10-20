@@ -2,7 +2,7 @@
 
 ## Initialise the project: install packages via renv, set up pre-commit
 setup:
-	R -q -e "source('R/packages.R'); renv::init(bare = TRUE); renv::restore(prompt=FALSE)"
+	R -q -e "source('R/packages.R'); renv::init(bare = TRUE); renv::restore(prompt = FALSE)"
 	- pre-commit install || true
 
 ## Run the full pipeline
@@ -15,11 +15,11 @@ smoke:
 
 ## Run unit tests
 test:
-	R -q -e "testthat::test_dir('tests/testthat', reporter='summary')"
+	R -q -e "testthat::test_dir('tests/testthat', reporter = 'summary')"
 
 ## Run linters
 lint:
-	R -q -e "lintr::lint_package(error_on_lint = TRUE)"
+	R -q -e "res <- lintr::lint_package(); if (length(res)) { print(res); quit(status = 1, save = 'no') }"
 
 ## Render the Quarto report
 render:
@@ -27,4 +27,5 @@ render:
 
 ## Clean generated data and pipeline artifacts
 clean:
-	R -q -e "targets::tar_destroy(confirm = FALSE)"; rm -rf data/interim data/processed logs
+	R -q -e "targets::tar_destroy(confirm = FALSE)"
+	rm -rf data/interim data/processed logs

@@ -70,6 +70,7 @@ rsconnect/
 renv/library/
 renv/staging/
 renv/sandbox/
+.cache/
 
 # _targets
 /_targets/*
@@ -87,4 +88,4 @@ outputs/
 *.toc
 *.pdf
 *.zip
-AGENTS.md
+A*.md

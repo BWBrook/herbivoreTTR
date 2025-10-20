@@ -2,18 +2,21 @@
 # Example script for single-minute debugging (kept out of package load path).
 # Usage: Rscript inst/scripts/main.R
 
-suppressPackageStartupMessages({
-  if (requireNamespace("dplyr", quietly = TRUE)) library(dplyr)
-})
+if (!requireNamespace("herbivoreTTR", quietly = TRUE)) {
+  stop(
+    "Install herbivoreTTR or run this script after loading the package with ",
+    "devtools::load_all()."
+  )
+}
 
 # Initialize conditions, plants, and herbivore
-sim_init <- init_simulation(temp_mode = "stochastic")
+sim_init <- herbivoreTTR::init_simulation(temp_mode = "stochastic")
 conditions <- sim_init$conditions
 plants     <- sim_init$plants
 herbivore  <- sim_init$herbivore
 
 # Run the daily simulation for a single minute
-simulation_result <- run_daily_herbivore_simulation(
+simulation_result <- herbivoreTTR::run_daily_herbivore_simulation(
   herbivore = herbivore,
   plants = plants,
   conditions = conditions,

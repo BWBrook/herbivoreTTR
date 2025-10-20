@@ -29,16 +29,23 @@ Quick start
 -----------
 
 ```r
-library(herbivoreTTR)
-
 # Initialise conditions, plant grid, and herbivore
-sim <- init_simulation(temp_mode = "flat", veg_types = c(0, 1, 2), herbivore_mass = 5e5)
+sim <- herbivoreTTR::init_simulation(
+  temp_mode = "flat",
+  veg_types = c(0, 1, 2),
+  herbivore_mass = 5e5
+)
 
 str(sim, max.level = 1)
 
 # Run one day of simulation
-out <- run_daily_herbivore_simulation(sim$herbivore, sim$plants, sim$conditions,
-                                      day_of_simulation = 1, minute_limit = 120)
+out <- herbivoreTTR::run_daily_herbivore_simulation(
+  sim$herbivore,
+  sim$plants,
+  sim$conditions,
+  day_of_simulation = 1,
+  minute_limit = 120
+)
 
 names(out)
 out$daily_summary
@@ -61,4 +68,3 @@ Key functions
 ```r
 sessionInfo()
 ```
-
