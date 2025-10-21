@@ -10,19 +10,26 @@
 #' @param path file path for output CSV; overwritten if exists.
 #' @return Invisibly TRUE on success; errors on validation failure.
 write_plants_daily <- function(plants, day, year, path) {
+
   required <- c(
-    "plant_id","veg_type","height","bleaf","bstem","bdef",
-    "ms","ns","cs","mr","cr","nr"
+    "plant_id", "veg_type", "height", "bleaf", "bstem", "bdef",
+    "ms", "ns", "cs", "mr", "cr", "nr"
   )
   missing <- setdiff(required, names(plants))
-  if (length(missing)) stop(sprintf("Missing plant columns: %s", paste(missing, collapse = ", ")))
+  if (length(missing)) {
+    rlang::abort(
+      paste("Missing plant columns:", paste(missing, collapse = ", ")),
+      class = "herbivoreTTR_plants_missing_columns",
+      missing_columns = missing
+    )
+  }
 
   # Build ordered output frame
   out <- data.frame(
     Year   = as.integer(rep(year, nrow(plants))),
     Day    = as.integer(rep(day, nrow(plants))),
     Plant  = plants$plant_id,
-    VegType= plants$veg_type,
+    VegType = plants$veg_type,
     Height = plants$height,
     BLeaf  = plants$bleaf,
     BStem  = plants$bstem,
@@ -44,7 +51,10 @@ write_plants_daily <- function(plants, day, year, path) {
     logical(1L)
   )
   if (anyNA(out) || any(any_bad_numeric)) {
-    stop("Non-finite or NA values present in plant output; refusing to write")
+    rlang::abort(
+      "Non-finite or NA values present in plant output; refusing to write",
+      class = "herbivoreTTR_plants_non_finite"
+    )
   }
 
   # Overwrite file; write headers always; semicolon delimiter; UTF-8
@@ -54,7 +64,14 @@ write_plants_daily <- function(plants, day, year, path) {
   # Post-validate header and column order
   header_expected <- paste(colnames(out), collapse = ";")
   hdr <- readLines(path, n = 1L, warn = FALSE)
-  if (!identical(hdr, header_expected)) stop("Header mismatch after write")
+  if (!identical(hdr, header_expected)) {
+    rlang::abort(
+      "Header mismatch after write",
+      class = "herbivoreTTR_plants_header_mismatch",
+      expected_header = header_expected,
+      observed_header = hdr
+    )
+  }
 
   invisible(TRUE)
 }

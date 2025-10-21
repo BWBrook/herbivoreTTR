@@ -30,19 +30,23 @@ list(
   )),
 
   # Write CSVs for parity checks
-  targets::tar_target(plants_day1_csv, {
-    dir.create("data/outputs", recursive = TRUE, showWarnings = FALSE)
-    path <- file.path("data/outputs", sprintf("plants_day%03d.csv", day_after_spinup))
-    write_plants_daily(sim_day1$plants, day = day_after_spinup, year = 1, path = path)
-    path
-  }, format = "file"),
+  targets::tar_target(
+    plants_day1_csv,
+    write_plants_snapshot_target(
+      plants = sim_day1$plants,
+      day = day_after_spinup
+    ),
+    format = "file"
+  ),
 
-  targets::tar_target(herb_day1_csv, {
-    dir.create("data/outputs", recursive = TRUE, showWarnings = FALSE)
-    path <- file.path("data/outputs", sprintf("herb_day%03d.csv", day_after_spinup))
-    write_herbivores_daily(sim_day1$herbivore, day = day_after_spinup, year = 1, path = path)
-    path
-  }, format = "file"),
+  targets::tar_target(
+    herb_day1_csv,
+    write_herbivore_snapshot_target(
+      herbivore = sim_day1$herbivore,
+      day = day_after_spinup
+    ),
+    format = "file"
+  ),
 
   # 7-day continuation (optional aggregation)
   targets::tar_target(sim_day7, {
@@ -54,17 +58,21 @@ list(
     list(herbivore = h, plants = p)
   }),
 
-  targets::tar_target(plants_day7_csv, {
-    dir.create("data/outputs", recursive = TRUE, showWarnings = FALSE)
-    path <- file.path("data/outputs", sprintf("plants_day%03d.csv", day_after_spinup + 6L))
-    write_plants_daily(sim_day7$plants, day = day_after_spinup + 6L, year = 1, path = path)
-    path
-  }, format = "file"),
+  targets::tar_target(
+    plants_day7_csv,
+    write_plants_snapshot_target(
+      plants = sim_day7$plants,
+      day = day_after_spinup + 6L
+    ),
+    format = "file"
+  ),
 
-  targets::tar_target(herb_day7_csv, {
-    dir.create("data/outputs", recursive = TRUE, showWarnings = FALSE)
-    path <- file.path("data/outputs", sprintf("herb_day%03d.csv", day_after_spinup + 6L))
-    write_herbivores_daily(sim_day7$herbivore, day = day_after_spinup + 6L, year = 1, path = path)
-    path
-  }, format = "file")
+  targets::tar_target(
+    herb_day7_csv,
+    write_herbivore_snapshot_target(
+      herbivore = sim_day7$herbivore,
+      day = day_after_spinup + 6L
+    ),
+    format = "file"
+  )
 )

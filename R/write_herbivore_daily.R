@@ -10,13 +10,20 @@
 #' @param path file path for output CSV; overwritten if exists.
 #' @return Invisibly TRUE on success; errors on validation failure.
 write_herbivores_daily <- function(herbivore, day, year, path) {
+
   required <- c(
-    "herb_type","mass","xcor","ycor","distance_moved","intake_PE_day",
-    "intake_NPE_day","intake_total_day","intake_water_forage","intake_total",
-    "water_balance","energy_balance"
+    "herb_type", "mass", "xcor", "ycor", "distance_moved", "intake_PE_day",
+    "intake_NPE_day", "intake_total_day", "intake_water_forage", "intake_total",
+    "water_balance", "energy_balance"
   )
   missing <- setdiff(required, names(herbivore))
-  if (length(missing)) stop(sprintf("Missing herbivore fields: %s", paste(missing, collapse = ", ")))
+  if (length(missing)) {
+    rlang::abort(
+      paste("Missing herbivore fields:", paste(missing, collapse = ", ")),
+      class = "herbivoreTTR_herb_missing_fields",
+      missing_fields = missing
+    )
+  }
 
   out <- data.frame(
     Year            = as.integer(year),
@@ -29,7 +36,7 @@ write_herbivores_daily <- function(herbivore, day, year, path) {
     DailyPEI        = herbivore$intake_PE_day,
     DailyNPEI       = herbivore$intake_NPE_day,
     DailyDMI        = herbivore$intake_total_day,
-    DailyForageWater= herbivore$intake_water_forage,
+    DailyForageWater = herbivore$intake_water_forage,
     TotalDMI        = herbivore$intake_total,
     WaterBalance    = herbivore$water_balance,
     EnergyBalance   = herbivore$energy_balance,
@@ -37,14 +44,31 @@ write_herbivores_daily <- function(herbivore, day, year, path) {
   )
 
   # Validation: finite numerics, no NA/Inf/NaN
-  if (any(!vapply(out, is.numeric, logical(1L)))) stop("Non-numeric values in herbivore output")
-  if (any(!is.finite(as.numeric(as.matrix(out))))) stop("Non-finite values in herbivore output")
+  if (any(!vapply(out, is.numeric, logical(1L)))) {
+    rlang::abort(
+      "Non-numeric values in herbivore output",
+      class = "herbivoreTTR_herb_non_numeric"
+    )
+  }
+  if (any(!is.finite(as.numeric(as.matrix(out))))) {
+    rlang::abort(
+      "Non-finite values in herbivore output",
+      class = "herbivoreTTR_herb_non_finite"
+    )
+  }
 
   utils::write.table(out, file = path, sep = ";", row.names = FALSE, col.names = TRUE,
                      quote = FALSE, fileEncoding = "UTF-8", eol = "\n")
 
   header_expected <- paste(colnames(out), collapse = ";")
   hdr <- readLines(path, n = 1L, warn = FALSE)
-  if (!identical(hdr, header_expected)) stop("Header mismatch after write")
+  if (!identical(hdr, header_expected)) {
+    rlang::abort(
+      "Header mismatch after write",
+      class = "herbivoreTTR_herb_header_mismatch",
+      expected_header = header_expected,
+      observed_header = hdr
+    )
+  }
   invisible(TRUE)
 }

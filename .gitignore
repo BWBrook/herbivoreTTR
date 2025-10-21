@@ -8,6 +8,7 @@
 # Data caches and logs
 data/interim/
 data/processed/
+data/outputs/
 logs/
 
 # Binary columnar files
@@ -57,6 +58,10 @@ vignettes/*.pdf
 # pkgdown site
 #docs/
 
+# Quarto / pkgdown rendered site
+docs/_site/
+.quarto/
+
 # pkgdown site
 misc/
 
@@ -77,6 +82,7 @@ renv/sandbox/
 
 # output files
 outputs/
+reports/_cache/
 
 # Quarto / rmarkdown artefacts
 *.html
