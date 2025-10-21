@@ -1,4 +1,4 @@
-.PHONY: setup run smoke test lint render clean
+.PHONY: setup run smoke test lint render clean test-battery
 
 ## Initialise the project: install packages via renv, set up pre-commit
 setup:
@@ -15,7 +15,7 @@ smoke:
 
 ## Run unit tests
 test:
-	R -q -e "testthat::test_dir('tests/testthat', reporter = 'summary')"
+	R -q -e "testthat::test_dir('tests/testthat')"
 
 ## Run linters
 lint:
@@ -29,3 +29,7 @@ render:
 clean:
 	R -q -e "targets::tar_destroy(confirm = FALSE)"
 	rm -rf data/interim data/processed logs
+
+## Run full test battery (pipeline + tests + optional coverage)
+test-battery:
+	R -q -e "source('scripts/run_test_battery.R')"

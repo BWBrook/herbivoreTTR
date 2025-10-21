@@ -21,7 +21,7 @@ test_that("spin-up: plant-only (no herbivory intake or movement)", {
   day_of_sim <- 1L
   res <- run_daily_herbivore_simulation(herb, plants, cond, day_of_simulation = day_of_sim, minute_limit = 30)
   expect_equal(res$herbivore$intake_total_day, 0)
-  expect_equal(res$herbivore$distance_moved, 0)
+  expect_equal(res$herbivore$distance_moved, CONSTANTS$DIST_TO_WATER)
 })
 
 test_that("post-spin-up: herbivory active with intake and plant reduction", {

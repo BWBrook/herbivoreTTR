@@ -10,6 +10,9 @@ whenever release tags are published.
 ### Added
 - `docs/PIPELINE.md` describing the minimal {targets} DAG and execution profile.
 - Pipeline helper functions that write parity CSVs with directory management for targets.
+- `docs/test_battery.md` detailing the planned comprehensive test suite and logging spec.
+- Structured test logger (`tests/testthat/helper-test_log.R`) and full test battery harness (`scripts/run_test_battery.R`).
+- Extensive testthat coverage for initialisation, energy/water balance, behaviour, utilities, parity, and pipeline manifest checks.
 
 ### Changed
 - `init_conditions()` and the CSV writers now emit typed `rlang::abort()` errors and use clearer nitrogen naming.

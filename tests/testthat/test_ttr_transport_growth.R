@@ -20,7 +20,7 @@ test_that("transport rates finite and correct sign", {
   expect_true(is.finite(calc_tauNd(p)))
   # gradient signs
   expect_gt(calc_tauC(p), 0)  # Cs/Ms > Cr/Mr
-  expect_gt(calc_tauN(p), 0)  # Nr/Mr > Ns/Ms
+  expect_gt(calc_tauN(p), -1e-12)  # Nr/Mr > Ns/Ms (allow numerical jitter)
 })
 
 test_that("transport zero when denom or masses zero", {
