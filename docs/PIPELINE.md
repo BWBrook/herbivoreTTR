@@ -16,12 +16,12 @@ This document summarises the `_targets.R` pipeline and highlights key artefacts.
 5. `sim_day1` → runs `run_daily_herbivore_simulation()` for the first post-spinup day.
 6. `plants_day1_csv` → writes plant snapshot CSV to `data/outputs/`.
 7. `herb_day1_csv` → writes herbivore snapshot CSV to `data/outputs/`.
-8. `sim_day7` → continues the simulation for an additional six days, returning final states.
-9. `plants_day7_csv` → writes final plant snapshot CSV to `data/outputs/`.
-10. `herb_day7_csv` → writes final herbivore snapshot CSV to `data/outputs/`.
+8. `sim_day3_demo` → runs `run_herbivore_days()` for a three-day post-spin-up window (60-minute day length) returning summaries and final state.
+9. `sim_day7` → continues the simulation for an additional six days, returning final states.
+10. `plants_day7_csv` → writes final plant snapshot CSV to `data/outputs/`.
+11. `herb_day7_csv` → writes final herbivore snapshot CSV to `data/outputs/`.
 
 ## Notes
 - CSV outputs are marked as `"file"` targets so downstream analyses can depend on them explicitly.
 - The pipeline currently skips execution when artefacts exist; run `targets::tar_destroy()` or delete files in `_targets/` to force recomputation.
 - Future expansions should add new targets under the corresponding sections above and update this document accordingly.
-

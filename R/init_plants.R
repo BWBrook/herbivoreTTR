@@ -19,7 +19,7 @@ init_plants <- function(veg_types = c(0, 1, 2)) {
   x_coords <- (seq_len(CONSTANTS$PLANTS_IN_X) - 0.5) * inter_plant_distance_x
   y_coords <- (seq_len(CONSTANTS$PLANTS_IN_Y) - 0.5) * inter_plant_distance_y
   
-  plant_grid <- expand.grid(x = x_coords, y = y_coords)
+  plant_grid <- expand.grid(xcor = x_coords, ycor = y_coords)
   plant_grid$plant_id <- seq_len(nrow(plant_grid))
   n_plants <- nrow(plant_grid)
   

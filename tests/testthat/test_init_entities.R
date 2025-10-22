@@ -6,7 +6,7 @@ test_that("init_plants builds full grid with expected columns", {
   expect_setequal(
     names(plants),
     c(
-      "x", "y", "plant_id", "veg_type", "ms", "mr", "cs", "cr", "ns", "nr",
+      "xcor", "ycor", "plant_id", "veg_type", "ms", "mr", "cs", "cr", "ns", "nr",
       "cd", "nd", "bleaf", "bstem", "broot", "brepr", "bdef", "md", "height",
       "qroot", "qshoot", "gs", "gr", "gd", "uc", "un", "rsC", "rrC", "rdC",
       "rsN", "rrN", "rdN", "tauC", "tauN", "tauCd", "tauNd"

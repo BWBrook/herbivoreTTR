@@ -32,3 +32,9 @@
 - Implemented test logging reporter and extended testthat suite across initialisation, behaviour, energy/water balance, utilities, parity, and pipeline manifest coverage.
 - Added `inst/extdata/parity/` snapshots, full test battery script, and Makefile target; configured optional performance (`RUN_PERF_TESTS`) and coverage (`RUN_COVERAGE`) switches.
 - Installed `covr`/`pryr` via renv for coverage and memory profiling tests; snapshot updated lockfile.
+
+## 2025-10-21 – Codex multi-day demo
+- Updated `init_plants()` to publish `xcor` / `ycor` columns so grazing logic can detect candidates post spin-up.
+- Added `run_herbivore_days()` helper plus `tests/testthat/test_run_herbivore_days.R` to exercise a three-day window and assert biomass intake.
+- Created `scripts/run_single_herbivore_demo.R` to run the wrapper, emit timestamped daily/endpoint CSVs, and append a structured log entry.
+- Extended `_targets.R` with `sim_day3_demo` and refreshed `docs/PIPELINE.md` / `docs/CHANGELOG.md` to document the workflow.

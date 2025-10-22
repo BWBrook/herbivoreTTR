@@ -1,0 +1,21 @@
+---
+title: "Development Notes"
+---
+
+## Single-Herbivore Demo
+- Run `scripts/run_single_herbivore_demo.R` (via `Rscript`) to execute a three-day grazing window after vegetation spin-up.
+- The script writes timestamped CSVs into `data/outputs/`:
+  - `herbivore_demo_daily_<timestamp>.csv` — daily summary table for the run.
+  - `herbivore_demo_plants_day<day>_<timestamp>.csv` — final plant snapshot (semicolon-delimited via `write_plants_daily()`).
+  - `herbivore_demo_herbivore_day<day>_<timestamp>.csv` — final herbivore snapshot (semicolon-delimited via `write_herbivores_daily()`).
+- A structured log row is appended to the latest `test_log_*.csv`, marking status `"pass"` when total biomass eaten exceeds zero; otherwise `"warn"`.
+
+## Wrapper Helper
+- `run_herbivore_days()` initialises default conditions, then advances the herbivore/plant state for the requested number of post spin-up days (default `days = 3`, `minute_limit = 1440`).
+- Returns a list with:
+  - `daily_summary` — data frame of per-day metrics (distance moved, biomass eaten, balances).
+  - `herbivore` / `plants` — final states for further analysis.
+  - `start_day` — first post spin-up day index used internally.
+
+## Pipeline Hooks
+- `_targets.R` exposes `sim_day3_demo` which reuses the helper at a 60-minute resolution for fast smoke tests; see `docs/PIPELINE.md` for full DAG context.

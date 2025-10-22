@@ -48,6 +48,12 @@ list(
     format = "file"
   ),
 
+  # Three-day demo run after spin-up
+  targets::tar_target(
+    sim_day3_demo,
+    run_herbivore_days(days = 3L, minute_limit = 60)
+  ),
+
   # 7-day continuation (optional aggregation)
   targets::tar_target(sim_day7, {
     h <- sim_day1$herbivore; p <- sim_day1$plants
