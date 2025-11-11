@@ -64,14 +64,20 @@ run_daily_herbivore_simulation <- function(herbivore, plants, conditions,
 
     # (d) Optionally record data for debugging
     daily_record[[minute]] <- list(
-      minute            = minute,
-      xcor              = herbivore$xcor,
-      ycor              = herbivore$ycor,
-      gut_content       = herbivore$gut_content,
-      selected_plant_id = herbivore$selected_plant_id,
-      behaviour         = herbivore$behaviour,
-      energy_balance    = herbivore$energy_balance,
-      water_balance     = herbivore$water_balance
+      minute              = minute,
+      xcor                = herbivore$xcor,
+      ycor                = herbivore$ycor,
+      gut_content         = herbivore$gut_content,
+      selected_plant_id   = herbivore$selected_plant_id,
+      behaviour           = herbivore$behaviour,
+      energy_balance      = herbivore$energy_balance,
+      water_balance       = herbivore$water_balance,
+      distance_moved      = herbivore$distance_moved,
+      intake_total_day    = herbivore$intake_total_day,
+      intake_pe_day       = herbivore$intake_PE_day,
+      intake_npe_day      = herbivore$intake_NPE_day,
+      intake_water_forage = herbivore$intake_water_forage,
+      intake_water_drink  = herbivore$intake_water_drinking
     )
   } # end herbivory loop
 

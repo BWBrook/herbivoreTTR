@@ -38,3 +38,8 @@
 - Added `run_herbivore_days()` helper plus `tests/testthat/test_run_herbivore_days.R` to exercise a three-day window and assert biomass intake.
 - Created `scripts/run_single_herbivore_demo.R` to run the wrapper, emit timestamped daily/endpoint CSVs, and append a structured log entry.
 - Extended `_targets.R` with `sim_day3_demo` and refreshed `docs/PIPELINE.md` / `docs/CHANGELOG.md` to document the workflow.
+
+## 2025-10-22 – Codex hourly logging
+- Captured additional per-minute herbivore state (distance moved, intake, water fluxes) to allow hourly aggregation.
+- Implemented `summarise_hourly_herbivore_record()` / `write_hourly_herbivore_log()` utilities with regression coverage in `tests/testthat/test_hourly_summary.R`.
+- Added `scripts/run_single_day_hourly_log.R` and generated a sample log at `data/outputs/herbivore_hourly_day1826_<timestamp>.csv`.
