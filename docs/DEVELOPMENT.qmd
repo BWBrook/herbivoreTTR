@@ -23,3 +23,11 @@ title: "Development Notes"
 ## Hourly Logs
 - Use `scripts/run_single_day_hourly_log.R` to run a single post spin-up day (1440 minutes) and emit an hourly herbivore log via `write_hourly_herbivore_log()`.
 - Output columns blend hourly means (e.g., `xcor_mean`, `gut_content_mean`) with hourly totals and cumulative sums for intake, distance, and water fluxes.
+
+## Forensic Day Logger
+- `scripts/run_single_day_forensics.R` runs one post spin-up day at full resolution and captures:
+  - Per-minute herbivore activity (`herbivore_minute_log.csv`).
+  - Plant start/end tables for eaten vs unaffected individuals, plus deltas.
+  - Herbivore state snapshots (CSV + RDS) and aggregated summary metrics.
+  - A diagnostic PNG plotting plant positions (eaten vs uneaten) with the hourly herbivore trajectory.
+- All artefacts are written to `data/outputs/day/forensic_day_<timestamp>/` for easy sharing when debugging or tuning parameters.

@@ -10,6 +10,8 @@
 #'   `temp_mean`, `sw`, `N`.
 #' @param day_of_simulation Positive integer day index.
 #' @param minute_limit Number of minutes to simulate (default 1440).
+#' @param capture_diagnostics Logical; when `TRUE`, the function captures
+#'   start/end plant and herbivore states for downstream logging.
 #' @return List with updated `herbivore`, `plants`, `daily_record` (optional
 #'   minute-by-minute snapshots), and `daily_summary`.
 #' @examples
@@ -17,21 +19,36 @@
 #' res <- run_daily_herbivore_simulation(sim$herbivore, sim$plants, sim$conditions)
 #' names(res)
 #' @export
-run_daily_herbivore_simulation <- function(herbivore, plants, conditions, 
-                                           day_of_simulation = 1, 
-                                           minute_limit = 1440) {
-                                            
+run_daily_herbivore_simulation <- function(herbivore, plants, conditions,
+                                           day_of_simulation = 1,
+                                           minute_limit = 1440,
+                                           capture_diagnostics = FALSE) {
+
   day_index <- ((day_of_simulation - 1) %% nrow(conditions)) + 1
   today_temp <- conditions$temp_mean[day_index]
 
   # Update plants via TTR orchestrator for this day before herbivory
+  diagnostics <- NULL
+  if (capture_diagnostics) {
+    diagnostics <- list(
+      plants_start = plants,
+      day_of_simulation = day_of_simulation
+    )
+  }
+
   plants <- transport_resistance(plants, conditions, day_index)
+  if (capture_diagnostics) {
+    diagnostics$plants_after_growth <- plants
+  }
   
   # 1) Reset daily variables for herbivore
   herbivore <- reset_daily_variables(herbivore)
 
   # 2) Pre-compute foraging traits (bite size, gut capacity, etc.)
   herbivore <- calc_foraging_traits(herbivore)
+  if (capture_diagnostics) {
+    diagnostics$herbivore_start <- herbivore
+  }
 
   # 3) Optionally store daily water requirement if you want
   herbivore$daily_water_requirement <- calc_water_requirement(herbivore$mass)
@@ -99,10 +116,16 @@ run_daily_herbivore_simulation <- function(herbivore, plants, conditions,
     water_balance         = herbivore$water_balance
   )
 
+  if (capture_diagnostics) {
+    diagnostics$herbivore_end <- herbivore
+    diagnostics$plants_end <- plants
+  }
+
   return(list(
     herbivore     = herbivore,
     plants        = plants,
     daily_record  = daily_record,
-    daily_summary = daily_summary
+    daily_summary = daily_summary,
+    diagnostics   = diagnostics
   ))
 }

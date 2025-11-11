@@ -16,6 +16,8 @@ whenever release tags are published.
 - `run_herbivore_days()` helper, automated CLI demo (`scripts/run_single_herbivore_demo.R`), and `_targets.R::sim_day3_demo` for multi-day smoke tests.
 - Integration test `tests/testthat/test_run_herbivore_days.R` validating the three-day demo summary output.
 - Hourly summarisation utilities (`summarise_hourly_herbivore_record()`, `write_hourly_herbivore_log()`) plus CLI entry point `scripts/run_single_day_hourly_log.R` and regression coverage via `tests/testthat/test_hourly_summary.R`.
+- Single-day forensic logger (`scripts/run_single_day_forensics.R`) capturing per-minute herbivore activity, plant start/end snapshots, summary stats, and a diagnostic map.
+- Optional diagnostics capture in `run_daily_herbivore_simulation()` and supporting helpers (`summarise_plant_day_states()`, `build_daily_record_table()`) for detailed auditing workflows.
 
 ### Changed
 - `init_conditions()` and the CSV writers now emit typed `rlang::abort()` errors and use clearer nitrogen naming.

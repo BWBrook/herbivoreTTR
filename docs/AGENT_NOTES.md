@@ -43,3 +43,8 @@
 - Captured additional per-minute herbivore state (distance moved, intake, water fluxes) to allow hourly aggregation.
 - Implemented `summarise_hourly_herbivore_record()` / `write_hourly_herbivore_log()` utilities with regression coverage in `tests/testthat/test_hourly_summary.R`.
 - Added `scripts/run_single_day_hourly_log.R` and generated a sample log at `data/outputs/herbivore_hourly_day1826_<timestamp>.csv`.
+
+## 2025-11-11 – Codex forensic logging
+- Added diagnostics capture to `run_daily_herbivore_simulation()` so start/end plant and herbivore states are available for auditing workflows.
+- Introduced `summarise_plant_day_states()` and `build_daily_record_table()` helpers for plant delta summaries and tidy minute-level logs.
+- Created `scripts/run_single_day_forensics.R`, which writes per-minute herbivore traces, eaten vs. uneaten plant snapshots, herbivore start/end states, summary metrics, and a diagnostic PNG plot to `data/outputs/day/<timestamp>/`.
