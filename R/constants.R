@@ -19,16 +19,19 @@ CONSTANTS <- list(
   GUT_CAPACITY_B = 0.924,      # Muller et al. (2013) - all herbivores >10kg, see Table 6
   BITE_SIZE_A = 0.096,         # g : Shipley et al. (1994)
   BITE_SIZE_B = 0.72,          # Shipley et al. (1994)
+  MAX_BITE_FRACTION = 0.05,    # e.g., 5% of gut capacity per minute
   HANDLING_TIME_A = 1.65,      # Jeschke & Tollrian (2005)
   HANDLING_TIME_B = -0.766,    # Jeschke & Tollrian (2005)
+  CONTINUE_K = 8,              # controls sensitivity to dp:dc mismatch
+  M_REF = 10,                  # sets the mass (kg) consumed on given   plant where size benefits saturate      
   FORAGE_VEL_A = 0.73,         # Shipley et al. (1996)
   FORAGE_VEL_B = 0.04,         # Shipley et al. (1996)
   ENERGY_MAINTENANCE_A = 293,  # Kleiber (1961)
   ENERGY_MAINTENANCE_B = 0.75, # Kleiber (1961)
   ICL_A = 10678,               # Taylor (1980)
   ICL_B = 0.7,                 # Taylor (1980)
-  WATER_TURNOVER = 0.061,      # water turnover [L/kg body mass/24 hrs] for camels, taken from McFarlane (1965). (cattle = 0.148, sheep = 0.110, camels = 0.061, red kangaroo = 0.088)
-  DIST_TO_WATER = 5e4,         # average distance to a water point: very likely meant 50000 mm = 50 m
+  WATER_TURNOVER = 0.088,      # water turnover [L/kg body mass/24 hrs] for camels, taken from McFarlane (1965). (cattle = 0.148, sheep = 0.110, camels = 0.061, red kangaroo = 0.088)
+  DIST_TO_WATER = 1e2,         # average distance to a water point in m (assume 50m each way, so 100m total)
 
   # Conversion constants
   CARB_TO_ENERGY = 16.7,    # kJ/g :  Felton et al. (2017)
@@ -51,8 +54,8 @@ CONSTANTS <- list(
   TEMP_WATER_SCALING = 0.1, # scaling water requirements based on temperature
   
   # Plot settings
-  PLANTS_IN_X = 60,
-  PLANTS_IN_Y = 60,
+  PLANTS_IN_X = 20,
+  PLANTS_IN_Y = 20,
   PLANTS_PER_PLOT = NA_integer_,               # set after list construction to avoid self-reference
   PLOT_SIZE = 10000,                           # m^2 = 1 ha
   PLANT_INITIAL_MASS_MIN = 1,                  # kg DM
@@ -60,11 +63,11 @@ CONSTANTS <- list(
   HERBIVORES_PER_PLOT = 1,                     # number of herbivores in a plot
   
   # Thornley Transport Resistance (TTR) constants (mirroring C++ reference)
-  K_LITTER        = 0.05,   # per day: litter production rate (proportion/day)
-  K_M_LITTER      = 2.5,    # kg XDM: litter mass scale parameter
-  G_SHOOT         = 200,    # per day scaling: shoot growth [kg C/kg N/kg XDM^2]/day
-  G_ROOT          = 200,    # per day scaling: root growth [kg C/kg N/kg XDM^2]/day
-  G_DEFENCE       = 10,     # per day scaling: defence growth [kg C/kg N/kg XDM^2]/day
+  K_LITTER        = 0.01,   # per day: litter production rate (proportion/day)
+  K_M_LITTER      = 5,      # kg XDM: litter mass scale parameter
+  G_SHOOT         = 25,     # per day scaling: shoot growth [kg C/kg N/kg XDM^2]/day
+  G_ROOT          = 25,     # per day scaling: root growth [kg C/kg N/kg XDM^2]/day
+  G_DEFENCE       = 1,      # per day scaling: defence growth [kg C/kg N/kg XDM^2]/day
   K_C             = 0.1,    # per day: C input rate [kg C/kg shoot XDM/day]
   K_N             = 0.01,   # per day: N input rate [kg N/kg shoot XDM/day]
   K_M             = 10,     # kg XDM: mass scale for uptake saturation
@@ -73,10 +76,10 @@ CONSTANTS <- list(
   Q_SCP           = 2/3,    # unitless: transport resistance exponent
   TR_C            = 1.0,    # XDM^(Q_SCP-1)/day: C transport resistance scale
   TR_N            = 1.0,    # XDM^(Q_SCP-1)/day: N transport resistance scale
-  FRACTION_C      = 0.5,    # kg C/kg XDM: carbon fraction of dry matter
-  FRACTION_N      = 0.025,  # kg N/kg XDM: nitrogen fraction of dry matter
+  FRACTION_C      = 0.45,   # kg C/kg XDM: carbon fraction of dry matter
+  FRACTION_N      = 0.02,   # kg N/kg XDM: nitrogen fraction of dry matter
   PHENO_SWITCH    = 10,     # deg C: phenology temperature threshold
-  ACCEL_LEAF_LOSS = 10,     # unitless multiplier: accelerated leaf loss factor
+  ACCEL_LEAF_LOSS = 3 ,     # unitless multiplier: accelerated leaf loss factor
   TEMP_GROWTH_1   = 1,      # deg C: growth envelope parameter
   TEMP_GROWTH_2   = 24,     # deg C: growth envelope parameter
   TEMP_GROWTH_3   = 26,     # deg C: growth envelope parameter
@@ -85,14 +88,14 @@ CONSTANTS <- list(
   TEMP_PHOTO_2    = 15,     # deg C: photosynthesis envelope parameter
   TEMP_PHOTO_3    = 25,     # deg C: photosynthesis envelope parameter
   TEMP_PHOTO_4    = 35,     # deg C: photosynthesis envelope parameter
-  INIT_SW         = 500,    # L: initial standing water (for scenarios)
-  INIT_N          = 3.75,   # kg N: initial soil N availability (for scenarios)
+  INIT_SW         = 0.5,    # relative soil water (0–1)
+  INIT_N          = 0.5,    # relative soil N (0–1)
   HERBIVORY       = 1,      # 0/1 switch: enable herbivory in daily loop
   DEFENCE_ENABLED = 0,      # 0/1 switch: enable defence transport/growth wiring
 
     # Time settings
   SPIN_UP_LENGTH = 5, # number of years to run vegetation model before herbivory switches on
-  HERBIVORE_MRT = 28, # mean gut retention time in hours
+  HERBIVORE_MRT = 24, # mean gut retention time in hours (16 to 48 hours, default to 28)
 
   # OTHER SETTINGS
   TOLERANCE = 0.0001 # calculation buffer

@@ -11,7 +11,7 @@
 #' h <- calc_foraging_traits(h)
 #' @export
 calc_foraging_traits <- function(herbivore) {
-  herbivore$gut_capacity   <- calc_gut_capacity(herbivore$mass) # maximum gut capacity [kg DM]
+  herbivore$gut_capacity   <- calc_gut_capacity(herbivore$mass) # maximum gut_capacity (g DM)
   herbivore$bite_size      <- calc_bite_size(herbivore$mass) # bite size [g DM/bite]
   herbivore$handling_time  <- calc_handling_time(herbivore$mass) # time to handle (crop and chew) a unit of food [min/g DM]
   herbivore$fv_max <- calc_foraging_velocity(herbivore$mass) # maximum foraging velocity [m/s]

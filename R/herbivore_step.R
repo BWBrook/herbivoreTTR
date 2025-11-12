@@ -1,68 +1,66 @@
-#' One behavioural step (move/eat)
+#' One behavioural step (move/eat) — robust & NA-safe
 #'
-#' Performs one minute of behaviour: selects target, moves toward it, and
-#' eats when within `CONSTANTS$EAT_RADIUS`, updating both herbivore and plant
-#' state. Scalar parameters are read from the `herbivore` object and
-#' `CONSTANTS`.
+#' Re-evaluates target selection while eating, accrues distance on moves,
+#' and guards all TRUE/FALSE checks against NA.
 #'
-#' @param herbivore List of herbivore state.
-#' @param plants data.frame of plant state.
-#' @return List with `herbivore` and `plants` entries (both updated).
-#' @examples
-#' # res <- herbivore_step(herbivore, plants)
-#' # str(res)
-#' @export
+#' @param herbivore list
+#' @param plants    data.frame
+#' @return list(herbivore=..., plants=...)
 herbivore_step <- function(herbivore, plants) {
-  
-  plot_width <- sqrt(CONSTANTS$PLOT_SIZE)
+
+  plot_width  <- sqrt(CONSTANTS$PLOT_SIZE)
   plot_height <- sqrt(CONSTANTS$PLOT_SIZE)
   desired_dp_dc_ratio <- CONSTANTS$DP_TO_DC_TARGET
-  bite_size <- herbivore$bite_size
-  gut_capacity <- herbivore$gut_capacity
-  handling_time <- herbivore$handling_time
-  
-  # State: MOVING
-  if (is.na(herbivore$selected_plant_id) || herbivore$behaviour == "MOVING") {
-    # ~10% chance to discard current target while moving
-    if (herbivore$behaviour == "MOVING" && !is.na(herbivore$selected_plant_id) && runif(1) < 0.1) {
+
+  # ---------- MOVING state or no target ----------
+  if (is.na(herbivore$selected_plant_id) || identical(herbivore$behaviour, "MOVING")) {
+
+    # ~10% chance to drop target while moving
+    if (identical(herbivore$behaviour, "MOVING") &&
+        !is.na(herbivore$selected_plant_id) && runif(1) < 0.1) {
       herbivore$selected_plant_id <- NA_integer_
     }
+
     plants_in_range <- get_plants_within_range(herbivore, plants)
-    
+
     if (nrow(plants_in_range) == 0) {
-      # No plants nearby, move randomly
-      herbivore$xcor <- runif(1, 0, plot_width)
-      herbivore$ycor <- runif(1, 0, plot_height)
+      # Random step (not teleport) + accrue distance
+      max_distance <- herbivore$fv_max * 60  # m per minute
+      angle <- runif(1, 0, 2 * pi)
+      new_x <- (herbivore$xcor + max_distance * cos(angle)) %% plot_width
+      new_y <- (herbivore$ycor + max_distance * sin(angle)) %% plot_height
+      herbivore$distance_moved <- herbivore$distance_moved + max_distance
+      herbivore$xcor <- new_x; herbivore$ycor <- new_y
       herbivore$selected_plant_id <- NA_integer_
       herbivore$behaviour <- "MOVING"
+
     } else {
-      tastiness_scores <- calc_plant_tastiness(plants_in_range, herbivore, desired_dp_dc_ratio)
-      selected_id <- pick_a_plant(plants_in_range, tastiness_scores)
-      
+      # Taste + choose
+      scores <- calc_plant_tastiness(plants_in_range, herbivore, desired_dp_dc_ratio)
+      selected_id <- pick_a_plant(plants_in_range, scores)
+
       if (!is.na(selected_id)) {
         herbivore$selected_plant_id <- selected_id
-        selected_plant <- plants[plants$plant_id == selected_id, ]
-        
-        distance_to_plant <- calc_toroidal_distance(
-          herbivore$xcor, herbivore$ycor,
-          selected_plant$xcor, selected_plant$ycor,
-          plot_width, plot_height
-        )
-        
-        if (distance_to_plant <= CONSTANTS$EAT_RADIUS) {
-          herbivore$behaviour <- "EATING"
+        sp <- plants[plants$plant_id == selected_id, , drop = FALSE]
+        if (nrow(sp) == 1L && is.finite(sp$ms)) {
+          dist <- calc_toroidal_distance(
+            herbivore$xcor, herbivore$ycor, sp$xcor, sp$ycor, plot_width, plot_height
+          )
+          if (is.finite(dist) && dist <= CONSTANTS$EAT_RADIUS) {
+            herbivore$behaviour <- "EATING"
+          } else {
+            max_distance  <- herbivore$fv_max * 60
+            step_distance <- min(max_distance, ifelse(is.finite(dist), dist, 0))
+            dx <- sp$xcor - herbivore$xcor; dy <- sp$ycor - herbivore$ycor
+            angle <- atan2(dy, dx)
+            new_x <- (herbivore$xcor + step_distance * cos(angle)) %% plot_width
+            new_y <- (herbivore$ycor + step_distance * sin(angle)) %% plot_height
+            herbivore$distance_moved <- herbivore$distance_moved + step_distance
+            herbivore$xcor <- new_x; herbivore$ycor <- new_y
+            herbivore$behaviour <- "MOVING"
+          }
         } else {
-          # Move towards plant (limited by max distance per minute)
-          max_distance <- herbivore$fv_max * 60 # 1 min timestep
-          step_distance <- min(max_distance, distance_to_plant)
-          
-          dx <- selected_plant$xcor - herbivore$xcor
-          dy <- selected_plant$ycor - herbivore$ycor
-          
-          angle <- atan2(dy, dx)
-          herbivore$xcor <- (herbivore$xcor + step_distance * cos(angle)) %% plot_width
-          herbivore$ycor <- (herbivore$ycor + step_distance * sin(angle)) %% plot_height
-          
+          herbivore$selected_plant_id <- NA_integer_
           herbivore$behaviour <- "MOVING"
         }
       } else {
@@ -71,32 +69,39 @@ herbivore_step <- function(herbivore, plants) {
       }
     }
   }
-  
-  # State: EATING
-  if (herbivore$behaviour == "EATING" && !is.na(herbivore$selected_plant_id)) {
-    selected_plant <- plants[plants$plant_id == herbivore$selected_plant_id, ]
-    distance_to_plant <- calc_toroidal_distance(
-      herbivore$xcor, herbivore$ycor,
-      selected_plant$xcor, selected_plant$ycor,
-      plot_width, plot_height
+
+  # ---------- EATING state ----------
+  if (identical(herbivore$behaviour, "EATING") && !is.na(herbivore$selected_plant_id)) {
+    sp <- plants[plants$plant_id == herbivore$selected_plant_id, , drop = FALSE]
+    if (nrow(sp) != 1L || !is.finite(sp$ms)) {
+      herbivore$behaviour <- "MOVING"
+      return(list(herbivore = herbivore, plants = plants))
+    }
+
+    dist <- calc_toroidal_distance(
+      herbivore$xcor, herbivore$ycor, sp$xcor, sp$ycor, plot_width, plot_height
     )
-    
-    if (distance_to_plant <= CONSTANTS$EAT_RADIUS && selected_plant$ms > 0) {
-      # Delegate intake to herbivore_eat(), which handles kg↔g conversions and gut vectors
+
+    if (is.finite(dist) && dist <= CONSTANTS$EAT_RADIUS && is.finite(sp$ms) && sp$ms > 0) {
       eat_res <- herbivore_eat(herbivore, plants)
       herbivore <- eat_res$herbivore
-      plants <- eat_res$plants
-      
-      # Capacity check (gut in g, capacity in g)
-      if (herbivore$gut_content + CONSTANTS$TOLERANCE >= gut_capacity) {
+      plants    <- eat_res$plants
+
+      # NA-safe fullness check
+      cap <- if (is.finite(herbivore$gut_capacity)) herbivore$gut_capacity else 0
+      gc  <- if (is.finite(herbivore$gut_content))  herbivore$gut_content  else 0
+      tol <- if (is.finite(CONSTANTS$TOLERANCE))     CONSTANTS$TOLERANCE    else 0
+
+      if (cap > 0 && (gc + tol) >= cap) {
         herbivore$behaviour <- "REST"
       } else {
-        herbivore$behaviour <- "EATING"
+        # Re-evaluate whether to keep eating or move
+        herbivore <- make_foraging_decision(herbivore, plants)
       }
     } else {
       herbivore$behaviour <- "MOVING"
     }
   }
-  
-  return(list(herbivore = herbivore, plants = plants))
+
+  list(herbivore = herbivore, plants = plants)
 }

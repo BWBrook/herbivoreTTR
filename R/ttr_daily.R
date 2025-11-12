@@ -82,6 +82,12 @@ transport_resistance <- function(plants, conditions, day_index) {
     # Growth
     plants$gs[i] <- calc_Gs(pr, g_forced_shoot)
     plants$gr[i] <- calc_Gr(pr, g_forced_root)
+
+    # Sanity stabiliser: remove once parameter fits confirmed
+    cap <- 0.05  # ≤5% of current mass per day
+    plants$gs[i] <- pmin(plants$gs[i], cap * pr$ms)
+    plants$gr[i] <- pmin(plants$gr[i], cap * pr$mr)
+
     plants$gd[i] <- if (isTRUE(CONSTANTS$DEFENCE_ENABLED)) calc_Gd(pr, g_forced_def) else 0
 
     # Litter losses

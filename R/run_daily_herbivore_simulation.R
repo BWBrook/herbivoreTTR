@@ -50,6 +50,11 @@ run_daily_herbivore_simulation <- function(herbivore, plants, conditions,
     diagnostics$herbivore_start <- herbivore
   }
 
+  # MRT allocation guard
+  if (length(herbivore$digestion$dc_leaf) != herbivore$MRT) {
+    herbivore <- set_herbivore_MRT(herbivore, herbivore$MRT)
+  }
+
   # 3) Optionally store daily water requirement if you want
   herbivore$daily_water_requirement <- calc_water_requirement(herbivore$mass)
 
@@ -63,15 +68,10 @@ run_daily_herbivore_simulation <- function(herbivore, plants, conditions,
   # 5) Loop through each minute (only if herbivory is active)
   if (herbivory_active) for (minute in seq_len(minute_limit)) {
 
-    # (a) Hourly digestion and energy incorporation
-    if (minute %% 60 == 0) {
-      herbivore <- hourly_digestion_step(herbivore)
-    }
-
-    # (b) Update gut content
+    # (a) Update gut content
     herbivore <- update_gut_content(herbivore)
 
-    # (c) Decide if the herbivore is still in its foraging window
+    # (b) Decide if the herbivore is still in its foraging window
     if (minute < herbivore$time_spent_foraging * 60) {
       # Use herbivore_step() to handle movement or eating:
       step_result <- herbivore_step(herbivore, plants)
@@ -79,6 +79,11 @@ run_daily_herbivore_simulation <- function(herbivore, plants, conditions,
       plants     <- step_result$plants
     }
 
+    # (c) Now tick digestion at the end of the hour
+    if (minute %% 60 == 0) {
+      herbivore <- hourly_digestion_step(herbivore)
+    }
+    
     # (d) Optionally record data for debugging
     daily_record[[minute]] <- list(
       minute              = minute,

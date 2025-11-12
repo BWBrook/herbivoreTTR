@@ -12,41 +12,43 @@
 #' # herbivore <- hourly_digestion_step(herbivore)
 #' @export
 hourly_digestion_step <- function(herbivore) {
-  MRT <- herbivore$MRT
-  
-  # Incorporate digested nutrients from the final hour
-  digested_carbs <- herbivore$digestion$dc_leaf[MRT] + herbivore$digestion$dc_stem[MRT]
-  digested_proteins <- herbivore$digestion$dp_leaf[MRT] + 
-                       herbivore$digestion$dp_stem[MRT] + 
-                       herbivore$digestion$dp_def[MRT]
+  k <- as.integer(herbivore$MRT)  # digestion age index
+  # 1) release
+  digested_carbs <- herbivore$digestion$dc_leaf[k] + herbivore$digestion$dc_stem[k]
+  digested_prot  <- herbivore$digestion$dp_leaf[k] + herbivore$digestion$dp_stem[k] + herbivore$digestion$dp_def[k]
 
-  herbivore$intake_digest_carbs_day <- herbivore$intake_digest_carbs_day + digested_carbs
-  herbivore$intake_digest_protein_day <- herbivore$intake_digest_protein_day + digested_proteins
-
-  # Energy: digested mass is in grams; constants are kJ per gram -> energy in kJ
-  herbivore$intake_NPE_day <- herbivore$intake_NPE_day +
-    digested_carbs * CONSTANTS$CARB_TO_ENERGY
-  herbivore$intake_PE_day  <- herbivore$intake_PE_day +
-    digested_proteins * CONSTANTS$PROTEIN_TO_ENERGY
-  
-  # Calculate metabolic water
+  herbivore$intake_digest_carbs_day   <- herbivore$intake_digest_carbs_day + digested_carbs
+  herbivore$intake_digest_protein_day <- herbivore$intake_digest_protein_day + digested_prot
+  herbivore$intake_NPE_day <- herbivore$intake_NPE_day + digested_carbs * CONSTANTS$CARB_TO_ENERGY
+  herbivore$intake_PE_day  <- herbivore$intake_PE_day  + digested_prot  * CONSTANTS$PROTEIN_TO_ENERGY
   herbivore$metabolic_water_day <- herbivore$metabolic_water_day +
-    CONSTANTS$CARB_TO_MW * digested_carbs +
-    CONSTANTS$PROTEIN_TO_MW * digested_proteins
-  
-  # Shift digestion vectors forward by one hour
-  shift_digestion_vector <- function(vec) {
-    c(0, vec[-MRT])
-  }
-  
-  herbivore$digestion$bleaf   <- shift_digestion_vector(herbivore$digestion$bleaf)
-  herbivore$digestion$bstem   <- shift_digestion_vector(herbivore$digestion$bstem)
-  herbivore$digestion$bdef    <- shift_digestion_vector(herbivore$digestion$bdef)
-  herbivore$digestion$dc_leaf <- shift_digestion_vector(herbivore$digestion$dc_leaf)
-  herbivore$digestion$dc_stem <- shift_digestion_vector(herbivore$digestion$dc_stem)
-  herbivore$digestion$dp_leaf <- shift_digestion_vector(herbivore$digestion$dp_leaf)
-  herbivore$digestion$dp_stem <- shift_digestion_vector(herbivore$digestion$dp_stem)
-  herbivore$digestion$dp_def  <- shift_digestion_vector(herbivore$digestion$dp_def)
-  
-  return(herbivore)
+    CONSTANTS$CARB_TO_MW * digested_carbs + CONSTANTS$PROTEIN_TO_MW * digested_prot
+
+  # 2) shift by one hour (drop the released slot k; prepend 0)
+  shift_k <- function(v, k) c(0, v[seq_len(k - 1)], v[seq.int(k + 1, length(v))])
+  herbivore$digestion$bleaf   <- shift_k(herbivore$digestion$bleaf,   k)
+  herbivore$digestion$bstem   <- shift_k(herbivore$digestion$bstem,   k)
+  herbivore$digestion$bdef    <- shift_k(herbivore$digestion$bdef,    k)
+  herbivore$digestion$dc_leaf <- shift_k(herbivore$digestion$dc_leaf, k)
+  herbivore$digestion$dc_stem <- shift_k(herbivore$digestion$dc_stem, k)
+  herbivore$digestion$dp_leaf <- shift_k(herbivore$digestion$dp_leaf, k)
+  herbivore$digestion$dp_stem <- shift_k(herbivore$digestion$dp_stem, k)
+  herbivore$digestion$dp_def  <- shift_k(herbivore$digestion$dp_def,  k)
+
+  herbivore
+}
+
+set_herbivore_MRT <- function(h, MRT) {
+  MRT <- as.integer(MRT)
+  zeros <- function() numeric(MRT)
+  h$MRT <- MRT
+  h$digestion$bleaf   <- zeros()
+  h$digestion$bstem   <- zeros()
+  h$digestion$bdef    <- zeros()
+  h$digestion$dc_leaf <- zeros()
+  h$digestion$dc_stem <- zeros()
+  h$digestion$dp_leaf <- zeros()
+  h$digestion$dp_stem <- zeros()
+  h$digestion$dp_def  <- zeros()
+  h
 }

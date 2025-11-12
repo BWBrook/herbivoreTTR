@@ -1,48 +1,101 @@
-#' Consume biomass from the selected plant
+#' Consume biomass from the selected plant (robust)
 #'
 #' Internal helper that transfers intake from a selected plant to the
-#' herbivore's gut and updates plant biomass. Handles basic constraints
-#' (bite size, handling time, gut capacity, remaining plant biomass).
+#' herbivore's gut and updates plant biomass. Handles constraints:
+#' handling-rate, gut capacity, remaining plant biomass, and an optional
+#' mechanical cap (CONSTANTS$MAX_BITE_FRACTION, g/min as a fraction of gut).
 #'
 #' @param herbivore Herbivore state list; requires `selected_plant_id`,
-#'   `handling_time`, `bite_size`, `gut_capacity`, `gut_content`, and
-#'   `digestion` vectors.
-#' @param plants data.frame of plants with `plant_id`, `ms`, `bdef`, `xcor`,
-#'   `ycor`.
-#' @return List with updated `herbivore` and `plants`.
+#'   `handling_time` (min/g), `gut_capacity` (g), `gut_content` (g),
+#'   and `digestion` vectors.
+#' @param plants data.frame with at least `plant_id`, `ms`, `bleaf`, `bstem`, `bdef`.
+#' @return list(herbivore=..., plants=...)
 #' @keywords internal
 herbivore_eat <- function(herbivore, plants) {
 
-  plant <- plants %>% dplyr::filter(plant_id == herbivore$selected_plant_id)
+  ## 0) Resolve the target plant row (fail-safe no-ops)
+  pid <- herbivore$selected_plant_id
+  if (is.null(pid) || is.na(pid)) {
+    return(list(herbivore = herbivore, plants = plants))
+  }
+  row_idx <- which(plants$plant_id == pid)
+  if (length(row_idx) != 1L) {
+    # target vanished or ambiguous
+    return(list(herbivore = herbivore, plants = plants))
+  }
+  plant <- plants[row_idx, , drop = FALSE]
 
-  total_shoot <- plant$bleaf + plant$bstem + plant$bdef
-  prop_defence <- if (total_shoot > 0) plant$bdef / total_shoot else 0
-  # intake_rate in kg/min: handling_time is min per g; convert to kg with /1000
-  intake_rate_kg <- (1 / herbivore$handling_time) / 1000 * (1 - prop_defence)
+  ## 1) Pull pools and coalesce NAs
+  bleaf <- ifelse(is.finite(plant$bleaf), plant$bleaf, 0)
+  bstem <- ifelse(is.finite(plant$bstem), plant$bstem, 0)
+  bdef  <- if ("bdef" %in% names(plant)) ifelse(is.finite(plant$bdef), plant$bdef, 0) else 0
+  ms    <- ifelse(is.finite(plant$ms), plant$ms, bleaf + bstem + bdef)
 
-  # Calculate maximum possible intake given constraints
-  # Available gut capacity in kg (gut is tracked in grams)
-  capacity_kg <- pmax(herbivore$gut_capacity - herbivore$gut_content, 0) / 1000
-  bite_limit_kg <- herbivore$bite_size / 1000
-  available_plant_kg <- pmax(plant$ms - CONSTANTS$MIN_SHOOT, 0)
-  potential_intake_kg <- min(intake_rate_kg, bite_limit_kg, capacity_kg, available_plant_kg)
+  total_shoot <- bleaf + bstem + bdef
+  if (!is.finite(total_shoot) || total_shoot <= 0) {
+    return(list(herbivore = herbivore, plants = plants))
+  }
+  prop_defence <- max(min(bdef / total_shoot, 1), 0)
 
-  if (potential_intake_kg <= 0) return(list(herbivore=herbivore, plants=plants))
+  ## 2) Per-minute intake constraints (all NA-safe)
+  # Handling: handling_time is min per g  -> g/min -> kg/min
+  rate_g_per_min <- if (is.finite(herbivore$handling_time) && herbivore$handling_time > 0) {
+    1 / herbivore$handling_time
+  } else 0
+  intake_rate_kg <- (rate_g_per_min / 1000) * (1 - prop_defence)
+  if (!is.finite(intake_rate_kg) || intake_rate_kg < 0) intake_rate_kg <- 0
 
-  # Allocate intake to leaf/stem/def by their proportions in shoot
-  total_parts <- total_shoot
-  if (total_parts <= 0) return(list(herbivore=herbivore, plants=plants))
-  leaf_intake_kg <- potential_intake_kg * (plant$bleaf / total_parts)
-  stem_intake_kg <- potential_intake_kg * (plant$bstem / total_parts)
-  def_intake_kg  <- potential_intake_kg * (plant$bdef  / total_parts)
+  # Capacity (kg)
+  capacity_kg <- (herbivore$gut_capacity - herbivore$gut_content) / 1000
+  if (!is.finite(capacity_kg) || capacity_kg < 0) capacity_kg <- 0
 
-  # Update digestion vectors (first hour position)
-  # Push intakes to gut in grams
-  herbivore$digestion$bleaf[1]   <- herbivore$digestion$bleaf[1] + leaf_intake_kg * 1000
-  herbivore$digestion$bstem[1]   <- herbivore$digestion$bstem[1] + stem_intake_kg * 1000
-  herbivore$digestion$bdef[1]    <- herbivore$digestion$bdef[1]  + def_intake_kg * 1000
+  # Available plant (kg) above a minimum standing shoot
+  available_plant_kg <- ms - CONSTANTS$MIN_SHOOT
+  if (!is.finite(available_plant_kg) || available_plant_kg < 0) available_plant_kg <- 0
 
-  # Schedule digestible carbohydrate (dc_*) and protein (dp_*) grams for release after MRT
+  # Optional: mechanical cap per minute as a fraction of gut capacity
+  mechanical_cap_kg <- if (!is.null(CONSTANTS$MAX_BITE_FRACTION)) {
+    max(CONSTANTS$MAX_BITE_FRACTION, 0) * herbivore$gut_capacity / 1000
+  } else Inf
+
+  # Combine limits; ignore NAs; if all NA, fall back to 0
+  limits <- c(intake_rate_kg, capacity_kg, available_plant_kg, mechanical_cap_kg)
+  potential_intake_kg <- suppressWarnings(min(limits, na.rm = TRUE))
+  if (!is.finite(potential_intake_kg)) potential_intake_kg <- 0
+
+  # No feasible intake this minute
+  if (potential_intake_kg <= 0) {
+    return(list(herbivore = herbivore, plants = plants))
+  }
+
+  ## 3) Allocate intake across leaf/stem/defence by current proportions
+  share_leaf <- if (bleaf > 0) bleaf / total_shoot else 0
+  share_stem <- if (bstem > 0) bstem / total_shoot else 0
+  share_def  <- 1 - share_leaf - share_stem
+  if (share_def < 0) share_def <- 0  # guard rounding
+
+  leaf_intake_kg <- potential_intake_kg * share_leaf
+  stem_intake_kg <- potential_intake_kg * share_stem
+  def_intake_kg  <- potential_intake_kg * share_def
+
+  ## 4) Push grams into the first hour slot of digestion queues
+  # Ensure queues exist (length >= 1); if not, allocate length 1
+  ensure_queue <- function(v) if (length(v) >= 1L) v else numeric(1L)
+  herbivore$digestion$bleaf   <- ensure_queue(herbivore$digestion$bleaf)
+  herbivore$digestion$bstem   <- ensure_queue(herbivore$digestion$bstem)
+  herbivore$digestion$bdef    <- ensure_queue(herbivore$digestion$bdef)
+  herbivore$digestion$dc_leaf <- ensure_queue(herbivore$digestion$dc_leaf)
+  herbivore$digestion$dc_stem <- ensure_queue(herbivore$digestion$dc_stem)
+  herbivore$digestion$dp_leaf <- ensure_queue(herbivore$digestion$dp_leaf)
+  herbivore$digestion$dp_stem <- ensure_queue(herbivore$digestion$dp_stem)
+  herbivore$digestion$dp_def  <- ensure_queue(herbivore$digestion$dp_def)
+
+  # DM -> grams into biomass queues
+  herbivore$digestion$bleaf[1] <- herbivore$digestion$bleaf[1] + leaf_intake_kg * 1000
+  herbivore$digestion$bstem[1] <- herbivore$digestion$bstem[1] + stem_intake_kg * 1000
+  herbivore$digestion$bdef[1]  <- herbivore$digestion$bdef[1]  + def_intake_kg  * 1000
+
+  # Schedule digestible grams (carb/protein) for later release
   digestible_carbs <- function(dm_kg) dm_kg * 1000 * CONSTANTS$FRACTION_C * CONSTANTS$PROP_DIGEST_SC
   digestible_prot  <- function(dm_kg) dm_kg * 1000 * CONSTANTS$FRACTION_N * CONSTANTS$N_TO_PROTEIN * CONSTANTS$PROP_DIGEST_TP
 
@@ -52,22 +105,20 @@ herbivore_eat <- function(herbivore, plants) {
   herbivore$digestion$dp_stem[1] <- herbivore$digestion$dp_stem[1] + digestible_prot(stem_intake_kg)
   herbivore$digestion$dp_def[1]  <- herbivore$digestion$dp_def[1]  + digestible_prot(def_intake_kg)
 
-  # Update plant biomass after consumption
-  plants <- plants %>% 
-    dplyr::mutate(
-      bleaf = ifelse(plant_id == herbivore$selected_plant_id, pmax(bleaf - leaf_intake_kg, 0), bleaf),
-      bstem = ifelse(plant_id == herbivore$selected_plant_id, pmax(bstem - stem_intake_kg, 0), bstem),
-      bdef  = ifelse(plant_id == herbivore$selected_plant_id, pmax(bdef  - def_intake_kg,  0), bdef)
-    )
-  plants <- plants %>%
-    dplyr::mutate(
-      ms = ifelse(plant_id == herbivore$selected_plant_id, pmax(bleaf + bstem + bdef, 0), ms)
-    )
+  ## 5) Update plant state (in kg) for the target row only
+  new_bleaf <- max(bleaf - leaf_intake_kg, 0)
+  new_bstem <- max(bstem - stem_intake_kg, 0)
+  new_bdef  <- max(bdef  - def_intake_kg,  0)
+  new_ms    <- max(new_bleaf + new_bstem + new_bdef, 0)
 
-  # Update herbivore gut content
-  # Update daily intake tracker and gut content
+  plants$bleaf[row_idx] <- new_bleaf
+  plants$bstem[row_idx] <- new_bstem
+  plants$bdef[row_idx]  <- new_bdef
+  plants$ms[row_idx]    <- new_ms
+
+  ## 6) Update herbivore daily totals and gut content
   herbivore$intake_total_day <- herbivore$intake_total_day + potential_intake_kg * 1000
   herbivore <- update_gut_content(herbivore)
 
-  return(list(herbivore=herbivore, plants=plants))
+  list(herbivore = herbivore, plants = plants)
 }
