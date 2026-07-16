@@ -1,0 +1,11 @@
+^\.git$
+^\.Rprofile$
+^renv$
+^renv\.lock$
+^LICENSE\.md$
+^docs$
+^experiments$
+^references$
+^outputs$
+^.*\.Rproj$
+^\.Rproj\.user$

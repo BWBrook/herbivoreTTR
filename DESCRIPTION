@@ -1,0 +1,14 @@
+Package: herbivoreTTR
+Title: Transparent Functional Models of Herbivore Energetics
+Version: 0.0.0.9000
+Authors@R:
+    person("Barry", "Brook", email = "barry.brook@utas.edu.au",
+           role = c("aut", "cre"))
+Description: Establishes the documented package boundary for a clean rebuild of
+    transparent herbivore energetics models. The current version contains no
+    physiological process implementation.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
