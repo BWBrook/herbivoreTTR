@@ -3,24 +3,66 @@
 ## Status
 
 These are the exact public record, flux, and ledger names implemented through
-Goal 003. Rates in kJ h^-1 and one-hour amounts in kJ remain distinct even when
+Goal 004. Rates in kJ h^-1 and one-hour amounts in kJ remain distinct even when
 their numerical values match for the fixed one-hour transition.
 
-The gut stock is expressed in assimilable-energy equivalents. It is not food
-mass, gross energy, plant biomass, measured gut fill, or a calibrated
+The Goal 004 density is already metabolizable energy on a dry-matter basis. Its
+product with prescribed dry-matter ingestion is the accounting equivalent
+entering the existing gut available-energy pool. The gut stock is energy, not
+dry matter, gross energy, plant biomass, measured gut fill, or a calibrated
 physiological quantity.
 
 ## Core Records And Prescribed Inputs
 
 | Name | Role | Unit | Meaning |
 | --- | --- | --- | --- |
-| `gut_available_energy_kj` | dynamic gut state | kJ | Assimilable-energy equivalent available in the single gut pool at a transition boundary. |
+| `metabolizable_energy_density_kj_kg_dm` | fixed food parameter | kJ kg^-1 DM | Strictly positive dry-matter-basis energy density that is already metabolizable and remains fixed within a 24-hour run. |
+| `prescribed_dry_matter_intake_kg_dm_h` | prescribed food-input rate | kg DM h^-1 | Dry matter ingested during the labeled hour; not offered or wet forage, availability, or output from a feeding decision. |
+| `gut_available_energy_kj` | dynamic gut state | kJ | Available-energy accounting equivalent in the single gut pool at a transition boundary. |
 | `body_energy_reserve_kj` | dynamic body state | kJ | Physical body-energy reserve at a transition boundary. |
 | `gut_release_fraction_h` | fixed gut parameter | h^-1 | Fraction of opening gut energy released during each fixed one-hour transition; constrained to `(0, 1]`. |
 | `maintenance_expenditure_kj_h` | fixed body parameter rate | kJ h^-1 | Constant maintenance-only energy expenditure rate. |
 | `hour_of_day` | prescribed clock | integer 0-23 | Label for the half-open one-hour interval `[hour_of_day, hour_of_day + 1)`. |
-| `prescribed_ingested_available_energy_kj_h` | prescribed gut-input rate | kJ h^-1 | Controlled assimilable-energy equivalent entering the gut during an hour. |
+| `prescribed_ingested_available_energy_kj_h` | prescribed or derived gut-input rate | kJ h^-1 | Controlled available-energy accounting equivalent entering the gut during an hour; the Goal 004 converter derives it as dry-matter intake multiplied by fixed density. |
 | `prescribed_assimilated_energy_kj_h` | prescribed body-input rate | kJ h^-1 | Already-assimilated energy supplied directly to the standalone Goal 002 body ledger. |
+
+## Goal 004 Food-Energy Record Schemas
+
+`new_food_energy_parameters()` returns an exact plain named list with:
+
+```text
+metabolizable_energy_density_kj_kg_dm
+```
+
+The value is a finite, strictly positive double. Zero is rejected because zero
+intake already supplies the exact no-energy control.
+
+`new_dry_matter_intake_schedule()` returns an exact 24-row base R data frame
+with columns in this order:
+
+```text
+hour_of_day
+prescribed_dry_matter_intake_kg_dm_h
+```
+
+`hour_of_day` is integer `0:23`. The intake column contains finite,
+non-negative doubles.
+
+`derive_ingested_available_energy_schedule()` returns the exact existing
+24-row Goal 003 data-frame schema:
+
+```text
+hour_of_day
+prescribed_ingested_available_energy_kj_h
+```
+
+The derived rate is the elementwise product:
+
+```text
+kg DM h^-1 * kJ kg^-1 DM = kJ h^-1
+```
+
+The converter adds no food columns, attributes, amount variables, or state.
 
 ## One-Hour Gut Transition Fluxes
 
@@ -128,9 +170,11 @@ Its daily summary uses:
 
 State, fixed parameters, prescribed inputs, process fluxes, and recorded
 history remain distinct even when they share a derived output table. Goal 003
-adds storage and delay only. Food properties, digestive losses, capacity,
-behavior, activity, mass change, plants, and calibration have no implemented
-variables.
+adds storage and delay only; Goal 004 adds one fixed food property and one
+prescribed dry-matter input without new state. Offered or wet forage, variable
+food properties, digestive losses or efficiency, dry-matter gut state,
+capacity, behavior, activity, mass change, plants, and calibration have no
+implemented variables.
 
 Historical names in `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16` are not binding. The corresponding pre-freeze

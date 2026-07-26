@@ -20,8 +20,8 @@ comparisons, but is never scientific truth or architectural authority.
 - State is represented by plain validated records.
 - State, fixed parameters, prescribed inputs, processes, and history remain
   distinct.
-- Process functions are pure and use names and documentation with explicit unit
-  suffixes.
+- Conversion and process functions are pure and use names and documentation
+  with explicit unit suffixes.
 - Generated outputs remain outside source control.
 
 ## Work Contract
@@ -33,35 +33,54 @@ machinery is not part of this model-development approach.
 
 ## Current Executable Boundary
 
-The executable model contains two coupled stocks: one gut-energy buffer and
-one physical body-energy reserve. Controlled prescribed ingestion enters the
-gut during 24 fixed one-hour transitions. A fixed fraction of the opening gut
-stock is released each hour and transferred one-for-one into the unchanged
-body ledger, while constant maintenance expenditure leaves the body reserve.
-The package returns an exact hourly ledger and a daily summary derived from
-that ledger.
+The executable model retains two coupled stocks: one gut-energy buffer and one
+physical body-energy reserve. Upstream, a pure accounting bridge multiplies a
+prescribed 24-hour dry-matter ingestion schedule in kg DM h^-1 by one fixed,
+strictly positive metabolizable-energy density in kJ kg^-1 DM. The resulting
+kJ h^-1 schedule is the exact existing input to the gut model.
+
+The density is already metabolizable and collapses every unmodelled step
+between dry matter and model-available energy. Its product is treated as the
+accounting equivalent entering `gut_available_energy_kj`; it is not a
+physiological calculation of digestion, assimilation efficiency, or loss.
+Prescribed dry matter is ingestion, not offered or available forage, wet or
+as-fed mass, or output from a modeled feeding decision. The caller retains the
+food parameter, intake schedule, converted energy schedule, and downstream
+result as separate objects. No new state or coupled runner is introduced.
+
+During each of 24 fixed one-hour transitions, a fixed fraction of the opening
+gut stock is released and transferred one-for-one into the unchanged body
+ledger, while constant maintenance expenditure leaves the body reserve. The
+package returns an exact hourly ledger and a daily summary derived from that
+ledger.
 
 Gut stock is expressed in assimilable-energy equivalents. Release precedes
 current-hour ingestion, so newly ingested energy is not eligible for release
 until the next transition. Separate gut, body, and combined-system residuals
 make the internal transfer and external inputs and expenditures inspectable.
 
-The 50 kg reference mass used in the demonstration is experiment metadata
-only. No implemented equation depends on body mass. The fixture values are
-synthetic. This layer establishes arithmetic closure, delayed stock-flow
-behavior, accounting semantics, and opening-to-closing state continuity; it
-does not establish empirical realism, animal viability, or ecological
-equilibrium.
+Only the product of dry-matter intake and density enters downstream dynamics,
+so those prescribed inputs are structurally non-identifiable from the resulting
+energy trajectories. Equivalent products demonstrate an accounting property,
+not biological interchangeability among foods or feeding regimes.
+
+The 50 kg reference mass used in the Goal 002 demonstration is experiment
+metadata only. No implemented equation depends on body mass. All food-energy
+and gut-body fixtures are synthetic. The current layer establishes unit
+conversion, arithmetic closure, delayed stock-flow behavior, accounting
+semantics, and opening-to-closing state continuity; it does not establish
+empirical realism, animal viability, or ecological equilibrium.
 
 ## Current Stop Boundary
 
-No further layer is specified or authorized. The implemented gut stock is not
-food mass or gross energy and contains no food quality, digestive loss, waste,
-capacity, feeding behavior, or body feedback. Activity, dynamic body mass,
-protein, water, thermoregulation, plants, space, calibration, and all other
-physiological or ecological detail remain outside the executable boundary.
-Goal 003 results must be discussed before the next principal question is
-chosen.
+No later layer is specified or authorized. The implemented gut stock is energy,
+not dry matter, gross energy, plant biomass, or measured gut fill. Offered and
+wet forage, variable or multiple foods, digestive loss, efficiency, waste,
+capacity, intake limits, feeding behavior, and body feedback are absent.
+Activity, dynamic body mass, protein, water, thermoregulation, plants, space,
+calibration, and all other physiological or ecological detail remain outside
+the executable boundary. Goal 004 results must be discussed before the next
+principal question is chosen.
 
 The predecessor is preserved privately as `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16`; its scientific baseline commit is

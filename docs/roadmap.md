@@ -17,19 +17,29 @@ the unchanged body ledger, and current-hour ingestion is added afterwards.
 Synthetic equilibrium, empty-start, and pulse-response fixtures demonstrate
 storage, delay, and exact gut, body, and combined-system accounting.
 
+Rebuild Goal 004 adds a pure upstream bridge from prescribed dry-matter
+ingestion in kg DM h^-1 and one fixed dry-matter-basis metabolizable-energy
+density in kJ kg^-1 DM to the unchanged Goal 003 gut-energy schedule. The
+density is already metabolizable and its product is an accounting equivalent
+entering the existing gut pool. Zero, constant, pulse, and alternative
+factorization fixtures demonstrate exact conversion and unchanged downstream
+dynamics without adding state, a runner, or digestive physiology.
+
 ## Next Decision Gate
 
-No Goal 004 model layer is specified or authorized. The Goal 003 trajectories,
-accounting, and interpretation must first be discussed. That discussion will
-choose one bounded principal question and define its scientific contract before
-any further implementation.
+No Goal 005 model layer is specified or authorized. The Goal 004 conversion,
+structural non-identifiability, downstream equivalence, and interpretation must
+first be discussed. That discussion will choose one bounded principal question
+and define its scientific contract before any further implementation.
 
 ## Candidate Later Layers
 
 Previously discussed candidates include activity expenditure, dynamic body
 mass, protein, water, thermoregulation, plants, spatial foraging, and coupling
-between established subsystems. This list records possible directions, not an
-approved sequence or a promise to implement them.
+between established subsystems. Variable food quality, digestion, gut capacity,
+and feeding behavior also remain unimplemented. This list records possible
+directions, not an approved sequence, a claim that any layer comes next, or a
+promise to implement one.
 
 Each layer requires a separately approved small goal with one principal
 question, one subsystem, compact predeclared outputs, proportionate tests, and

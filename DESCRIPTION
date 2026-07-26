@@ -5,10 +5,11 @@ Authors@R:
     person("Barry", "Brook", email = "barry.brook@utas.edu.au",
            role = c("aut", "cre"))
 Description: Provides transparent functional models of herbivore energetics.
-    The current version couples a minimal hourly body-energy ledger to a
-    one-pool gut-energy buffer. Controlled prescribed ingestion enters the gut,
-    a fixed fraction of opening gut energy is released each hour, and released
-    energy enters the body reserve against constant maintenance expenditure.
+    The current version converts prescribed dry-matter ingestion through one
+    fixed dry-matter-basis metabolizable-energy density into the existing
+    gut available-energy input. A one-pool gut-energy buffer delays release
+    into a minimal hourly body-energy ledger against constant maintenance
+    expenditure.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Suggests:
