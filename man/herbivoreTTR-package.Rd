@@ -6,10 +6,12 @@
 \alias{herbivoreTTR-package}
 \title{herbivoreTTR: Transparent functional herbivore energetics}
 \description{
-The package provides a small functional model of a maintenance-only
-body-energy ledger. It separates validated dynamic state, fixed parameters,
-prescribed already-assimilated energy inputs, pure hourly transitions, and
-recorded daily history.
+The package provides a small functional model that couples a one-pool
+gut-energy buffer to a maintenance-only body-energy ledger. Controlled
+prescribed ingestion enters the gut, a fixed fraction of opening gut energy
+is released each hour, and that released energy enters the body reserve. The
+model separates validated dynamic state, fixed parameters, prescribed
+inputs, pure hourly transitions, and recorded daily history.
 }
 \author{
 \strong{Maintainer}: Barry Brook \email{barry.brook@utas.edu.au}

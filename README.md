@@ -1,31 +1,44 @@
 # herbivoreTTR
 
 `herbivoreTTR` provides transparent functional R models of herbivore
-energetics. Its first executable layer is a minimal hourly body-energy ledger:
-prescribed energy that is already assimilated enters one physical reserve,
-constant maintenance expenditure leaves it, and the package records 24 exact
-one-hour transitions.
+energetics. The current executable model couples a one-pool gut-energy buffer
+to a minimal hourly body-energy ledger over 24 exact one-hour transitions.
+Controlled prescribed ingestion enters the gut, a fixed fraction of its
+opening stock is released each hour, and released energy enters the body
+reserve against constant maintenance expenditure.
 
 ## Current Capability
 
-The implemented layer keeps dynamic state, fixed parameters, prescribed
-inputs, pure transitions, and recorded history separate. It provides strict
-constructors for the body-energy state, maintenance parameter, and 24-row
-assimilated-energy schedule; a pure one-hour transition; and a daily runner.
-The runner returns an exact 24-row hourly ledger and a one-row daily summary
-derived from that ledger.
+The package keeps dynamic state, fixed parameters, prescribed inputs, pure
+transitions, and recorded history separate. Goal 002's public body-only
+interface remains available: it accepts a prescribed already-assimilated
+energy schedule and records the resulting body-energy ledger. Goal 003 adds
+strict records for gut stock, its fixed hourly release fraction, and a 24-row
+ingested available-energy schedule; one pure gut transition; and a coupled
+daily runner.
+
+Gut release is calculated from the stock present at the start of each hour.
+The current hour's ingestion is added afterwards, so it cannot be released
+until a later transition. Gut stock is measured in assimilable-energy
+equivalents and transfers one-for-one into the unchanged body ledger. The
+coupled runner returns an exact 24-row hourly ledger and a one-row daily
+summary derived from it, including separate gut, body, and combined-system
+accounting residuals.
 
 The thin experiment
 [`experiments/rebuild-002-body-energy-ledger.R`](experiments/rebuild-002-body-energy-ledger.R)
-demonstrates analytically fixed neutral, deficit, and surplus cases. The 50 kg
-reference body mass appears only as experiment metadata: it is not model state
-or a transition parameter because no implemented equation depends on mass.
+demonstrates the standalone body's analytically fixed neutral, deficit, and
+surplus cases. The Goal 003 experiment
+[`experiments/rebuild-003-one-pool-gut-buffer.R`](experiments/rebuild-003-one-pool-gut-buffer.R)
+demonstrates a synthetic gut-body equilibrium, the transient from an empty gut,
+and delayed geometric release after a single ingestion pulse.
 
-This layer proves arithmetic and accounting semantics. It does not establish
-an empirically realistic maintenance requirement, animal viability, ecological
-equilibrium, or any empirical claim about macropods. It implements no food,
-gut, digestion, or assimilation calculation; the prescribed input is already
-assimilated energy.
+These demonstrations prove arithmetic, timing, and accounting semantics only.
+They do not estimate a maintenance requirement, residence time, gut fill,
+feeding schedule, animal viability, ecological equilibrium, or any macropod
+trait. The model contains no food mass or quality, digestive loss, waste, gut
+capacity, feeding behavior, activity expenditure, body-mass change, plants, or
+empirical calibration.
 
 ## Design
 
@@ -37,10 +50,10 @@ principal question and one subsystem, with compact outputs, proportionate tests,
 an explicit stop, and discussion before another layer is added.
 
 The current contract is specified in
-[`docs/model-specification.md`](docs/model-specification.md). The next
-unimplemented layer would add controlled food and a one-pool gut/assimilation
-stock-flow system, but only through a separately discussed and approved goal.
-Later layers remain ordered in [`docs/roadmap.md`](docs/roadmap.md).
+[`docs/model-specification.md`](docs/model-specification.md). No further model
+layer is currently specified or authorized. The Goal 003 results must be
+discussed before another bounded question is chosen; candidate later layers are
+listed without authorization in [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Provenance
 

@@ -11,28 +11,29 @@ body-energy reserve, 24 fixed one-hour transitions, and exact hourly and daily
 ledgers. This proves arithmetic and accounting semantics, not empirical
 realism, viability, or equilibrium.
 
-## Next Unimplemented Layer
+Rebuild Goal 003 adds one well-mixed gut-energy stock in assimilable-energy
+equivalents. A fixed fraction of opening gut stock is released each hour into
+the unchanged body ledger, and current-hour ingestion is added afterwards.
+Synthetic equilibrium, empty-start, and pulse-response fixtures demonstrate
+storage, delay, and exact gut, body, and combined-system accounting.
 
-Add controlled food and a one-pool gut/assimilation stock-flow system. This
-layer may calculate the assimilated-energy input consumed by the existing body
-ledger, but it is not implemented or authorized by Goal 002. Its scientific
-contract requires separate discussion and approval.
+## Next Decision Gate
 
-## Later Ordered Layers
+No Goal 004 model layer is specified or authorized. The Goal 003 trajectories,
+accounting, and interpretation must first be discussed. That discussion will
+choose one bounded principal question and define its scientific contract before
+any further implementation.
 
-1. Add activity expenditure.
-2. Add dynamic body mass.
-3. Add protein.
-4. Add water.
-5. Add thermoregulation.
-6. Add plants.
-7. Add spatial foraging.
-8. Add coupling between established subsystems.
+## Candidate Later Layers
+
+Previously discussed candidates include activity expenditure, dynamic body
+mass, protein, water, thermoregulation, plants, spatial foraging, and coupling
+between established subsystems. This list records possible directions, not an
+approved sequence or a promise to implement them.
 
 Each layer requires a separately approved small goal with one principal
 question, one subsystem, compact predeclared outputs, proportionate tests, and
-an explicit stop. The order is directional, not automatic authorization:
-results must be discussed before the next layer begins.
+an explicit stop. Results must be discussed before the next layer begins.
 
 Legacy features are not migration tasks. `BWBrook/herbivoreTTR-legacy` at
 `legacy-final-2026-07-16` is historical evidence only; its pre-freeze scientific

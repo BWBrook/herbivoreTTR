@@ -5,8 +5,10 @@ Authors@R:
     person("Barry", "Brook", email = "barry.brook@utas.edu.au",
            role = c("aut", "cre"))
 Description: Provides transparent functional models of herbivore energetics.
-    The current version implements a minimal hourly body-energy ledger with
-    prescribed assimilated energy and constant maintenance expenditure.
+    The current version couples a minimal hourly body-energy ledger to a
+    one-pool gut-energy buffer. Controlled prescribed ingestion enters the gut,
+    a fixed fraction of opening gut energy is released each hour, and released
+    energy enters the body reserve against constant maintenance expenditure.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Suggests:
