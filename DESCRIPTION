@@ -6,10 +6,11 @@ Authors@R:
            role = c("aut", "cre"))
 Description: Provides transparent functional models of herbivore energetics.
     The current version converts prescribed dry-matter ingestion through one
-    fixed dry-matter-basis metabolizable-energy density into the existing
-    gut available-energy input. A one-pool gut-energy buffer delays release
-    into a minimal hourly body-energy ledger against constant maintenance
-    expenditure.
+    fixed dry-matter-basis metabolizable-energy density into a one-pool
+    gut-energy buffer that delays release into a minimal body-energy ledger.
+    It can also establish a numerical period-24 gut reference under repeated
+    identical forcing, reset body energy once, and record two carried
+    measurement days.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Suggests:

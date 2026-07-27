@@ -3,7 +3,7 @@
 ## Status
 
 These are the exact public record, flux, and ledger names implemented through
-Goal 004. Rates in kJ h^-1 and one-hour amounts in kJ remain distinct even when
+Goal 005. Rates in kJ h^-1 and one-hour amounts in kJ remain distinct even when
 their numerical values match for the fixed one-hour transition.
 
 The Goal 004 density is already metabolizable energy on a dry-matter basis. Its
@@ -25,6 +25,10 @@ physiological quantity.
 | `hour_of_day` | prescribed clock | integer 0-23 | Label for the half-open one-hour interval `[hour_of_day, hour_of_day + 1)`. |
 | `prescribed_ingested_available_energy_kj_h` | prescribed or derived gut-input rate | kJ h^-1 | Controlled available-energy accounting equivalent entering the gut during an hour; the Goal 004 converter derives it as dry-matter intake multiplied by fixed density. |
 | `prescribed_assimilated_energy_kj_h` | prescribed body-input rate | kJ h^-1 | Already-assimilated energy supplied directly to the standalone Goal 002 body ledger. |
+| `gut_convergence_relative_tolerance` | numerical runner control | dimensionless | Finite scalar strictly between zero and one; scales the repeated-day gut convergence threshold and has no biological interpretation. |
+| `max_burn_in_days` | numerical runner control | d | Integer maximum number of identical gut-only burn-in days; at least two because convergence compares successive days. |
+| `burn_in_day` | convergence index | integer d | Completed gut-only burn-in day, beginning at 1. |
+| `measurement_day` | measured-day key | integer 1-2 | Identifies the two carried gut-body days after the single body reset. |
 
 ## Goal 004 Food-Energy Record Schemas
 
@@ -63,6 +67,47 @@ kg DM h^-1 * kJ kg^-1 DM = kJ h^-1
 ```
 
 The converter adds no food columns, attributes, amount variables, or state.
+
+## Goal 005 Reference-Cycle Schemas
+
+`run_gut_body_energy_reference_cycle()` returns an exact plain list named:
+
+```text
+convergence
+hourly
+daily
+```
+
+The `convergence` data frame has one row per completed gut-only burn-in day and
+these columns in order:
+
+| Name | Role | Unit | Meaning |
+| --- | --- | --- | --- |
+| `burn_in_day` | convergence index | integer d | Completed burn-in day; day 1 cannot be declared converged. |
+| `gut_available_energy_initial_kj` | burn-in opening gut state | kJ | Gut stock before hour 0 of the burn-in day. |
+| `gut_available_energy_final_kj` | burn-in closing gut state | kJ | Gut stock after hour 23 of the burn-in day. |
+| `cycle_boundary_change_kj` | period-24 boundary diagnostic | kJ | Closing stock after hour 23 minus opening stock before hour 0 for the same burn-in day. |
+| `max_abs_previous_day_trajectory_difference_kj` | successive-cycle diagnostic | kJ | Maximum absolute hour-matched difference between the current and previous 25-boundary gut trajectories; `NA_real_` on day 1. |
+| `realized_convergence_tolerance_kj` | numerical threshold | kJ | Scale-aware absolute threshold for both convergence comparisons; `NA_real_` on day 1 and finite and strictly positive thereafter. |
+| `converged` | convergence flag | logical | `TRUE` only for the first day satisfying both the trajectory and boundary comparisons. |
+
+The 25 boundaries are the opening stocks for hours 0 through 23 plus the
+closing stock after hour 23. Burn-in advances no body state.
+
+The measured `hourly` data frame prepends integer `measurement_day` to the
+unchanged 21-column coupled hourly ledger, giving 48 rows and 22 columns.
+Within each measured day, `hour_of_day` remains `0:23`; continuous review time
+is derived as `24 * (measurement_day - 1) + time_start_h` or `time_end_h`.
+
+The measured `daily` data frame prepends integer `measurement_day = 1:2` to the
+unchanged 19-column coupled daily summary, giving two rows and 20 columns. The
+body state is reset only before measured day 1. The closing gut and body stocks
+of day 1 open day 2 exactly.
+
+Review tables add only a leading `scenario_id` to the exact convergence,
+measured-daily, or measured-hourly schemas. CSVs retain round-trippable numeric
+precision; whole-kilojoule formatting is limited to human-facing console and
+figure presentation.
 
 ## One-Hour Gut Transition Fluxes
 
@@ -171,10 +216,12 @@ Its daily summary uses:
 State, fixed parameters, prescribed inputs, process fluxes, and recorded
 history remain distinct even when they share a derived output table. Goal 003
 adds storage and delay only; Goal 004 adds one fixed food property and one
-prescribed dry-matter input without new state. Offered or wet forage, variable
-food properties, digestive losses or efficiency, dry-matter gut state,
-capacity, behavior, activity, mass change, plants, and calibration have no
-implemented variables.
+prescribed dry-matter input without new state; Goal 005 adds numerical
+gut-cycle construction, one measurement reset, and two carried day keys without
+new biology. Offered or wet forage, variable food properties, digestive losses
+or efficiency, dry-matter gut state, capacity, behavior, activity, mass change,
+variable or stochastic days, seasons, chronic change, viability, plants, and
+calibration have no implemented variables.
 
 Historical names in `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16` are not binding. The corresponding pre-freeze

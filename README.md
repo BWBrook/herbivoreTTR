@@ -1,12 +1,11 @@
 # herbivoreTTR
 
 `herbivoreTTR` provides transparent functional R models of herbivore
-energetics. The current executable model adds one pure food-energy conversion
-upstream of a one-pool gut-energy buffer and a minimal hourly body-energy ledger
-over 24 exact one-hour transitions. Prescribed dry-matter ingestion is
-converted to the existing gut available-energy input, a fixed fraction of
-opening gut energy is released each hour, and released energy enters the body
-reserve against constant maintenance expenditure.
+energetics. The current executable model composes one pure food-energy
+conversion, a one-pool gut-energy buffer, and a minimal hourly body-energy
+ledger. It can run one 24-hour schedule directly or repeat that same schedule
+to establish a numerical daily gut reference before recording two measured
+days.
 
 ## Current Capability
 
@@ -41,6 +40,34 @@ returns an exact 24-row hourly ledger and a one-row daily summary derived from
 it, including separate gut, body, and combined-system accounting residuals.
 There is no new dynamic state or integrated food-gut-body runner.
 
+Goal 005 adds
+`run_gut_body_energy_reference_cycle()`. It accepts the unchanged Goal 003
+available-energy schedule and:
+
+- advances only the gut under identical repeated 24-hour forcing;
+- compares the 25 hour-boundary gut stocks on successive days until a declared
+  scale-aware numerical tolerance is met;
+- resets body energy once to a declared measurement state;
+- calls the unchanged one-day gut-body runner for two measured days; and
+- carries both closing states from measured day 1 into measured day 2.
+
+Gut-cycle stability and energetic neutrality are different diagnostics. A gut
+trajectory can repeat while the body reserve declines, as the zero-intake
+fixture demonstrates. The one body reset is a measurement protocol that removes
+the arbitrary empty-gut initialization debt; it is not a physiological process
+and is not repeated between measured days. The numerical convergence tolerance
+addresses floating-point arithmetic only, not biological variation,
+measurement precision, viability, or parameter uncertainty.
+
+The constant and concentrated late-feeding fixtures both prescribe 0.24 kg DM
+and 2400 kJ per day. In the current unlimited, linear, lossless gut model they
+have different within-day gut, assimilation, and body trajectories but the
+same steady-cycle daily energy-flow totals within explicit numerical
+tolerances. This timing equivalence is conditional on both body paths
+completing above the unchanged non-negative reserve boundary. It is checked
+from numeric stocks and flows, never inferred from `body_energy_status`, and
+does not make real foods or feeding schedules biologically interchangeable.
+
 Only the product of intake and density reaches downstream dynamics. Scaling
 intake by a positive constant and density by its reciprocal therefore produces
 identical energy trajectories. The two prescribed inputs are structurally
@@ -57,7 +84,12 @@ and delayed geometric release after a single ingestion pulse. The Goal 004
 experiment
 [`experiments/rebuild-004-controlled-food-energy-bridge.R`](experiments/rebuild-004-controlled-food-energy-bridge.R)
 demonstrates exact zero, constant, pulse, and factorization conversions and
-their unchanged downstream results.
+their unchanged downstream results. The Goal 005 experiment
+[`experiments/rebuild-005-repeated-day-reference-cycle.R`](experiments/rebuild-005-repeated-day-reference-cycle.R)
+demonstrates gut-only spin-up, the single body reset, state carry-over, and the
+zero, constant, and concentrated late-feeding reference cycles. Its separate
+review script writes only the five ignored synthetic figures and tables
+declared by the Goal 005 contract.
 
 These demonstrations prove arithmetic, timing, and accounting semantics only.
 They do not estimate a maintenance requirement, residence time, gut fill,
@@ -65,7 +97,9 @@ feeding schedule, animal viability, ecological equilibrium, or any macropod
 trait. The model contains no offered forage, wet-mass conversion, variable food
 quality, digestive loss, waste, dry-matter gut stock, gut capacity, feeding
 behavior, activity expenditure, body-mass change, plants, or empirical
-calibration.
+calibration. It also contains no variable or stochastic days, configurable
+measurement horizon, season, chronic-decline process, recovery process, or
+viability criterion.
 
 ## Design
 
@@ -76,9 +110,9 @@ Experiments remain thin clients of the package. Each future goal addresses one
 principal question and one subsystem, with compact outputs, proportionate tests,
 an explicit stop, and discussion before another layer is added.
 
-The current Goal 004 contract is specified in
+The current Goal 005 contract is specified in
 [`docs/model-specification.md`](docs/model-specification.md). No later model
-layer is currently specified or authorized. Goal 004 results must be discussed
+layer is currently specified or authorized. Goal 005 results must be discussed
 before another bounded question is chosen; candidate later layers are listed
 without authorization in [`docs/roadmap.md`](docs/roadmap.md).
 

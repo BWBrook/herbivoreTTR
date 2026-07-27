@@ -25,10 +25,18 @@ entering the existing gut pool. Zero, constant, pulse, and alternative
 factorization fixtures demonstrate exact conversion and unchanged downstream
 dynamics without adding state, a runner, or digestive physiology.
 
+Rebuild Goal 005 adds a repeated-day reference-cycle orchestrator over the
+unchanged Goal 003 energy schedule. It advances only the gut under identical
+24-hour forcing until a numerical period-24 cycle is detected, resets body
+energy once, and records two measured days with exact state carry-over. Zero,
+constant, and concentrated late-feeding fixtures separate gut periodicity from
+body-energy neutrality and demonstrate conditional timing equivalence without
+adding biological processes or a general multi-day horizon.
+
 ## Next Decision Gate
 
-No Goal 005 model layer is specified or authorized. The Goal 004 conversion,
-structural non-identifiability, downstream equivalence, and interpretation must
+No Goal 006 model layer is specified or authorized. The Goal 005 convergence,
+reset protocol, body-path feasibility, and conditional timing equivalence must
 first be discussed. That discussion will choose one bounded principal question
 and define its scientific contract before any further implementation.
 

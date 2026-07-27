@@ -46,7 +46,7 @@ physiological calculation of digestion, assimilation efficiency, or loss.
 Prescribed dry matter is ingestion, not offered or available forage, wet or
 as-fed mass, or output from a modeled feeding decision. The caller retains the
 food parameter, intake schedule, converted energy schedule, and downstream
-result as separate objects. No new state or coupled runner is introduced.
+result as separate objects. The food bridge introduces no new state.
 
 During each of 24 fixed one-hour transitions, a fixed fraction of the opening
 gut stock is released and transferred one-for-one into the unchanged body
@@ -59,6 +59,20 @@ current-hour ingestion, so newly ingested energy is not eligible for release
 until the next transition. Separate gut, body, and combined-system residuals
 make the internal transfer and external inputs and expenditures inspectable.
 
+For repeated identical daily forcing, the reference-cycle runner can advance
+only the gut until successive 25-boundary daily trajectories and the
+period-24 boundary close within a declared numerical tolerance. It then uses a
+declared body state once at the measurement boundary and calls the unchanged
+daily runner for two days with exact gut and body carry-over. Burn-in creates no
+body history, and the body is not reset between measured days.
+
+The reset is a diagnostic protocol rather than a biological process. Gut-cycle
+stability and measured body-energy neutrality are separate properties: a
+repeatable gut trajectory can accompany persistent deficit or surplus. The
+convergence tolerance describes floating-point resolution only, and daily
+timing equivalence is interpreted only after numeric body-path feasibility is
+verified.
+
 Only the product of dry-matter intake and density enters downstream dynamics,
 so those prescribed inputs are structurally non-identifiable from the resulting
 energy trajectories. Equivalent products demonstrate an accounting property,
@@ -69,18 +83,21 @@ metadata only. No implemented equation depends on body mass. All food-energy
 and gut-body fixtures are synthetic. The current layer establishes unit
 conversion, arithmetic closure, delayed stock-flow behavior, accounting
 semantics, and opening-to-closing state continuity; it does not establish
-empirical realism, animal viability, or ecological equilibrium.
+empirical realism, animal viability, ecological equilibrium, or chronic
+multi-day dynamics.
 
 ## Current Stop Boundary
 
 No later layer is specified or authorized. The implemented gut stock is energy,
-not dry matter, gross energy, plant biomass, or measured gut fill. Offered and
-wet forage, variable or multiple foods, digestive loss, efficiency, waste,
-capacity, intake limits, feeding behavior, and body feedback are absent.
-Activity, dynamic body mass, protein, water, thermoregulation, plants, space,
-calibration, and all other physiological or ecological detail remain outside
-the executable boundary. Goal 004 results must be discussed before the next
-principal question is chosen.
+not dry matter, gross energy, plant biomass, or measured gut fill. Variable or
+stochastic days, configurable measurement horizons, seasons, chronic decline,
+recovery, and viability criteria are absent. Offered and wet forage, variable
+or multiple foods, digestive loss, efficiency, waste, capacity, intake limits,
+feeding behavior, and body feedback are also absent. Activity, dynamic body
+mass, protein, water, thermoregulation, plants, space, calibration, and all
+other physiological or ecological detail remain outside the executable
+boundary. Goal 005 results must be discussed before the next principal question
+is chosen.
 
 The predecessor is preserved privately as `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16`; its scientific baseline commit is
