@@ -1,7 +1,8 @@
 #' Advance the body-energy ledger by one hour
 #'
 #' Apply one fixed one-hour transition to a body-energy state using prescribed
-#' already-assimilated energy and fixed maintenance expenditure.
+#' already-assimilated energy, fixed maintenance expenditure, and prescribed
+#' routine-activity expenditure.
 #'
 #' @param state A plain body-energy state record created by
 #'   [new_body_energy_state()].
@@ -9,25 +10,40 @@
 #'   [new_body_energy_parameters()].
 #' @param input_row Exactly one row from a validated schedule created by
 #'   [new_assimilated_energy_schedule()].
+#' @param activity_row Exactly one row from a validated schedule created by
+#'   [new_routine_activity_expenditure_schedule()]. Its `hour_of_day` must
+#'   match `input_row`.
 #'
 #' @return A plain list containing the closing `state` and the one-hour
 #'   `fluxes`. A proposed negative closing reserve raises an error.
 #' @export
-step_body_energy <- function(state, parameters, input_row) {
+step_body_energy <- function(state, parameters, input_row, activity_row) {
   .validate_body_energy_state(state)
   .validate_body_energy_parameters(parameters)
   .validate_assimilated_energy_input_row(input_row)
+  .validate_routine_activity_expenditure_input_row(activity_row)
+  if (!identical(input_row$hour_of_day, activity_row$hour_of_day)) {
+    stop(
+      "`activity_row$hour_of_day` must match `input_row$hour_of_day`.",
+      call. = FALSE
+    )
+  }
 
   body_energy_reserve_start_kj <- state$body_energy_reserve_kj
   prescribed_assimilated_energy_kj <-
     input_row$prescribed_assimilated_energy_kj_h
   maintenance_expenditure_kj <-
     parameters$maintenance_expenditure_kj_h
+  prescribed_routine_activity_expenditure_kj <-
+    activity_row$prescribed_routine_activity_expenditure_kj_h
   net_body_energy_rate_kj_h <-
     input_row$prescribed_assimilated_energy_kj_h -
-      parameters$maintenance_expenditure_kj_h
+      parameters$maintenance_expenditure_kj_h -
+      activity_row$prescribed_routine_activity_expenditure_kj_h
   body_energy_change_kj <-
-    prescribed_assimilated_energy_kj - maintenance_expenditure_kj
+    prescribed_assimilated_energy_kj -
+      maintenance_expenditure_kj -
+      prescribed_routine_activity_expenditure_kj
   body_energy_reserve_end_kj <-
     body_energy_reserve_start_kj + body_energy_change_kj
 
@@ -48,7 +64,8 @@ step_body_energy <- function(state, parameters, input_row) {
     body_energy_reserve_start_kj,
     body_energy_reserve_end_kj,
     prescribed_assimilated_energy_kj,
-    maintenance_expenditure_kj
+    maintenance_expenditure_kj,
+    prescribed_routine_activity_expenditure_kj
   )
   if (abs(energy_balance_residual_kj) > tolerance) {
     stop("The hourly body-energy balance does not close.", call. = FALSE)
@@ -60,6 +77,8 @@ step_body_energy <- function(state, parameters, input_row) {
       prescribed_assimilated_energy_kj =
         prescribed_assimilated_energy_kj,
       maintenance_expenditure_kj = maintenance_expenditure_kj,
+      prescribed_routine_activity_expenditure_kj =
+        prescribed_routine_activity_expenditure_kj,
       net_body_energy_rate_kj_h = net_body_energy_rate_kj_h,
       body_energy_change_kj = body_energy_change_kj,
       energy_balance_residual_kj = energy_balance_residual_kj
@@ -155,14 +174,16 @@ step_body_energy <- function(state, parameters, input_row) {
   opening_reserve_kj,
   closing_reserve_kj,
   prescribed_assimilated_energy_amounts_kj,
-  maintenance_expenditure_amounts_kj
+  maintenance_expenditure_amounts_kj,
+  prescribed_routine_activity_expenditure_amounts_kj
 ) {
   scale <- max(
     1,
     abs(opening_reserve_kj),
     abs(closing_reserve_kj),
     sum(abs(prescribed_assimilated_energy_amounts_kj)),
-    sum(abs(maintenance_expenditure_amounts_kj))
+    sum(abs(maintenance_expenditure_amounts_kj)),
+    sum(abs(prescribed_routine_activity_expenditure_amounts_kj))
   )
   if (!is.finite(scale)) {
     stop("The body-energy accounting scale must be finite.", call. = FALSE)

@@ -10,6 +10,11 @@ fixtures <- data.frame(
 body_mass_ref_kg <- 50
 initial_state <- herbivoreTTR::new_body_energy_state(5000)
 parameters <- herbivoreTTR::new_body_energy_parameters(100)
+routine_activity_schedule <-
+  herbivoreTTR::new_routine_activity_expenditure_schedule(
+    0:23,
+    rep(0, 24L)
+  )
 
 scenario_rows <- lapply(seq_len(nrow(fixtures)), function(index) {
   schedule <- herbivoreTTR::new_assimilated_energy_schedule(
@@ -22,7 +27,8 @@ scenario_rows <- lapply(seq_len(nrow(fixtures)), function(index) {
   result <- herbivoreTTR::run_body_energy_day(
     initial_state = initial_state,
     parameters = parameters,
-    schedule = schedule
+    schedule = schedule,
+    routine_activity_schedule = routine_activity_schedule
   )
 
   stopifnot(

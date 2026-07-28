@@ -44,21 +44,33 @@ system, while their within-day stock and flow trajectories differ. The
 ecological reference remains a generic synthetic prescribed schedule, not a
 behavioral or empirical model.
 
+Rebuild Goal 007 adds a strict 24-hour schedule of externally prescribed
+routine-activity expenditure in kJ h^-1. It remains separate from the fixed
+synthetic maintenance parameter and is required explicitly by every body
+transition and runner. Activity is applied only during measured body days in
+the reference cycle, while gut-only burn-in and all gut dynamics remain
+unchanged. A zero-activity regression preserves earlier trajectories on shared
+fields, and a four-hour 50 kJ h^-1 pulse demonstrates an exact additional
+200 kJ body loss per measured day with no gut effect. These are arithmetic and
+accounting results, not an empirical activity or physiology model.
+
 ## Next Decision Gate
 
-No Goal 007 model layer is specified or authorized. The Goal 006 reference
-roles, ecological timing contrast, body-path feasibility, and operational null
-must first be discussed. That discussion will choose one bounded principal
-question and define its scientific contract before any further implementation.
+Goal 008 remains a discussion gate for a later ecological day/night activity
+schedule and intake rebalancing. Goal 007 adds neither: its routine-activity
+forcing is externally prescribed, and its diagnostic pulse is not an ecological
+schedule. The Goal 007 results and the Goal 006 ecological reference must be
+discussed before Goal 008 receives a bounded principal question, scientific
+contract, or implementation authority.
 
 ## Candidate Later Layers
 
-Previously discussed candidates include activity expenditure, dynamic body
-mass, protein, water, thermoregulation, plants, spatial foraging, and coupling
-between established subsystems. Variable food quality, digestion, gut capacity,
-and feeding behavior also remain unimplemented. This list records possible
-directions, not an approved sequence, a claim that any layer comes next, or a
-promise to implement one.
+Previously discussed candidates include dynamic body mass, protein, water,
+thermoregulation, plants, spatial foraging, and coupling between established
+subsystems. Variable food quality, digestion, gut capacity, feeding behavior,
+directed locomotion, and activity feedback also remain unimplemented. This list
+records possible directions, not an approved sequence, a claim that any layer
+comes next, or a promise to implement one.
 
 Each layer requires a separately approved small goal with one principal
 question, one subsystem, compact predeclared outputs, proportionate tests, and

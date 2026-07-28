@@ -44,7 +44,12 @@ run_downstream <- function(
     body_parameters = herbivoreTTR::new_body_energy_parameters(
       maintenance_expenditure_kj_h
     ),
-    schedule = energy_schedule
+    schedule = energy_schedule,
+    routine_activity_schedule =
+      herbivoreTTR::new_routine_activity_expenditure_schedule(
+        0:23,
+        rep(0, 24L)
+      )
   )
 }
 

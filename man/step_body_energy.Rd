@@ -4,7 +4,7 @@
 \alias{step_body_energy}
 \title{Advance the body-energy ledger by one hour}
 \usage{
-step_body_energy(state, parameters, input_row)
+step_body_energy(state, parameters, input_row, activity_row)
 }
 \arguments{
 \item{state}{A plain body-energy state record created by
@@ -15,6 +15,10 @@ step_body_energy(state, parameters, input_row)
 
 \item{input_row}{Exactly one row from a validated schedule created by
 [new_assimilated_energy_schedule()].}
+
+\item{activity_row}{Exactly one row from a validated schedule created by
+[new_routine_activity_expenditure_schedule()]. Its `hour_of_day` must
+match `input_row`.}
 }
 \value{
 A plain list containing the closing `state` and the one-hour
@@ -22,5 +26,6 @@ A plain list containing the closing `state` and the one-hour
 }
 \description{
 Apply one fixed one-hour transition to a body-energy state using prescribed
-already-assimilated energy and fixed maintenance expenditure.
+already-assimilated energy, fixed maintenance expenditure, and prescribed
+routine-activity expenditure.
 }

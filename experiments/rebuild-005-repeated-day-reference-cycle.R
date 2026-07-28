@@ -14,12 +14,18 @@ new_fixture <- function(scenario_id, intake_rates_kg_dm_h) {
       food_parameters,
       dry_matter_schedule
     )
+  routine_activity_schedule <-
+    herbivoreTTR::new_routine_activity_expenditure_schedule(
+      0:23,
+      rep(0, 24L)
+    )
   result <- herbivoreTTR::run_gut_body_energy_reference_cycle(
     initial_gut_state = herbivoreTTR::new_gut_energy_state(0),
     measurement_body_state = herbivoreTTR::new_body_energy_state(10000),
     gut_parameters = herbivoreTTR::new_gut_energy_parameters(0.25),
     body_parameters = herbivoreTTR::new_body_energy_parameters(100),
     schedule = energy_schedule,
+    routine_activity_schedule = routine_activity_schedule,
     gut_convergence_relative_tolerance = 100 * .Machine$double.eps,
     max_burn_in_days = 100L
   )
@@ -28,6 +34,7 @@ new_fixture <- function(scenario_id, intake_rates_kg_dm_h) {
     scenario_id = scenario_id,
     dry_matter_schedule = dry_matter_schedule,
     energy_schedule = energy_schedule,
+    routine_activity_schedule = routine_activity_schedule,
     result = result
   )
 }
@@ -199,7 +206,8 @@ assert_result_contract <- function(fixture) {
       initial_body_state = opening_body_state,
       gut_parameters = herbivoreTTR::new_gut_energy_parameters(0.25),
       body_parameters = herbivoreTTR::new_body_energy_parameters(100),
-      schedule = fixture$energy_schedule
+      schedule = fixture$energy_schedule,
+      routine_activity_schedule = fixture$routine_activity_schedule
     )
     measured_hourly <- hourly[
       setdiff(names(hourly), "measurement_day")

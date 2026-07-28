@@ -55,7 +55,8 @@
     abs(daily$body_energy_reserve_initial_kj),
     abs(daily$body_energy_reserve_final_kj),
     sum(abs(hourly$assimilated_energy_kj)),
-    sum(abs(hourly$maintenance_expenditure_kj))
+    sum(abs(hourly$maintenance_expenditure_kj)),
+    sum(abs(hourly$prescribed_routine_activity_expenditure_kj))
   )
 
   c(
@@ -94,6 +95,11 @@
     gut_parameters = herbivoreTTR::new_gut_energy_parameters(0.25),
     body_parameters = herbivoreTTR::new_body_energy_parameters(100),
     schedule = energy_schedule,
+    routine_activity_schedule =
+      herbivoreTTR::new_routine_activity_expenditure_schedule(
+        0:23,
+        rep(0, 24L)
+      ),
     gut_convergence_relative_tolerance =
       100 * .Machine$double.eps,
     max_burn_in_days = 100L

@@ -3,7 +3,7 @@
 ## Status
 
 These are the exact public record, flux, and ledger names implemented through
-Goal 005. Rates in kJ h^-1 and one-hour amounts in kJ remain distinct even when
+Goal 007. Rates in kJ h^-1 and one-hour amounts in kJ remain distinct even when
 their numerical values match for the fixed one-hour transition.
 
 The Goal 004 density is already metabolizable energy on a dry-matter basis. Its
@@ -21,7 +21,8 @@ physiological quantity.
 | `gut_available_energy_kj` | dynamic gut state | kJ | Available-energy accounting equivalent in the single gut pool at a transition boundary. |
 | `body_energy_reserve_kj` | dynamic body state | kJ | Physical body-energy reserve at a transition boundary. |
 | `gut_release_fraction_h` | fixed gut parameter | h^-1 | Fraction of opening gut energy released during each fixed one-hour transition; constrained to `(0, 1]`. |
-| `maintenance_expenditure_kj_h` | fixed body parameter rate | kJ h^-1 | Constant maintenance-only energy expenditure rate. |
+| `maintenance_expenditure_kj_h` | fixed body parameter rate | kJ h^-1 | Constant synthetic maintenance-only expenditure rate; not an empirically parameterized metabolic requirement. |
+| `prescribed_routine_activity_expenditure_kj_h` | prescribed body-expenditure rate | kJ h^-1 | Finite, non-negative routine-activity expenditure imposed externally for the labeled hour, incremental to fixed maintenance; not behavior or locomotion. |
 | `hour_of_day` | prescribed clock | integer 0-23 | Label for the half-open one-hour interval `[hour_of_day, hour_of_day + 1)`. |
 | `prescribed_ingested_available_energy_kj_h` | prescribed or derived gut-input rate | kJ h^-1 | Controlled available-energy accounting equivalent entering the gut during an hour; the Goal 004 converter derives it as dry-matter intake multiplied by fixed density. |
 | `prescribed_assimilated_energy_kj_h` | prescribed body-input rate | kJ h^-1 | Already-assimilated energy supplied directly to the standalone Goal 002 body ledger. |
@@ -68,6 +69,26 @@ kg DM h^-1 * kJ kg^-1 DM = kJ h^-1
 
 The converter adds no food columns, attributes, amount variables, or state.
 
+## Goal 007 Routine-Activity Record Schema
+
+`new_routine_activity_expenditure_schedule()` returns an exact plain 24-row
+base R data frame with columns in this order:
+
+```text
+hour_of_day
+prescribed_routine_activity_expenditure_kj_h
+```
+
+`hour_of_day` is integer `0:23`. The activity column contains finite,
+non-negative doubles in kJ h^-1. Every body transition and runner requires this
+forcing explicitly; no interface supplies a default or implicit zero schedule.
+For `step_body_energy()`, the one-row activity input must have the same
+`hour_of_day` as the assimilated-energy input row.
+
+The schedule is an externally prescribed incremental body-energy sink. It does
+not represent a behavioral state, directed locomotion, exercise, thermic effect
+of food, total metabolism, or an emergent response.
+
 ## Goal 005 Reference-Cycle Schemas
 
 `run_gut_body_energy_reference_cycle()` returns an exact plain list named:
@@ -95,14 +116,18 @@ The 25 boundaries are the opening stocks for hours 0 through 23 plus the
 closing stock after hour 23. Burn-in advances no body state.
 
 The measured `hourly` data frame prepends integer `measurement_day` to the
-unchanged 21-column coupled hourly ledger, giving 48 rows and 22 columns.
+24-column coupled hourly ledger, giving 48 rows and 25 columns.
 Within each measured day, `hour_of_day` remains `0:23`; continuous review time
 is derived as `24 * (measurement_day - 1) + time_start_h` or `time_end_h`.
 
 The measured `daily` data frame prepends integer `measurement_day = 1:2` to the
-unchanged 19-column coupled daily summary, giving two rows and 20 columns. The
-body state is reset only before measured day 1. The closing gut and body stocks
-of day 1 open day 2 exactly.
+20-column coupled daily summary, giving two rows and 21 columns. The body state
+is reset only before measured day 1. The closing gut and body stocks of day 1
+open day 2 exactly.
+
+The declared routine-activity schedule is applied only to those two measured
+body days. Gut-only burn-in advances no body state or body history and remains
+activity-free. Its seven-column convergence schema is unchanged.
 
 Review tables add only a leading `scenario_id` to the exact convergence,
 measured-daily, or measured-hourly schemas. CSVs retain round-trippable numeric
@@ -137,15 +162,18 @@ The coupled runner returns exactly these columns in this order:
 | `gut_energy_change_kj` | gut-stock change | kJ | Ingested amount minus assimilated amount. |
 | `gut_available_energy_end_kj` | closing gut state | kJ | Gut stock after release and current-hour ingestion; it opens the next hour. |
 | `gut_energy_balance_residual_kj` | gut accounting residual | kJ | Observed gut-stock change minus expected gut-stock change. |
-| `body_energy_reserve_start_kj` | opening body state | kJ | Body reserve before assimilation and maintenance are applied. |
-| `maintenance_expenditure_kj_h` | body expenditure rate | kJ h^-1 | Constant maintenance expenditure rate for the hour. |
+| `body_energy_reserve_start_kj` | opening body state | kJ | Body reserve before assimilation, fixed maintenance, and prescribed routine activity are applied. |
+| `maintenance_expenditure_kj_h` | body expenditure rate | kJ h^-1 | Constant synthetic maintenance expenditure rate for the hour. |
+| `prescribed_routine_activity_expenditure_kj_h` | prescribed body-expenditure rate | kJ h^-1 | Externally prescribed routine-activity expenditure rate for the hour, incremental to maintenance. |
+| `net_body_energy_rate_kj_h` | derived body rate | kJ h^-1 | Assimilation rate minus maintenance rate minus prescribed routine-activity rate. |
 | `maintenance_expenditure_kj` | body expenditure amount | kJ | Maintenance energy leaving the body reserve during the hour. |
-| `body_energy_change_kj` | body-stock change | kJ | Assimilated amount minus maintenance amount. |
-| `body_energy_reserve_end_kj` | closing body state | kJ | Body reserve after assimilation and maintenance; it opens the next hour. |
-| `body_energy_balance_residual_kj` | body accounting residual | kJ | Observed body-stock change minus assimilation plus maintenance. |
+| `prescribed_routine_activity_expenditure_kj` | prescribed body-expenditure amount | kJ | Routine-activity energy leaving the body reserve during the one-hour interval. |
+| `body_energy_change_kj` | body-stock change | kJ | Assimilated amount minus maintenance amount minus prescribed routine-activity amount. |
+| `body_energy_reserve_end_kj` | closing body state | kJ | Body reserve after assimilation, maintenance, and prescribed routine activity; it opens the next hour. |
+| `body_energy_balance_residual_kj` | body accounting residual | kJ | Observed body-stock change minus assimilation plus maintenance plus prescribed routine activity. |
 | `total_system_energy_start_kj` | opening combined state | kJ | Opening gut stock plus opening body reserve for the modeled two-stock system. |
 | `total_system_energy_end_kj` | closing combined state | kJ | Closing gut stock plus closing body reserve for the modeled two-stock system. |
-| `system_energy_balance_residual_kj` | combined accounting residual | kJ | Observed combined-stock change minus prescribed ingestion plus maintenance; internal assimilation cancels. |
+| `system_energy_balance_residual_kj` | combined accounting residual | kJ | Observed combined-stock change minus prescribed ingestion plus maintenance plus prescribed routine activity; internal assimilation cancels. |
 
 ## Coupled Daily Summary
 
@@ -163,12 +191,13 @@ these columns in this order:
 | `gut_energy_balance_residual_kj` | daily gut residual | kJ | Observed gut change minus expected gut change. |
 | `body_energy_reserve_initial_kj` | daily opening body state | kJ | Body reserve at the start of hour 0. |
 | `total_maintenance_expenditure_kj` | daily body expenditure | kJ | Sum of the 24 maintenance amounts. |
-| `expected_body_energy_change_kj` | expected body change | kJ | Total assimilation minus total maintenance. |
+| `total_prescribed_routine_activity_expenditure_kj` | daily prescribed body expenditure | kJ | Sum of the 24 prescribed routine-activity expenditure amounts. |
+| `expected_body_energy_change_kj` | expected body change | kJ | Total assimilation minus total maintenance minus total prescribed routine activity. |
 | `observed_body_energy_change_kj` | observed body change | kJ | Final body reserve minus initial body reserve. |
 | `body_energy_reserve_final_kj` | daily closing body state | kJ | Body reserve after the hour 23 transition. |
 | `body_energy_balance_residual_kj` | daily body residual | kJ | Observed body change minus expected body change. |
 | `total_system_energy_initial_kj` | daily opening combined state | kJ | Initial gut stock plus initial body reserve. |
-| `expected_total_system_energy_change_kj` | expected combined change | kJ | Total prescribed ingestion minus total maintenance. |
+| `expected_total_system_energy_change_kj` | expected combined change | kJ | Total prescribed ingestion minus total maintenance minus total prescribed routine activity. |
 | `observed_total_system_energy_change_kj` | observed combined change | kJ | Final combined modeled energy minus initial combined modeled energy. |
 | `total_system_energy_final_kj` | daily closing combined state | kJ | Final gut stock plus final body reserve. |
 | `system_energy_balance_residual_kj` | daily combined residual | kJ | Observed combined change minus expected combined change. |
@@ -183,13 +212,15 @@ The body-only public interface remains implemented. Its hourly ledger uses:
 | `hour_of_day` | clock key | integer 0-23 | Schedule label for the hourly transition. |
 | `time_start_h` | opening time | h | Elapsed time at the start of the transition. |
 | `time_end_h` | closing time | h | Elapsed time at the end of the transition. |
-| `body_energy_reserve_start_kj` | opening state | kJ | Reserve before prescribed assimilated energy and maintenance. |
+| `body_energy_reserve_start_kj` | opening state | kJ | Reserve before prescribed assimilated energy, fixed maintenance, and prescribed routine activity. |
 | `prescribed_assimilated_energy_kj_h` | input rate | kJ h^-1 | Already-assimilated energy rate supplied directly to the body ledger. |
-| `maintenance_expenditure_kj_h` | expenditure rate | kJ h^-1 | Constant maintenance expenditure rate. |
-| `net_body_energy_rate_kj_h` | derived net rate | kJ h^-1 | Prescribed assimilated-energy rate minus maintenance rate. |
+| `maintenance_expenditure_kj_h` | expenditure rate | kJ h^-1 | Constant synthetic maintenance expenditure rate. |
+| `prescribed_routine_activity_expenditure_kj_h` | prescribed expenditure rate | kJ h^-1 | Externally prescribed routine-activity expenditure rate, incremental to maintenance. |
+| `net_body_energy_rate_kj_h` | derived net rate | kJ h^-1 | Prescribed assimilated-energy rate minus maintenance rate minus prescribed routine-activity rate. |
 | `prescribed_assimilated_energy_kj` | input amount | kJ | Already-assimilated energy entering the reserve during the hour. |
 | `maintenance_expenditure_kj` | expenditure amount | kJ | Maintenance energy leaving the reserve during the hour. |
-| `body_energy_change_kj` | net amount | kJ | Input amount minus maintenance amount. |
+| `prescribed_routine_activity_expenditure_kj` | prescribed expenditure amount | kJ | Routine-activity energy leaving the reserve during the one-hour interval. |
+| `body_energy_change_kj` | net amount | kJ | Input amount minus maintenance amount minus prescribed routine-activity amount. |
 | `body_energy_reserve_end_kj` | closing state | kJ | Reserve after the one-hour change. |
 | `energy_balance_residual_kj` | hourly accounting residual | kJ | Observed reserve change minus `body_energy_change_kj`. |
 
@@ -200,7 +231,8 @@ Its daily summary uses:
 | `body_energy_reserve_initial_kj` | daily opening state | kJ | Reserve at the start of hour 0. |
 | `total_prescribed_assimilated_energy_kj` | daily input total | kJ | Sum of the 24 prescribed assimilated-energy amounts. |
 | `total_maintenance_expenditure_kj` | daily expenditure total | kJ | Sum of the 24 maintenance amounts. |
-| `expected_body_energy_change_kj` | daily expected change | kJ | Daily input total minus daily maintenance total. |
+| `total_prescribed_routine_activity_expenditure_kj` | daily prescribed expenditure total | kJ | Sum of the 24 prescribed routine-activity expenditure amounts. |
+| `expected_body_energy_change_kj` | daily expected change | kJ | Daily input total minus daily maintenance total minus daily prescribed routine-activity total. |
 | `observed_body_energy_change_kj` | daily observed change | kJ | Final reserve minus initial reserve. |
 | `body_energy_reserve_final_kj` | daily closing state | kJ | Reserve after the hour 23 transition. |
 | `energy_balance_residual_kj` | daily accounting residual | kJ | Observed daily change minus expected daily change. |
@@ -218,10 +250,19 @@ history remain distinct even when they share a derived output table. Goal 003
 adds storage and delay only; Goal 004 adds one fixed food property and one
 prescribed dry-matter input without new state; Goal 005 adds numerical
 gut-cycle construction, one measurement reset, and two carried day keys without
-new biology. Offered or wet forage, variable food properties, digestive losses
-or efficiency, dry-matter gut state, capacity, behavior, activity, mass change,
-variable or stochastic days, seasons, chronic change, viability, plants, and
-calibration have no implemented variables.
+new biology; Goal 006 adds named reference fixtures; and Goal 007 adds one
+externally prescribed incremental routine-activity expenditure without new
+state or gut dynamics. Offered or wet forage, variable food properties,
+digestive losses or efficiency, dry-matter gut state, capacity, behavior,
+directed locomotion, activity choice or feedback, mass change, variable or
+stochastic days, seasons, chronic change, viability, plants, and calibration
+have no implemented variables.
+
+The zero-activity schedule is the Goal 007 regression control. The four-hour
+50 kJ h^-1 pulse in hours 8 through 11 is an arithmetic diagnostic totaling
+200 kJ per measured day. Neither fixture is an empirical activity or
+physiology estimate. An ecological day/night activity schedule and intake
+rebalancing remain a Goal 008 discussion gate.
 
 Historical names in `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16` are not binding. The corresponding pre-freeze

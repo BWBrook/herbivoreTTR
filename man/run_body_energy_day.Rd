@@ -4,7 +4,12 @@
 \alias{run_body_energy_day}
 \title{Run the body-energy ledger for one day}
 \usage{
-run_body_energy_day(initial_state, parameters, schedule)
+run_body_energy_day(
+  initial_state,
+  parameters,
+  schedule,
+  routine_activity_schedule
+)
 }
 \arguments{
 \item{initial_state}{A plain body-energy state record created by
@@ -15,6 +20,9 @@ run_body_energy_day(initial_state, parameters, schedule)
 
 \item{schedule}{A 24-row schedule created by
 [new_assimilated_energy_schedule()].}
+
+\item{routine_activity_schedule}{A 24-row schedule created by
+[new_routine_activity_expenditure_schedule()].}
 }
 \value{
 A plain list containing a 24-row `hourly` data frame and a one-row

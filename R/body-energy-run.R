@@ -9,14 +9,24 @@
 #'   [new_body_energy_parameters()].
 #' @param schedule A 24-row schedule created by
 #'   [new_assimilated_energy_schedule()].
+#' @param routine_activity_schedule A 24-row schedule created by
+#'   [new_routine_activity_expenditure_schedule()].
 #'
 #' @return A plain list containing a 24-row `hourly` data frame and a one-row
 #'   `daily` data frame.
 #' @export
-run_body_energy_day <- function(initial_state, parameters, schedule) {
+run_body_energy_day <- function(
+  initial_state,
+  parameters,
+  schedule,
+  routine_activity_schedule
+) {
   .validate_body_energy_state(initial_state)
   .validate_body_energy_parameters(parameters)
   .validate_assimilated_energy_schedule(schedule)
+  .validate_routine_activity_expenditure_schedule(
+    routine_activity_schedule
+  )
 
   hourly <- data.frame(
     hour_of_day = schedule$hour_of_day,
@@ -29,9 +39,13 @@ run_body_energy_day <- function(initial_state, parameters, schedule) {
       parameters$maintenance_expenditure_kj_h,
       24
     ),
+    prescribed_routine_activity_expenditure_kj_h =
+      routine_activity_schedule$
+        prescribed_routine_activity_expenditure_kj_h,
     net_body_energy_rate_kj_h = numeric(24),
     prescribed_assimilated_energy_kj = numeric(24),
     maintenance_expenditure_kj = numeric(24),
+    prescribed_routine_activity_expenditure_kj = numeric(24),
     body_energy_change_kj = numeric(24),
     body_energy_reserve_end_kj = numeric(24),
     energy_balance_residual_kj = numeric(24)
@@ -44,7 +58,8 @@ run_body_energy_day <- function(initial_state, parameters, schedule) {
     transition <- step_body_energy(
       current_state,
       parameters,
-      schedule[row_index, , drop = FALSE]
+      schedule[row_index, , drop = FALSE],
+      routine_activity_schedule[row_index, , drop = FALSE]
     )
     hourly$net_body_energy_rate_kj_h[[row_index]] <-
       transition$fluxes$net_body_energy_rate_kj_h
@@ -52,6 +67,8 @@ run_body_energy_day <- function(initial_state, parameters, schedule) {
       transition$fluxes$prescribed_assimilated_energy_kj
     hourly$maintenance_expenditure_kj[[row_index]] <-
       transition$fluxes$maintenance_expenditure_kj
+    hourly$prescribed_routine_activity_expenditure_kj[[row_index]] <-
+      transition$fluxes$prescribed_routine_activity_expenditure_kj
     hourly$body_energy_change_kj[[row_index]] <-
       transition$fluxes$body_energy_change_kj
     hourly$body_energy_reserve_end_kj[[row_index]] <-
@@ -67,6 +84,8 @@ run_body_energy_day <- function(initial_state, parameters, schedule) {
     sum(hourly$prescribed_assimilated_energy_kj)
   total_maintenance_expenditure_kj <-
     sum(hourly$maintenance_expenditure_kj)
+  total_prescribed_routine_activity_expenditure_kj <-
+    sum(hourly$prescribed_routine_activity_expenditure_kj)
   if (!is.finite(total_prescribed_assimilated_energy_kj)) {
     stop(
       "The daily total prescribed assimilated energy must be finite.",
@@ -79,9 +98,16 @@ run_body_energy_day <- function(initial_state, parameters, schedule) {
       call. = FALSE
     )
   }
+  if (!is.finite(total_prescribed_routine_activity_expenditure_kj)) {
+    stop(
+      "The daily total prescribed routine-activity expenditure must be finite.",
+      call. = FALSE
+    )
+  }
   expected_body_energy_change_kj <-
     total_prescribed_assimilated_energy_kj -
-      total_maintenance_expenditure_kj
+      total_maintenance_expenditure_kj -
+      total_prescribed_routine_activity_expenditure_kj
   if (!is.finite(expected_body_energy_change_kj)) {
     stop("The expected daily body-energy change must be finite.", call. = FALSE)
   }
@@ -101,7 +127,8 @@ run_body_energy_day <- function(initial_state, parameters, schedule) {
     body_energy_reserve_initial_kj,
     body_energy_reserve_final_kj,
     hourly$prescribed_assimilated_energy_kj,
-    hourly$maintenance_expenditure_kj
+    hourly$maintenance_expenditure_kj,
+    hourly$prescribed_routine_activity_expenditure_kj
   )
 
   if (abs(energy_balance_residual_kj) > tolerance) {
@@ -121,6 +148,8 @@ run_body_energy_day <- function(initial_state, parameters, schedule) {
       total_prescribed_assimilated_energy_kj,
     total_maintenance_expenditure_kj =
       total_maintenance_expenditure_kj,
+    total_prescribed_routine_activity_expenditure_kj =
+      total_prescribed_routine_activity_expenditure_kj,
     expected_body_energy_change_kj = expected_body_energy_change_kj,
     observed_body_energy_change_kj = observed_body_energy_change_kj,
     body_energy_reserve_final_kj = body_energy_reserve_final_kj,

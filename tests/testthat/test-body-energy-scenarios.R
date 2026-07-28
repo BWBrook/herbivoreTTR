@@ -12,6 +12,10 @@
     new_schedule = getExportedValue(
       "herbivoreTTR",
       "new_assimilated_energy_schedule"
+    ),
+    new_activity_schedule = getExportedValue(
+      "herbivoreTTR",
+      "new_routine_activity_expenditure_schedule"
     )
   )
 }
@@ -19,19 +23,28 @@
 .run_body_energy_fixture <- function(
   prescribed_rates_kj_h,
   reserve_kj = 5000,
-  maintenance_kj_h = 100
+  maintenance_kj_h = 100,
+  activity_rates_kj_h = rep(0, 24L)
 ) {
   api <- .body_energy_day_api()
   initial_state <- api$new_state(reserve_kj)
   parameters <- api$new_parameters(maintenance_kj_h)
   schedule <- api$new_schedule(0:23, prescribed_rates_kj_h)
+  routine_activity_schedule <-
+    api$new_activity_schedule(0:23, activity_rates_kj_h)
 
   list(
     api = api,
     initial_state = initial_state,
     parameters = parameters,
     schedule = schedule,
-    result = api$run(initial_state, parameters, schedule)
+    routine_activity_schedule = routine_activity_schedule,
+    result = api$run(
+      initial_state,
+      parameters,
+      schedule,
+      routine_activity_schedule
+    )
   )
 }
 
@@ -46,9 +59,11 @@
   "body_energy_reserve_start_kj",
   "prescribed_assimilated_energy_kj_h",
   "maintenance_expenditure_kj_h",
+  "prescribed_routine_activity_expenditure_kj_h",
   "net_body_energy_rate_kj_h",
   "prescribed_assimilated_energy_kj",
   "maintenance_expenditure_kj",
+  "prescribed_routine_activity_expenditure_kj",
   "body_energy_change_kj",
   "body_energy_reserve_end_kj",
   "energy_balance_residual_kj"
@@ -58,6 +73,7 @@
   "body_energy_reserve_initial_kj",
   "total_prescribed_assimilated_energy_kj",
   "total_maintenance_expenditure_kj",
+  "total_prescribed_routine_activity_expenditure_kj",
   "expected_body_energy_change_kj",
   "observed_body_energy_change_kj",
   "body_energy_reserve_final_kj",
@@ -71,16 +87,21 @@ test_that("daily runner returns exact schemas on the half-open hourly clock", {
 
   expect_identical(
     names(formals(fixture$api$run)),
-    c("initial_state", "parameters", "schedule")
+    c(
+      "initial_state",
+      "parameters",
+      "schedule",
+      "routine_activity_schedule"
+    )
   )
   expect_type(result, "list")
   expect_false(is.object(result))
   expect_identical(names(result), c("hourly", "daily"))
   expect_identical(class(result$hourly), "data.frame")
-  expect_identical(dim(result$hourly), c(24L, 12L))
+  expect_identical(dim(result$hourly), c(24L, 14L))
   expect_identical(names(result$hourly), .hourly_body_energy_columns)
   expect_identical(class(result$daily), "data.frame")
-  expect_identical(dim(result$daily), c(1L, 8L))
+  expect_identical(dim(result$daily), c(1L, 9L))
   expect_identical(names(result$daily), .daily_body_energy_columns)
   hourly <- result$hourly
   expect_identical(hourly$hour_of_day, 0:23)
@@ -107,9 +128,17 @@ test_that("hourly rows preserve rates, one-hour amounts, and conservation", {
 
   expect_identical(hourly$prescribed_assimilated_energy_kj_h, rates)
   expect_identical(hourly$maintenance_expenditure_kj_h, rep(80, 24))
+  expect_identical(
+    hourly$prescribed_routine_activity_expenditure_kj_h,
+    rep(0, 24)
+  )
   expect_identical(hourly$net_body_energy_rate_kj_h, rates - 80)
   expect_identical(hourly$prescribed_assimilated_energy_kj, rates)
   expect_identical(hourly$maintenance_expenditure_kj, rep(80, 24))
+  expect_identical(
+    hourly$prescribed_routine_activity_expenditure_kj,
+    rep(0, 24)
+  )
   expect_identical(hourly$body_energy_change_kj, rates - 80)
   expect_identical(hourly$energy_balance_residual_kj, calculated_residual)
   expect_identical(hourly$energy_balance_residual_kj, rep(0, 24))
@@ -123,7 +152,8 @@ test_that("daily summary is derived exactly from the hourly ledger", {
   hourly <- result$hourly
   daily <- result$daily
   expected_change <- sum(hourly$prescribed_assimilated_energy_kj) -
-    sum(hourly$maintenance_expenditure_kj)
+    sum(hourly$maintenance_expenditure_kj) -
+    sum(hourly$prescribed_routine_activity_expenditure_kj)
   observed_change <- tail(hourly$body_energy_reserve_end_kj, 1) -
     hourly$body_energy_reserve_start_kj[[1]]
 
@@ -138,6 +168,10 @@ test_that("daily summary is derived exactly from the hourly ledger", {
   expect_identical(
     daily$total_maintenance_expenditure_kj,
     sum(hourly$maintenance_expenditure_kj)
+  )
+  expect_identical(
+    daily$total_prescribed_routine_activity_expenditure_kj,
+    sum(hourly$prescribed_routine_activity_expenditure_kj)
   )
   expect_identical(daily$expected_body_energy_change_kj, expected_change)
   expect_identical(daily$observed_body_energy_change_kj, observed_change)
@@ -283,15 +317,28 @@ test_that("daily runner does not mutate state, parameters, or schedule", {
   initial_state <- api$new_state(5000)
   parameters <- api$new_parameters(100)
   schedule <- api$new_schedule(0:23, 60 + as.numeric(0:23))
+  routine_activity_schedule <-
+    api$new_activity_schedule(0:23, rep(0, 24L))
   initial_state_before <- .body_energy_copy(initial_state)
   parameters_before <- .body_energy_copy(parameters)
   schedule_before <- .body_energy_copy(schedule)
+  routine_activity_schedule_before <-
+    .body_energy_copy(routine_activity_schedule)
 
-  api$run(initial_state, parameters, schedule)
+  api$run(
+    initial_state,
+    parameters,
+    schedule,
+    routine_activity_schedule
+  )
 
   expect_identical(initial_state, initial_state_before)
   expect_identical(parameters, parameters_before)
   expect_identical(schedule, schedule_before)
+  expect_identical(
+    routine_activity_schedule,
+    routine_activity_schedule_before
+  )
 })
 
 test_that("daily runner rejects non-plain records and altered schedule types", {
@@ -299,6 +346,8 @@ test_that("daily runner rejects non-plain records and altered schedule types", {
   initial_state <- api$new_state(5000)
   parameters <- api$new_parameters(100)
   schedule <- api$new_schedule(0:23, rep(100, 24L))
+  routine_activity_schedule <-
+    api$new_activity_schedule(0:23, rep(0, 24L))
   invalid_states <- list(
     as.pairlist(initial_state),
     structure(initial_state, note = "attributed")
@@ -311,12 +360,27 @@ test_that("daily runner rejects non-plain records and altered schedule types", {
   integer_rate_schedule$prescribed_assimilated_energy_kj_h <- rep(100L, 24L)
 
   for (state in invalid_states) {
-    expect_error(api$run(state, parameters, schedule))
+    expect_error(api$run(
+      state,
+      parameters,
+      schedule,
+      routine_activity_schedule
+    ))
   }
   for (candidate_parameters in invalid_parameters) {
-    expect_error(api$run(initial_state, candidate_parameters, schedule))
+    expect_error(api$run(
+      initial_state,
+      candidate_parameters,
+      schedule,
+      routine_activity_schedule
+    ))
   }
-  expect_error(api$run(initial_state, parameters, integer_rate_schedule))
+  expect_error(api$run(
+    initial_state,
+    parameters,
+    integer_rate_schedule,
+    routine_activity_schedule
+  ))
 })
 
 test_that("daily runner clearly rejects non-representable daily totals", {
@@ -324,9 +388,16 @@ test_that("daily runner clearly rejects non-representable daily totals", {
   initial_state <- api$new_state(1)
   parameters <- api$new_parameters(1e308)
   schedule <- api$new_schedule(0:23, rep(1e308, 24L))
+  routine_activity_schedule <-
+    api$new_activity_schedule(0:23, rep(0, 24L))
 
   expect_error(
-    api$run(initial_state, parameters, schedule),
+    api$run(
+      initial_state,
+      parameters,
+      schedule,
+      routine_activity_schedule
+    ),
     "daily total prescribed assimilated energy must be finite"
   )
 })

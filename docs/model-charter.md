@@ -49,10 +49,17 @@ food parameter, intake schedule, converted energy schedule, and downstream
 result as separate objects. The food bridge introduces no new state.
 
 During each of 24 fixed one-hour transitions, a fixed fraction of the opening
-gut stock is released and transferred one-for-one into the unchanged body
-ledger, while constant maintenance expenditure leaves the body reserve. The
-package returns an exact hourly ledger and a daily summary derived from that
-ledger.
+gut stock is released and transferred one-for-one into the body ledger, while
+constant maintenance expenditure and prescribed routine-activity expenditure
+leave the body reserve. The package returns an exact hourly ledger and a daily
+summary derived from that ledger.
+
+Maintenance remains one fixed synthetic parameter in kJ h^-1. Routine activity
+is a separate, externally prescribed, finite, non-negative 24-hour schedule in
+kJ h^-1 and is incremental to maintenance. Every body transition and runner
+requires that forcing explicitly; there is no implicit zero schedule. For each
+one-hour transition, body change in kJ equals assimilated energy minus
+maintenance expenditure minus prescribed routine-activity expenditure.
 
 Gut stock is expressed in assimilable-energy equivalents. Release precedes
 current-hour ingestion, so newly ingested energy is not eligible for release
@@ -62,9 +69,11 @@ make the internal transfer and external inputs and expenditures inspectable.
 For repeated identical daily forcing, the reference-cycle runner can advance
 only the gut until successive 25-boundary daily trajectories and the
 period-24 boundary close within a declared numerical tolerance. It then uses a
-declared body state once at the measurement boundary and calls the unchanged
-daily runner for two days with exact gut and body carry-over. Burn-in creates no
-body history, and the body is not reset between measured days.
+declared body state once at the measurement boundary and calls the daily runner
+for two measured days with exact gut and body carry-over. The declared activity
+schedule applies only to those measured body days. Burn-in creates no body
+history, incurs no activity expenditure, and the body is not reset between
+measured days.
 
 The reset is a diagnostic protocol rather than a biological process. Gut-cycle
 stability and measured body-energy neutrality are separate properties: a
@@ -93,6 +102,19 @@ steady-cycle daily energy totals form an operational accounting null in the
 current linear, lossless, unlimited system; within-day gut, release, and
 body-reserve trajectories remain distinct.
 
+Goal 007 adds the first separable non-maintenance expenditure component without
+changing gut dynamics. Its zero-activity schedule preserves the Goal 006
+references on shared numerical fields. Its separate four-hour diagnostic pulse
+prescribes 50 kJ h^-1 during `[08:00, 12:00)`, giving exactly 200 kJ of
+additional body expenditure per measured day while gut stock, ingestion,
+assimilation, and convergence remain unchanged.
+
+The activity schedule is imposed by the caller. It is not behavior, directed
+locomotion, exercise, thermic effect of food, total metabolism, or an emergent
+response. The zero fixture is a regression control and the pulse is an
+arithmetic probe; neither supplies empirical evidence about animal activity or
+physiology.
+
 The 50 kg reference mass used in the Goal 002 demonstration is experiment
 metadata only. No implemented equation depends on body mass. All food-energy
 and gut-body fixtures are synthetic. The current layer establishes unit
@@ -103,17 +125,18 @@ multi-day dynamics.
 
 ## Current Stop Boundary
 
-No later layer is specified or authorized. The implemented gut stock is energy,
-not dry matter, gross energy, plant biomass, or measured gut fill. Variable or
-stochastic days, configurable measurement horizons, seasons, chronic decline,
-recovery, and viability criteria are absent. Offered and wet forage, variable
-or multiple foods, digestive loss, efficiency, waste, capacity, intake limits,
-feeding behavior, and body feedback are also absent. Activity, dynamic body
-mass, protein, water, thermoregulation, plants, space, calibration, and all
-other physiological or ecological detail remain outside the executable
-boundary. Goal 006 results must be discussed before the next principal question
-is chosen. The mathematical and ecological references do not themselves
-authorize a later mechanism or scenario.
+The implemented gut stock is energy, not dry matter, gross energy, plant
+biomass, or measured gut fill. Variable or stochastic days, configurable
+measurement horizons, seasons, chronic decline, recovery, and viability
+criteria are absent. Offered and wet forage, variable or multiple foods,
+digestive loss, efficiency, waste, capacity, intake limits, feeding behavior,
+activity choice or feedback, directed locomotion, dynamic body mass, protein,
+water, thermoregulation, plants, space, calibration, and all other
+physiological or ecological detail remain outside the executable boundary.
+
+Goal 008 is a discussion gate for a later ecological day/night activity
+schedule and intake rebalancing. Goal 007 specifies or authorizes neither that
+scenario nor any later mechanism.
 
 The predecessor is preserved privately as `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16`; its scientific baseline commit is

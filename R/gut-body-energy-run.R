@@ -14,6 +14,8 @@
 #'   [new_body_energy_parameters()].
 #' @param schedule A 24-row prescribed ingestion schedule created by
 #'   [new_ingested_available_energy_schedule()].
+#' @param routine_activity_schedule A 24-row schedule created by
+#'   [new_routine_activity_expenditure_schedule()].
 #'
 #' @return A plain list containing a 24-row `hourly` data frame and a one-row
 #'   `daily` data frame.
@@ -23,13 +25,17 @@ run_gut_body_energy_day <- function(
   initial_body_state,
   gut_parameters,
   body_parameters,
-  schedule
+  schedule,
+  routine_activity_schedule
 ) {
   .validate_gut_energy_state(initial_gut_state)
   .validate_body_energy_state(initial_body_state)
   .validate_gut_energy_parameters(gut_parameters)
   .validate_body_energy_parameters(body_parameters)
   .validate_ingested_available_energy_schedule(schedule)
+  .validate_routine_activity_expenditure_schedule(
+    routine_activity_schedule
+  )
 
   hourly <- data.frame(
     hour_of_day = schedule$hour_of_day,
@@ -53,7 +59,12 @@ run_gut_body_energy_day <- function(
       body_parameters$maintenance_expenditure_kj_h,
       24L
     ),
+    prescribed_routine_activity_expenditure_kj_h =
+      routine_activity_schedule$
+        prescribed_routine_activity_expenditure_kj_h,
+    net_body_energy_rate_kj_h = numeric(24L),
     maintenance_expenditure_kj = numeric(24L),
+    prescribed_routine_activity_expenditure_kj = numeric(24L),
     body_energy_change_kj = numeric(24L),
     body_energy_reserve_end_kj = numeric(24L),
     body_energy_balance_residual_kj = numeric(24L),
@@ -84,7 +95,8 @@ run_gut_body_energy_day <- function(
     body_transition <- step_body_energy(
       current_body_state,
       body_parameters,
-      assimilated_energy_input
+      assimilated_energy_input,
+      routine_activity_schedule[row_index, , drop = FALSE]
     )
 
     gut_available_energy_end_kj <-
@@ -97,6 +109,9 @@ run_gut_body_energy_day <- function(
       gut_transition$fluxes$assimilated_energy_kj
     maintenance_expenditure_kj <-
       body_transition$fluxes$maintenance_expenditure_kj
+    prescribed_routine_activity_expenditure_kj <-
+      body_transition$fluxes$
+        prescribed_routine_activity_expenditure_kj
     total_system_energy_start_kj <-
       gut_available_energy_start_kj + body_energy_reserve_start_kj
     total_system_energy_end_kj <-
@@ -107,7 +122,8 @@ run_gut_body_energy_day <- function(
           total_system_energy_start_kj
       ) - (
         prescribed_ingested_available_energy_kj -
-          maintenance_expenditure_kj
+          maintenance_expenditure_kj -
+          prescribed_routine_activity_expenditure_kj
       )
 
     system_arithmetic <- c(
@@ -128,7 +144,8 @@ run_gut_body_energy_day <- function(
       body_energy_reserve_end_kj,
       prescribed_ingested_available_energy_kj,
       assimilated_energy_kj,
-      maintenance_expenditure_kj
+      maintenance_expenditure_kj,
+      prescribed_routine_activity_expenditure_kj
     )
     if (abs(system_energy_balance_residual_kj) > system_tolerance) {
       stop(
@@ -155,6 +172,10 @@ run_gut_body_energy_day <- function(
       body_energy_reserve_start_kj
     hourly$maintenance_expenditure_kj[[row_index]] <-
       maintenance_expenditure_kj
+    hourly$net_body_energy_rate_kj_h[[row_index]] <-
+      body_transition$fluxes$net_body_energy_rate_kj_h
+    hourly$prescribed_routine_activity_expenditure_kj[[row_index]] <-
+      prescribed_routine_activity_expenditure_kj
     hourly$body_energy_change_kj[[row_index]] <-
       body_transition$fluxes$body_energy_change_kj
     hourly$body_energy_reserve_end_kj[[row_index]] <-
@@ -192,6 +213,8 @@ run_gut_body_energy_day <- function(
     sum(hourly$assimilated_energy_kj)
   total_maintenance_expenditure_kj <-
     sum(hourly$maintenance_expenditure_kj)
+  total_prescribed_routine_activity_expenditure_kj <-
+    sum(hourly$prescribed_routine_activity_expenditure_kj)
   total_system_energy_initial_kj <-
     hourly$total_system_energy_start_kj[[1L]]
   total_system_energy_final_kj <-
@@ -201,6 +224,7 @@ run_gut_body_energy_day <- function(
     total_prescribed_ingested_available_energy_kj,
     total_assimilated_energy_kj,
     total_maintenance_expenditure_kj,
+    total_prescribed_routine_activity_expenditure_kj,
     total_system_energy_initial_kj,
     total_system_energy_final_kj
   )
@@ -219,7 +243,8 @@ run_gut_body_energy_day <- function(
       expected_gut_energy_change_kj
   expected_body_energy_change_kj <-
     total_assimilated_energy_kj -
-      total_maintenance_expenditure_kj
+      total_maintenance_expenditure_kj -
+      total_prescribed_routine_activity_expenditure_kj
   observed_body_energy_change_kj <-
     body_energy_reserve_final_kj -
       body_energy_reserve_initial_kj
@@ -228,7 +253,8 @@ run_gut_body_energy_day <- function(
       expected_body_energy_change_kj
   expected_total_system_energy_change_kj <-
     total_prescribed_ingested_available_energy_kj -
-      total_maintenance_expenditure_kj
+      total_maintenance_expenditure_kj -
+      total_prescribed_routine_activity_expenditure_kj
   observed_total_system_energy_change_kj <-
     total_system_energy_final_kj -
       total_system_energy_initial_kj
@@ -261,7 +287,8 @@ run_gut_body_energy_day <- function(
     body_energy_reserve_initial_kj,
     body_energy_reserve_final_kj,
     hourly$assimilated_energy_kj,
-    hourly$maintenance_expenditure_kj
+    hourly$maintenance_expenditure_kj,
+    hourly$prescribed_routine_activity_expenditure_kj
   )
   system_tolerance <- .gut_body_daily_system_tolerance(
     gut_available_energy_initial_kj,
@@ -270,7 +297,8 @@ run_gut_body_energy_day <- function(
     body_energy_reserve_final_kj,
     hourly$prescribed_ingested_available_energy_kj,
     hourly$assimilated_energy_kj,
-    hourly$maintenance_expenditure_kj
+    hourly$maintenance_expenditure_kj,
+    hourly$prescribed_routine_activity_expenditure_kj
   )
 
   if (abs(gut_energy_balance_residual_kj) > gut_tolerance) {
@@ -315,6 +343,8 @@ run_gut_body_energy_day <- function(
       body_energy_reserve_initial_kj,
     total_maintenance_expenditure_kj =
       total_maintenance_expenditure_kj,
+    total_prescribed_routine_activity_expenditure_kj =
+      total_prescribed_routine_activity_expenditure_kj,
     expected_body_energy_change_kj =
       expected_body_energy_change_kj,
     observed_body_energy_change_kj =
@@ -387,7 +417,8 @@ run_gut_body_energy_day <- function(
   body_energy_end_kj,
   prescribed_ingested_available_energy_kj,
   assimilated_energy_kj,
-  maintenance_expenditure_kj
+  maintenance_expenditure_kj,
+  prescribed_routine_activity_expenditure_kj
 ) {
   scale <- max(
     1,
@@ -397,7 +428,8 @@ run_gut_body_energy_day <- function(
     abs(body_energy_end_kj),
     abs(prescribed_ingested_available_energy_kj),
     abs(assimilated_energy_kj),
-    abs(maintenance_expenditure_kj)
+    abs(maintenance_expenditure_kj),
+    abs(prescribed_routine_activity_expenditure_kj)
   )
   if (!is.finite(scale)) {
     stop(
@@ -455,7 +487,8 @@ run_gut_body_energy_day <- function(
   closing_body_energy_kj,
   prescribed_ingested_available_energy_amounts_kj,
   assimilated_energy_amounts_kj,
-  maintenance_expenditure_amounts_kj
+  maintenance_expenditure_amounts_kj,
+  prescribed_routine_activity_expenditure_amounts_kj
 ) {
   scale <- max(
     1,
@@ -465,7 +498,8 @@ run_gut_body_energy_day <- function(
     abs(closing_body_energy_kj),
     sum(abs(prescribed_ingested_available_energy_amounts_kj)),
     sum(abs(assimilated_energy_amounts_kj)),
-    sum(abs(maintenance_expenditure_amounts_kj))
+    sum(abs(maintenance_expenditure_amounts_kj)),
+    sum(abs(prescribed_routine_activity_expenditure_amounts_kj))
   )
   if (!is.finite(scale)) {
     stop(

@@ -9,7 +9,8 @@ run_gut_body_energy_day(
   initial_body_state,
   gut_parameters,
   body_parameters,
-  schedule
+  schedule,
+  routine_activity_schedule
 )
 }
 \arguments{
@@ -27,6 +28,9 @@ run_gut_body_energy_day(
 
 \item{schedule}{A 24-row prescribed ingestion schedule created by
 [new_ingested_available_energy_schedule()].}
+
+\item{routine_activity_schedule}{A 24-row schedule created by
+[new_routine_activity_expenditure_schedule()].}
 }
 \value{
 A plain list containing a 24-row `hourly` data frame and a one-row

@@ -20,6 +20,10 @@
     new_schedule = getFromNamespace(
       "new_ingested_available_energy_schedule",
       "herbivoreTTR"
+    ),
+    new_activity_schedule = getFromNamespace(
+      "new_routine_activity_expenditure_schedule",
+      "herbivoreTTR"
     )
   )
 }
@@ -29,7 +33,8 @@
   body_energy_kj = 5000,
   release_fraction_h = 0.25,
   ingestion_rates_kj_h = rep(100, 24L),
-  maintenance_kj_h = 100
+  maintenance_kj_h = 100,
+  activity_rates_kj_h = rep(0, 24L)
 ) {
   api <- .gut_body_energy_api()
   initial_gut_state <- api$new_gut_state(gut_energy_kj)
@@ -37,6 +42,8 @@
   gut_parameters <- api$new_gut_parameters(release_fraction_h)
   body_parameters <- api$new_body_parameters(maintenance_kj_h)
   schedule <- api$new_schedule(0:23, ingestion_rates_kj_h)
+  routine_activity_schedule <-
+    api$new_activity_schedule(0:23, activity_rates_kj_h)
 
   list(
     api = api,
@@ -45,12 +52,14 @@
     gut_parameters = gut_parameters,
     body_parameters = body_parameters,
     schedule = schedule,
+    routine_activity_schedule = routine_activity_schedule,
     result = api$run(
       initial_gut_state,
       initial_body_state,
       gut_parameters,
       body_parameters,
-      schedule
+      schedule,
+      routine_activity_schedule
     )
   )
 }
@@ -74,7 +83,10 @@
   "gut_energy_balance_residual_kj",
   "body_energy_reserve_start_kj",
   "maintenance_expenditure_kj_h",
+  "prescribed_routine_activity_expenditure_kj_h",
+  "net_body_energy_rate_kj_h",
   "maintenance_expenditure_kj",
+  "prescribed_routine_activity_expenditure_kj",
   "body_energy_change_kj",
   "body_energy_reserve_end_kj",
   "body_energy_balance_residual_kj",
@@ -93,6 +105,7 @@
   "gut_energy_balance_residual_kj",
   "body_energy_reserve_initial_kj",
   "total_maintenance_expenditure_kj",
+  "total_prescribed_routine_activity_expenditure_kj",
   "expected_body_energy_change_kj",
   "observed_body_energy_change_kj",
   "body_energy_reserve_final_kj",
@@ -125,19 +138,21 @@
 
 .hourly_body_tolerance <- function(hourly) {
   mapply(
-    function(body_start, body_end, assimilated, maintenance) {
+    function(body_start, body_end, assimilated, maintenance, activity) {
       100 * .Machine$double.eps * max(
         1,
         abs(body_start),
         abs(body_end),
         abs(assimilated),
-        abs(maintenance)
+        abs(maintenance),
+        abs(activity)
       )
     },
     hourly$body_energy_reserve_start_kj,
     hourly$body_energy_reserve_end_kj,
     hourly$assimilated_energy_kj,
-    hourly$maintenance_expenditure_kj
+    hourly$maintenance_expenditure_kj,
+    hourly$prescribed_routine_activity_expenditure_kj
   )
 }
 
@@ -150,7 +165,8 @@
       body_end,
       ingested,
       assimilated,
-      maintenance
+      maintenance,
+      activity
     ) {
       100 * .Machine$double.eps * max(
         1,
@@ -160,7 +176,8 @@
         abs(body_end),
         abs(ingested),
         abs(assimilated),
-        abs(maintenance)
+        abs(maintenance),
+        abs(activity)
       )
     },
     hourly$gut_available_energy_start_kj,
@@ -169,7 +186,8 @@
     hourly$body_energy_reserve_end_kj,
     hourly$prescribed_ingested_available_energy_kj,
     hourly$assimilated_energy_kj,
-    hourly$maintenance_expenditure_kj
+    hourly$maintenance_expenditure_kj,
+    hourly$prescribed_routine_activity_expenditure_kj
   )
 }
 
@@ -184,26 +202,27 @@ test_that("coupled runner returns exact schemas on the half-open clock", {
       "initial_body_state",
       "gut_parameters",
       "body_parameters",
-      "schedule"
+      "schedule",
+      "routine_activity_schedule"
     )
   )
   expect_type(result, "list")
   expect_false(is.object(result))
   expect_identical(names(result), c("hourly", "daily"))
   expect_identical(class(result$hourly), "data.frame")
-  expect_identical(dim(result$hourly), c(24L, 21L))
+  expect_identical(dim(result$hourly), c(24L, 24L))
   expect_identical(
     names(result$hourly),
     .hourly_gut_body_energy_columns
   )
   expect_identical(class(result$daily), "data.frame")
-  expect_identical(dim(result$daily), c(1L, 19L))
+  expect_identical(dim(result$daily), c(1L, 20L))
   expect_identical(names(result$daily), .daily_gut_body_energy_columns)
   expect_identical(result$hourly$hour_of_day, 0:23)
   expect_identical(result$hourly$time_start_h, as.numeric(0:23))
   expect_identical(result$hourly$time_end_h, as.numeric(1:24))
   expect_true(all(vapply(result$hourly[-1L], is.double, logical(1))))
-  expect_true(all(vapply(result$daily[-19L], is.double, logical(1))))
+  expect_true(all(vapply(result$daily[-20L], is.double, logical(1))))
   expect_type(result$daily$body_energy_status, "character")
 })
 
@@ -235,6 +254,10 @@ test_that("coupled runner preserves continuity and exact row identities", {
     hourly$maintenance_expenditure_kj_h
   )
   expect_identical(
+    hourly$prescribed_routine_activity_expenditure_kj,
+    hourly$prescribed_routine_activity_expenditure_kj_h
+  )
+  expect_identical(
     hourly$total_system_energy_start_kj,
     hourly$gut_available_energy_start_kj +
       hourly$body_energy_reserve_start_kj
@@ -264,14 +287,16 @@ test_that("hourly gut, body, and whole-system balances close to policy", {
       hourly$body_energy_reserve_start_kj
   ) - (
     hourly$assimilated_energy_kj -
-      hourly$maintenance_expenditure_kj
+      hourly$maintenance_expenditure_kj -
+      hourly$prescribed_routine_activity_expenditure_kj
   )
   calculated_system_residual <- (
     hourly$total_system_energy_end_kj -
       hourly$total_system_energy_start_kj
   ) - (
     hourly$prescribed_ingested_available_energy_kj -
-      hourly$maintenance_expenditure_kj
+      hourly$maintenance_expenditure_kj -
+      hourly$prescribed_routine_activity_expenditure_kj
   )
 
   expect_identical(
@@ -311,6 +336,8 @@ test_that("daily summary is derived exactly from the hourly ledger", {
   total_ingested <- sum(hourly$prescribed_ingested_available_energy_kj)
   total_assimilated <- sum(hourly$assimilated_energy_kj)
   total_maintenance <- sum(hourly$maintenance_expenditure_kj)
+  total_activity <-
+    sum(hourly$prescribed_routine_activity_expenditure_kj)
   observed_gut_change <- tail(
     hourly$gut_available_energy_end_kj,
     1L
@@ -354,8 +381,12 @@ test_that("daily summary is derived exactly from the hourly ledger", {
     total_maintenance
   )
   expect_identical(
+    daily$total_prescribed_routine_activity_expenditure_kj,
+    total_activity
+  )
+  expect_identical(
     daily$expected_body_energy_change_kj,
-    total_assimilated - total_maintenance
+    total_assimilated - total_maintenance - total_activity
   )
   expect_identical(
     daily$observed_body_energy_change_kj,
@@ -367,7 +398,8 @@ test_that("daily summary is derived exactly from the hourly ledger", {
   )
   expect_identical(
     daily$body_energy_balance_residual_kj,
-    observed_body_change - (total_assimilated - total_maintenance)
+    observed_body_change -
+      (total_assimilated - total_maintenance - total_activity)
   )
   expect_identical(
     daily$total_system_energy_initial_kj,
@@ -375,7 +407,7 @@ test_that("daily summary is derived exactly from the hourly ledger", {
   )
   expect_identical(
     daily$expected_total_system_energy_change_kj,
-    total_ingested - total_maintenance
+    total_ingested - total_maintenance - total_activity
   )
   expect_identical(
     daily$observed_total_system_energy_change_kj,
@@ -413,7 +445,8 @@ test_that("daily gut, body, and whole-system residuals close to policy", {
     abs(daily$body_energy_reserve_initial_kj),
     abs(daily$body_energy_reserve_final_kj),
     sum(abs(hourly$assimilated_energy_kj)),
-    sum(abs(hourly$maintenance_expenditure_kj))
+    sum(abs(hourly$maintenance_expenditure_kj)),
+    sum(abs(hourly$prescribed_routine_activity_expenditure_kj))
   )
   system_tolerance <- 100 * .Machine$double.eps * max(
     1,
@@ -423,7 +456,8 @@ test_that("daily gut, body, and whole-system residuals close to policy", {
     abs(daily$body_energy_reserve_final_kj),
     sum(abs(hourly$prescribed_ingested_available_energy_kj)),
     sum(abs(hourly$assimilated_energy_kj)),
-    sum(abs(hourly$maintenance_expenditure_kj))
+    sum(abs(hourly$maintenance_expenditure_kj)),
+    sum(abs(hourly$prescribed_routine_activity_expenditure_kj))
   )
 
   expect_lte(abs(daily$gut_energy_balance_residual_kj), gut_tolerance)
@@ -566,12 +600,15 @@ test_that("coupled runner does not mutate any supplied input", {
   gut_parameters <- api$new_gut_parameters(0.25)
   body_parameters <- api$new_body_parameters(80)
   schedule <- api$new_schedule(0:23, 60 + as.numeric(0:23))
+  routine_activity_schedule <-
+    api$new_activity_schedule(0:23, rep(0, 24L))
   before <- .gut_body_energy_copy(list(
     initial_gut_state,
     initial_body_state,
     gut_parameters,
     body_parameters,
-    schedule
+    schedule,
+    routine_activity_schedule
   ))
 
   api$run(
@@ -579,7 +616,8 @@ test_that("coupled runner does not mutate any supplied input", {
     initial_body_state,
     gut_parameters,
     body_parameters,
-    schedule
+    schedule,
+    routine_activity_schedule
   )
 
   expect_identical(
@@ -588,7 +626,8 @@ test_that("coupled runner does not mutate any supplied input", {
       initial_body_state,
       gut_parameters,
       body_parameters,
-      schedule
+      schedule,
+      routine_activity_schedule
     ),
     before
   )
@@ -658,7 +697,8 @@ test_that("coupled runner rejects malformed records and schedule", {
       case$body,
       case$gut_parameters,
       case$body_parameters,
-      case$schedule
+      case$schedule,
+      fixture$routine_activity_schedule
     ))
   }
   expect_error(
@@ -668,6 +708,7 @@ test_that("coupled runner rejects malformed records and schedule", {
       fixture$gut_parameters,
       fixture$body_parameters,
       fixture$schedule,
+      fixture$routine_activity_schedule,
       duration_h = 24
     )
   )
@@ -681,13 +722,14 @@ test_that("body boundary errors propagate without a partial result", {
       api$new_body_state(50),
       api$new_gut_parameters(0.25),
       api$new_body_parameters(100),
-      api$new_schedule(0:23, rep(100, 24L))
+      api$new_schedule(0:23, rep(100, 24L)),
+      api$new_activity_schedule(0:23, rep(0, 24L))
     ),
     "negative"
   )
 })
 
-test_that("Goal 002 public interfaces and neutral outcome are unchanged", {
+test_that("Goal 002 records and neutral outcome persist with zero activity", {
   new_state <- getExportedValue("herbivoreTTR", "new_body_energy_state")
   new_parameters <- getExportedValue(
     "herbivoreTTR",
@@ -699,6 +741,10 @@ test_that("Goal 002 public interfaces and neutral outcome are unchanged", {
   )
   step <- getExportedValue("herbivoreTTR", "step_body_energy")
   run <- getExportedValue("herbivoreTTR", "run_body_energy_day")
+  new_activity_schedule <- getExportedValue(
+    "herbivoreTTR",
+    "new_routine_activity_expenditure_schedule"
+  )
 
   expect_identical(names(formals(new_state)), "body_energy_reserve_kj")
   expect_identical(
@@ -711,17 +757,23 @@ test_that("Goal 002 public interfaces and neutral outcome are unchanged", {
   )
   expect_identical(
     names(formals(step)),
-    c("state", "parameters", "input_row")
+    c("state", "parameters", "input_row", "activity_row")
   )
   expect_identical(
     names(formals(run)),
-    c("initial_state", "parameters", "schedule")
+    c(
+      "initial_state",
+      "parameters",
+      "schedule",
+      "routine_activity_schedule"
+    )
   )
 
   result <- run(
     new_state(5000),
     new_parameters(100),
-    new_schedule(0:23, rep(100, 24L))
+    new_schedule(0:23, rep(100, 24L)),
+    new_activity_schedule(0:23, rep(0, 24L))
   )
   expect_identical(result$daily$body_energy_reserve_final_kj, 5000)
   expect_identical(result$daily$energy_status, "neutral")

@@ -15,6 +15,9 @@
 #'   [new_body_energy_parameters()].
 #' @param schedule A 24-row prescribed ingestion schedule created by
 #'   [new_ingested_available_energy_schedule()].
+#' @param routine_activity_schedule A 24-row schedule created by
+#'   [new_routine_activity_expenditure_schedule()]. It is applied only during
+#'   the two measured body days.
 #' @param gut_convergence_relative_tolerance A bare finite numeric scalar
 #'   strictly between zero and one.
 #' @param max_burn_in_days A bare integer scalar of at least two.
@@ -28,6 +31,7 @@ run_gut_body_energy_reference_cycle <- function(
   gut_parameters,
   body_parameters,
   schedule,
+  routine_activity_schedule,
   gut_convergence_relative_tolerance,
   max_burn_in_days
 ) {
@@ -36,6 +40,9 @@ run_gut_body_energy_reference_cycle <- function(
   .validate_gut_energy_parameters(gut_parameters)
   .validate_body_energy_parameters(body_parameters)
   .validate_ingested_available_energy_schedule(schedule)
+  .validate_routine_activity_expenditure_schedule(
+    routine_activity_schedule
+  )
   gut_convergence_relative_tolerance <-
     .validate_gut_convergence_relative_tolerance(
       gut_convergence_relative_tolerance
@@ -54,7 +61,8 @@ run_gut_body_energy_reference_cycle <- function(
     measurement_body_state,
     gut_parameters,
     body_parameters,
-    schedule
+    schedule,
+    routine_activity_schedule
   )
 
   list(
@@ -282,14 +290,16 @@ run_gut_body_energy_reference_cycle <- function(
   measurement_body_state,
   gut_parameters,
   body_parameters,
-  schedule
+  schedule,
+  routine_activity_schedule
 ) {
   day_1 <- run_gut_body_energy_day(
     initial_gut_state,
     measurement_body_state,
     gut_parameters,
     body_parameters,
-    schedule
+    schedule,
+    routine_activity_schedule
   )
   day_2_gut_state <- new_gut_energy_state(
     day_1$daily$gut_available_energy_final_kj
@@ -302,7 +312,8 @@ run_gut_body_energy_reference_cycle <- function(
     day_2_body_state,
     gut_parameters,
     body_parameters,
-    schedule
+    schedule,
+    routine_activity_schedule
   )
 
   hourly <- rbind(

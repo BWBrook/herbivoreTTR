@@ -119,6 +119,10 @@ make_fixture <- function(scenario_id) {
     herbivoreTTR::new_gut_energy_parameters(0.25),
     herbivoreTTR::new_body_energy_parameters(100),
     energy,
+    herbivoreTTR::new_routine_activity_expenditure_schedule(
+      0:23,
+      rep(0, 24L)
+    ),
     100 * .Machine$double.eps,
     100L
   )

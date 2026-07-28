@@ -32,6 +32,10 @@
       "new_body_energy_parameters",
       "herbivoreTTR"
     ),
+    new_activity_schedule = getFromNamespace(
+      "new_routine_activity_expenditure_schedule",
+      "herbivoreTTR"
+    ),
     run = getFromNamespace(
       "run_gut_body_energy_day",
       "herbivoreTTR"
@@ -63,7 +67,8 @@
     api$new_body_state(5000),
     api$new_gut_parameters(0.25),
     api$new_body_parameters(maintenance_kj_h),
-    energy_schedule
+    energy_schedule,
+    api$new_activity_schedule(0:23, rep(0, 24L))
   )
 }
 

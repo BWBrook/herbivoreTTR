@@ -10,6 +10,7 @@ run_gut_body_energy_reference_cycle(
   gut_parameters,
   body_parameters,
   schedule,
+  routine_activity_schedule,
   gut_convergence_relative_tolerance,
   max_burn_in_days
 )
@@ -29,6 +30,10 @@ run_gut_body_energy_reference_cycle(
 
 \item{schedule}{A 24-row prescribed ingestion schedule created by
 [new_ingested_available_energy_schedule()].}
+
+\item{routine_activity_schedule}{A 24-row schedule created by
+[new_routine_activity_expenditure_schedule()]. It is applied only during
+the two measured body days.}
 
 \item{gut_convergence_relative_tolerance}{A bare finite numeric scalar
 strictly between zero and one.}

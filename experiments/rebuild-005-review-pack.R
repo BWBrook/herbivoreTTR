@@ -82,6 +82,11 @@ new_fixture <- function(scenario_id, intake_rates_kg_dm_h) {
     gut_parameters = herbivoreTTR::new_gut_energy_parameters(0.25),
     body_parameters = herbivoreTTR::new_body_energy_parameters(100),
     schedule = energy_schedule,
+    routine_activity_schedule =
+      herbivoreTTR::new_routine_activity_expenditure_schedule(
+        0:23,
+        rep(0, 24L)
+      ),
     gut_convergence_relative_tolerance = 100 * .Machine$double.eps,
     max_burn_in_days = 100L
   )

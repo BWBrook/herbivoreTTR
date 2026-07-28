@@ -3,9 +3,9 @@
 `herbivoreTTR` provides transparent functional R models of herbivore
 energetics. The current executable model composes one pure food-energy
 conversion, a one-pool gut-energy buffer, and a minimal hourly body-energy
-ledger. It can run one 24-hour schedule directly or repeat that same schedule
-to establish a numerical daily gut reference before recording two measured
-days.
+ledger with fixed maintenance and prescribed routine-activity expenditure. It
+can run one 24-hour schedule directly or repeat that same schedule to establish
+a numerical daily gut reference before recording two measured days.
 
 ## Current Capability
 
@@ -35,10 +35,10 @@ the result of a modeled feeding decision.
 
 Gut release is still calculated from the stock present at the start of each
 hour. The current hour's converted ingestion is added afterwards, so it cannot
-be released until a later transition. The coupled runner is unchanged and
-returns an exact 24-row hourly ledger and a one-row daily summary derived from
-it, including separate gut, body, and combined-system accounting residuals.
-There is no new dynamic state or integrated food-gut-body runner.
+be released until a later transition. The coupled runner returns an exact
+24-row hourly ledger and a one-row daily summary derived from it, including
+separate gut, body, and combined-system accounting residuals. There is no new
+dynamic state or integrated food-gut-body runner.
 
 Goal 005 adds
 `run_gut_body_energy_reference_cycle()`. It accepts the unchanged Goal 003
@@ -48,7 +48,7 @@ available-energy schedule and:
 - compares the 25 hour-boundary gut stocks on successive days until a declared
   scale-aware numerical tolerance is met;
 - resets body energy once to a declared measurement state;
-- calls the unchanged one-day gut-body runner for two measured days; and
+- calls the one-day gut-body runner for two measured days; and
 - carries both closing states from measured day 1 into measured day 2.
 
 Gut-cycle stability and energetic neutrality are different diagnostics. A gut
@@ -94,6 +94,45 @@ references retain different within-day gut, release, and body-reserve
 trajectories. Both are synthetic conventions, not calibrated feeding schedules
 or evidence of biological interchangeability.
 
+Goal 007 adds one strict prescribed routine-activity expenditure schedule:
+
+```r
+new_routine_activity_expenditure_schedule(
+  hour_of_day,
+  prescribed_routine_activity_expenditure_kj_h
+)
+```
+
+The schedule contains integer `hour_of_day = 0:23` and 24 finite,
+non-negative rates in kJ h^-1. It is required explicitly by
+`step_body_energy()`, `run_body_energy_day()`,
+`run_gut_body_energy_day()`, and
+`run_gut_body_energy_reference_cycle()`; none supplies an implicit zero
+schedule.
+
+Routine activity is an externally prescribed body-energy sink incremental to
+the fixed synthetic maintenance term. Over one hour,
+
+```text
+body-energy change =
+  assimilated energy
+  - maintenance expenditure
+  - prescribed routine-activity expenditure
+```
+
+It does not change ingestion, gut release, assimilation, gut convergence, or
+any gut stock. The reference-cycle runner applies activity only during the two
+measured body days; gut-only burn-in remains activity-free because it advances
+no body state or history.
+
+The Goal 007 zero-activity fixture is the regression control and preserves the
+Goal 006 mathematical reference on every shared numerical field. A separate
+diagnostic pulse prescribes 50 kJ h^-1 in hours 8 through 11, or 200 kJ per
+measured day. Its exact `-200 kJ` daily body effect and zero gut effect test
+arithmetic and accounting only. The pulse timing and magnitude are not an
+activity observation, locomotion model, behavioral schedule, or empirical
+physiology claim.
+
 Only the product of intake and density reaches downstream dynamics. Scaling
 intake by a positive constant and density by its reciprocal therefore produces
 identical energy trajectories. The two prescribed inputs are structurally
@@ -123,15 +162,21 @@ compares the mathematical and ecological references without changing package
 code. Its separate review script writes only the five ignored review files
 declared by the Goal 006 contract.
 
+The Goal 007 experiment
+[`experiments/rebuild-007-routine-activity-expenditure.R`](experiments/rebuild-007-routine-activity-expenditure.R)
+compares the zero-activity regression control with the four-hour arithmetic
+pulse. Its separate review script writes only the five ignored review files
+declared by the Goal 007 contract.
+
 These demonstrations prove arithmetic, timing, and accounting semantics only.
 They do not estimate a maintenance requirement, residence time, gut fill,
 feeding schedule, animal viability, ecological equilibrium, or any macropod
 trait. The model contains no offered forage, wet-mass conversion, variable food
 quality, digestive loss, waste, dry-matter gut stock, gut capacity, feeding
-behavior, activity expenditure, body-mass change, plants, or empirical
-calibration. It also contains no variable or stochastic days, configurable
-measurement horizon, season, chronic-decline process, recovery process, or
-viability criterion.
+behavior, directed locomotion, activity choice or feedback, body-mass change,
+plants, or empirical calibration. It also contains no variable or stochastic
+days, configurable measurement horizon, season, chronic-decline process,
+recovery process, or viability criterion.
 
 ## Design
 
@@ -142,12 +187,12 @@ Experiments remain thin clients of the package. Each future goal addresses one
 principal question and one subsystem, with compact outputs, proportionate tests,
 an explicit stop, and discussion before another layer is added.
 
-The current Goal 006 reference doctrine and unchanged executable contract are
-specified in
-[`docs/model-specification.md`](docs/model-specification.md). No later model
-layer is currently specified or authorized. Goal 006 results must be discussed
-before another bounded question is chosen; candidate later layers are listed
-without authorization in [`docs/roadmap.md`](docs/roadmap.md).
+The current Goal 007 executable contract is specified in
+[`docs/model-specification.md`](docs/model-specification.md). Goal 008 remains
+a discussion gate for a later ecological day/night activity schedule and
+intake rebalancing; neither is implemented or authorized by Goal 007. Candidate
+later layers are listed without authorization in
+[`docs/roadmap.md`](docs/roadmap.md).
 
 ## Provenance
 

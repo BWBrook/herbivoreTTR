@@ -25,6 +25,10 @@
     new_schedule = getFromNamespace(
       "new_ingested_available_energy_schedule",
       "herbivoreTTR"
+    ),
+    new_activity_schedule = getFromNamespace(
+      "new_routine_activity_expenditure_schedule",
+      "herbivoreTTR"
     )
   )
 }
@@ -35,6 +39,7 @@
   release_fraction_h = 0.25,
   ingestion_rates_kj_h = rep(0, 24L),
   maintenance_kj_h = 100,
+  activity_rates_kj_h = rep(0, 24L),
   relative_tolerance = 100 * .Machine$double.eps,
   max_burn_in_days = 100L
 ) {
@@ -47,6 +52,8 @@
     gut_parameters = api$new_gut_parameters(release_fraction_h),
     body_parameters = api$new_body_parameters(maintenance_kj_h),
     schedule = api$new_schedule(0:23, ingestion_rates_kj_h),
+    routine_activity_schedule =
+      api$new_activity_schedule(0:23, activity_rates_kj_h),
     relative_tolerance = relative_tolerance,
     max_burn_in_days = max_burn_in_days
   )
@@ -59,6 +66,7 @@
     fixture$gut_parameters,
     fixture$body_parameters,
     fixture$schedule,
+    fixture$routine_activity_schedule,
     fixture$relative_tolerance,
     fixture$max_burn_in_days
   )
@@ -210,7 +218,10 @@
   "gut_energy_balance_residual_kj",
   "body_energy_reserve_start_kj",
   "maintenance_expenditure_kj_h",
+  "prescribed_routine_activity_expenditure_kj_h",
+  "net_body_energy_rate_kj_h",
   "maintenance_expenditure_kj",
+  "prescribed_routine_activity_expenditure_kj",
   "body_energy_change_kj",
   "body_energy_reserve_end_kj",
   "body_energy_balance_residual_kj",
@@ -230,6 +241,7 @@
   "gut_energy_balance_residual_kj",
   "body_energy_reserve_initial_kj",
   "total_maintenance_expenditure_kj",
+  "total_prescribed_routine_activity_expenditure_kj",
   "expected_body_energy_change_kj",
   "observed_body_energy_change_kj",
   "body_energy_reserve_final_kj",
@@ -254,6 +266,7 @@ test_that("reference-cycle runner has exact public and return schemas", {
       "gut_parameters",
       "body_parameters",
       "schedule",
+      "routine_activity_schedule",
       "gut_convergence_relative_tolerance",
       "max_burn_in_days"
     )
@@ -292,13 +305,13 @@ test_that("reference-cycle runner has exact public and return schemas", {
   expect_identical(result$convergence$converged, c(FALSE, TRUE))
 
   expect_identical(class(result$hourly), "data.frame")
-  expect_identical(dim(result$hourly), c(48L, 22L))
+  expect_identical(dim(result$hourly), c(48L, 25L))
   expect_identical(names(result$hourly), .reference_cycle_hourly_columns)
   expect_identical(result$hourly$measurement_day, rep(1:2, each = 24L))
   expect_identical(result$hourly$hour_of_day, rep(0:23, 2L))
 
   expect_identical(class(result$daily), "data.frame")
-  expect_identical(dim(result$daily), c(2L, 20L))
+  expect_identical(dim(result$daily), c(2L, 21L))
   expect_identical(names(result$daily), .reference_cycle_daily_columns)
   expect_identical(result$daily$measurement_day, 1:2)
 
@@ -322,20 +335,22 @@ test_that("reference-cycle runner strictly validates every argument", {
     fixture$gut_parameters,
     fixture$body_parameters,
     fixture$schedule,
+    fixture$routine_activity_schedule,
     fixture$relative_tolerance,
     fixture$max_burn_in_days
   )
 
-  malformed_first_five <- list(
+  malformed_first_six <- list(
     structure(fixture$initial_gut_state, note = "attributed"),
     structure(fixture$measurement_body_state, note = "attributed"),
     structure(fixture$gut_parameters, note = "attributed"),
     structure(fixture$body_parameters, note = "attributed"),
-    structure(fixture$schedule, note = "attributed")
+    structure(fixture$schedule, note = "attributed"),
+    structure(fixture$routine_activity_schedule, note = "attributed")
   )
-  for (index in seq_along(malformed_first_five)) {
+  for (index in seq_along(malformed_first_six)) {
     malformed_arguments <- arguments
-    malformed_arguments[[index]] <- malformed_first_five[[index]]
+    malformed_arguments[[index]] <- malformed_first_six[[index]]
     expect_error(do.call(run, malformed_arguments))
   }
 
@@ -355,7 +370,7 @@ test_that("reference-cycle runner strictly validates every argument", {
   )
   for (value in invalid_tolerances) {
     malformed_arguments <- arguments
-    malformed_arguments[[6L]] <- value
+    malformed_arguments[[7L]] <- value
     expect_error(do.call(run, malformed_arguments))
   }
 
@@ -373,15 +388,15 @@ test_that("reference-cycle runner strictly validates every argument", {
   )
   for (value in invalid_maximum_days) {
     malformed_arguments <- arguments
-    malformed_arguments[[7L]] <- value
+    malformed_arguments[[8L]] <- value
     expect_error(do.call(run, malformed_arguments))
   }
 
-  expect_error(do.call(run, arguments[-7L]))
+  expect_error(do.call(run, arguments[-8L]))
   expect_error(do.call(run, c(arguments, list(extra = 1))))
 
   large_maximum_arguments <- arguments
-  large_maximum_arguments[[7L]] <- .Machine$integer.max
+  large_maximum_arguments[[8L]] <- .Machine$integer.max
   large_maximum_result <- do.call(run, large_maximum_arguments)
   expect_identical(nrow(large_maximum_result$convergence), 2L)
 })
@@ -463,7 +478,8 @@ test_that("measured days are exact one-day runs with exact carry-over", {
     fixture$measurement_body_state,
     fixture$gut_parameters,
     fixture$body_parameters,
-    fixture$schedule
+    fixture$schedule,
+    fixture$routine_activity_schedule
   )
   day_1_hourly <- .canonical_data_frame_rows(
     result$hourly[result$hourly$measurement_day == 1L, -1L, drop = FALSE]
@@ -486,7 +502,8 @@ test_that("measured days are exact one-day runs with exact carry-over", {
     day_2_body_state,
     fixture$gut_parameters,
     fixture$body_parameters,
-    fixture$schedule
+    fixture$schedule,
+    fixture$routine_activity_schedule
   )
   day_2_hourly <- .canonical_data_frame_rows(
     result$hourly[result$hourly$measurement_day == 2L, -1L, drop = FALSE]
@@ -522,6 +539,7 @@ test_that("reference-cycle runner does not mutate any supplied input", {
     fixture$gut_parameters,
     fixture$body_parameters,
     fixture$schedule,
+    fixture$routine_activity_schedule,
     fixture$relative_tolerance,
     fixture$max_burn_in_days
   ))
@@ -533,9 +551,10 @@ test_that("reference-cycle runner does not mutate any supplied input", {
       fixture$initial_gut_state,
       fixture$measurement_body_state,
       fixture$gut_parameters,
-      fixture$body_parameters,
-      fixture$schedule,
-      fixture$relative_tolerance,
+    fixture$body_parameters,
+    fixture$schedule,
+    fixture$routine_activity_schedule,
+    fixture$relative_tolerance,
       fixture$max_burn_in_days
     ),
     before
@@ -620,6 +639,8 @@ test_that("measured body-boundary errors propagate without a partial result", {
     gut_parameters = api$new_gut_parameters(0.25),
     body_parameters = api$new_body_parameters(100),
     schedule = energy_schedule,
+    routine_activity_schedule =
+      api$new_activity_schedule(0:23, rep(0, 24L)),
     relative_tolerance = 100 * .Machine$double.eps,
     max_burn_in_days = 100L
   )
@@ -672,7 +693,8 @@ test_that("measured body-boundary errors propagate without a partial result", {
     abs(daily$body_energy_reserve_initial_kj),
     abs(daily$body_energy_reserve_final_kj),
     sum(abs(hourly$assimilated_energy_kj)),
-    sum(abs(hourly$maintenance_expenditure_kj))
+    sum(abs(hourly$maintenance_expenditure_kj)),
+    sum(abs(hourly$prescribed_routine_activity_expenditure_kj))
   )
 
   c(
@@ -734,7 +756,8 @@ test_that(
           opening_body_state,
           fixture$gut_parameters,
           fixture$body_parameters,
-          fixture$schedule
+          fixture$schedule,
+          fixture$routine_activity_schedule
         )
         measured_hourly <- .canonical_data_frame_rows(
           result$hourly[

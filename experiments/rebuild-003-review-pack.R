@@ -335,7 +335,12 @@ run_fixture <- function(initial_gut_energy_kj, ingestion_kj_h, maintenance_kj_h)
     schedule = herbivoreTTR::new_ingested_available_energy_schedule(
       hour_of_day = 0:23,
       prescribed_ingested_available_energy_kj_h = ingestion_kj_h
-    )
+    ),
+    routine_activity_schedule =
+      herbivoreTTR::new_routine_activity_expenditure_schedule(
+        0:23,
+        rep(0, 24L)
+      )
   )
 }
 
