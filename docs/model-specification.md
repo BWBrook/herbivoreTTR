@@ -2,12 +2,13 @@
 
 ## Status
 
-Goal 005 composes the accepted Goal 003-004 system without changing its
-records, conversions, transitions, or one-day runner. Prescribed dry-matter
-ingestion is still converted to the existing available-energy schedule. The new
-reference-cycle runner can repeat one identical schedule to construct a
-numerical period-24 gut reference, reset body energy once, and record two
-carried measurement days.
+Through Goal 006, the accepted Goal 003-005 records, conversions, transitions,
+and runners remain unchanged. Prescribed dry-matter ingestion is converted to
+the existing available-energy schedule, and the reference-cycle runner can
+repeat one identical schedule to construct a numerical period-24 gut reference,
+reset body energy once, and record two carried measurement days. Goal 006 adds
+two named input fixtures and evidence only; it adds no package function,
+record, schema, equation, validator, tolerance, or dependency.
 
 The fixed density is already metabolizable. Its product with dry matter is
 treated as the accounting equivalent entering the existing gut available-energy
@@ -108,7 +109,7 @@ accept a prescribed already-assimilated-energy schedule.
 
 Goal 004 adds no dynamic state, food choice, variable density, dry-matter gut
 stock, or coupled food-gut-body runner. Goal 005 adds temporal orchestration and
-diagnostics only.
+diagnostics only. Goal 006 adds reference fixtures and review evidence only.
 
 ## Hourly Transition Order
 
@@ -231,6 +232,57 @@ It does not compare phase-specific stocks, absolute combined-system levels, or
 status labels. The equivalence is interpreted only when every measured body
 stock is finite and non-negative.
 
+## Mathematical And Ecological References
+
+Goal 006 assigns different roles to two energy-matched fixtures. The
+`mathematical_continuous` reference remains the permanent arithmetic,
+convergence, accounting, and regression diagnostic. The
+`ecological_day_resting` reference is the normal prescribed starting point for
+later ecological interpretation.
+
+Both use an empty initial gut, a 10000 kJ measurement body reserve, release
+0.25 h^-1, maintenance 100 kJ h^-1, metabolizable-energy density
+10000 kJ kg^-1 DM, the Goal 005 convergence tolerance, at most 100 gut-only
+burn-in days, and two carried measurement days.
+
+The mathematical reference is:
+
+```text
+hour_of_day = 0:23
+prescribed_dry_matter_intake_kg_dm_h = 0.010
+prescribed_ingested_available_energy_kj_h = 100
+```
+
+The ecological reference is:
+
+```text
+hour_of_day = 0:7 and 16:23
+prescribed_dry_matter_intake_kg_dm_h = 0.015
+prescribed_ingested_available_energy_kj_h = 150
+
+hour_of_day = 8:15
+prescribed_dry_matter_intake_kg_dm_h = 0
+prescribed_ingested_available_energy_kj_h = 0
+```
+
+Each contains 0.24 kg DM and 2400 kJ per day. Because `hour_of_day` labels
+`[hour_of_day, hour_of_day + 1)`, the ecological reference closes intake
+exactly during `[08:00, 16:00)` and prescribes intake across the night-spanning
+16-hour block from 16:00 through 08:00.
+
+The ecological closure is prescribed intake. It is not an offered-food
+schedule, feeding-permission mask, realized feeding decision, observation of
+foraging behavior, or activity or sleep state. Its flat feeding block contains
+no explicit crepuscular peaks.
+
+Equal daily dry-matter intake, gut input, and maintenance define the operational
+null. In the current linear, lossless, unlimited gut system, steady-cycle daily
+assimilation, observed gut change, and observed body change should also agree
+within the existing scenario-specific tolerances. The references must
+nevertheless have different within-day gut stocks, gut release, and body
+reserve trajectories. This timing invariance is an accounting property, not
+evidence of biological interchangeability or empirical realism.
+
 ## Accounting
 
 Each gut transition records prescribed ingestion, assimilation, gut-stock
@@ -347,6 +399,18 @@ conditional on the verified 10000 kJ body paths completing without crossing
 the non-negative reserve boundary and on the current unlimited, linear,
 lossless system. It is not a biological claim about feeding schedules.
 
+Goal 006 retains the constant fixture as `mathematical_continuous` and adds
+`ecological_day_resting`. At density 10000 kJ kg^-1 DM, the ecological fixture
+derives 150 kJ h^-1 from 0.015 kg DM h^-1 in hours 0 through 7 and 16 through
+23 and derives zero intake in hours 8 through 15. Both named references contain
+0.24 kg DM and 2400 kJ per day. Their daily energy totals provide an
+operational null, while their steady-cycle within-day stock and flow
+trajectories differ.
+
+This minimally ecological fixture is a generic synthetic day-resting,
+nocturnally active convention. It is not a species schedule, true crepuscular
+pattern, maximum feasible intake, or model of behavior or activity.
+
 ## Exclusions And Stop
 
 The model does not represent variable or stochastic days, a configurable
@@ -359,9 +423,11 @@ decisions, behavior, activity, dynamic body mass, protein, water,
 thermoregulation, plants, weather, space, individuals, populations, empirical
 calibration, parameter estimation, or uncertainty analysis.
 
-No subsequent model layer is specified or authorized. Goal 005 ends after the
-identical-day gut reference, one body reset, two carried measurement days,
-synthetic diagnostics, and ignored review outputs are validated and reviewed.
+No subsequent model layer is specified or authorized. Goal 006 ends after the
+two reference roles, exact prescribed schedules, focused regression,
+no-write experiment, and ignored review outputs are validated and reviewed.
+It adds no maximum-intake constraint, activity cost, endogenous behavior, plant
+feedback, or other model mechanism.
 
 The historical implementation is private at `BWBrook/herbivoreTTR-legacy`, tag
 `legacy-final-2026-07-16`; the pre-freeze scientific baseline is

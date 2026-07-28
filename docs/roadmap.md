@@ -33,12 +33,23 @@ constant, and concentrated late-feeding fixtures separate gut periodicity from
 body-energy neutrality and demonstrate conditional timing equivalence without
 adding biological processes or a general multi-day horizon.
 
+Rebuild Goal 006 adds a reference and evidence layer without changing production
+code or the package API. The permanent mathematical reference prescribes
+0.010 kg DM h^-1 and derives 100 kJ h^-1 in every hour. The minimally
+ecological reference prescribes 0.015 kg DM h^-1 and derives 150 kJ h^-1 in
+hours 0 through 7 and 16 through 23, with intake closed in hours 8 through 15.
+Both total 0.24 kg DM and 2400 kJ per day. Equal steady-cycle daily energy
+totals are the operational null in the current linear, lossless, unlimited
+system, while their within-day stock and flow trajectories differ. The
+ecological reference remains a generic synthetic prescribed schedule, not a
+behavioral or empirical model.
+
 ## Next Decision Gate
 
-No Goal 006 model layer is specified or authorized. The Goal 005 convergence,
-reset protocol, body-path feasibility, and conditional timing equivalence must
-first be discussed. That discussion will choose one bounded principal question
-and define its scientific contract before any further implementation.
+No Goal 007 model layer is specified or authorized. The Goal 006 reference
+roles, ecological timing contrast, body-path feasibility, and operational null
+must first be discussed. That discussion will choose one bounded principal
+question and define its scientific contract before any further implementation.
 
 ## Candidate Later Layers
 

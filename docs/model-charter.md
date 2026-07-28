@@ -78,6 +78,21 @@ so those prescribed inputs are structurally non-identifiable from the resulting
 energy trajectories. Equivalent products demonstrate an accounting property,
 not biological interchangeability among foods or feeding regimes.
 
+Goal 006 adds no executable mechanism or interface. It retains the continuous
+100 kJ h^-1 schedule as the permanent mathematical diagnostic and establishes a
+minimally ecological prescribed reference with 150 kJ h^-1 in hours 0 through 7
+and 16 through 23 and zero intake in hours 8 through 15. At the fixed fixture
+density of 10000 kJ kg^-1 DM, these rates correspond to 0.010 and 0.015 kg DM
+h^-1 respectively, and both references prescribe 0.24 kg DM and 2400 kJ per
+day.
+
+The ecological schedule closes intake during the half-open interval
+`[08:00, 16:00)`. That closure is a prescribed input convention, not a modeled
+feeding decision, activity or sleep state, or observation of behavior. Equal
+steady-cycle daily energy totals form an operational accounting null in the
+current linear, lossless, unlimited system; within-day gut, release, and
+body-reserve trajectories remain distinct.
+
 The 50 kg reference mass used in the Goal 002 demonstration is experiment
 metadata only. No implemented equation depends on body mass. All food-energy
 and gut-body fixtures are synthetic. The current layer establishes unit
@@ -96,8 +111,9 @@ or multiple foods, digestive loss, efficiency, waste, capacity, intake limits,
 feeding behavior, and body feedback are also absent. Activity, dynamic body
 mass, protein, water, thermoregulation, plants, space, calibration, and all
 other physiological or ecological detail remain outside the executable
-boundary. Goal 005 results must be discussed before the next principal question
-is chosen.
+boundary. Goal 006 results must be discussed before the next principal question
+is chosen. The mathematical and ecological references do not themselves
+authorize a later mechanism or scenario.
 
 The predecessor is preserved privately as `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16`; its scientific baseline commit is

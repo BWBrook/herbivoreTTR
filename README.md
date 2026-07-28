@@ -68,6 +68,32 @@ completing above the unchanged non-negative reserve boundary. It is checked
 from numeric stocks and flows, never inferred from `body_energy_status`, and
 does not make real foods or feeding schedules biologically interchangeable.
 
+Goal 006 changes no package function or model mechanism. It establishes two
+named reference fixtures by composing the existing food conversion and
+reference-cycle runner:
+
+- the permanent mathematical reference prescribes 0.010 kg DM h^-1, deriving
+  100 kJ h^-1, in every hour; and
+- the minimally ecological reference prescribes 0.015 kg DM h^-1, deriving
+  150 kJ h^-1, in hours 0 through 7 and 16 through 23, with zero intake in
+  hours 8 through 15.
+
+Both references prescribe 0.24 kg DM and 2400 kJ per day. Because
+`hour_of_day` labels a half-open one-hour interval, the ecological schedule
+closes intake exactly during `[08:00, 16:00)` and spans the nominal night from
+16:00 through 08:00. This closure is prescribed model intake, not a feeding
+decision, permission mask, or observed behavior. The flat schedule adds no
+crepuscular peak, maximum-intake constraint, activity cost, endogenous
+behavior, plant feedback, or new interface.
+
+The mathematical reference remains the diagnostic and regression baseline.
+The ecological reference is the normal starting point for ecological
+interpretation. Equal steady-cycle daily energy totals are the operational
+null under the current linear, lossless, unlimited gut system, while the two
+references retain different within-day gut, release, and body-reserve
+trajectories. Both are synthetic conventions, not calibrated feeding schedules
+or evidence of biological interchangeability.
+
 Only the product of intake and density reaches downstream dynamics. Scaling
 intake by a positive constant and density by its reciprocal therefore produces
 identical energy trajectories. The two prescribed inputs are structurally
@@ -91,6 +117,12 @@ zero, constant, and concentrated late-feeding reference cycles. Its separate
 review script writes only the five ignored synthetic figures and tables
 declared by the Goal 005 contract.
 
+The Goal 006 experiment
+[`experiments/rebuild-006-ecological-daily-reference.R`](experiments/rebuild-006-ecological-daily-reference.R)
+compares the mathematical and ecological references without changing package
+code. Its separate review script writes only the five ignored review files
+declared by the Goal 006 contract.
+
 These demonstrations prove arithmetic, timing, and accounting semantics only.
 They do not estimate a maintenance requirement, residence time, gut fill,
 feeding schedule, animal viability, ecological equilibrium, or any macropod
@@ -110,9 +142,10 @@ Experiments remain thin clients of the package. Each future goal addresses one
 principal question and one subsystem, with compact outputs, proportionate tests,
 an explicit stop, and discussion before another layer is added.
 
-The current Goal 005 contract is specified in
+The current Goal 006 reference doctrine and unchanged executable contract are
+specified in
 [`docs/model-specification.md`](docs/model-specification.md). No later model
-layer is currently specified or authorized. Goal 005 results must be discussed
+layer is currently specified or authorized. Goal 006 results must be discussed
 before another bounded question is chosen; candidate later layers are listed
 without authorization in [`docs/roadmap.md`](docs/roadmap.md).
 
