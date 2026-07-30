@@ -87,12 +87,12 @@ crepuscular peak, maximum-intake constraint, activity cost, endogenous
 behavior, plant feedback, or new interface.
 
 The mathematical reference remains the diagnostic and regression baseline.
-The ecological reference is the normal starting point for ecological
-interpretation. Equal steady-cycle daily energy totals are the operational
-null under the current linear, lossless, unlimited gut system, while the two
-references retain different within-day gut, release, and body-reserve
-trajectories. Both are synthetic conventions, not calibrated feeding schedules
-or evidence of biological interchangeability.
+The ecological reference remains the zero-activity ecological comparator.
+Equal steady-cycle daily energy totals are the operational null under the
+current linear, lossless, unlimited gut system, while the two references retain
+different within-day gut, release, and body-reserve trajectories. Both are
+synthetic conventions, not calibrated feeding schedules or evidence of
+biological interchangeability.
 
 Goal 007 adds one strict prescribed routine-activity expenditure schedule:
 
@@ -133,6 +133,35 @@ arithmetic and accounting only. The pulse timing and magnitude are not an
 activity observation, locomotion model, behavioral schedule, or empirical
 physiology claim.
 
+Goal 008 changes no package function, equation, API, schema, or variable
+dictionary. It composes three evidence-only ecological fixtures with intake
+during hours 0 through 7 and 16 through 23 and a rest-closed block during hours
+8 through 15:
+
+- `ecological_day_resting` prescribes daily input, assimilation, and activity
+  of `2400 / 2400 / 0 kJ`;
+- `ecological_activity_uncompensated` prescribes
+  `2400 / 2400 / 800 kJ`; and
+- `ecological_activity_prescribed_balance` prescribes
+  `3200 / 3200 / 800 kJ`.
+
+All three gut cycles converge on burn-in day 7. Observed daily body change is
+approximately `0 kJ`, `-800 kJ`, and `0 kJ`, and the corresponding body
+reserves close measured days 1 and 2 at approximately
+`10000 / 10000 kJ`, `9200 / 8400 kJ`, and `10000 / 10000 kJ`.
+The baseline and uncompensated gut ledgers match exactly in memory. The balanced
+gut and assimilation paths follow the predicted `4/3` scaling with a maximum
+in-memory absolute deviation of approximately `1.14e-13 kJ`.
+
+The balanced fixture is now the normal synthetic ecological accounting
+reference. The Goal 006 zero-activity ecological fixture remains its comparator,
+and the continuous mathematical fixture remains the permanent arithmetic and
+regression diagnostic. This hierarchy is an interpretation of verified
+synthetic evidence. The balanced fixture's `200 kJ h^-1` input and
+`0.32 kg DM d^-1` total are prescribed, not shown feasible; balance is not
+behavior, adaptive compensation, biological equilibrium, viability, or
+empirical physiology.
+
 Only the product of intake and density reaches downstream dynamics. Scaling
 intake by a positive constant and density by its reciprocal therefore produces
 identical energy trajectories. The two prescribed inputs are structurally
@@ -168,6 +197,13 @@ compares the zero-activity regression control with the four-hour arithmetic
 pulse. Its separate review script writes only the five ignored review files
 declared by the Goal 007 contract.
 
+The Goal 008 experiment
+[`experiments/rebuild-008-ecological-activity-intake-balance.R`](experiments/rebuild-008-ecological-activity-intake-balance.R)
+verifies the three-scenario chain and its paired contrasts. Its review script
+retains four tables and one figure under
+[`outputs/rebuild-008-ecological-activity-intake-balance/`](outputs/rebuild-008-ecological-activity-intake-balance/)
+as ignored evidence.
+
 These demonstrations prove arithmetic, timing, and accounting semantics only.
 They do not estimate a maintenance requirement, residence time, gut fill,
 feeding schedule, animal viability, ecological equilibrium, or any macropod
@@ -187,11 +223,11 @@ Experiments remain thin clients of the package. Each future goal addresses one
 principal question and one subsystem, with compact outputs, proportionate tests,
 an explicit stop, and discussion before another layer is added.
 
-The current Goal 007 executable contract is specified in
-[`docs/model-specification.md`](docs/model-specification.md). Goal 008 remains
-a discussion gate for a later ecological day/night activity schedule and
-intake rebalancing; neither is implemented or authorized by Goal 007. Candidate
-later layers are listed without authorization in
+The executable contract through Goal 008 is specified in
+[`docs/model-specification.md`](docs/model-specification.md). Goal 009 remains
+a discussion and approval gate for finite feeding opportunity or intake limits;
+Goal 008 designs or authorizes neither. Candidate later layers are listed
+without authorization in
 [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Provenance

@@ -115,6 +115,28 @@ response. The zero fixture is a regression control and the pulse is an
 arithmetic probe; neither supplies empirical evidence about animal activity or
 physiology.
 
+Goal 008 adds no executable mechanism. It uses the accepted functions to compare
+`ecological_day_resting`, `ecological_activity_uncompensated`, and
+`ecological_activity_prescribed_balance`. All prescribe intake during hours
+`0:7` and `16:23` and close intake during hours `8:15`; the two activity
+fixtures prescribe 50 kJ h^-1 over the same 16 non-rest intervals.
+
+The observed daily input, assimilation, and activity totals are
+`2400 / 2400 / 0 kJ`, `2400 / 2400 / 800 kJ`, and
+`3200 / 3200 / 800 kJ`. All three gut cycles converge on burn-in day 7.
+Observed body change is approximately `0 kJ`, `-800 kJ`, and `0 kJ` per
+measured day. The zero-activity and uncompensated gut ledgers match exactly in
+memory, while the balanced gut and assimilation paths follow the predicted
+`4/3` scaling within approximately `1.14e-13 kJ`.
+
+The balanced fixture is the normal synthetic ecological accounting reference.
+The Goal 006 zero-activity ecological fixture remains its comparator, and the
+continuous mathematical fixture remains the permanent arithmetic and
+regression diagnostic. The balanced input of `200 kJ h^-1`, equivalent to
+`0.32 kg DM d^-1` under the fixed fixture density, is prescribed rather than
+shown feasible. Its approximate daily neutrality is not behavior, adaptive
+compensation, biological equilibrium, viability, or empirical physiology.
+
 The 50 kg reference mass used in the Goal 002 demonstration is experiment
 metadata only. No implemented equation depends on body mass. All food-energy
 and gut-body fixtures are synthetic. The current layer establishes unit
@@ -134,9 +156,9 @@ activity choice or feedback, directed locomotion, dynamic body mass, protein,
 water, thermoregulation, plants, space, calibration, and all other
 physiological or ecological detail remain outside the executable boundary.
 
-Goal 008 is a discussion gate for a later ecological day/night activity
-schedule and intake rebalancing. Goal 007 specifies or authorizes neither that
-scenario nor any later mechanism.
+Goal 009 is a discussion and approval gate for finite feeding opportunity or
+intake limits. Goal 008 specifies no feasibility mechanism and authorizes no
+later layer.
 
 The predecessor is preserved privately as `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16`; its scientific baseline commit is

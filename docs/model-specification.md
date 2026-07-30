@@ -2,13 +2,14 @@
 
 ## Status
 
-Through Goal 007, prescribed dry-matter ingestion is converted to the existing
+Through Goal 008, prescribed dry-matter ingestion is converted to the existing
 available-energy schedule, and the reference-cycle runner can repeat one
 identical schedule to construct a numerical period-24 gut reference, reset body
 energy once, and record two carried measurement days. Goal 006 adds two named
 input fixtures and evidence only. Goal 007 adds one strict prescribed
 routine-activity schedule and requires it explicitly in every body transition
-and runner.
+and runner. Goal 008 adds a three-fixture ecological evidence chain without
+changing that executable contract.
 
 The fixed density is already metabolizable. Its product with dry matter is
 treated as the accounting equivalent entering the existing gut available-energy
@@ -176,7 +177,8 @@ routine-activity schedule explicitly.
 Goal 004 adds no dynamic state, food choice, variable density, dry-matter gut
 stock, or coupled food-gut-body runner. Goal 005 adds temporal orchestration and
 diagnostics only. Goal 006 adds reference fixtures and review evidence only.
-Goal 007 adds no dynamic state and changes no gut process.
+Goal 007 adds no dynamic state and changes no gut process. Goal 008 adds no
+production code, equation, interface, record, schema, validator, or variable.
 
 ## Hourly Transition Order
 
@@ -326,58 +328,87 @@ expected whole-system change =
 Body and whole-system tolerance scales include the activity amounts. These
 tolerances address floating-point arithmetic only.
 
-## Mathematical And Ecological References
+## Reference Hierarchy And Goal 008 Evidence
 
-Goal 006 assigns different roles to two energy-matched fixtures. The
-`mathematical_continuous` reference remains the permanent arithmetic,
-convergence, accounting, and regression diagnostic. The
-`ecological_day_resting` reference is the normal prescribed starting point for
-later ecological interpretation.
+The reference hierarchy is:
 
-Both use an empty initial gut, a 10000 kJ measurement body reserve, release
-0.25 h^-1, maintenance 100 kJ h^-1, metabolizable-energy density
-10000 kJ kg^-1 DM, the Goal 005 convergence tolerance, at most 100 gut-only
-burn-in days, two carried measurement days, and an explicit 0 kJ h^-1
-routine-activity schedule in every hour.
+- `mathematical_continuous` remains the permanent arithmetic, convergence,
+  accounting, and regression diagnostic;
+- `ecological_day_resting` remains the zero-activity ecological comparator;
+- `ecological_activity_prescribed_balance` is the normal synthetic ecological
+  accounting reference; and
+- `ecological_activity_uncompensated` is the activity-only counterfactual, not
+  a neutral reference.
 
-The mathematical reference is:
+The mathematical diagnostic is:
 
 ```text
 hour_of_day = 0:23
 prescribed_dry_matter_intake_kg_dm_h = 0.010
 prescribed_ingested_available_energy_kj_h = 100
+prescribed_routine_activity_expenditure_kj_h = 0
 ```
 
-The ecological reference is:
+The three ecological fixtures use an empty initial gut, a 10000 kJ measurement
+body reserve, release 0.25 h^-1, maintenance 100 kJ h^-1,
+metabolizable-energy density 10000 kJ kg^-1 DM, the Goal 005 convergence
+tolerance, at most 100 gut-only burn-in days, and two carried measurement days.
+Their exact prescriptions are:
 
 ```text
-hour_of_day = 0:7 and 16:23
-prescribed_dry_matter_intake_kg_dm_h = 0.015
-prescribed_ingested_available_energy_kj_h = 150
+scenario_id = ecological_day_resting
+hours 0:7 and 16:23
+  dry-matter intake = 0.015 kg DM h^-1
+  gut input = 150 kJ h^-1
+  routine activity = 0 kJ h^-1
+daily dry matter / gut input / activity = 0.24 kg DM / 2400 kJ / 0 kJ
+
+scenario_id = ecological_activity_uncompensated
+hours 0:7 and 16:23
+  dry-matter intake = 0.015 kg DM h^-1
+  gut input = 150 kJ h^-1
+  routine activity = 50 kJ h^-1
+daily dry matter / gut input / activity = 0.24 kg DM / 2400 kJ / 800 kJ
+
+scenario_id = ecological_activity_prescribed_balance
+hours 0:7 and 16:23
+  dry-matter intake = 0.020 kg DM h^-1
+  gut input = 200 kJ h^-1
+  routine activity = 50 kJ h^-1
+daily dry matter / gut input / activity = 0.32 kg DM / 3200 kJ / 800 kJ
 
 hour_of_day = 8:15
-prescribed_dry_matter_intake_kg_dm_h = 0
-prescribed_ingested_available_energy_kj_h = 0
+  dry-matter intake, gut input, and routine activity = 0
 ```
 
-Each contains 0.24 kg DM and 2400 kJ per day. Because `hour_of_day` labels
-`[hour_of_day, hour_of_day + 1)`, the ecological reference closes intake
-exactly during `[08:00, 16:00)` and prescribes intake across the night-spanning
-16-hour block from 16:00 through 08:00.
+Because `hour_of_day` labels `[hour_of_day, hour_of_day + 1)`, all three
+ecological fixtures close intake during `[08:00, 16:00)` and prescribe it
+across the night-spanning 16-hour block from 16:00 through 08:00. The two
+activity fixtures close activity during the same rest interval and prescribe
+it across the same 16-hour block; the baseline prescribes zero activity
+throughout.
 
-The ecological closure is prescribed intake. It is not an offered-food
-schedule, feeding-permission mask, realized feeding decision, observation of
-foraging behavior, or activity or sleep state. Its flat feeding block contains
-no explicit crepuscular peaks.
+The retained Goal 008 evidence observes that all three gut cycles first
+converge on burn-in day 7. Daily assimilation is approximately `2400 kJ`,
+`2400 kJ`, and `3200 kJ`, matching the respective prescribed daily inputs.
+Observed daily body change is approximately `0 kJ`, `-800 kJ`, and `0 kJ`.
+Body reserve closes measured days 1 and 2 at approximately
+`10000 / 10000 kJ`, `9200 / 8400 kJ`, and `10000 / 10000 kJ`.
 
-Equal daily dry-matter intake, gut input, maintenance, and zero prescribed
-routine activity define the operational null. In the current linear, lossless,
-unlimited gut system, steady-cycle daily assimilation, observed gut change, and
-observed body change should also agree within the existing scenario-specific
-tolerances. The references must nevertheless have different within-day gut
-stocks, gut release, and body reserve trajectories. This timing invariance is
-an accounting property, not evidence of biological interchangeability or
-empirical realism.
+The baseline and uncompensated convergence and gut ledgers match exactly in
+memory. The balanced gut-boundary and assimilation trajectories follow the
+predicted `4/3` scaling with a maximum in-memory absolute deviation of
+approximately `1.14e-13 kJ`. The observed baseline-minus-uncompensated
+body-reserve contrasts at `0, 8, 16, 24, 32, 40, 48 h` are exactly
+`0, 400, 400, 800, 1200, 1200, 1600 kJ`.
+
+These numerical results are observations from the declared synthetic fixtures.
+The interpretation that added prescribed intake balances prescribed activity
+depends on the unchanged periodic, linear, lossless, unlimited model. The
+balanced rate of `200 kJ h^-1` and total of `0.32 kg DM d^-1` are prescribed,
+not shown feasible. Arithmetic balance is not a feeding decision, behavior,
+adaptive compensation, biological equilibrium, viability, empirical
+physiology, or evidence of biological interchangeability.
 
 ## Accounting
 
@@ -541,6 +572,11 @@ arithmetic and accounting pathway. Its timing and magnitude do not represent
 animal behavior, locomotion, or an empirically calibrated activity pattern or
 physiological cost.
 
+Goal 008 uses the three ecological fixtures specified above to distinguish the
+observed activity-only body loss from the observed effect of higher prescribed
+input. It is an evidence and reference layer only. It changes no equation,
+interface, output schema, or variable definition.
+
 ## Exclusions And Stop
 
 The model does not represent variable or stochastic days, a configurable
@@ -555,11 +591,11 @@ dynamic body mass, protein, water, thermoregulation, plants, weather, space,
 individuals, populations, empirical calibration, parameter estimation, or
 uncertainty analysis.
 
-Goal 007 ends after the explicit routine-activity interface, expanded
-accounting, zero regression, diagnostic pulse, no-write experiment, and ignored
-review outputs are validated and reviewed. Goal 008 remains a discussion gate
-for a later ecological day/night activity schedule and intake rebalancing.
-Goal 007 authorizes neither that scenario nor any later model mechanism.
+Goal 008 ends after the three ecological fixtures, their paired contrasts,
+no-write experiment, ignored review pack, and documentation are validated and
+reviewed. Goal 009 remains a discussion and approval gate for finite feeding
+opportunity or intake limits. Goal 008 neither designs nor authorizes that
+mechanism or any later model layer.
 
 The historical implementation is private at `BWBrook/herbivoreTTR-legacy`, tag
 `legacy-final-2026-07-16`; the pre-freeze scientific baseline is

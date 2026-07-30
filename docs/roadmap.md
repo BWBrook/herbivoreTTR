@@ -54,14 +54,27 @@ fields, and a four-hour 50 kJ h^-1 pulse demonstrates an exact additional
 200 kJ body loss per measured day with no gut effect. These are arithmetic and
 accounting results, not an empirical activity or physiology model.
 
+Rebuild Goal 008 adds a three-fixture evidence and reference layer without
+changing production code, equations, the package API, schemas, or the variable
+dictionary. The zero-activity ecological baseline, uncompensated activity
+counterfactual, and prescribed-balance reference all use intake hours `0:7` and
+`16:23` with hours `8:15` rest-closed. Their observed daily
+input/assimilation/activity totals are `2400 / 2400 / 0 kJ`,
+`2400 / 2400 / 800 kJ`, and `3200 / 3200 / 800 kJ`; all converge on burn-in
+day 7. Observed daily body changes are approximately `0 kJ`, `-800 kJ`, and
+`0 kJ`. The balanced fixture becomes the normal synthetic ecological accounting
+reference, while the Goal 006 zero-activity ecological fixture and continuous
+mathematical diagnostic are retained.
+
 ## Next Decision Gate
 
-Goal 008 remains a discussion gate for a later ecological day/night activity
-schedule and intake rebalancing. Goal 007 adds neither: its routine-activity
-forcing is externally prescribed, and its diagnostic pulse is not an ecological
-schedule. The Goal 007 results and the Goal 006 ecological reference must be
-discussed before Goal 008 receives a bounded principal question, scientific
-contract, or implementation authority.
+Goal 009 remains pending discussion and approval. Its possible question is
+finite feeding opportunity or intake limits, but no mechanism, fixture, or
+implementation is yet designed or authorized. In particular, Goal 008's
+`200 kJ h^-1` balanced intake and `0.32 kg DM d^-1` total are prescribed and
+have not been shown feasible. Their arithmetic balance is not behavior,
+adaptive compensation, biological equilibrium, viability, or empirical
+physiology.
 
 ## Candidate Later Layers
 
