@@ -137,6 +137,21 @@ regression diagnostic. The balanced input of `200 kJ h^-1`, equivalent to
 shown feasible. Its approximate daily neutrality is not behavior, adaptive
 compensation, biological equilibrium, viability, or empirical physiology.
 
+Goal 009 adds evidence without changing this executable boundary. An evidence
+client clips the Goal 008 candidate prescription of `0.020 kg DM h^-1` over 16
+active intervals against synthetic ceilings of `0.015`, `0.020`, and
+`0.025 kg DM h^-1`. The exact conditional accounting threshold is
+`0.020 kg DM h^-1`, or `200 kJ h^-1`: the lower ceiling reproduces the Goal 008
+uncompensated result, while the at- and above-threshold ceilings reproduce the
+balanced result.
+
+The candidate, ceiling, constrained prescription, curtailed prescription,
+strict exceedance, exact positive touching, and unused active-ceiling headroom
+remain separate evidence quantities. Curtailment is discarded. The synthetic
+ceiling is a client-side prescription for locating an accounting threshold,
+not appetite, feeding behavior, forage availability, gut capacity, intake
+redistribution, or a package-level constraint.
+
 The 50 kg reference mass used in the Goal 002 demonstration is experiment
 metadata only. No implemented equation depends on body mass. All food-energy
 and gut-body fixtures are synthetic. The current layer establishes unit
@@ -151,14 +166,14 @@ The implemented gut stock is energy, not dry matter, gross energy, plant
 biomass, or measured gut fill. Variable or stochastic days, configurable
 measurement horizons, seasons, chronic decline, recovery, and viability
 criteria are absent. Offered and wet forage, variable or multiple foods,
-digestive loss, efficiency, waste, capacity, intake limits, feeding behavior,
-activity choice or feedback, directed locomotion, dynamic body mass, protein,
-water, thermoregulation, plants, space, calibration, and all other
+digestive loss, efficiency, waste, capacity, production intake limits, feeding
+behavior, activity choice or feedback, directed locomotion, dynamic body mass,
+protein, water, thermoregulation, plants, space, calibration, and all other
 physiological or ecological detail remain outside the executable boundary.
 
-Goal 009 is a discussion and approval gate for finite feeding opportunity or
-intake limits. Goal 008 specifies no feasibility mechanism and authorizes no
-later layer.
+Goal 009 establishes only the declared synthetic threshold and exact Goal 008
+identities. Goal 010 remains an unapproved decision among a durable ceiling,
+varying feeding-opportunity duration, or pausing for empirical evidence.
 
 The predecessor is preserved privately as `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16`; its scientific baseline commit is

@@ -162,6 +162,32 @@ synthetic evidence. The balanced fixture's `200 kJ h^-1` input and
 behavior, adaptive compensation, biological equilibrium, viability, or
 empirical physiology.
 
+Goal 009 also changes no package function, equation, API, state, or schema. An
+evidence client starts with the Goal 008 balanced candidate prescription of
+`0.020 kg DM h^-1` over the 16 active intervals and applies synthetic hourly
+ceilings of `0.015`, `0.020`, and `0.025 kg DM h^-1` by elementwise `pmin`.
+The resulting constrained prescription is passed through the unchanged package;
+the difference from the candidate is curtailed and discarded, with no
+redistribution, storage, carry-over, or feedback.
+
+Under the declared `10000 kJ kg^-1 DM` density, `100 kJ h^-1` maintenance, and
+`50 kJ h^-1` active routine-activity fixtures, the exact accounting threshold
+is `0.020 kg DM h^-1`, or `200 kJ h^-1`. The below-threshold ceiling constrains
+daily intake to `0.24 kg DM` and reproduces the Goal 008 uncompensated
+`-800 kJ` daily body change. The at- and above-threshold ceilings preserve the
+`0.32 kg DM`, `3200 kJ` prescription and reproduce the Goal 008 balanced
+result. Exact touching occurs only in the at-threshold fixture; the
+above-threshold fixture instead has `0.08 kg DM`, or `800 kJ`, of unused daily
+active-ceiling headroom.
+
+Candidate prescribed intake, the synthetic ceiling, constrained prescribed
+intake, curtailed prescribed intake, strict ceiling exceedance, exact positive
+touching, and unused active-ceiling headroom are separate evidence quantities.
+The ceiling is a client-side accounting prescription used to locate a
+conditional threshold. It is not appetite, feeding behavior, forage
+availability, gut capacity, a production intake limit, or evidence that the
+rate is achievable.
+
 Only the product of intake and density reaches downstream dynamics. Scaling
 intake by a positive constant and density by its reciprocal therefore produces
 identical energy trajectories. The two prescribed inputs are structurally
@@ -204,15 +230,22 @@ retains four tables and one figure under
 [`outputs/rebuild-008-ecological-activity-intake-balance/`](outputs/rebuild-008-ecological-activity-intake-balance/)
 as ignored evidence.
 
+The Goal 009 experiment
+[`experiments/rebuild-009-synthetic-intake-ceiling-threshold.R`](experiments/rebuild-009-synthetic-intake-ceiling-threshold.R)
+verifies the three-level synthetic ceiling bracket and exact Goal 008 result
+identities. Its review script retains one figure and three tables under
+[`outputs/rebuild-009-synthetic-intake-ceiling-threshold/`](outputs/rebuild-009-synthetic-intake-ceiling-threshold/)
+as ignored evidence.
+
 These demonstrations prove arithmetic, timing, and accounting semantics only.
 They do not estimate a maintenance requirement, residence time, gut fill,
 feeding schedule, animal viability, ecological equilibrium, or any macropod
 trait. The model contains no offered forage, wet-mass conversion, variable food
-quality, digestive loss, waste, dry-matter gut stock, gut capacity, feeding
-behavior, directed locomotion, activity choice or feedback, body-mass change,
-plants, or empirical calibration. It also contains no variable or stochastic
-days, configurable measurement horizon, season, chronic-decline process,
-recovery process, or viability criterion.
+quality, digestive loss, waste, dry-matter gut stock, gut capacity, production
+intake ceiling, feeding behavior, directed locomotion, activity choice or
+feedback, body-mass change, plants, or empirical calibration. It also contains
+no variable or stochastic days, configurable measurement horizon, season,
+chronic-decline process, recovery process, or viability criterion.
 
 ## Design
 
@@ -223,11 +256,12 @@ Experiments remain thin clients of the package. Each future goal addresses one
 principal question and one subsystem, with compact outputs, proportionate tests,
 an explicit stop, and discussion before another layer is added.
 
-The executable contract through Goal 008 is specified in
-[`docs/model-specification.md`](docs/model-specification.md). Goal 009 remains
-a discussion and approval gate for finite feeding opportunity or intake limits;
-Goal 008 designs or authorizes neither. Candidate later layers are listed
-without authorization in
+The executable package contract remains specified in
+[`docs/model-specification.md`](docs/model-specification.md). Goal 009 adds
+evidence about one synthetic accounting threshold without changing that
+contract. Goal 010 remains an unapproved decision among a durable ceiling,
+varying feeding-opportunity duration, or pausing for empirical evidence.
+Candidate later layers are listed without authorization in
 [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Provenance

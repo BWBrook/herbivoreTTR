@@ -66,15 +66,28 @@ day 7. Observed daily body changes are approximately `0 kJ`, `-800 kJ`, and
 reference, while the Goal 006 zero-activity ecological fixture and continuous
 mathematical diagnostic are retained.
 
+Rebuild Goal 009 adds a synthetic intake-ceiling threshold screen in evidence
+clients only. It clips the Goal 008 candidate prescription of
+`0.020 kg DM h^-1` over 16 active intervals against ceilings of `0.015`,
+`0.020`, and `0.025 kg DM h^-1`, without changing production code, APIs,
+state, or schemas. The exact conditional accounting threshold is
+`0.020 kg DM h^-1`, or `200 kJ h^-1`. The lower ceiling reproduces the Goal 008
+uncompensated result; the at- and above-threshold ceilings reproduce the
+balanced result, with `0.08 kg DM` or `800 kJ` of unused daily active-ceiling
+headroom above the threshold. Candidate, constrained, and curtailed
+prescriptions, strict exceedance, exact positive touching, and unused headroom
+remain separate evidence quantities. Curtailment is discarded rather than
+redistributed. The screen does not establish appetite, feeding behavior, forage
+availability, gut capacity, an empirical maximum, or an achievable intake rate.
+
 ## Next Decision Gate
 
-Goal 009 remains pending discussion and approval. Its possible question is
-finite feeding opportunity or intake limits, but no mechanism, fixture, or
-implementation is yet designed or authorized. In particular, Goal 008's
-`200 kJ h^-1` balanced intake and `0.32 kg DM d^-1` total are prescribed and
-have not been shown feasible. Their arithmetic balance is not behavior,
-adaptive compensation, biological equilibrium, viability, or empirical
-physiology.
+Goal 010 remains unapproved. A later decision may consider promoting a durable
+ceiling, varying feeding-opportunity duration, or pausing for empirical
+evidence. Goal 009 does not choose among those directions. Its
+`0.020 kg DM h^-1` threshold is conditional accounting evidence, not a
+production intake limit, behavioral mechanism, viability result, or empirical
+calibration.
 
 ## Candidate Later Layers
 

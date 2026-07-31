@@ -3,8 +3,10 @@
 ## Status
 
 These are the exact public record, flux, and ledger names implemented through
-Goal 007. Rates in kJ h^-1 and one-hour amounts in kJ remain distinct even when
-their numerical values match for the fixed one-hour transition.
+Goal 009. The production schema last changed in Goal 007; Goals 008 and 009 add
+evidence outputs only. Rates in kJ h^-1 and one-hour amounts in kJ remain
+distinct even when their numerical values match for the fixed one-hour
+transition.
 
 The Goal 004 density is already metabolizable energy on a dry-matter basis. Its
 product with prescribed dry-matter ingestion is the accounting equivalent
@@ -88,6 +90,106 @@ For `step_body_energy()`, the one-row activity input must have the same
 The schedule is an externally prescribed incremental body-energy sink. It does
 not represent a behavioral state, directed locomotion, exercise, thermic effect
 of food, total metabolism, or an emergent response.
+
+## Goal 009 Evidence-Only Review Columns
+
+Goal 009 adds no package variable, state, parameter, record, or return schema.
+The names below exist only in the no-write experiment and ignored review pack.
+They describe a synthetic client-side `pmin` prescription, not appetite,
+feeding behavior, forage availability, gut capacity, or a production ceiling.
+
+The hourly screen contains:
+
+```text
+scenario_id
+hour_of_day
+candidate_prescribed_dry_matter_intake_kg_dm_h
+synthetic_intake_ceiling_kg_dm_h
+constrained_prescribed_dry_matter_intake_kg_dm_h
+curtailed_prescribed_dry_matter_intake_kg_dm_h
+ceiling_exceeded
+```
+
+The threshold summary contains:
+
+```text
+scenario_id
+active_ceiling_kg_dm_h
+active_ceiling_energy_equivalent_kj_h
+threshold_multiple
+threshold_relation
+curtailed_active_intervals
+touching_active_intervals
+daily_candidate_intake_kg_dm
+daily_ceiling_capacity_kg_dm
+daily_constrained_intake_kg_dm
+daily_curtailed_intake_kg_dm
+daily_constrained_energy_kj
+daily_energy_shortfall_kj
+daily_unused_ceiling_headroom_kg_dm
+daily_unused_ceiling_headroom_kj
+```
+
+The measured daily accounting table contains:
+
+```text
+scenario_id
+measurement_day
+daily_candidate_intake_kg_dm
+daily_constrained_intake_kg_dm
+daily_curtailed_intake_kg_dm
+total_constrained_energy_input_kj
+total_assimilated_energy_kj
+total_maintenance_expenditure_kj
+total_routine_activity_expenditure_kj
+observed_body_energy_change_kj
+body_energy_reserve_final_kj
+body_energy_status
+goal008_oracle_scenario_id
+exact_oracle_identity
+```
+
+Shared package-result names retain their definitions elsewhere in this
+dictionary. Their review-table values are copied from the unchanged Goal 008
+result. The Goal 009-specific evidence meanings are:
+
+| Name | Role | Unit | Meaning |
+| --- | --- | --- | --- |
+| `scenario_id` | evidence fixture key | none | Identifies the below-, at-, or above-threshold synthetic ceiling fixture. |
+| `hour_of_day` | evidence clock key | integer 0-23 | Retains the package interval label `[hour_of_day, hour_of_day + 1)`. |
+| `candidate_prescribed_dry_matter_intake_kg_dm_h` | candidate prescribed rate | kg DM h^-1 | External prescription before clipping: 0.020 in each active interval and zero during rest. |
+| `synthetic_intake_ceiling_kg_dm_h` | evidence-only ceiling rate | kg DM h^-1 | Synthetic exogenous clipping prescription for the labeled hour; not a physiological or production limit. |
+| `constrained_prescribed_dry_matter_intake_kg_dm_h` | constrained prescribed rate | kg DM h^-1 | Elementwise minimum of candidate prescription and synthetic ceiling. |
+| `curtailed_prescribed_dry_matter_intake_kg_dm_h` | curtailed prescribed rate | kg DM h^-1 | Candidate minus constrained prescription; discarded without redistribution, storage, carry-over, or feedback. |
+| `ceiling_exceeded` | strict exceedance flag | logical | `TRUE` only when candidate prescription is strictly greater than the ceiling; false for rest intervals where both are zero. |
+| `active_ceiling_kg_dm_h` | active fixture ceiling rate | kg DM h^-1 | Constant ceiling prescribed across the 16 active intervals for the scenario. |
+| `active_ceiling_energy_equivalent_kj_h` | derived ceiling-rate equivalent | kJ h^-1 | Active ceiling multiplied by the fixed 10000 kJ kg^-1 DM evidence density. |
+| `threshold_multiple` | threshold ratio | dimensionless | Active ceiling divided by the analytical threshold of 0.020 kg DM h^-1. |
+| `threshold_relation` | threshold classification | `below`, `at`, or `above` | Declared relation of the active ceiling to the analytical threshold. |
+| `curtailed_active_intervals` | curtailment count | integer intervals | Number of the 16 active intervals with strictly positive curtailed prescribed intake. |
+| `touching_active_intervals` | exact-touch count | integer intervals | Number of active intervals where candidate and ceiling are equal and strictly positive. |
+| `daily_candidate_intake_kg_dm` | candidate daily amount | kg DM | Sum of the 24 candidate prescribed hourly rates over fixed one-hour intervals. |
+| `daily_ceiling_capacity_kg_dm` | synthetic daily ceiling sum | kg DM | Sum of the 24 hourly ceiling rates over fixed one-hour intervals; not forage availability, an allowance, or physiological capacity. |
+| `daily_constrained_intake_kg_dm` | constrained daily amount | kg DM | Sum of the 24 constrained prescribed hourly rates over fixed one-hour intervals. |
+| `daily_curtailed_intake_kg_dm` | curtailed daily amount | kg DM | Sum of candidate minus constrained prescribed intake; not deferred intake. |
+| `daily_constrained_energy_kj` | constrained daily energy equivalent | kJ | Daily constrained intake multiplied by the fixed evidence density. |
+| `daily_energy_shortfall_kj` | threshold shortfall | kJ | Declared 3200 kJ daily accounting requirement minus constrained daily energy. |
+| `daily_unused_ceiling_headroom_kg_dm` | unused active-ceiling sum | kg DM | Active-interval sum of `max(ceiling - constrained intake, 0)`; not physiological capacity use. |
+| `daily_unused_ceiling_headroom_kj` | unused headroom energy equivalent | kJ | Dry-matter headroom multiplied by the fixed evidence density. |
+| `measurement_day` | measured-day key | integer 1-2 | Retains the two carried measurement-day identifiers from the reference-cycle result. |
+| `total_constrained_energy_input_kj` | measured constrained input total | kJ | Existing daily total prescribed gut input produced from the constrained schedule. |
+| `total_assimilated_energy_kj` | measured internal transfer total | kJ | Existing daily sum of energy transferred from gut to body. |
+| `total_maintenance_expenditure_kj` | measured maintenance total | kJ | Existing daily sum of fixed maintenance expenditure. |
+| `total_routine_activity_expenditure_kj` | measured activity total | kJ | Existing daily prescribed routine-activity total, renamed only in the evidence table. |
+| `observed_body_energy_change_kj` | measured body change | kJ | Existing closing-minus-opening daily body-reserve change. |
+| `body_energy_reserve_final_kj` | measured closing body state | kJ | Existing body reserve after hour 23 for the measurement day. |
+| `body_energy_status` | measured body status | `neutral`, `deficit`, or `surplus` | Existing sign classification using the Goal 002 numerical tolerance. |
+| `goal008_oracle_scenario_id` | evidence oracle key | none | Names the accepted Goal 008 scenario used for complete-result comparison. |
+| `exact_oracle_identity` | evidence identity flag | logical | `TRUE` only when the complete in-memory result is exactly identical to the named Goal 008 oracle. |
+
+The candidate, ceiling, constrained prescription, curtailed prescription,
+strict exceedance, exact positive touching, and unused active-ceiling headroom
+are distinct. None is a new production forcing or state variable.
 
 ## Goal 005 Reference-Cycle Schemas
 
@@ -250,19 +352,19 @@ history remain distinct even when they share a derived output table. Goal 003
 adds storage and delay only; Goal 004 adds one fixed food property and one
 prescribed dry-matter input without new state; Goal 005 adds numerical
 gut-cycle construction, one measurement reset, and two carried day keys without
-new biology; Goal 006 adds named reference fixtures; and Goal 007 adds one
+new biology; Goal 006 adds named reference fixtures; Goal 007 adds one
 externally prescribed incremental routine-activity expenditure without new
-state or gut dynamics. Offered or wet forage, variable food properties,
-digestive losses or efficiency, dry-matter gut state, capacity, behavior,
-directed locomotion, activity choice or feedback, mass change, variable or
-stochastic days, seasons, chronic change, viability, plants, and calibration
-have no implemented variables.
+state or gut dynamics; and Goals 008 and 009 add evidence only. Offered or wet
+forage, variable food properties, digestive losses or efficiency, dry-matter
+gut state, capacity, production intake limits, behavior, directed locomotion,
+activity choice or feedback, mass change, variable or stochastic days, seasons,
+chronic change, viability, plants, and calibration have no implemented
+variables.
 
-The zero-activity schedule is the Goal 007 regression control. The four-hour
-50 kJ h^-1 pulse in hours 8 through 11 is an arithmetic diagnostic totaling
-200 kJ per measured day. Neither fixture is an empirical activity or
-physiology estimate. An ecological day/night activity schedule and intake
-rebalancing remain a Goal 008 discussion gate.
+Goal 009's `0.020 kg DM h^-1` threshold is conditional on the declared
+16-hour, density, maintenance, activity, and discarded-curtailment fixture. It
+does not establish an empirical maximum or achievable feeding rate. Goal 010
+remains unapproved.
 
 Historical names in `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16` are not binding. The corresponding pre-freeze

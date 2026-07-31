@@ -2,14 +2,16 @@
 
 ## Status
 
-Through Goal 008, prescribed dry-matter ingestion is converted to the existing
+Through Goal 009, prescribed dry-matter ingestion is converted to the existing
 available-energy schedule, and the reference-cycle runner can repeat one
 identical schedule to construct a numerical period-24 gut reference, reset body
 energy once, and record two carried measurement days. Goal 006 adds two named
 input fixtures and evidence only. Goal 007 adds one strict prescribed
 routine-activity schedule and requires it explicitly in every body transition
 and runner. Goal 008 adds a three-fixture ecological evidence chain without
-changing that executable contract.
+changing that executable contract. Goal 009 adds a synthetic intake-ceiling
+threshold screen in evidence clients only; it also leaves the executable
+contract unchanged.
 
 The fixed density is already metabolizable. Its product with dry matter is
 treated as the accounting equivalent entering the existing gut available-energy
@@ -152,7 +154,7 @@ though their numerical values match for the fixed one-hour transition.
   `body_energy_reserve_kj`.
 - Use an explicit 24-hour clock with fixed one-hour state transitions.
 - Treat `prescribed_dry_matter_intake_kg_dm_h` as controlled ingestion, with no
-  intake limit, availability process, or body-state feedback.
+  production intake limit, availability process, or body-state feedback.
 - Treat `prescribed_ingested_available_energy_kj_h` as the controlled energy
   entering the gut, whether constructed directly through the retained Goal 003
   interface or derived by the Goal 004 bridge. It is not gross energy, plant
@@ -179,6 +181,8 @@ stock, or coupled food-gut-body runner. Goal 005 adds temporal orchestration and
 diagnostics only. Goal 006 adds reference fixtures and review evidence only.
 Goal 007 adds no dynamic state and changes no gut process. Goal 008 adds no
 production code, equation, interface, record, schema, validator, or variable.
+Goal 009 also adds none of these; its clipping transformation and additional
+columns exist only in experiment and review evidence.
 
 ## Hourly Transition Order
 
@@ -410,6 +414,60 @@ not shown feasible. Arithmetic balance is not a feeding decision, behavior,
 adaptive compensation, biological equilibrium, viability, empirical
 physiology, or evidence of biological interchangeability.
 
+## Goal 009 Evidence-Only Ceiling Screen
+
+Goal 009 starts with the Goal 008 balanced candidate prescription:
+`0.020 kg DM h^-1` in the 16 active intervals and zero in the eight rest
+intervals. Evidence clients construct synthetic ceilings of `0.015`, `0.020`,
+and `0.025 kg DM h^-1` in active intervals and zero during rest, then apply:
+
+```text
+constrained prescribed intake at hour t =
+  min(candidate prescribed intake at hour t,
+      synthetic hourly ceiling at hour t)
+
+curtailed prescribed intake at hour t =
+  candidate prescribed intake at hour t
+  - constrained prescribed intake at hour t
+```
+
+`ceiling_exceeded` is true only when candidate intake is strictly greater than
+the ceiling. Touching counts only active intervals in which candidate and
+ceiling are equal and strictly positive; rest intervals therefore neither
+exceed nor touch. Daily unused active-ceiling headroom sums
+`max(ceiling - constrained intake, 0)` over the 16 active intervals.
+Curtailment is discarded with no redistribution, storage, carry-over, or
+feedback.
+
+At the fixed `10000 kJ kg^-1 DM` density, daily maintenance of `2400 kJ`, and
+daily routine activity of `800 kJ`, the exact conditional threshold is:
+
+```text
+3200 kJ / (16 h * 10000 kJ kg^-1 DM)
+  = 0.020 kg DM h^-1
+  = 200 kJ h^-1
+```
+
+The retained evidence observes:
+
+| Relation | Active ceiling | Exceeded / touching intervals | Daily constrained / curtailed intake | Daily unused headroom | Constrained energy and body change |
+| --- | --- | --- | --- | --- | --- |
+| below | 0.015 kg DM h^-1 | 16 / 0 | 0.24 / 0.08 kg DM | 0 kg DM | 2400 kJ and -800 kJ |
+| at | 0.020 kg DM h^-1 | 0 / 16 | 0.32 / 0 kg DM | 0 kg DM | 3200 kJ and approximately 0 kJ |
+| above | 0.025 kg DM h^-1 | 0 / 0 | 0.32 / 0 kg DM | 0.08 kg DM = 800 kJ | 3200 kJ and approximately 0 kJ |
+
+The below-threshold complete result is exactly identical in memory to
+`ecological_activity_uncompensated`. The at- and above-threshold complete
+results are exactly identical to each other and to
+`ecological_activity_prescribed_balance`. Thus a static client-side ceiling is
+downstream-equivalent to selecting the corresponding lower prescribed
+schedule; it adds no animal mechanism.
+
+The threshold is conditional on the declared fixture and accounting
+assumptions. It is not an empirical maximum, appetite, feeding behavior, forage
+availability, gut capacity, intake redistribution, a demonstrated achievable
+rate, or a production package constraint.
+
 ## Accounting
 
 Each gut transition records prescribed ingestion, assimilation, gut-stock
@@ -577,6 +635,12 @@ observed activity-only body loss from the observed effect of higher prescribed
 input. It is an evidence and reference layer only. It changes no equation,
 interface, output schema, or variable definition.
 
+Goal 009 uses a candidate prescription and three evidence-only ceiling
+schedules to locate the conditional accounting threshold specified above. The
+candidate, ceiling, constrained prescription, curtailed prescription,
+exceedance, touching, and unused headroom are experiment quantities, not
+production state or forcing schemas.
+
 ## Exclusions And Stop
 
 The model does not represent variable or stochastic days, a configurable
@@ -584,18 +648,19 @@ measurement horizon, seasons, chronic decline, recovery, viability criteria,
 offered or wet forage, water content, gross or digestible energy, time-varying
 density, multiple food types, food choice, preference, diet mixing, nutrient
 composition, assimilation efficiency, digestive loss, waste, dry-matter gut
-state, gut capacity, intake limits, multiple gut compartments, feeding
-decisions, behavior, activity choice or feedback, directed locomotion,
+state, gut capacity, production intake limits, multiple gut compartments,
+feeding decisions, behavior, activity choice or feedback, directed locomotion,
 feeding-associated expenditure, thermic effect of food, total metabolism,
 dynamic body mass, protein, water, thermoregulation, plants, weather, space,
 individuals, populations, empirical calibration, parameter estimation, or
 uncertainty analysis.
 
-Goal 008 ends after the three ecological fixtures, their paired contrasts,
-no-write experiment, ignored review pack, and documentation are validated and
-reviewed. Goal 009 remains a discussion and approval gate for finite feeding
-opportunity or intake limits. Goal 008 neither designs nor authorizes that
-mechanism or any later model layer.
+Goal 009 ends after the three-level synthetic threshold bracket, exact Goal 008
+identities, no-write experiment, ignored four-file review pack, and bounded
+documentation are validated and reviewed. Goal 010 remains an unapproved
+decision among promoting a durable ceiling, varying feeding-opportunity
+duration, or pausing for empirical evidence. Goal 009 neither chooses nor
+implements that later layer.
 
 The historical implementation is private at `BWBrook/herbivoreTTR-legacy`, tag
 `legacy-final-2026-07-16`; the pre-freeze scientific baseline is
