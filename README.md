@@ -188,6 +188,29 @@ conditional threshold. It is not appetite, feeding behavior, forage
 availability, gut capacity, a production intake limit, or evidence that the
 rate is achievable.
 
+Goal 010 likewise remains evidence-only. It compares prescribed intake windows
+of 24, 16, 12, and 8 h d^-1 using open hours `0:23`; `16:23` and `0:7`;
+`16:21` and `2:7`; and `16:19` and `4:7`, respectively. Routine activity stays
+fixed at `50 kJ h^-1` in hours `16:23` and `0:7` and zero in hours `8:15`. An
+open interval is fully used at `0.020 kg DM h^-1`, or `200 kJ h^-1`; this is an
+operational prescription, not voluntary opportunity or realized feeding
+behavior. The resulting daily prescribed energy is
+`4800, 3200, 2400, 1600 kJ`, and the analytical daily body changes are
+`+1600, 0, -800, -1600 kJ`, respectively. Expected body reserves close measured
+days 1 and 2 at `11600 / 13200`, `10000 / 10000`, `9200 / 8400`, and
+`8400 / 6800 kJ`.
+
+The 16-hour result is exactly identical to Goal 008
+`ecological_activity_prescribed_balance`. The 12-hour result matches Goal 008
+`ecological_activity_uncompensated` only for daily prescribed intake and energy,
+maintenance, routine-activity expenditure, body-energy change, status, and
+closing body reserve; its intake pattern, periodic gut state, within-day
+trajectories, and complete result differ. The 24-hour comparator additionally
+opens the activity-off interval `[08:00, 16:00)`, whereas the 12- and 8-hour
+fixtures remove central-night prescribed-intake hours from the fixed activity
+window. The linear daily accounting relation therefore does not establish a
+generic within-day duration effect.
+
 Only the product of intake and density reaches downstream dynamics. Scaling
 intake by a positive constant and density by its reciprocal therefore produces
 identical energy trajectories. The two prescribed inputs are structurally
@@ -237,6 +260,14 @@ identities. Its review script retains one figure and three tables under
 [`outputs/rebuild-009-synthetic-intake-ceiling-threshold/`](outputs/rebuild-009-synthetic-intake-ceiling-threshold/)
 as ignored evidence.
 
+The Goal 010 experiment
+[`experiments/rebuild-010-feeding-opportunity-duration.R`](experiments/rebuild-010-feeding-opportunity-duration.R)
+verifies the four prescribed-intake-window fixtures, analytical duration
+relation, and bounded Goal 008 comparisons. Its review script retains one
+figure and three tables under
+[`outputs/rebuild-010-feeding-opportunity-duration/`](outputs/rebuild-010-feeding-opportunity-duration/)
+as ignored evidence.
+
 These demonstrations prove arithmetic, timing, and accounting semantics only.
 They do not estimate a maintenance requirement, residence time, gut fill,
 feeding schedule, animal viability, ecological equilibrium, or any macropod
@@ -257,11 +288,11 @@ principal question and one subsystem, with compact outputs, proportionate tests,
 an explicit stop, and discussion before another layer is added.
 
 The executable package contract remains specified in
-[`docs/model-specification.md`](docs/model-specification.md). Goal 009 adds
-evidence about one synthetic accounting threshold without changing that
-contract. Goal 010 remains an unapproved decision among a durable ceiling,
-varying feeding-opportunity duration, or pausing for empirical evidence.
-Candidate later layers are listed without authorization in
+[`docs/model-specification.md`](docs/model-specification.md). Goals 009 and 010
+add evidence about a synthetic accounting threshold and prescribed-intake-window
+duration without changing that contract. Goal 011 remains unapproved and no
+production opportunity mechanism has been selected. Candidate later layers are
+listed without authorization in
 [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Provenance

@@ -152,6 +152,26 @@ ceiling is a client-side prescription for locating an accounting threshold,
 not appetite, feeding behavior, forage availability, gut capacity, intake
 redistribution, or a package-level constraint.
 
+Goal 010 also adds evidence without changing the executable boundary. Its
+formal client-side field is `prescribed_intake_window_open`, which defines a
+prescribed intake window: every open interval is fully used at the fixed
+prescription of `0.020 kg DM h^-1`, or `200 kJ h^-1`. Windows of 24, 16, 12,
+and 8 h d^-1 therefore prescribe
+`4800, 3200, 2400, 1600 kJ` per day against fixed daily maintenance and routine
+activity of `2400 kJ` and `800 kJ`. Their analytical daily body changes are
+`+1600, 0, -800, -1600 kJ`, with whole-kilojoule day 1/day 2 closes of
+`11600 / 13200`, `10000 / 10000`, `9200 / 8400`, and `8400 / 6800 kJ`.
+
+The 16-hour result is exactly the Goal 008 balanced reference. The 12-hour
+fixture shares only the declared daily input, expenditure, body-change, status,
+and closing-reserve results with the Goal 008 uncompensated fixture; their
+hourly schedules, periodic gut states, within-day trajectories, and complete
+results differ. The daily duration relation is clean because rate and activity
+are fixed, but within-day trajectories also depend on placement: the 24-hour
+comparator opens `[08:00, 16:00)`, while the shorter restricted fixtures remove
+central-night prescribed-intake hours. An open prescribed-intake interval is
+not voluntary access, realized behavior, or demonstrated capacity.
+
 The 50 kg reference mass used in the Goal 002 demonstration is experiment
 metadata only. No implemented equation depends on body mass. All food-energy
 and gut-body fixtures are synthetic. The current layer establishes unit
@@ -171,9 +191,10 @@ behavior, activity choice or feedback, directed locomotion, dynamic body mass,
 protein, water, thermoregulation, plants, space, calibration, and all other
 physiological or ecological detail remain outside the executable boundary.
 
-Goal 009 establishes only the declared synthetic threshold and exact Goal 008
-identities. Goal 010 remains an unapproved decision among a durable ceiling,
-varying feeding-opportunity duration, or pausing for empirical evidence.
+Goals 009 and 010 establish only the declared synthetic threshold and
+prescribed intake window accounting evidence. Their client-side fields are not
+package state or schemas. Goal 011 remains unapproved; no production opportunity
+mechanism, compensatory response, or empirical-capacity layer is authorized.
 
 The predecessor is preserved privately as `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16`; its scientific baseline commit is

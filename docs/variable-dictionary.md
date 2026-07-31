@@ -3,9 +3,9 @@
 ## Status
 
 These are the exact public record, flux, and ledger names implemented through
-Goal 009. The production schema last changed in Goal 007; Goals 008 and 009 add
-evidence outputs only. Rates in kJ h^-1 and one-hour amounts in kJ remain
-distinct even when their numerical values match for the fixed one-hour
+Goal 010. The production schema last changed in Goal 007; Goals 008, 009, and
+010 add evidence outputs only. Rates in kJ h^-1 and one-hour amounts in kJ
+remain distinct even when their numerical values match for the fixed one-hour
 transition.
 
 The Goal 004 density is already metabolizable energy on a dry-matter basis. Its
@@ -191,6 +191,109 @@ The candidate, ceiling, constrained prescription, curtailed prescription,
 strict exceedance, exact positive touching, and unused active-ceiling headroom
 are distinct. None is a new production forcing or state variable.
 
+## Goal 010 Evidence-Only Review Columns
+
+Goal 010 adds no package variable, state, parameter, record, or return schema.
+The prescribed intake window fields below exist only in the no-write experiment
+and ignored review pack. `prescribed_intake_window_open = TRUE` means that the
+labeled interval is fully used at the fixed prescribed intake rate; it is not
+voluntary opportunity, realized behavior, forage access, or empirical capacity.
+
+The hourly prescribed-intake-window table contains:
+
+```text
+scenario_id
+prescribed_intake_window_duration_h_d
+hour_of_day
+prescribed_intake_window_open
+prescribed_dry_matter_intake_kg_dm_h
+prescribed_ingested_available_energy_kj_h
+prescribed_routine_activity_expenditure_kj_h
+```
+
+The duration summary contains:
+
+```text
+scenario_id
+prescribed_intake_window_duration_h_d
+closed_prescribed_intake_duration_h_d
+prescribed_intake_activity_overlap_h_d
+activity_without_prescribed_intake_h_d
+prescribed_intake_without_activity_h_d
+threshold_relation
+daily_prescribed_dry_matter_intake_kg_dm
+daily_prescribed_energy_kj
+daily_maintenance_expenditure_kj
+daily_routine_activity_expenditure_kj
+expected_body_energy_change_kj
+day_1_body_energy_reserve_final_kj
+day_2_body_energy_reserve_final_kj
+matched_goal008_scenario_id
+daily_input_and_body_change_match
+within_day_body_trajectory_identical
+full_result_identical
+```
+
+The measured daily accounting table contains:
+
+```text
+scenario_id
+measurement_day
+prescribed_intake_window_duration_h_d
+daily_prescribed_dry_matter_intake_kg_dm
+total_prescribed_energy_input_kj
+total_assimilated_energy_kj
+total_maintenance_expenditure_kj
+total_routine_activity_expenditure_kj
+expected_body_energy_change_kj
+observed_body_energy_change_kj
+body_energy_reserve_initial_kj
+body_energy_reserve_final_kj
+body_energy_status
+```
+
+The Goal 010-specific fields and evidence-table aliases are:
+
+| Name | Role | Unit | Meaning |
+| --- | --- | --- | --- |
+| `prescribed_intake_window_duration_h_d` | prescribed intake window duration | h d^-1 | Count of one-hour intervals in which the fixed prescribed intake rate is applied: 24, 16, 12, or 8. |
+| `prescribed_intake_window_open` | prescribed intake window flag | logical | `TRUE` forces the fixed prescribed intake rate for the labeled interval; `FALSE` forces zero. It is evidence construction metadata, not a package input or behavioral choice. |
+| `closed_prescribed_intake_duration_h_d` | closed-window duration | h d^-1 | `24` minus the prescribed-intake-window duration. |
+| `prescribed_intake_activity_overlap_h_d` | intake/activity overlap | h d^-1 | Count of intervals in which both fixed prescribed intake and fixed routine activity are positive. |
+| `activity_without_prescribed_intake_h_d` | activity-only duration | h d^-1 | Count of intervals with positive prescribed routine activity and zero prescribed intake. |
+| `prescribed_intake_without_activity_h_d` | intake-only duration | h d^-1 | Count of intervals with positive prescribed intake and zero prescribed routine activity. |
+| `threshold_relation` | duration-threshold classification | `below`, `at`, or `above` | Relation of the prescribed-intake-window duration to the analytical 16 h d^-1 neutrality threshold in the Goal 010 fixture; distinct from the Goal 009 ceiling-rate classification. |
+| `daily_prescribed_dry_matter_intake_kg_dm` | prescribed daily amount | kg DM | Sum of the 24 hourly prescribed dry-matter intake rates over fixed one-hour intervals. |
+| `daily_prescribed_energy_kj` | prescribed daily energy | kJ | Daily prescribed dry matter multiplied by the fixed evidence density; `4800`, `3200`, `2400`, or `1600 kJ`. |
+| `daily_maintenance_expenditure_kj` | fixed daily maintenance | kJ | Sum of the 24 fixed maintenance amounts; `2400 kJ` in every Goal 010 fixture. |
+| `daily_routine_activity_expenditure_kj` | fixed daily activity | kJ | Sum of the fixed prescribed routine-activity amounts; `800 kJ` in every Goal 010 fixture. |
+| `expected_body_energy_change_kj` | expected daily body change | kJ | In the duration summary, the day-invariant analytical amount `200 * H - 3200 kJ`; in the measured daily table, a copy of the existing package daily-summary field. |
+| `day_1_body_energy_reserve_final_kj` | day 1 closing body state | kJ | Day 1 value extracted from the inherited `body_energy_reserve_final_kj` result field. |
+| `day_2_body_energy_reserve_final_kj` | day 2 closing body state | kJ | Day 2 value extracted from the inherited `body_energy_reserve_final_kj` result field. |
+| `matched_goal008_scenario_id` | evidence oracle key | none | Names the accepted Goal 008 comparison for the 16- or 12-hour fixture; empty for the 24- and 8-hour fixtures, for which no oracle is declared. |
+| `daily_input_and_body_change_match` | selected daily/closing match flag | logical | For a declared Goal 008 oracle, indicates equality of daily prescribed intake and energy, maintenance, routine activity, body change, status, and the two closing reserves; empty when no oracle is declared. |
+| `within_day_body_trajectory_identical` | body-trajectory identity flag | logical | Indicates exact identity of the within-day body trajectory with the named oracle; `TRUE` for 16 hours and `FALSE` for 12 hours. |
+| `full_result_identical` | complete-result identity flag | logical | Indicates exact in-memory identity of the complete result with the named oracle; `TRUE` for 16 hours and `FALSE` for 12 hours. |
+| `total_prescribed_energy_input_kj` | measured prescribed input alias | kJ | Evidence-table copy of inherited `total_prescribed_ingested_available_energy_kj`; no package field is renamed. |
+| `total_routine_activity_expenditure_kj` | measured activity alias | kJ | Evidence-table copy of inherited `total_prescribed_routine_activity_expenditure_kj`; no package field is renamed. |
+
+`scenario_id` remains experiment metadata. `hour_of_day`,
+`prescribed_dry_matter_intake_kg_dm_h`,
+`prescribed_ingested_available_energy_kj_h`, and
+`prescribed_routine_activity_expenditure_kj_h` retain the core schedule
+definitions above. `measurement_day`, `total_assimilated_energy_kj`,
+`total_maintenance_expenditure_kj`, `expected_body_energy_change_kj`,
+`observed_body_energy_change_kj`, `body_energy_reserve_initial_kj`,
+`body_energy_reserve_final_kj`, and `body_energy_status` are copied from the
+unchanged reference-cycle daily result and retain their definitions below.
+
+The 16-hour comparison flags are all true because the complete result is
+exactly the Goal 008 balanced result. For 12 hours, only the declared
+daily/closing match flag is true; both identity flags are false because the
+hourly schedule, periodic gut state, within-day trajectories, and complete
+result differ. These comparison fields are evidence assertions, not production
+schema.
+
 ## Goal 005 Reference-Cycle Schemas
 
 `run_gut_body_energy_reference_cycle()` returns an exact plain list named:
@@ -354,17 +457,20 @@ prescribed dry-matter input without new state; Goal 005 adds numerical
 gut-cycle construction, one measurement reset, and two carried day keys without
 new biology; Goal 006 adds named reference fixtures; Goal 007 adds one
 externally prescribed incremental routine-activity expenditure without new
-state or gut dynamics; and Goals 008 and 009 add evidence only. Offered or wet
-forage, variable food properties, digestive losses or efficiency, dry-matter
-gut state, capacity, production intake limits, behavior, directed locomotion,
-activity choice or feedback, mass change, variable or stochastic days, seasons,
-chronic change, viability, plants, and calibration have no implemented
-variables.
+state or gut dynamics; and Goals 008, 009, and 010 add evidence only. Offered
+or wet forage, variable food properties, digestive losses or efficiency,
+dry-matter gut state, capacity, production intake limits, behavior, directed
+locomotion, activity choice or feedback, mass change, variable or stochastic
+days, seasons, chronic change, viability, plants, and calibration have no
+implemented variables.
 
 Goal 009's `0.020 kg DM h^-1` threshold is conditional on the declared
 16-hour, density, maintenance, activity, and discarded-curtailment fixture. It
-does not establish an empirical maximum or achievable feeding rate. Goal 010
-remains unapproved.
+does not establish an empirical maximum or achievable feeding rate. Goal 010's
+duration relation is likewise conditional on the fixed open-interval rate,
+activity schedule, and four declared clock placements. It does not establish
+voluntary use, empirical capacity, or a generic within-day duration effect.
+Goal 011 remains unapproved.
 
 Historical names in `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16` are not binding. The corresponding pre-freeze

@@ -2,7 +2,7 @@
 
 ## Status
 
-Through Goal 009, prescribed dry-matter ingestion is converted to the existing
+Through Goal 010, prescribed dry-matter ingestion is converted to the existing
 available-energy schedule, and the reference-cycle runner can repeat one
 identical schedule to construct a numerical period-24 gut reference, reset body
 energy once, and record two carried measurement days. Goal 006 adds two named
@@ -10,8 +10,9 @@ input fixtures and evidence only. Goal 007 adds one strict prescribed
 routine-activity schedule and requires it explicitly in every body transition
 and runner. Goal 008 adds a three-fixture ecological evidence chain without
 changing that executable contract. Goal 009 adds a synthetic intake-ceiling
-threshold screen in evidence clients only; it also leaves the executable
-contract unchanged.
+threshold screen in evidence clients only. Goal 010 adds a four-fixture
+prescribed intake window duration screen in the same evidence-only layer; both
+leave the executable contract unchanged.
 
 The fixed density is already metabolizable. Its product with dry matter is
 treated as the accounting equivalent entering the existing gut available-energy
@@ -182,7 +183,9 @@ diagnostics only. Goal 006 adds reference fixtures and review evidence only.
 Goal 007 adds no dynamic state and changes no gut process. Goal 008 adds no
 production code, equation, interface, record, schema, validator, or variable.
 Goal 009 also adds none of these; its clipping transformation and additional
-columns exist only in experiment and review evidence.
+columns exist only in experiment and review evidence. Goal 010 likewise keeps
+its prescribed-intake-window and comparison fields out of package state,
+forcing records, return schemas, constructors, and validators.
 
 ## Hourly Transition Order
 
@@ -468,6 +471,62 @@ assumptions. It is not an empirical maximum, appetite, feeding behavior, forage
 availability, gut capacity, intake redistribution, a demonstrated achievable
 rate, or a production package constraint.
 
+## Goal 010 Evidence-Only Prescribed Intake Window Screen
+
+Goal 010 holds the Goal 008 balanced open-interval intake rate at
+`0.020 kg DM h^-1`, equivalent to `200 kJ h^-1` at the fixed
+`10000 kJ kg^-1 DM` density. It also holds routine activity at `50 kJ h^-1` in
+hours `16:23` and `0:7`, maintenance at `100 kJ h^-1` in all hours, and every
+other model input and runner control fixed. Evidence clients construct ordinary
+intake schedules from exactly these prescribed-intake windows:
+
+| Scenario | Open hours | Duration | Intake/activity overlap | Intake without activity | Activity without intake |
+| --- | --- | ---: | ---: | ---: | ---: |
+| `prescribed_intake_window_24h` | `0:23` | 24 h d^-1 | 16 h d^-1 | 8 h d^-1 | 0 h d^-1 |
+| `prescribed_intake_window_16h` | `16:23`, `0:7` | 16 h d^-1 | 16 h d^-1 | 0 h d^-1 | 0 h d^-1 |
+| `prescribed_intake_window_12h` | `16:21`, `2:7` | 12 h d^-1 | 12 h d^-1 | 0 h d^-1 | 4 h d^-1 |
+| `prescribed_intake_window_8h` | `16:19`, `4:7` | 8 h d^-1 | 8 h d^-1 | 0 h d^-1 | 8 h d^-1 |
+
+`prescribed_intake_window_open` is an evidence construction field. `TRUE`
+forces the fixed prescribed rate throughout the labeled one-hour interval;
+`FALSE` forces zero. It is not unused access, voluntary opportunity, realized
+behavior, forage availability, or an indication that the rate is achievable,
+and it is never passed to a package function.
+
+For duration `H` in hours per day, the clean daily accounting relation is:
+
+```text
+daily prescribed energy(H) = 200 kJ h^-1 * H
+daily expenditure = 24 * 100 + 16 * 50 = 3200 kJ
+expected daily body-energy change(H) = 200 * H - 3200 kJ
+neutrality threshold = 16 h d^-1
+```
+
+The exact fixture expectations are:
+
+| Duration | Daily intake | Daily energy | Daily body change | Day 1 / day 2 closing reserve | Status |
+| ---: | ---: | ---: | ---: | ---: | --- |
+| 24 h d^-1 | 0.48 kg DM | 4800 kJ | +1600 kJ | 11600 / 13200 kJ | surplus |
+| 16 h d^-1 | 0.32 kg DM | 3200 kJ | 0 kJ | 10000 / 10000 kJ | neutral |
+| 12 h d^-1 | 0.24 kg DM | 2400 kJ | -800 kJ | 9200 / 8400 kJ | deficit |
+| 8 h d^-1 | 0.16 kg DM | 1600 kJ | -1600 kJ | 8400 / 6800 kJ | deficit |
+
+The complete 16-hour result is exactly identical to Goal 008
+`ecological_activity_prescribed_balance`. The 12-hour fixture matches Goal 008
+`ecological_activity_uncompensated` only in daily intake, prescribed energy,
+maintenance, routine-activity expenditure, body-energy change, status, and
+closing body reserve. Its hourly intake schedule, periodic gut state,
+within-day gut and body trajectories, and complete result differ. No Goal 008
+comparison oracle is declared for the 24- or 8-hour fixture.
+
+The linear relation above belongs to daily totals under the fixed rate and
+fixed activity schedule. It is not a generic within-day effect of duration.
+The 24-hour comparator additionally opens the activity-off interval
+`[08:00, 16:00)`, whereas the 12- and 8-hour fixtures progressively remove
+central-night prescribed-intake hours from within the fixed activity window.
+Their within-day trajectories are therefore conditional on both duration and
+the declared clock placement.
+
 ## Accounting
 
 Each gut transition records prescribed ingestion, assimilation, gut-stock
@@ -641,6 +700,12 @@ candidate, ceiling, constrained prescription, curtailed prescription,
 exceedance, touching, and unused headroom are experiment quantities, not
 production state or forcing schemas.
 
+Goal 010 uses four evidence-only prescribed intake window schedules to establish
+the fixed-rate daily duration relation and its declared Goal 008 comparisons.
+Window, overlap, duration, threshold, comparison, and identity fields remain
+experiment and review quantities, not production state, input, or result
+schemas.
+
 ## Exclusions And Stop
 
 The model does not represent variable or stochastic days, a configurable
@@ -655,12 +720,12 @@ dynamic body mass, protein, water, thermoregulation, plants, weather, space,
 individuals, populations, empirical calibration, parameter estimation, or
 uncertainty analysis.
 
-Goal 009 ends after the three-level synthetic threshold bracket, exact Goal 008
-identities, no-write experiment, ignored four-file review pack, and bounded
-documentation are validated and reviewed. Goal 010 remains an unapproved
-decision among promoting a durable ceiling, varying feeding-opportunity
-duration, or pausing for empirical evidence. Goal 009 neither chooses nor
-implements that later layer.
+Goal 010 ends after the four prescribed-intake-window fixtures, analytical
+daily relation, bounded Goal 008 comparisons, no-write experiment, ignored
+four-file review pack, and documentation are validated and reviewed. Goal 011
+remains unapproved. Goal 010 neither recommends nor implements a production
+opportunity mechanism, rate response, compensation process, or empirical
+capacity layer.
 
 The historical implementation is private at `BWBrook/herbivoreTTR-legacy`, tag
 `legacy-final-2026-07-16`; the pre-freeze scientific baseline is

@@ -80,14 +80,29 @@ remain separate evidence quantities. Curtailment is discarded rather than
 redistributed. The screen does not establish appetite, feeding behavior, forage
 availability, gut capacity, an empirical maximum, or an achievable intake rate.
 
+Rebuild Goal 010 adds a four-fixture prescribed intake window duration screen
+in evidence clients only. With activity fixed and every open interval fully
+used at the fixed prescription of `0.020 kg DM h^-1`, or `200 kJ h^-1`, windows
+of 24, 16, 12, and 8 h d^-1 prescribe `4800, 3200, 2400, 1600 kJ` per day and
+produce analytical daily body changes of `+1600, 0, -800, -1600 kJ`. The
+16-hour complete result is exactly the Goal 008 balanced reference. The 12-hour
+fixture matches the Goal 008 uncompensated fixture only for daily prescribed
+intake and energy, maintenance, routine-activity expenditure, body-energy
+change, status, and closing body reserve; its within-day and complete results
+differ. The 24-hour comparator opens the activity-off interval
+`[08:00, 16:00)`, while the 12- and 8-hour fixtures remove central-night
+prescribed-intake hours. The daily relation therefore does not identify a
+generic within-day duration effect. The windows and comparison fields remain
+evidence-only, and open hours are prescribed ingestion rather than voluntary
+behavior or empirical capacity.
+
 ## Next Decision Gate
 
-Goal 010 remains unapproved. A later decision may consider promoting a durable
-ceiling, varying feeding-opportunity duration, or pausing for empirical
-evidence. Goal 009 does not choose among those directions. Its
-`0.020 kg DM h^-1` threshold is conditional accounting evidence, not a
-production intake limit, behavioral mechanism, viability result, or empirical
-calibration.
+Goal 011 remains unapproved. Goal 010 establishes only the declared fixed-rate
+daily accounting screen under four clock geometries. It neither recommends nor
+implements a production opportunity mechanism, compensatory response,
+duration-by-rate surface, behavioral process, viability result, or empirical
+capacity calibration.
 
 ## Candidate Later Layers
 
