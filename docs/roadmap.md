@@ -96,13 +96,30 @@ generic within-day duration effect. The windows and comparison fields remain
 evidence-only, and open hours are prescribed ingestion rather than voluntary
 behavior or empirical capacity.
 
+Rebuild Goal 011 adds one fixed three-day forcing-transition contrast in
+evidence clients only. Both sequences start from the same balanced period-24
+gut state and `10000 kJ` body reserve with exact stock carry-over. The control
+uses balanced forcing on all three days; the treatment uses the lower
+`0.015 kg DM h^-1` rate on day 1 and balanced forcing on days 2 and 3. The
+lower-rate schedule is reused from Goal 008, but its result is not the Goal 008
+periodic result because Goal 011 starts from the balanced periodic gut.
+
+Using treatment minus control, the day-1 external prescribed-input contrast and
+combined-system contrast reach exactly `-800 kJ` at 24 hours. With identical
+forcing thereafter, the combined-system contrast remains `-800 kJ`, the gut
+contrast contracts by `0.75` per hour or `0.75^24` per day, and the body
+contrast is `-800 kJ - gut-stock contrast`. This is return-to-reference forcing
+and numerical gut-state realignment, not body-energy or whole-system
+restoration. The fixed sequence chains existing one-day calls and adds no
+production multi-day API.
+
 ## Next Decision Gate
 
-Goal 011 remains unapproved. Goal 010 establishes only the declared fixed-rate
-daily accounting screen under four clock geometries. It neither recommends nor
-implements a production opportunity mechanism, compensatory response,
-duration-by-rate surface, behavioral process, viability result, or empirical
-capacity calibration.
+Goal 012 remains unapproved, and its scientific question has not been selected.
+Goal 011 establishes only the declared one-day shortfall contrast and two
+return-to-reference days under the current deterministic accounting model. It
+does not authorize a configurable horizon, production sequence runner, or later
+biological or empirical layer.
 
 ## Candidate Later Layers
 

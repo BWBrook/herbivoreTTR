@@ -2,7 +2,7 @@
 
 ## Status
 
-Through Goal 010, prescribed dry-matter ingestion is converted to the existing
+Through Goal 011, prescribed dry-matter ingestion is converted to the existing
 available-energy schedule, and the reference-cycle runner can repeat one
 identical schedule to construct a numerical period-24 gut reference, reset body
 energy once, and record two carried measurement days. Goal 006 adds two named
@@ -11,8 +11,10 @@ routine-activity schedule and requires it explicitly in every body transition
 and runner. Goal 008 adds a three-fixture ecological evidence chain without
 changing that executable contract. Goal 009 adds a synthetic intake-ceiling
 threshold screen in evidence clients only. Goal 010 adds a four-fixture
-prescribed intake window duration screen in the same evidence-only layer; both
-leave the executable contract unchanged.
+prescribed intake window duration screen in the same evidence-only layer. Goal
+011 uses evidence clients to chain existing one-day calls across one lower-rate
+day and two return-to-reference days; all three leave the executable contract
+unchanged.
 
 The fixed density is already metabolizable. Its product with dry matter is
 treated as the accounting equivalent entering the existing gut available-energy
@@ -185,7 +187,9 @@ production code, equation, interface, record, schema, validator, or variable.
 Goal 009 also adds none of these; its clipping transformation and additional
 columns exist only in experiment and review evidence. Goal 010 likewise keeps
 its prescribed-intake-window and comparison fields out of package state,
-forcing records, return schemas, constructors, and validators.
+forcing records, return schemas, constructors, and validators. Goal 011 keeps
+its sequence, phase, and contrast fields in evidence clients and adds no
+production multi-day runner.
 
 ## Hourly Transition Order
 
@@ -527,6 +531,78 @@ central-night prescribed-intake hours from within the fixed activity window.
 Their within-day trajectories are therefore conditional on both duration and
 the declared clock placement.
 
+## Goal 011 Evidence-Only One-Day Shortfall Sequence
+
+Goal 011 constructs the Goal 008 balanced period-24 gut state once and pairs it
+with a `10000 kJ` body-energy reserve. Both evidence sequences start from those
+same stocks and carry their closing gut and body states exactly across three
+days:
+
+| Sequence | Day 1 forcing | Day 2 forcing | Day 3 forcing |
+| --- | --- | --- | --- |
+| `all_balanced_control` | balanced | balanced | balanced |
+| `one_day_rate_shortfall` | lower-rate shortfall | balanced | balanced |
+
+Both forcings prescribe intake in hours `0:7` and `16:23`, zero intake in hours
+`8:15`, routine activity of `50 kJ h^-1` in the 16 intake intervals, and zero
+routine activity otherwise. At `10000 kJ kg^-1 DM`, balanced forcing uses
+`0.020 kg DM h^-1` and supplies `3200 kJ d^-1`; the lower-rate day uses
+`0.015 kg DM h^-1` and supplies `2400 kJ d^-1`.
+
+The lower-rate schedule is the accepted Goal 009 below-threshold prescription
+and exactly the Goal 008 `ecological_activity_uncompensated` schedule, but the
+Goal 011 shortfall day does not use that fixture's periodic gut state. Starting
+it from the common balanced periodic gut makes this a transition between
+prescribed daily forcings rather than another stationary reference result.
+
+All evidence contrasts are:
+
+```text
+one_day_rate_shortfall - all_balanced_control
+```
+
+The exact external prescribed-input contrast accumulated on day 1 is:
+
+```text
+16 h * (0.015 - 0.020) kg DM h^-1 * 10000 kJ kg^-1 DM
+  = -800 kJ
+```
+
+Because maintenance and routine activity match, the combined gut-plus-body
+contrast reaches `-800 kJ` at the 24-hour boundary and remains `-800 kJ`
+through the two return-to-reference days. After hour 24 the hourly input
+contrast is zero. For gut-stock contrast `delta_G` and release fraction
+`r = 0.25 h^-1`:
+
+```text
+delta_G[t + 1] = (1 - r) * delta_G[t]
+               = 0.75 * delta_G[t]
+
+daily gut-contrast contraction factor = 0.75^24
+
+body-reserve contrast = -800 kJ - gut-stock contrast
+```
+
+The first two control days are exactly identical to the accepted Goal 008
+balanced hourly and daily result, and the third retains its periodic gut
+boundary and approximately neutral body accounting. The retained evidence also
+confirms the combined-system invariant, hourly and daily gut recurrence, body
+complement, and exact stock carry-over. Return-to-reference forcing denotes
+resumption of the balanced prescribed schedule only. Contraction of the gut
+contrast is numerical state realignment, not body-energy or whole-system
+restoration and not biological or physiological recovery.
+
+At 24 hours, the treatment-minus-control partition rounds to `-182 kJ` in the
+gut and `-618 kJ` in the body. The gut contrast then contracts to
+`-0.182 kJ` at 48 hours and `-0.000183 kJ` at 72 hours, while the body contrast
+is the unrounded complement to the exact `-800 kJ` combined-system contrast.
+Extra precision is retained only for these small gut remainders.
+
+The experiment obtains this deliberately fixed sequence by calling
+`run_gut_body_energy_day()` three times per sequence. It does not widen the
+public reference-cycle interface or add a configurable production multi-day
+API.
+
 ## Accounting
 
 Each gut transition records prescribed ingestion, assimilation, gut-stock
@@ -706,6 +782,13 @@ Window, overlap, duration, threshold, comparison, and identity fields remain
 experiment and review quantities, not production state, input, or result
 schemas.
 
+Goal 011 uses one common balanced periodic gut boundary and two exact,
+three-day sequences to establish the finite `-800 kJ` prescribed-input
+contrast, its fixed combined-system expression, and its changing gut/body
+partition. Sequence, phase, boundary, contrast, recurrence, and complement
+fields remain evidence quantities. The clients chain the existing one-day
+runner and add no model mechanism or production horizon.
+
 ## Exclusions And Stop
 
 The model does not represent variable or stochastic days, a configurable
@@ -720,12 +803,11 @@ dynamic body mass, protein, water, thermoregulation, plants, weather, space,
 individuals, populations, empirical calibration, parameter estimation, or
 uncertainty analysis.
 
-Goal 010 ends after the four prescribed-intake-window fixtures, analytical
-daily relation, bounded Goal 008 comparisons, no-write experiment, ignored
-four-file review pack, and documentation are validated and reviewed. Goal 011
-remains unapproved. Goal 010 neither recommends nor implements a production
-opportunity mechanism, rate response, compensation process, or empirical
-capacity layer.
+Goal 011 ends after the common initialization, exact three-day control and
+shortfall sequences, analytical contrast partition, no-write experiment,
+ignored four-file review pack, and documentation are validated and reviewed.
+It adds no generalized production multi-day API or biological response.
+Goal 012 remains unapproved, and its scientific question has not been selected.
 
 The historical implementation is private at `BWBrook/herbivoreTTR-legacy`, tag
 `legacy-final-2026-07-16`; the pre-freeze scientific baseline is

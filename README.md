@@ -211,6 +211,34 @@ fixtures remove central-night prescribed-intake hours from the fixed activity
 window. The linear daily accounting relation therefore does not establish a
 generic within-day duration effect.
 
+Goal 011 adds one non-stationary, evidence-only contrast without changing the
+package. Both sequences start from the same balanced period-24 gut state and
+`10000 kJ` body reserve. The control uses balanced forcing on all three carried
+days; the treatment uses the lower `0.015 kg DM h^-1` rate on day 1 and returns
+to the balanced `0.020 kg DM h^-1` rate on days 2 and 3. Both gut and body
+stocks carry exactly across day boundaries without another reset.
+
+The lower-rate schedule is also used by Goal 008
+`ecological_activity_uncompensated`, but Goal 011 does not reproduce that
+periodic result: its day-1 treatment begins from the balanced periodic gut.
+Using `one_day_rate_shortfall - all_balanced_control`, the prescribed-input
+contrast reaches exactly `-800 kJ` at 24 hours. The combined gut-plus-body
+contrast reaches the same `-800 kJ` and remains there through 72 hours because
+the two sequences have identical inputs and expenditures after day 1.
+
+Under return-to-reference forcing, the gut contrast contracts by `0.75` per
+hour, or `0.75^24` per day, while the body contrast is
+`-800 kJ - gut-stock contrast`. This is numerical gut-state realignment and a
+changing partition of a fixed combined-system contrast, not body-energy or
+whole-system restoration. The evidence clients obtain the fixed three-day
+sequence by chaining existing one-day calls; they add no generalized
+production multi-day API.
+
+The 24-hour partition rounds to `-182 kJ` in the gut and `-618 kJ` in the body.
+The remaining gut contrast is `-0.182 kJ` at 48 hours and `-0.000183 kJ` at
+72 hours; the body holds the unrounded complement to the exact `-800 kJ`
+combined-system contrast.
+
 Only the product of intake and density reaches downstream dynamics. Scaling
 intake by a positive constant and density by its reciprocal therefore produces
 identical energy trajectories. The two prescribed inputs are structurally
@@ -268,6 +296,14 @@ figure and three tables under
 [`outputs/rebuild-010-feeding-opportunity-duration/`](outputs/rebuild-010-feeding-opportunity-duration/)
 as ignored evidence.
 
+The Goal 011 experiment
+[`experiments/rebuild-011-one-day-prescribed-input-shortfall.R`](experiments/rebuild-011-one-day-prescribed-input-shortfall.R)
+verifies the common initialization, three-day control and treatment sequences,
+exact stock carry-over, `-800 kJ` combined-system invariant, and analytical gut
+recurrence. Its review script retains one figure and three tables under
+[`outputs/rebuild-011-one-day-prescribed-input-shortfall/`](outputs/rebuild-011-one-day-prescribed-input-shortfall/)
+as ignored evidence.
+
 These demonstrations prove arithmetic, timing, and accounting semantics only.
 They do not estimate a maintenance requirement, residence time, gut fill,
 feeding schedule, animal viability, ecological equilibrium, or any macropod
@@ -288,11 +324,11 @@ principal question and one subsystem, with compact outputs, proportionate tests,
 an explicit stop, and discussion before another layer is added.
 
 The executable package contract remains specified in
-[`docs/model-specification.md`](docs/model-specification.md). Goals 009 and 010
-add evidence about a synthetic accounting threshold and prescribed-intake-window
-duration without changing that contract. Goal 011 remains unapproved and no
-production opportunity mechanism has been selected. Candidate later layers are
-listed without authorization in
+[`docs/model-specification.md`](docs/model-specification.md). Goals 009 through
+011 add evidence about a synthetic accounting threshold, prescribed-intake
+window duration, and one fixed forcing transition without changing that
+contract. Goal 012 remains unapproved, and its scientific question has not been
+selected. Candidate later layers are listed without authorization in
 [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Provenance

@@ -172,6 +172,28 @@ comparator opens `[08:00, 16:00)`, while the shorter restricted fixtures remove
 central-night prescribed-intake hours. An open prescribed-intake interval is
 not voluntary access, realized behavior, or demonstrated capacity.
 
+Goal 011 adds a fixed three-day evidence sequence without changing the
+executable boundary. The control receives balanced forcing on all three days;
+the treatment receives the lower `0.015 kg DM h^-1` rate on day 1 and balanced
+forcing on days 2 and 3. Both start from one common balanced period-24 gut state
+and one `10000 kJ` body state, and both stocks carry exactly between days
+without another reset.
+
+The lower-rate schedule is the schedule used by Goal 008
+`ecological_activity_uncompensated`, but its Goal 011 result is not the Goal 008
+periodic result because the shortfall day opens from the balanced periodic gut.
+Under the `one_day_rate_shortfall - all_balanced_control` convention, the
+external prescribed-input contrast and combined-system contrast reach
+`-800 kJ` at 24 hours. With identical forcing thereafter, the combined-system
+contrast stays at `-800 kJ`.
+
+During return-to-reference forcing, the gut contrast contracts by `0.75` per
+hour, or `0.75^24` per day, and the body contrast equals
+`-800 kJ - gut-stock contrast`. This is numerical gut-state realignment, not
+body-energy or whole-system restoration and not evidence of biological or
+physiological recovery. The evidence clients chain existing one-day calls;
+they add no production multi-day API, state, equation, or feedback.
+
 The 50 kg reference mass used in the Goal 002 demonstration is experiment
 metadata only. No implemented equation depends on body mass. All food-energy
 and gut-body fixtures are synthetic. The current layer establishes unit
@@ -191,10 +213,11 @@ behavior, activity choice or feedback, directed locomotion, dynamic body mass,
 protein, water, thermoregulation, plants, space, calibration, and all other
 physiological or ecological detail remain outside the executable boundary.
 
-Goals 009 and 010 establish only the declared synthetic threshold and
-prescribed intake window accounting evidence. Their client-side fields are not
-package state or schemas. Goal 011 remains unapproved; no production opportunity
-mechanism, compensatory response, or empirical-capacity layer is authorized.
+Goals 009 through 011 establish only the declared synthetic threshold,
+prescribed intake window, and one-day forcing-transition evidence. Their
+client-side fields are not package state or schemas, and Goal 011's fixed
+three-day sequence is not a generalized production runner. Goal 012 remains
+unapproved; its scientific question and any later mechanism remain undecided.
 
 The predecessor is preserved privately as `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16`; its scientific baseline commit is
