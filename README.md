@@ -239,6 +239,30 @@ The remaining gut contrast is `-0.182 kJ` at 48 hours and `-0.000183 kJ` at
 72 hours; the body holds the unrounded complement to the exact `-800 kJ`
 combined-system contrast.
 
+Goal 012 extends that contrast with one prescribed external energy-repayment
+pulse and a fourth carried day, again without changing the package. Both
+sequences start from the same balanced period-24 gut state and `10000 kJ` body
+reserve. The control uses `0.020 kg DM h^-1` in the 16 active hours on all four
+days. The treatment uses `0.015 kg DM h^-1` on day 1, directly prescribes
+`0.025 kg DM h^-1` on day 2, and returns to `0.020 kg DM h^-1` on days 3 and 4;
+every schedule remains zero during hours `8:15`.
+
+Using `shortfall_then_repayment - all_balanced_control`, cumulative external
+input and the combined gut-plus-body contrast reach `-800 kJ` at 24 hours and
+return to `0 kJ` at 48 hours. At that boundary the gut and body contrasts are
+still approximately `+182 kJ` and `-182 kJ`. Under balanced forcing on days 3
+and 4, those equal-and-opposite component contrasts contract by `0.75^24` per
+day toward zero without reaching exact treatment-control stock equality in
+finite time; the combined contrast remains zero.
+
+The `0.025 kg DM h^-1` pulse is direct exogenous synthetic forcing, not Goal
+009's above-threshold result: that fixture's actual candidate prescription
+remained `0.020 kg DM h^-1` beneath a non-binding ceiling. `Prescribed repayment
+pulse` is an accounting label, not compensation, catch-up feeding, appetite,
+behavioral response, capacity, or biological recovery. The fixed four-day
+sequence chains existing one-day calls and adds no production multi-day API,
+state, schema, parameter, or test.
+
 Only the product of intake and density reaches downstream dynamics. Scaling
 intake by a positive constant and density by its reciprocal therefore produces
 identical energy trajectories. The two prescribed inputs are structurally
@@ -304,6 +328,15 @@ recurrence. Its review script retains one figure and three tables under
 [`outputs/rebuild-011-one-day-prescribed-input-shortfall/`](outputs/rebuild-011-one-day-prescribed-input-shortfall/)
 as ignored evidence.
 
+The Goal 012 experiment
+[`experiments/rebuild-012-prescribed-energy-repayment-pulse.R`](experiments/rebuild-012-prescribed-energy-repayment-pulse.R)
+verifies the common initialization, four-day control and treatment sequences,
+exact stock carry-over, the `-800 -> 0 kJ` combined-system path, and the
+post-pulse gut recurrence. Its review script retains one figure and three tables
+under
+[`outputs/rebuild-012-prescribed-energy-repayment-pulse/`](outputs/rebuild-012-prescribed-energy-repayment-pulse/)
+as ignored evidence.
+
 These demonstrations prove arithmetic, timing, and accounting semantics only.
 They do not estimate a maintenance requirement, residence time, gut fill,
 feeding schedule, animal viability, ecological equilibrium, or any macropod
@@ -325,10 +358,10 @@ an explicit stop, and discussion before another layer is added.
 
 The executable package contract remains specified in
 [`docs/model-specification.md`](docs/model-specification.md). Goals 009 through
-011 add evidence about a synthetic accounting threshold, prescribed-intake
-window duration, and one fixed forcing transition without changing that
-contract. Goal 012 remains unapproved, and its scientific question has not been
-selected. Candidate later layers are listed without authorization in
+012 add evidence about a synthetic accounting threshold, prescribed-intake
+window duration, and two fixed forcing sequences without changing that
+contract. Goal 013 remains unapproved and scientifically unspecified. Candidate
+later layers are listed without authorization in
 [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Provenance

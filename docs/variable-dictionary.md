@@ -3,7 +3,7 @@
 ## Status
 
 These are the exact public record, flux, and ledger names implemented through
-Goal 011. The production schema last changed in Goal 007; Goals 008 through 011
+Goal 012. The production schema last changed in Goal 007; Goals 008 through 012
 add evidence outputs only. Rates in kJ h^-1 and one-hour amounts in kJ remain
 distinct even when their numerical values match for the fixed one-hour
 transition.
@@ -382,6 +382,122 @@ The Goal 011-specific fields and evidence-table aliases are:
 from the unchanged coupled daily result and retain their definitions below.
 None of the Goal 011 fields widens the production runner or package schema.
 
+## Goal 012 Evidence-Only Review Columns
+
+Goal 012 adds no package variable, state, parameter, record, return schema,
+validator, or test. The names below are client-side evidence aliases used only
+in the no-write experiment and ignored review pack. Every contrast is
+`shortfall_then_repayment - all_balanced_control`. The label
+`prescribed_repayment_pulse` denotes the direct exogenous
+`0.025 kg DM h^-1` prescription over the 16 active hours, not compensation,
+a modeled animal response, or a production input type.
+
+The hourly boundary-contrast table has 97 rows for elapsed boundaries
+`0:96 h` and contains:
+
+```text
+elapsed_time_h
+boundary_phase
+cumulative_prescribed_input_contrast_kj
+gut_available_energy_contrast_kj
+body_energy_reserve_contrast_kj
+combined_system_energy_contrast_kj
+contrast_closure_residual_kj
+```
+
+The daily-sequence table has eight rows, ordered as
+`all_balanced_control` days 1 through 4 and then
+`shortfall_then_repayment` days 1 through 4, and contains:
+
+```text
+sequence_id
+sequence_day
+forcing_phase
+daily_prescribed_dry_matter_intake_kg_dm
+total_prescribed_energy_input_kj
+total_assimilated_energy_kj
+total_maintenance_expenditure_kj
+total_routine_activity_expenditure_kj
+expected_body_energy_change_kj
+observed_body_energy_change_kj
+gut_available_energy_initial_kj
+gut_available_energy_final_kj
+body_energy_reserve_initial_kj
+body_energy_reserve_final_kj
+total_system_energy_initial_kj
+total_system_energy_final_kj
+```
+
+Its exact `forcing_phase` order is:
+
+```text
+balanced
+balanced
+balanced
+balanced
+shortfall
+prescribed_repayment_pulse
+return_to_reference
+return_to_reference
+```
+
+The day-boundary realignment table has five rows at elapsed boundaries
+`0, 24, 48, 72, 96 h` and contains:
+
+```text
+elapsed_time_h
+boundary_label
+cumulative_prescribed_input_contrast_kj
+gut_available_energy_contrast_kj
+expected_gut_contrast_kj
+gut_contraction_factor_from_previous_boundary
+body_energy_reserve_contrast_kj
+expected_body_complement_kj
+combined_system_energy_contrast_kj
+contrast_closure_residual_kj
+```
+
+Its exact `boundary_label` order is:
+
+```text
+initial
+shortfall_day_close
+prescribed_repayment_pulse_day_close
+return_to_reference_day_1_close
+return_to_reference_day_2_close
+```
+
+The Goal 012-specific uses of these fields and evidence-table aliases are:
+
+| Name | Role | Unit | Meaning |
+| --- | --- | --- | --- |
+| `sequence_id` | sequence key | none | Identifies `all_balanced_control` or `shortfall_then_repayment`; experiment metadata only. |
+| `sequence_day` | carried-day key | integer 1-4 | Identifies the day within the fixed evidence sequence; not a package measurement-day field. |
+| `forcing_phase` | daily forcing label | `balanced`, `shortfall`, `prescribed_repayment_pulse`, or `return_to_reference` | Labels the externally prescribed schedule for that sequence day. Neither pulse nor return label denotes an animal process. |
+| `elapsed_time_h` | evidence boundary time | h | Hours elapsed from the common initial boundary; integer `0:96` in the hourly table and `0, 24, 48, 72, 96` in the day-boundary table. |
+| `boundary_phase` | hourly boundary phase | `initial`, `shortfall_day`, `prescribed_repayment_pulse_day`, `return_to_reference_day_1`, or `return_to_reference_day_2` | `initial` at 0 h; the four daily phases occupy boundaries 1:24, 25:48, 49:72, and 73:96 h. |
+| `boundary_label` | selected day-boundary label | `initial`, `shortfall_day_close`, `prescribed_repayment_pulse_day_close`, `return_to_reference_day_1_close`, or `return_to_reference_day_2_close` | Labels the five selected boundaries in elapsed-time order. |
+| `daily_prescribed_dry_matter_intake_kg_dm` | prescribed daily amount | kg DM | Sum over the fixed one-hour intervals: `0.32 kg DM` for balanced forcing, `0.24 kg DM` for shortfall forcing, and `0.40 kg DM` for the prescribed pulse. |
+| `total_prescribed_energy_input_kj` | measured prescribed input alias | kJ | Evidence-table copy of inherited `total_prescribed_ingested_available_energy_kj`; `3200`, `2400`, or `4000 kJ` for balanced, shortfall, or pulse forcing. |
+| `total_routine_activity_expenditure_kj` | measured activity alias | kJ | Evidence-table copy of inherited `total_prescribed_routine_activity_expenditure_kj`; `800 kJ` on every sequence day. |
+| `cumulative_prescribed_input_contrast_kj` | cumulative external-input contrast | kJ | Treatment-minus-control prescribed energy accumulated from the common boundary; `-800 kJ` at 24 h and `0 kJ` from 48 through 96 h. |
+| `gut_available_energy_contrast_kj` | gut-stock contrast | kJ | Treatment gut stock minus control gut stock at the matched boundary. |
+| `body_energy_reserve_contrast_kj` | body-stock contrast | kJ | Treatment body reserve minus control body reserve at the matched boundary. |
+| `combined_system_energy_contrast_kj` | two-stock system contrast | kJ | Sum of gut and body contrasts; follows the cumulative prescribed-input contrast from `-800 kJ` at 24 h to zero at 48 h and thereafter. |
+| `contrast_closure_residual_kj` | contrast accounting residual | kJ | Combined-system contrast minus cumulative prescribed-input contrast; zero within the declared numerical tolerance. |
+| `expected_gut_contrast_kj` | analytical gut contrast | kJ | Expected matched-boundary contrast from `delta_G[t + 1] = 0.75 * delta_G[t] + delta_I[t]`, using the declared hourly input contrast. |
+| `gut_contraction_factor_from_previous_boundary` | daily post-pulse recurrence factor | dimensionless | Empty at the initial, shortfall-close, and pulse-close boundaries; `0.75^24` at each subsequent return-to-reference boundary. |
+| `expected_body_complement_kj` | analytical body contrast | kJ | Cumulative prescribed-input contrast minus `expected_gut_contrast_kj`; after hour 48 it is the equal-and-opposite gut complement. |
+
+`total_assimilated_energy_kj`, `total_maintenance_expenditure_kj`,
+`expected_body_energy_change_kj`, `observed_body_energy_change_kj`,
+`gut_available_energy_initial_kj`, `gut_available_energy_final_kj`,
+`body_energy_reserve_initial_kj`, `body_energy_reserve_final_kj`,
+`total_system_energy_initial_kj`, and `total_system_energy_final_kj` remain
+copies of fields from the unchanged coupled daily result. Reusing their names
+in a Goal 012 table does not redefine the package schema or the Goal 011
+evidence. All Goal 012 sequence and contrast names remain evidence-only.
+
 ## Goal 005 Reference-Cycle Schemas
 
 `run_gut_body_energy_reference_cycle()` returns an exact plain list named:
@@ -545,7 +661,7 @@ prescribed dry-matter input without new state; Goal 005 adds numerical
 gut-cycle construction, one measurement reset, and two carried day keys without
 new biology; Goal 006 adds named reference fixtures; Goal 007 adds one
 externally prescribed incremental routine-activity expenditure without new
-state or gut dynamics; and Goals 008 through 011 add evidence only. Offered
+state or gut dynamics; and Goals 008 through 012 add evidence only. Offered
 or wet forage, variable food properties, digestive losses or efficiency,
 dry-matter gut state, capacity, production intake limits, behavior, directed
 locomotion, activity choice or feedback, mass change, variable or stochastic
@@ -558,9 +674,11 @@ does not establish an empirical maximum or achievable feeding rate. Goal 010's
 duration relation is likewise conditional on the fixed open-interval rate,
 activity schedule, and four declared clock placements. It does not establish
 voluntary use, empirical capacity, or a generic within-day duration effect.
-Goal 011's fixed sequence and contrast fields are likewise evidence-only. The
-clients chain existing one-day calls and do not add a production multi-day API.
-Goal 012 remains unapproved, and its scientific question has not been selected.
+Goal 011's fixed sequence and contrast fields are likewise evidence-only. Goal
+012's direct prescribed-pulse sequence and aliases are also evidence-only. Both
+clients chain existing one-day calls and add no production multi-day API,
+state, schema, parameter, or test. Goal 013 remains unapproved and
+scientifically unspecified.
 
 Historical names in `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16` are not binding. The corresponding pre-freeze

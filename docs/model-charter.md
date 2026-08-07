@@ -194,6 +194,24 @@ body-energy or whole-system restoration and not evidence of biological or
 physiological recovery. The evidence clients chain existing one-day calls;
 they add no production multi-day API, state, equation, or feedback.
 
+Goal 012 adds one fixed four-day evidence sequence under the same executable
+boundary. The treatment receives the Goal 011 shortfall on day 1, a directly
+prescribed `0.025 kg DM h^-1` pulse over the 16 active hours on day 2, and
+balanced forcing on days 3 and 4. The control receives balanced forcing on all
+four days. Both begin from the same balanced periodic gut and `10000 kJ` body
+states, retain the same maintenance and routine activity, and carry both stocks
+without another reset.
+
+Under `shortfall_then_repayment - all_balanced_control`, cumulative prescribed
+input and the combined-system contrast move from `-800 kJ` at 24 hours to
+`0 kJ` at 48 hours. The component contrasts remain equal and opposite at hour
+48 and then contract by `0.75^24` per balanced day toward zero without exact
+treatment-control stock equality in finite time. The prescribed repayment pulse
+is exogenous synthetic forcing, not Goal 009's non-binding above-threshold
+ceiling result and not compensation, catch-up feeding, appetite, behavioral
+response, capacity, or recovery. The clients add no production API, state,
+schema, parameter, equation, validator, or test.
+
 The 50 kg reference mass used in the Goal 002 demonstration is experiment
 metadata only. No implemented equation depends on body mass. All food-energy
 and gut-body fixtures are synthetic. The current layer establishes unit
@@ -213,11 +231,11 @@ behavior, activity choice or feedback, directed locomotion, dynamic body mass,
 protein, water, thermoregulation, plants, space, calibration, and all other
 physiological or ecological detail remain outside the executable boundary.
 
-Goals 009 through 011 establish only the declared synthetic threshold,
-prescribed intake window, and one-day forcing-transition evidence. Their
-client-side fields are not package state or schemas, and Goal 011's fixed
-three-day sequence is not a generalized production runner. Goal 012 remains
-unapproved; its scientific question and any later mechanism remain undecided.
+Goals 009 through 012 establish only the declared synthetic threshold,
+prescribed intake window, and two fixed forcing-sequence results. Their
+client-side fields are not package state or schemas, and neither fixed sequence
+is a generalized production runner. Goal 013 remains unapproved and
+scientifically unspecified; any next layer is pending discussion.
 
 The predecessor is preserved privately as `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16`; its scientific baseline commit is

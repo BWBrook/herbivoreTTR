@@ -113,13 +113,30 @@ and numerical gut-state realignment, not body-energy or whole-system
 restoration. The fixed sequence chains existing one-day calls and adds no
 production multi-day API.
 
+Rebuild Goal 012 adds one fixed four-day prescribed energy-repayment sequence
+in evidence clients only. Both sequences start from the same balanced
+period-24 gut state and `10000 kJ` body reserve. `all_balanced_control` remains
+balanced; `shortfall_then_repayment` prescribes `0.015 kg DM h^-1` over the 16
+active hours on day 1, directly prescribes `0.025 kg DM h^-1` on day 2, and
+returns to the balanced `0.020 kg DM h^-1` rate on days 3 and 4. The cumulative
+external-input and combined-system contrasts move from `-800 kJ` at 24 hours
+to `0 kJ` at 48 hours. Gut and body contrasts are then equal and opposite and
+contract by `0.75^24` per balanced day toward zero without exact
+treatment-control stock equality in finite time.
+
+The repayment pulse is exogenous synthetic forcing, not Goal 009's
+above-threshold result, compensation, catch-up feeding, appetite, behavioral
+response, demonstrated capacity, or recovery. The fixed sequence chains the
+existing one-day runner and adds no production API, state, schema, parameter,
+equation, or test.
+
 ## Next Decision Gate
 
-Goal 012 remains unapproved, and its scientific question has not been selected.
-Goal 011 establishes only the declared one-day shortfall contrast and two
-return-to-reference days under the current deterministic accounting model. It
-does not authorize a configurable horizon, production sequence runner, or later
-biological or empirical layer.
+Goal 013 remains unapproved and scientifically unspecified. The next layer is
+pending discussion. Goal 012 establishes only the declared prescribed-forcing
+contrast under the current deterministic accounting model; it does not
+authorize a configurable horizon, production sequence runner, endogenous
+response, or later biological or empirical layer.
 
 ## Candidate Later Layers
 
