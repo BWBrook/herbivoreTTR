@@ -28,20 +28,30 @@ run_body_energy_day <- function(
     routine_activity_schedule
   )
 
+  initial_body_energy_kj <-
+    as.double(unclass(initial_state$body_energy_reserve_kj))
+  maintenance_expenditure_kj_h <-
+    as.double(unclass(parameters$maintenance_expenditure_kj_h))
+  hour_of_day <- as.integer(unclass(schedule$hour_of_day))
+  assimilated_energy_kj_h <- as.double(unclass(
+    schedule$prescribed_assimilated_energy_kj_h
+  ))
+  routine_activity_kj_h <- as.double(unclass(
+    routine_activity_schedule$
+      prescribed_routine_activity_expenditure_kj_h
+  ))
+
   hourly <- data.frame(
-    hour_of_day = schedule$hour_of_day,
-    time_start_h = as.numeric(schedule$hour_of_day),
-    time_end_h = as.numeric(schedule$hour_of_day + 1L),
+    hour_of_day = hour_of_day,
+    time_start_h = as.numeric(hour_of_day),
+    time_end_h = as.numeric(hour_of_day + 1L),
     body_energy_reserve_start_kj = numeric(24),
-    prescribed_assimilated_energy_kj_h =
-      schedule$prescribed_assimilated_energy_kj_h,
+    prescribed_assimilated_energy_kj_h = assimilated_energy_kj_h,
     maintenance_expenditure_kj_h = rep(
-      parameters$maintenance_expenditure_kj_h,
+      maintenance_expenditure_kj_h,
       24
     ),
-    prescribed_routine_activity_expenditure_kj_h =
-      routine_activity_schedule$
-        prescribed_routine_activity_expenditure_kj_h,
+    prescribed_routine_activity_expenditure_kj_h = routine_activity_kj_h,
     net_body_energy_rate_kj_h = numeric(24),
     prescribed_assimilated_energy_kj = numeric(24),
     maintenance_expenditure_kj = numeric(24),
@@ -51,15 +61,15 @@ run_body_energy_day <- function(
     energy_balance_residual_kj = numeric(24)
   )
 
-  current_state <- initial_state
+  current_body_energy_kj <- initial_body_energy_kj
   for (row_index in seq_len(24L)) {
     hourly$body_energy_reserve_start_kj[[row_index]] <-
-      current_state$body_energy_reserve_kj
-    transition <- step_body_energy(
-      current_state,
-      parameters,
-      schedule[row_index, , drop = FALSE],
-      routine_activity_schedule[row_index, , drop = FALSE]
+      current_body_energy_kj
+    transition <- .step_body_energy_core(
+      current_body_energy_kj,
+      maintenance_expenditure_kj_h,
+      assimilated_energy_kj_h[[row_index]],
+      routine_activity_kj_h[[row_index]]
     )
     hourly$net_body_energy_rate_kj_h[[row_index]] <-
       transition$fluxes$net_body_energy_rate_kj_h
@@ -75,7 +85,8 @@ run_body_energy_day <- function(
       transition$state$body_energy_reserve_kj
     hourly$energy_balance_residual_kj[[row_index]] <-
       transition$fluxes$energy_balance_residual_kj
-    current_state <- transition$state
+    current_body_energy_kj <-
+      transition$state$body_energy_reserve_kj
   }
 
   body_energy_reserve_initial_kj <-
@@ -166,12 +177,15 @@ run_body_energy_day <- function(
     "prescribed_assimilated_energy_kj_h"
   )
   if (
-    !identical(class(schedule), "data.frame") ||
-      !identical(dim(schedule), c(24L, 2L)) ||
-      !identical(names(schedule), expected_names)
+    !is.data.frame(schedule) ||
+      nrow(schedule) != 24L ||
+      !.has_exact_named_fields(schedule, expected_names)
   ) {
     stop(
-      "`schedule` must be the exact 24-row assimilated-energy data frame.",
+      paste0(
+        "`schedule` must be a 24-row data frame containing only ",
+        "`hour_of_day` and `prescribed_assimilated_energy_kj_h`."
+      ),
       call. = FALSE
     )
   }
@@ -180,13 +194,6 @@ run_body_energy_day <- function(
     schedule$hour_of_day,
     schedule$prescribed_assimilated_energy_kj_h
   )
-  if (typeof(schedule$prescribed_assimilated_energy_kj_h) != "double") {
-    stop(
-      paste0(
-        "`schedule$prescribed_assimilated_energy_kj_h` must retain double ",
-        "storage from the schedule constructor."
-      ),
-      call. = FALSE
-    )
-  }
+
+  invisible(NULL)
 }

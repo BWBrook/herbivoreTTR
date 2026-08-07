@@ -37,15 +37,48 @@ run_gut_body_energy_day <- function(
     routine_activity_schedule
   )
 
+  .run_gut_body_energy_day_prevalidated(
+    initial_gut_energy_kj = as.double(unclass(
+      initial_gut_state$gut_available_energy_kj
+    )),
+    initial_body_energy_kj = as.double(unclass(
+      initial_body_state$body_energy_reserve_kj
+    )),
+    gut_release_fraction_h = as.double(unclass(
+      gut_parameters$gut_release_fraction_h
+    )),
+    maintenance_expenditure_kj_h = as.double(unclass(
+      body_parameters$maintenance_expenditure_kj_h
+    )),
+    hour_of_day = as.integer(unclass(schedule$hour_of_day)),
+    ingested_energy_kj_h = as.double(unclass(
+      schedule$prescribed_ingested_available_energy_kj_h
+    )),
+    routine_activity_kj_h = as.double(unclass(
+      routine_activity_schedule$
+        prescribed_routine_activity_expenditure_kj_h
+    ))
+  )
+}
+
+.run_gut_body_energy_day_prevalidated <- function(
+  initial_gut_energy_kj,
+  initial_body_energy_kj,
+  gut_release_fraction_h,
+  maintenance_expenditure_kj_h,
+  hour_of_day,
+  ingested_energy_kj_h,
+  routine_activity_kj_h
+) {
+
   hourly <- data.frame(
-    hour_of_day = schedule$hour_of_day,
-    time_start_h = as.numeric(schedule$hour_of_day),
-    time_end_h = as.numeric(schedule$hour_of_day + 1L),
+    hour_of_day = hour_of_day,
+    time_start_h = as.numeric(hour_of_day),
+    time_end_h = as.numeric(hour_of_day + 1L),
     gut_available_energy_start_kj = numeric(24L),
-    prescribed_ingested_available_energy_kj_h =
-      schedule$prescribed_ingested_available_energy_kj_h,
+    prescribed_ingested_available_energy_kj_h = ingested_energy_kj_h,
     gut_release_fraction_h = rep(
-      gut_parameters$gut_release_fraction_h,
+      gut_release_fraction_h,
       24L
     ),
     assimilated_energy_kj_h = numeric(24L),
@@ -56,12 +89,10 @@ run_gut_body_energy_day <- function(
     gut_energy_balance_residual_kj = numeric(24L),
     body_energy_reserve_start_kj = numeric(24L),
     maintenance_expenditure_kj_h = rep(
-      body_parameters$maintenance_expenditure_kj_h,
+      maintenance_expenditure_kj_h,
       24L
     ),
-    prescribed_routine_activity_expenditure_kj_h =
-      routine_activity_schedule$
-        prescribed_routine_activity_expenditure_kj_h,
+    prescribed_routine_activity_expenditure_kj_h = routine_activity_kj_h,
     net_body_energy_rate_kj_h = numeric(24L),
     maintenance_expenditure_kj = numeric(24L),
     prescribed_routine_activity_expenditure_kj = numeric(24L),
@@ -73,30 +104,24 @@ run_gut_body_energy_day <- function(
     system_energy_balance_residual_kj = numeric(24L)
   )
 
-  current_gut_state <- initial_gut_state
-  current_body_state <- initial_body_state
+  current_gut_energy_kj <- initial_gut_energy_kj
+  current_body_energy_kj <- initial_body_energy_kj
 
   for (row_index in seq_len(24L)) {
     gut_available_energy_start_kj <-
-      current_gut_state$gut_available_energy_kj
+      current_gut_energy_kj
     body_energy_reserve_start_kj <-
-      current_body_state$body_energy_reserve_kj
-    gut_transition <- step_gut_energy(
-      current_gut_state,
-      gut_parameters,
-      schedule[row_index, , drop = FALSE]
+      current_body_energy_kj
+    gut_transition <- .step_gut_energy_core(
+      current_gut_energy_kj,
+      gut_release_fraction_h,
+      ingested_energy_kj_h[[row_index]]
     )
-    assimilated_energy_input <- data.frame(
-      hour_of_day = schedule$hour_of_day[[row_index]],
-      prescribed_assimilated_energy_kj_h = as.double(
-        gut_transition$fluxes$assimilated_energy_kj_h
-      )
-    )
-    body_transition <- step_body_energy(
-      current_body_state,
-      body_parameters,
-      assimilated_energy_input,
-      routine_activity_schedule[row_index, , drop = FALSE]
+    body_transition <- .step_body_energy_core(
+      current_body_energy_kj,
+      maintenance_expenditure_kj_h,
+      gut_transition$fluxes$assimilated_energy_kj_h,
+      routine_activity_kj_h[[row_index]]
     )
 
     gut_available_energy_end_kj <-
@@ -189,8 +214,10 @@ run_gut_body_energy_day <- function(
     hourly$system_energy_balance_residual_kj[[row_index]] <-
       system_energy_balance_residual_kj
 
-    current_gut_state <- gut_transition$state
-    current_body_state <- body_transition$state
+    current_gut_energy_kj <-
+      gut_transition$state$gut_available_energy_kj
+    current_body_energy_kj <-
+      body_transition$state$body_energy_reserve_kj
   }
 
   daily <- .summarize_gut_body_energy_day(hourly)
@@ -373,18 +400,15 @@ run_gut_body_energy_day <- function(
     "prescribed_ingested_available_energy_kj_h"
   )
   if (
-    !identical(class(schedule), "data.frame") ||
-      !identical(dim(schedule), c(24L, 2L)) ||
-      !identical(names(schedule), expected_names) ||
-      !identical(
-        names(attributes(schedule)),
-        c("names", "class", "row.names")
-      )
+    !is.data.frame(schedule) ||
+      nrow(schedule) != 24L ||
+      !.has_exact_named_fields(schedule, expected_names)
   ) {
     stop(
       paste0(
-        "`schedule` must be the exact 24-row ingested ",
-        "available-energy data frame."
+        "`schedule` must be a 24-row data frame containing only ",
+        "`hour_of_day` and ",
+        "`prescribed_ingested_available_energy_kj_h`."
       ),
       call. = FALSE
     )
@@ -394,18 +418,6 @@ run_gut_body_energy_day <- function(
     schedule$hour_of_day,
     schedule$prescribed_ingested_available_energy_kj_h
   )
-  if (
-    typeof(schedule$prescribed_ingested_available_energy_kj_h) !=
-      "double"
-  ) {
-    stop(
-      paste0(
-        "`schedule$prescribed_ingested_available_energy_kj_h` must retain ",
-        "double storage from the schedule constructor."
-      ),
-      call. = FALSE
-    )
-  }
 
   invisible(NULL)
 }

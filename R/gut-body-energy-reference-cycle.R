@@ -47,22 +47,44 @@ run_gut_body_energy_reference_cycle <- function(
     .validate_gut_convergence_relative_tolerance(
       gut_convergence_relative_tolerance
     )
-  .validate_max_burn_in_days(max_burn_in_days)
+  max_burn_in_days <- .validate_max_burn_in_days(max_burn_in_days)
+
+  initial_gut_energy_kj <- as.double(unclass(
+    initial_gut_state$gut_available_energy_kj
+  ))
+  measurement_body_energy_kj <- as.double(unclass(
+    measurement_body_state$body_energy_reserve_kj
+  ))
+  gut_release_fraction_h <- as.double(unclass(
+    gut_parameters$gut_release_fraction_h
+  ))
+  maintenance_expenditure_kj_h <- as.double(unclass(
+    body_parameters$maintenance_expenditure_kj_h
+  ))
+  hour_of_day <- as.integer(unclass(schedule$hour_of_day))
+  ingested_energy_kj_h <- as.double(unclass(
+    schedule$prescribed_ingested_available_energy_kj_h
+  ))
+  routine_activity_kj_h <- as.double(unclass(
+    routine_activity_schedule$
+      prescribed_routine_activity_expenditure_kj_h
+  ))
 
   burn_in <- .run_reference_cycle_gut_burn_in(
-    initial_gut_state,
-    gut_parameters,
-    schedule,
+    initial_gut_energy_kj,
+    gut_release_fraction_h,
+    ingested_energy_kj_h,
     gut_convergence_relative_tolerance,
     max_burn_in_days
   )
   measured <- .run_reference_cycle_measurement(
-    burn_in$state,
-    measurement_body_state,
-    gut_parameters,
-    body_parameters,
-    schedule,
-    routine_activity_schedule
+    burn_in$state$gut_available_energy_kj,
+    measurement_body_energy_kj,
+    gut_release_fraction_h,
+    maintenance_expenditure_kj_h,
+    hour_of_day,
+    ingested_energy_kj_h,
+    routine_activity_kj_h
   )
 
   list(
@@ -89,30 +111,31 @@ run_gut_body_energy_reference_cycle <- function(
     )
   }
 
-  as.double(value)
+  as.double(unclass(value))
 }
 
 .validate_max_burn_in_days <- function(value) {
   if (
-    typeof(value) != "integer" ||
+    !.is_whole_number(value) ||
       length(value) != 1L ||
-      !is.null(attributes(value)) ||
-      is.na(value) ||
-      value < 2L
+      as.double(unclass(value)) < 2
   ) {
     stop(
-      "`max_burn_in_days` must be one bare integer value of at least 2.",
+      paste0(
+        "`max_burn_in_days` must be one finite whole numeric value ",
+        "of at least 2."
+      ),
       call. = FALSE
     )
   }
 
-  invisible(NULL)
+  as.double(unclass(value))
 }
 
 .run_reference_cycle_gut_burn_in <- function(
-  initial_gut_state,
-  gut_parameters,
-  schedule,
+  initial_gut_energy_kj,
+  gut_release_fraction_h,
+  ingested_energy_kj_h,
   relative_tolerance,
   max_burn_in_days
 ) {
@@ -123,15 +146,15 @@ run_gut_body_energy_reference_cycle <- function(
   maximum_differences_kj <- numeric()
   realized_tolerances_kj <- numeric()
   convergence_flags <- logical()
-  current_state <- initial_gut_state
+  current_gut_energy_kj <- initial_gut_energy_kj
   previous_day <- NULL
   converged_day <- NA_integer_
 
   for (burn_in_day in seq_len(max_burn_in_days)) {
     current_day <- .run_reference_cycle_gut_day(
-      current_state,
-      gut_parameters,
-      schedule
+      current_gut_energy_kj,
+      gut_release_fraction_h,
+      ingested_energy_kj_h
     )
     boundaries_kj <- current_day$boundaries_kj
     cycle_boundary_change_kj <-
@@ -168,7 +191,8 @@ run_gut_body_energy_reference_cycle <- function(
     maximum_differences_kj[[burn_in_day]] <- maximum_difference_kj
     realized_tolerances_kj[[burn_in_day]] <- realized_tolerance_kj
     convergence_flags[[burn_in_day]] <- converged
-    current_state <- current_day$state
+    current_gut_energy_kj <-
+      current_day$state$gut_available_energy_kj
     if (isTRUE(converged)) {
       converged_day <- burn_in_day
       break
@@ -194,37 +218,41 @@ run_gut_body_energy_reference_cycle <- function(
     converged = convergence_flags
   )
 
-  list(state = current_state, convergence = convergence)
+  list(
+    state = list(gut_available_energy_kj = current_gut_energy_kj),
+    convergence = convergence
+  )
 }
 
 .run_reference_cycle_gut_day <- function(
-  initial_state,
-  gut_parameters,
-  schedule
+  initial_gut_energy_kj,
+  gut_release_fraction_h,
+  ingested_energy_kj_h
 ) {
   boundaries_kj <- numeric(25L)
   ingested_kj <- numeric(24L)
   assimilated_kj <- numeric(24L)
-  current_state <- initial_state
-  boundaries_kj[[1L]] <- current_state$gut_available_energy_kj
+  current_gut_energy_kj <- initial_gut_energy_kj
+  boundaries_kj[[1L]] <- current_gut_energy_kj
 
   for (row_index in seq_len(24L)) {
-    transition <- step_gut_energy(
-      current_state,
-      gut_parameters,
-      schedule[row_index, , drop = FALSE]
+    transition <- .step_gut_energy_core(
+      current_gut_energy_kj,
+      gut_release_fraction_h,
+      ingested_energy_kj_h[[row_index]]
     )
     ingested_kj[[row_index]] <-
       transition$fluxes$prescribed_ingested_available_energy_kj
     assimilated_kj[[row_index]] <-
       transition$fluxes$assimilated_energy_kj
-    current_state <- transition$state
+    current_gut_energy_kj <-
+      transition$state$gut_available_energy_kj
     boundaries_kj[[row_index + 1L]] <-
-      current_state$gut_available_energy_kj
+      current_gut_energy_kj
   }
 
   list(
-    state = current_state,
+    state = list(gut_available_energy_kj = current_gut_energy_kj),
     boundaries_kj = boundaries_kj,
     ingested_kj = ingested_kj,
     assimilated_kj = assimilated_kj
@@ -286,34 +314,31 @@ run_gut_body_energy_reference_cycle <- function(
 }
 
 .run_reference_cycle_measurement <- function(
-  initial_gut_state,
-  measurement_body_state,
-  gut_parameters,
-  body_parameters,
-  schedule,
-  routine_activity_schedule
+  initial_gut_energy_kj,
+  measurement_body_energy_kj,
+  gut_release_fraction_h,
+  maintenance_expenditure_kj_h,
+  hour_of_day,
+  ingested_energy_kj_h,
+  routine_activity_kj_h
 ) {
-  day_1 <- run_gut_body_energy_day(
-    initial_gut_state,
-    measurement_body_state,
-    gut_parameters,
-    body_parameters,
-    schedule,
-    routine_activity_schedule
+  day_1 <- .run_gut_body_energy_day_prevalidated(
+    initial_gut_energy_kj,
+    measurement_body_energy_kj,
+    gut_release_fraction_h,
+    maintenance_expenditure_kj_h,
+    hour_of_day,
+    ingested_energy_kj_h,
+    routine_activity_kj_h
   )
-  day_2_gut_state <- new_gut_energy_state(
-    day_1$daily$gut_available_energy_final_kj
-  )
-  day_2_body_state <- new_body_energy_state(
-    day_1$daily$body_energy_reserve_final_kj
-  )
-  day_2 <- run_gut_body_energy_day(
-    day_2_gut_state,
-    day_2_body_state,
-    gut_parameters,
-    body_parameters,
-    schedule,
-    routine_activity_schedule
+  day_2 <- .run_gut_body_energy_day_prevalidated(
+    day_1$daily$gut_available_energy_final_kj[[1L]],
+    day_1$daily$body_energy_reserve_final_kj[[1L]],
+    gut_release_fraction_h,
+    maintenance_expenditure_kj_h,
+    hour_of_day,
+    ingested_energy_kj_h,
+    routine_activity_kj_h
   )
 
   hourly <- rbind(

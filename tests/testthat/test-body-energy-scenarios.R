@@ -341,46 +341,110 @@ test_that("daily runner does not mutate state, parameters, or schedule", {
   )
 })
 
-test_that("daily runner rejects non-plain records and altered schedule types", {
+test_that("daily runner accepts semantic inputs and returns canonical output", {
+  api <- .body_energy_day_api()
+  expected <- api$run(
+    api$new_state(5000),
+    api$new_parameters(100),
+    api$new_schedule(0:23, rep(100, 24L)),
+    api$new_activity_schedule(0:23, rep(0, 24L))
+  )
+  initial_state <- structure(
+    list(body_energy_reserve_kj = 5000L),
+    source = "semantic-test"
+  )
+  parameters <- structure(
+    list(maintenance_expenditure_kj_h = 100L),
+    source = "semantic-test"
+  )
+  schedule <- data.frame(
+    prescribed_assimilated_energy_kj_h = rep(100L, 24L),
+    hour_of_day = as.double(0:23),
+    row.names = paste0("h", 0:23)
+  )
+  class(schedule) <- c("annotated_assimilation_schedule", "data.frame")
+  attr(schedule, "source") <- "semantic-test"
+  routine_activity_schedule <- data.frame(
+    prescribed_routine_activity_expenditure_kj_h = rep(0L, 24L),
+    hour_of_day = as.double(0:23),
+    row.names = paste0("h", 0:23)
+  )
+  class(routine_activity_schedule) <- c(
+    "annotated_activity_schedule",
+    "data.frame"
+  )
+  attr(routine_activity_schedule, "source") <- "semantic-test"
+
+  result <- api$run(
+    initial_state,
+    parameters,
+    schedule,
+    routine_activity_schedule
+  )
+
+  expect_identical(result, expected)
+  expect_identical(result$hourly$hour_of_day, 0:23)
+  expect_true(all(vapply(result$hourly[-1L], is.double, logical(1))))
+})
+
+test_that("daily runner uses the scalar core without the public step wrapper", {
+  api <- .body_energy_day_api()
+  original_core <- getFromNamespace(
+    ".step_body_energy_core",
+    "herbivoreTTR"
+  )
+  core_calls <- 0L
+  local_mocked_bindings(
+    step_body_energy = function(...) {
+      stop("the public body step wrapper was called")
+    },
+    .step_body_energy_core = function(...) {
+      core_calls <<- core_calls + 1L
+      original_core(...)
+    },
+    .package = "herbivoreTTR"
+  )
+
+  result <- api$run(
+    api$new_state(5000),
+    api$new_parameters(100),
+    api$new_schedule(0:23, rep(100, 24L)),
+    api$new_activity_schedule(0:23, rep(0, 24L))
+  )
+
+  expect_identical(core_calls, 24L)
+  expect_identical(result$daily$body_energy_reserve_final_kj, 5000)
+})
+
+test_that("daily runner rejects semantically malformed public inputs", {
   api <- .body_energy_day_api()
   initial_state <- api$new_state(5000)
   parameters <- api$new_parameters(100)
   schedule <- api$new_schedule(0:23, rep(100, 24L))
   routine_activity_schedule <-
     api$new_activity_schedule(0:23, rep(0, 24L))
-  invalid_states <- list(
-    as.pairlist(initial_state),
-    structure(initial_state, note = "attributed")
-  )
-  invalid_parameters <- list(
-    as.pairlist(parameters),
-    structure(parameters, note = "attributed")
-  )
-  integer_rate_schedule <- schedule
-  integer_rate_schedule$prescribed_assimilated_energy_kj_h <- rep(100L, 24L)
+  malformed_schedule <- schedule
+  malformed_schedule$prescribed_assimilated_energy_kj_h <-
+    factor(rep("100", 24L))
 
-  for (state in invalid_states) {
-    expect_error(api$run(
-      state,
+  expect_error(
+    api$run(
+      c(initial_state, unexpected = 1),
       parameters,
       schedule,
       routine_activity_schedule
-    ))
-  }
-  for (candidate_parameters in invalid_parameters) {
-    expect_error(api$run(
+    ),
+    "`state`"
+  )
+  expect_error(
+    api$run(
       initial_state,
-      candidate_parameters,
-      schedule,
+      parameters,
+      malformed_schedule,
       routine_activity_schedule
-    ))
-  }
-  expect_error(api$run(
-    initial_state,
-    parameters,
-    integer_rate_schedule,
-    routine_activity_schedule
-  ))
+    ),
+    "`prescribed_assimilated_energy_kj_h`"
+  )
 })
 
 test_that("daily runner clearly rejects non-representable daily totals", {

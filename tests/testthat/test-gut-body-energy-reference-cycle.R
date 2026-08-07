@@ -326,7 +326,64 @@ test_that("reference-cycle runner has exact public and return schemas", {
   expect_identical(result$daily$body_energy_status, c("deficit", "deficit"))
 })
 
-test_that("reference-cycle runner strictly validates every argument", {
+test_that("reference-cycle runner accepts semantic inputs canonically", {
+  fixture <- .reference_cycle_fixture(max_burn_in_days = 3L)
+  run <- fixture$api$run
+  arguments <- list(
+    fixture$initial_gut_state,
+    fixture$measurement_body_state,
+    fixture$gut_parameters,
+    fixture$body_parameters,
+    fixture$schedule,
+    fixture$routine_activity_schedule,
+    fixture$relative_tolerance,
+    fixture$max_burn_in_days
+  )
+  semantic_arguments <- list(
+    structure(
+      list(gut_available_energy_kj = 0L),
+      source = "semantic-test"
+    ),
+    structure(
+      list(body_energy_reserve_kj = 10000L),
+      source = "semantic-test"
+    ),
+    structure(
+      list(gut_release_fraction_h = 0.25),
+      source = "semantic-test"
+    ),
+    structure(
+      list(maintenance_expenditure_kj_h = 100L),
+      source = "semantic-test"
+    ),
+    data.frame(
+      prescribed_ingested_available_energy_kj_h = rep(0L, 24L),
+      hour_of_day = as.double(0:23),
+      row.names = paste0("h", 0:23)
+    ),
+    data.frame(
+      prescribed_routine_activity_expenditure_kj_h = rep(0L, 24L),
+      hour_of_day = as.double(0:23),
+      row.names = paste0("h", 0:23)
+    ),
+    structure(fixture$relative_tolerance, source = "semantic-test"),
+    structure(3, source = "semantic-test")
+  )
+  class(semantic_arguments[[5L]]) <- c(
+    "annotated_ingestion_schedule",
+    "data.frame"
+  )
+  attr(semantic_arguments[[5L]], "source") <- "semantic-test"
+  class(semantic_arguments[[6L]]) <- c(
+    "annotated_activity_schedule",
+    "data.frame"
+  )
+  attr(semantic_arguments[[6L]], "source") <- "semantic-test"
+
+  expect_identical(do.call(run, semantic_arguments), do.call(run, arguments))
+})
+
+test_that("reference-cycle runner semantically validates every argument", {
   fixture <- .reference_cycle_fixture(max_burn_in_days = 3L)
   run <- fixture$api$run
   arguments <- list(
@@ -341,12 +398,19 @@ test_that("reference-cycle runner strictly validates every argument", {
   )
 
   malformed_first_six <- list(
-    structure(fixture$initial_gut_state, note = "attributed"),
-    structure(fixture$measurement_body_state, note = "attributed"),
-    structure(fixture$gut_parameters, note = "attributed"),
-    structure(fixture$body_parameters, note = "attributed"),
-    structure(fixture$schedule, note = "attributed"),
-    structure(fixture$routine_activity_schedule, note = "attributed")
+    c(fixture$initial_gut_state, unexpected = 1),
+    list(body_energy_reserve_kj = factor("10000")),
+    list(gut_release_fraction_h = 0.25, unexpected = 1),
+    list(maintenance_expenditure_kj_h = "100"),
+    transform(
+      fixture$schedule,
+      prescribed_ingested_available_energy_kj_h =
+        factor(prescribed_ingested_available_energy_kj_h)
+    ),
+    transform(
+      fixture$routine_activity_schedule,
+      hour_of_day = c(as.double(0:22), 23.5)
+    )
   )
   for (index in seq_along(malformed_first_six)) {
     malformed_arguments <- arguments
@@ -365,8 +429,10 @@ test_that("reference-cycle runner strictly validates every argument", {
     NA_real_,
     "1e-8",
     TRUE,
+    1e-8 + 0i,
+    factor("1e-8"),
     matrix(1e-8),
-    structure(1e-8, note = "attributed")
+    structure(1e-8, dim = c(1L, 1L))
   )
   for (value in invalid_tolerances) {
     malformed_arguments <- arguments
@@ -378,13 +444,15 @@ test_that("reference-cycle runner strictly validates every argument", {
     integer(),
     c(2L, 3L),
     1L,
-    2,
+    2.5,
     NA_integer_,
     Inf,
     "2",
     TRUE,
+    2 + 0i,
+    factor("2"),
     matrix(2L),
-    structure(2L, note = "attributed")
+    structure(2L, dim = c(1L, 1L))
   )
   for (value in invalid_maximum_days) {
     malformed_arguments <- arguments
@@ -399,6 +467,25 @@ test_that("reference-cycle runner strictly validates every argument", {
   large_maximum_arguments[[8L]] <- .Machine$integer.max
   large_maximum_result <- do.call(run, large_maximum_arguments)
   expect_identical(nrow(large_maximum_result$convergence), 2L)
+})
+
+test_that("reference cycle bypasses public wrappers after validation", {
+  fixture <- .reference_cycle_fixture(max_burn_in_days = 3L)
+  local_mocked_bindings(
+    step_gut_energy = function(...) {
+      stop("the public gut step wrapper was called")
+    },
+    run_gut_body_energy_day = function(...) {
+      stop("the public coupled-day wrapper was called")
+    },
+    .package = "herbivoreTTR"
+  )
+
+  result <- .run_reference_cycle_fixture(fixture)
+
+  expect_identical(result$convergence$converged, c(FALSE, TRUE))
+  expect_identical(result$hourly$measurement_day, rep(1:2, each = 24L))
+  expect_identical(result$daily$measurement_day, 1:2)
 })
 
 test_that("burn-in matches an independent 25-boundary gut replay", {

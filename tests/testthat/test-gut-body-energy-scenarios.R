@@ -633,84 +633,126 @@ test_that("coupled runner does not mutate any supplied input", {
   )
 })
 
-test_that("coupled runner rejects malformed records and schedule", {
+test_that("coupled runner accepts semantic inputs and returns canonical output", {
   fixture <- .run_gut_body_energy_fixture()
   api <- fixture$api
-  attributed_schedule <- structure(fixture$schedule, note = "attributed")
-  integer_rate_schedule <- fixture$schedule
-  integer_rate_schedule$prescribed_ingested_available_energy_kj_h <-
-    rep(100L, 24L)
-  malformed_cases <- list(
-    list(
-      gut = structure(fixture$initial_gut_state, note = "attributed"),
-      body = fixture$initial_body_state,
-      gut_parameters = fixture$gut_parameters,
-      body_parameters = fixture$body_parameters,
-      schedule = fixture$schedule
-    ),
-    list(
-      gut = fixture$initial_gut_state,
-      body = structure(fixture$initial_body_state, note = "attributed"),
-      gut_parameters = fixture$gut_parameters,
-      body_parameters = fixture$body_parameters,
-      schedule = fixture$schedule
-    ),
-    list(
-      gut = fixture$initial_gut_state,
-      body = fixture$initial_body_state,
-      gut_parameters = structure(
-        fixture$gut_parameters,
-        note = "attributed"
-      ),
-      body_parameters = fixture$body_parameters,
-      schedule = fixture$schedule
-    ),
-    list(
-      gut = fixture$initial_gut_state,
-      body = fixture$initial_body_state,
-      gut_parameters = fixture$gut_parameters,
-      body_parameters = structure(
-        fixture$body_parameters,
-        note = "attributed"
-      ),
-      schedule = fixture$schedule
-    ),
-    list(
-      gut = fixture$initial_gut_state,
-      body = fixture$initial_body_state,
-      gut_parameters = fixture$gut_parameters,
-      body_parameters = fixture$body_parameters,
-      schedule = attributed_schedule
-    ),
-    list(
-      gut = fixture$initial_gut_state,
-      body = fixture$initial_body_state,
-      gut_parameters = fixture$gut_parameters,
-      body_parameters = fixture$body_parameters,
-      schedule = integer_rate_schedule
-    )
+  initial_gut_state <- structure(
+    list(gut_available_energy_kj = 400L),
+    source = "semantic-test"
+  )
+  initial_body_state <- structure(
+    list(body_energy_reserve_kj = 5000L),
+    source = "semantic-test"
+  )
+  gut_parameters <- structure(
+    list(gut_release_fraction_h = 0.25),
+    source = "semantic-test"
+  )
+  body_parameters <- structure(
+    list(maintenance_expenditure_kj_h = 100L),
+    source = "semantic-test"
+  )
+  schedule <- data.frame(
+    prescribed_ingested_available_energy_kj_h = rep(100L, 24L),
+    hour_of_day = as.double(0:23),
+    row.names = paste0("h", 0:23)
+  )
+  class(schedule) <- c("annotated_ingestion_schedule", "data.frame")
+  attr(schedule, "source") <- "semantic-test"
+  routine_activity_schedule <- data.frame(
+    prescribed_routine_activity_expenditure_kj_h = rep(0L, 24L),
+    hour_of_day = as.double(0:23),
+    row.names = paste0("h", 0:23)
+  )
+  class(routine_activity_schedule) <- c(
+    "annotated_activity_schedule",
+    "data.frame"
+  )
+  attr(routine_activity_schedule, "source") <- "semantic-test"
+
+  result <- api$run(
+    initial_gut_state,
+    initial_body_state,
+    gut_parameters,
+    body_parameters,
+    schedule,
+    routine_activity_schedule
   )
 
-  for (case in malformed_cases) {
-    expect_error(api$run(
-      case$gut,
-      case$body,
-      case$gut_parameters,
-      case$body_parameters,
-      case$schedule,
-      fixture$routine_activity_schedule
-    ))
-  }
+  expect_identical(result, fixture$result)
+  expect_identical(result$hourly$hour_of_day, 0:23)
+  expect_true(all(vapply(result$hourly[-1L], is.double, logical(1))))
+})
+
+test_that("coupled runner calls ordered scalar cores without public wrappers", {
+  fixture <- .run_gut_body_energy_fixture()
+  original_gut_core <- getFromNamespace(
+    ".step_gut_energy_core",
+    "herbivoreTTR"
+  )
+  original_body_core <- getFromNamespace(
+    ".step_body_energy_core",
+    "herbivoreTTR"
+  )
+  transition_order <- character()
+  local_mocked_bindings(
+    step_gut_energy = function(...) {
+      stop("the public gut step wrapper was called")
+    },
+    step_body_energy = function(...) {
+      stop("the public body step wrapper was called")
+    },
+    .step_gut_energy_core = function(...) {
+      transition_order <<- c(transition_order, "gut")
+      original_gut_core(...)
+    },
+    .step_body_energy_core = function(...) {
+      transition_order <<- c(transition_order, "body")
+      original_body_core(...)
+    },
+    .package = "herbivoreTTR"
+  )
+
+  result <- fixture$api$run(
+    fixture$initial_gut_state,
+    fixture$initial_body_state,
+    fixture$gut_parameters,
+    fixture$body_parameters,
+    fixture$schedule,
+    fixture$routine_activity_schedule
+  )
+
+  expect_identical(transition_order, rep(c("gut", "body"), 24L))
+  expect_identical(result, fixture$result)
+})
+
+test_that("coupled runner rejects semantically malformed public inputs", {
+  fixture <- .run_gut_body_energy_fixture()
+  malformed_schedule <- fixture$schedule
+  malformed_schedule$prescribed_ingested_available_energy_kj_h <-
+    factor(rep("100", 24L))
+
   expect_error(
-    api$run(
-      fixture$initial_gut_state,
+    fixture$api$run(
+      c(fixture$initial_gut_state, unexpected = 1),
       fixture$initial_body_state,
       fixture$gut_parameters,
       fixture$body_parameters,
       fixture$schedule,
-      fixture$routine_activity_schedule,
-      duration_h = 24
-    )
+      fixture$routine_activity_schedule
+    ),
+    "`state`"
+  )
+  expect_error(
+    fixture$api$run(
+      fixture$initial_gut_state,
+      fixture$initial_body_state,
+      fixture$gut_parameters,
+      fixture$body_parameters,
+      malformed_schedule,
+      fixture$routine_activity_schedule
+    ),
+    "`prescribed_ingested_available_energy_kj_h`"
   )
 })
 

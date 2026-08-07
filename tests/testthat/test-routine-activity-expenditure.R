@@ -375,7 +375,28 @@ test_that("body day records exact zero and four-hour pulse accounting", {
     input_schedule,
     pulse_schedule
   )
+  semantic_pulse_schedule <- data.frame(
+    prescribed_routine_activity_expenditure_kj_h = c(
+      rep(0L, 8L),
+      rep(50L, 4L),
+      rep(0L, 12L)
+    ),
+    hour_of_day = as.double(0:23),
+    row.names = paste0("h", 0:23)
+  )
+  class(semantic_pulse_schedule) <- c(
+    "annotated_activity_schedule",
+    "data.frame"
+  )
+  attr(semantic_pulse_schedule, "source") <- "semantic-test"
+  semantic_pulse <- api$run_body(
+    initial_state,
+    parameters,
+    input_schedule,
+    semantic_pulse_schedule
+  )
 
+  expect_identical(semantic_pulse, pulse)
   expect_identical(
     pulse$hourly$prescribed_routine_activity_expenditure_kj_h,
     c(rep(0, 8L), rep(50, 4L), rep(0, 12L))
