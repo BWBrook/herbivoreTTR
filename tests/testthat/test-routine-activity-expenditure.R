@@ -56,7 +56,7 @@
   )
 }
 
-test_that("routine-activity constructor returns the exact strict schedule", {
+test_that("routine-activity constructor returns the canonical schedule", {
   api <- .routine_activity_api()
   hour_of_day <- 0:23
   rates <- c(rep(0L, 8L), rep(50L, 4L), rep(0L, 12L))
@@ -99,16 +99,46 @@ test_that("routine-activity constructor returns the exact strict schedule", {
   expect_identical(rates, rates_before)
 })
 
+test_that("routine-activity constructor accepts numeric storage and metadata", {
+  api <- .routine_activity_api()
+  hours <- structure(
+    as.double(0:23),
+    names = paste0("h", 0:23),
+    source = "test"
+  )
+  rates <- structure(
+    rep(50L, 24L),
+    class = "activity_rate",
+    source = "test"
+  )
+
+  schedule <- api$new_activity_schedule(hours, rates)
+
+  expect_identical(schedule$hour_of_day, 0:23)
+  expect_identical(
+    schedule$prescribed_routine_activity_expenditure_kj_h,
+    rep(50, 24L)
+  )
+  expect_null(attributes(schedule$hour_of_day))
+  expect_null(attributes(
+    schedule$prescribed_routine_activity_expenditure_kj_h
+  ))
+})
+
 test_that("routine-activity constructor rejects every malformed field", {
   api <- .routine_activity_api()
   valid_hours <- 0:23
   valid_rates <- rep(0, 24L)
   invalid_hours <- list(
-    as.numeric(0:23),
     1:24,
     rev(0:23),
     c(0:22, 22L),
-    structure(0:23, note = "attributed")
+    c(as.double(0:22), 23.5),
+    as.character(0:23),
+    rep(TRUE, 24L),
+    as.complex(0:23),
+    factor(0:23),
+    matrix(0:23, nrow = 1L)
   )
   invalid_rates <- list(
     numeric(),
@@ -119,16 +149,71 @@ test_that("routine-activity constructor rejects every malformed field", {
     c(rep(0, 23L), NA_real_),
     rep("0", 24L),
     rep(TRUE, 24L),
-    matrix(rep(0, 24L)),
-    structure(rep(0, 24L), note = "attributed")
+    rep(0 + 0i, 24L),
+    factor(rep("0", 24L)),
+    matrix(rep(0, 24L))
   )
 
   for (hour_of_day in invalid_hours) {
-    expect_error(api$new_activity_schedule(hour_of_day, valid_rates))
+    expect_error(
+      api$new_activity_schedule(hour_of_day, valid_rates),
+      "`hour_of_day`"
+    )
   }
   for (rates in invalid_rates) {
-    expect_error(api$new_activity_schedule(valid_hours, rates))
+    expect_error(
+      api$new_activity_schedule(valid_hours, rates),
+      "`prescribed_routine_activity_expenditure_kj_h`"
+    )
   }
+
+  error <- expect_error(
+    api$new_activity_schedule(
+      c(as.double(0:22), 23.5),
+      valid_rates
+    ),
+    "`hour_of_day`"
+  )
+  expect_null(conditionCall(error))
+})
+
+test_that("routine-activity validators accept semantic containers and rows", {
+  validate_schedule <- getFromNamespace(
+    ".validate_routine_activity_expenditure_schedule",
+    "herbivoreTTR"
+  )
+  validate_row <- getFromNamespace(
+    ".validate_routine_activity_expenditure_input_row",
+    "herbivoreTTR"
+  )
+  schedule <- data.frame(
+    hour_of_day = as.double(0:23),
+    prescribed_routine_activity_expenditure_kj_h = rep(50L, 24L),
+    row.names = paste0("h", 0:23)
+  )
+  class(schedule) <- c("annotated_activity_schedule", "data.frame")
+  attr(schedule, "source") <- "test"
+  schedule <- schedule[c(
+    "prescribed_routine_activity_expenditure_kj_h",
+    "hour_of_day"
+  )]
+  activity_row <- schedule[1L, , drop = FALSE]
+  attr(activity_row, "source") <- "test-row"
+
+  expect_invisible(validate_schedule(schedule))
+  expect_invisible(validate_row(activity_row))
+
+  error <- expect_error(
+    validate_schedule(schedule[-24L, , drop = FALSE]),
+    "`routine_activity_schedule`"
+  )
+  expect_null(conditionCall(error))
+  activity_row$prescribed_routine_activity_expenditure_kj_h <- factor("50")
+  error <- expect_error(
+    validate_row(activity_row),
+    "`activity_row\\$prescribed_routine_activity_expenditure_kj_h`"
+  )
+  expect_null(conditionCall(error))
 })
 
 test_that("every body transition and runner requires explicit activity", {

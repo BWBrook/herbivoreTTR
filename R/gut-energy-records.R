@@ -13,7 +13,9 @@ new_gut_energy_state <- function(gut_available_energy_kj) {
     "gut_available_energy_kj"
   )
 
-  list(gut_available_energy_kj = as.double(gut_available_energy_kj))
+  list(
+    gut_available_energy_kj = as.double(unclass(gut_available_energy_kj))
+  )
 }
 
 #' Create gut-energy parameters
@@ -28,7 +30,9 @@ new_gut_energy_state <- function(gut_available_energy_kj) {
 new_gut_energy_parameters <- function(gut_release_fraction_h) {
   .validate_gut_release_fraction(gut_release_fraction_h)
 
-  list(gut_release_fraction_h = as.double(gut_release_fraction_h))
+  list(
+    gut_release_fraction_h = as.double(unclass(gut_release_fraction_h))
+  )
 }
 
 #' Create a prescribed ingested available-energy schedule
@@ -54,19 +58,19 @@ new_ingested_available_energy_schedule <- function(
   )
 
   data.frame(
-    hour_of_day = hour_of_day,
+    hour_of_day = as.integer(unclass(hour_of_day)),
     prescribed_ingested_available_energy_kj_h =
-      as.double(prescribed_ingested_available_energy_kj_h)
+      as.double(unclass(prescribed_ingested_available_energy_kj_h))
   )
 }
 
 .validate_gut_release_fraction <- function(value) {
   if (
-    !.is_bare_numeric_vector(value) ||
+    !.is_semantic_numeric_vector(value) ||
       length(value) != 1L ||
-      !is.finite(value) ||
-      value <= 0 ||
-      value > 1
+      !is.finite(as.double(unclass(value))) ||
+      as.double(unclass(value)) <= 0 ||
+      as.double(unclass(value)) > 1
   ) {
     stop(
       "`gut_release_fraction_h` must be one finite numeric value in (0, 1].",
@@ -81,15 +85,24 @@ new_ingested_available_energy_schedule <- function(
   hour_of_day,
   prescribed_ingested_available_energy_kj_h
 ) {
-  if (!is.integer(hour_of_day) || !identical(hour_of_day, 0:23)) {
-    stop("`hour_of_day` must be integer `0:23`, in order.", call. = FALSE)
+  if (!.is_hour_of_day_schedule(hour_of_day)) {
+    stop(
+      "`hour_of_day` must contain the ordered whole numeric values `0:23`.",
+      call. = FALSE
+    )
   }
 
   if (
-    !.is_bare_numeric_vector(prescribed_ingested_available_energy_kj_h) ||
+    !.is_semantic_numeric_vector(
+      prescribed_ingested_available_energy_kj_h
+    ) ||
       length(prescribed_ingested_available_energy_kj_h) != 24L ||
-      any(!is.finite(prescribed_ingested_available_energy_kj_h)) ||
-      any(prescribed_ingested_available_energy_kj_h < 0)
+      any(!is.finite(as.double(unclass(
+        prescribed_ingested_available_energy_kj_h
+      )))) ||
+      any(as.double(unclass(
+        prescribed_ingested_available_energy_kj_h
+      )) < 0)
   ) {
     stop(
       paste0(

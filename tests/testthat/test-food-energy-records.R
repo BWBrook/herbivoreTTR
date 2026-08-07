@@ -32,7 +32,7 @@ test_that("food parameter constructor returns the exact plain record", {
   )
 })
 
-test_that("food energy density is finite, bare, scalar, and positive", {
+test_that("food energy density is finite, scalar, numeric, and positive", {
   new_parameters <- .food_energy_public_function(
     "new_food_energy_parameters"
   )
@@ -56,17 +56,40 @@ test_that("food energy density is finite, bare, scalar, and positive", {
     NA_real_,
     "10000",
     TRUE,
+    10000 + 0i,
     factor("10000"),
     list(10000),
-    matrix(10000, nrow = 1L, ncol = 1L),
-    structure(10000, class = "energy_density"),
-    structure(10000, note = "attributed"),
-    structure(10000, names = "density")
+    matrix(10000, nrow = 1L, ncol = 1L)
   )
 
   for (value in invalid_values) {
-    expect_error(new_parameters(value))
+    expect_error(
+      new_parameters(value),
+      "`metabolizable_energy_density_kj_kg_dm`"
+    )
   }
+})
+
+test_that("food parameter constructor accepts harmless numeric metadata", {
+  new_parameters <- .food_energy_public_function(
+    "new_food_energy_parameters"
+  )
+  density <- structure(
+    10000L,
+    class = "energy_density",
+    source = "test"
+  )
+
+  parameters <- new_parameters(density)
+
+  expect_identical(
+    parameters$metabolizable_energy_density_kj_kg_dm,
+    10000
+  )
+  expect_identical(
+    attributes(parameters),
+    list(names = "metabolizable_energy_density_kj_kg_dm")
+  )
 })
 
 test_that("dry-matter schedule has the exact base data-frame contract", {
@@ -127,6 +150,34 @@ test_that("dry-matter schedule normalizes accepted integer rates to doubles", {
   )
 })
 
+test_that("dry-matter schedule accepts semantic numeric storage and metadata", {
+  new_schedule <- .food_energy_public_function(
+    "new_dry_matter_intake_schedule"
+  )
+  hours <- structure(
+    as.double(0:23),
+    names = paste0("h", 0:23),
+    source = "test"
+  )
+  rates <- structure(
+    rep(2L, 24L),
+    class = "intake_rate",
+    source = "test"
+  )
+
+  schedule <- new_schedule(hours, rates)
+
+  expect_identical(schedule$hour_of_day, 0:23)
+  expect_identical(
+    schedule$prescribed_dry_matter_intake_kg_dm_h,
+    rep(2, 24L)
+  )
+  expect_null(attributes(schedule$hour_of_day))
+  expect_null(attributes(
+    schedule$prescribed_dry_matter_intake_kg_dm_h
+  ))
+})
+
 test_that("dry-matter schedule rejects missing, extra, and wrong lengths", {
   new_schedule <- .food_energy_public_function(
     "new_dry_matter_intake_schedule"
@@ -145,31 +196,37 @@ test_that("dry-matter schedule rejects missing, extra, and wrong lengths", {
   expect_error(new_schedule(0:24, rep(0.01, 25L)))
 })
 
-test_that("dry-matter schedule requires bare integer hours zero through 23", {
+test_that("dry-matter schedule requires ordered whole numeric hours zero to 23", {
   new_schedule <- .food_energy_public_function(
     "new_dry_matter_intake_schedule"
   )
   rates <- rep(0.01, 24L)
   invalid_hours <- list(
-    as.numeric(0:23),
     c(0:22, 22L),
     c(1:23, 0L),
     c(0:22, 24L),
     replace(0:23, 24L, NA_integer_),
+    c(as.double(0:22), 23.5),
     as.character(0:23),
     rep(TRUE, 24L),
+    as.complex(0:23),
+    factor(0:23),
     matrix(0:23, nrow = 1L),
-    structure(0:23, class = "hour_index"),
-    structure(0:23, note = "attributed"),
-    structure(0:23, names = as.character(0:23))
+    array(0:23, dim = c(2L, 3L, 4L))
   )
 
   for (hours in invalid_hours) {
-    expect_error(new_schedule(hours, rates))
+    expect_error(new_schedule(hours, rates), "`hour_of_day`")
   }
+
+  error <- expect_error(
+    new_schedule(c(as.double(0:22), 23.5), rates),
+    "`hour_of_day`"
+  )
+  expect_null(conditionCall(error))
 })
 
-test_that("dry-matter schedule requires bare finite non-negative rates", {
+test_that("dry-matter schedule requires finite non-negative numeric rates", {
   new_schedule <- .food_energy_public_function(
     "new_dry_matter_intake_schedule"
   )
@@ -181,16 +238,24 @@ test_that("dry-matter schedule requires bare finite non-negative rates", {
     replace(rep(0.01, 24L), 1L, NA_real_),
     rep("0.01", 24L),
     rep(TRUE, 24L),
+    rep(0.01 + 0i, 24L),
+    factor(rep("0.01", 24L)),
     as.list(rep(0.01, 24L)),
-    matrix(0.01, nrow = 1L, ncol = 24L),
-    structure(rep(0.01, 24L), class = "intake_rate"),
-    structure(rep(0.01, 24L), note = "attributed"),
-    structure(rep(0.01, 24L), names = as.character(0:23))
+    matrix(0.01, nrow = 1L, ncol = 24L)
   )
 
   for (rates in invalid_rates) {
-    expect_error(new_schedule(0:23, rates))
+    expect_error(
+      new_schedule(0:23, rates),
+      "`prescribed_dry_matter_intake_kg_dm_h`"
+    )
   }
+
+  error <- expect_error(
+    new_schedule(0:23, factor(rep("0.01", 24L))),
+    "`prescribed_dry_matter_intake_kg_dm_h`"
+  )
+  expect_null(conditionCall(error))
 })
 
 test_that("food record constructors do not mutate accepted inputs", {

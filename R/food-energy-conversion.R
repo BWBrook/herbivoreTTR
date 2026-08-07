@@ -20,8 +20,12 @@ derive_ingested_available_energy_schedule <- function(
   .validate_dry_matter_intake_schedule(schedule)
 
   converted_rates_kj_h <-
-    schedule$prescribed_dry_matter_intake_kg_dm_h *
-      parameters$metabolizable_energy_density_kj_kg_dm
+    as.double(unclass(
+      schedule$prescribed_dry_matter_intake_kg_dm_h
+    )) *
+      as.double(unclass(
+        parameters$metabolizable_energy_density_kj_kg_dm
+      ))
   if (any(!is.finite(converted_rates_kj_h))) {
     stop(
       "Converted ingested available-energy rates must all be finite.",
@@ -30,17 +34,17 @@ derive_ingested_available_energy_schedule <- function(
   }
 
   new_ingested_available_energy_schedule(
-    schedule$hour_of_day,
+    as.integer(unclass(schedule$hour_of_day)),
     converted_rates_kj_h
   )
 }
 
 .validate_food_energy_parameters <- function(parameters) {
   density_name <- "metabolizable_energy_density_kj_kg_dm"
-  if (!.is_exact_plain_named_list(parameters, density_name)) {
+  if (!.has_exact_named_fields(parameters, density_name)) {
     stop(
       paste0(
-        "`parameters` must be a plain list containing only ",
+        "`parameters` must be a list record containing only ",
         "`metabolizable_energy_density_kj_kg_dm`."
       ),
       call. = FALSE
@@ -51,18 +55,6 @@ derive_ingested_available_energy_schedule <- function(
     parameters$metabolizable_energy_density_kj_kg_dm,
     "parameters$metabolizable_energy_density_kj_kg_dm"
   )
-  if (
-    typeof(parameters$metabolizable_energy_density_kj_kg_dm) !=
-      "double"
-  ) {
-    stop(
-      paste0(
-        "`parameters$metabolizable_energy_density_kj_kg_dm` must retain ",
-        "double storage from the parameter constructor."
-      ),
-      call. = FALSE
-    )
-  }
 
   invisible(NULL)
 }
@@ -72,18 +64,16 @@ derive_ingested_available_energy_schedule <- function(
     "hour_of_day",
     "prescribed_dry_matter_intake_kg_dm_h"
   )
-  expected_attributes <- list(
-    names = expected_names,
-    class = "data.frame",
-    row.names = seq_len(24L)
-  )
   if (
-    !identical(typeof(schedule), "list") ||
-      !identical(dim(schedule), c(24L, 2L)) ||
-      !identical(attributes(schedule), expected_attributes)
+    !is.data.frame(schedule) ||
+      nrow(schedule) != 24L ||
+      !.has_exact_named_fields(schedule, expected_names)
   ) {
     stop(
-      "`schedule` must be the exact 24-row dry-matter intake data frame.",
+      paste0(
+        "`schedule` must be a 24-row data frame containing only ",
+        "`hour_of_day` and `prescribed_dry_matter_intake_kg_dm_h`."
+      ),
       call. = FALSE
     )
   }
@@ -92,18 +82,6 @@ derive_ingested_available_energy_schedule <- function(
     schedule$hour_of_day,
     schedule$prescribed_dry_matter_intake_kg_dm_h
   )
-  if (
-    typeof(schedule$prescribed_dry_matter_intake_kg_dm_h) !=
-      "double"
-  ) {
-    stop(
-      paste0(
-        "`schedule$prescribed_dry_matter_intake_kg_dm_h` must retain ",
-        "double storage from the schedule constructor."
-      ),
-      call. = FALSE
-    )
-  }
 
   invisible(NULL)
 }
