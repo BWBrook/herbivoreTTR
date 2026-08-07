@@ -79,6 +79,17 @@ test_that("scalar energy constructors accept metadata and reject dimensions", {
   )
 })
 
+test_that("state constructor rejects value-changing numeric classes", {
+  new_state <- .body_energy_public_function("new_body_energy_state")
+
+  .with_value_changing_double_method({
+    expect_error(
+      new_state(.value_changing_double(5000)),
+      "`body_energy_reserve_kj`"
+    )
+  })
+})
+
 test_that("parameter constructor returns the exact plain record", {
   new_parameters <- .body_energy_public_function(
     "new_body_energy_parameters"

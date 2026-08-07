@@ -387,6 +387,29 @@ test_that("daily runner accepts semantic inputs and returns canonical output", {
   expect_true(all(vapply(result$hourly[-1L], is.double, logical(1))))
 })
 
+test_that("daily runner rejects value-changing numeric classes", {
+  api <- .body_energy_day_api()
+  initial_state <- list(
+    body_energy_reserve_kj = .value_changing_double(5000)
+  )
+  parameters <- api$new_parameters(100)
+  schedule <- api$new_schedule(0:23, rep(100, 24L))
+  routine_activity_schedule <-
+    api$new_activity_schedule(0:23, rep(0, 24L))
+
+  .with_value_changing_double_method({
+    expect_error(
+      api$run(
+        initial_state,
+        parameters,
+        schedule,
+        routine_activity_schedule
+      ),
+      "`state\\$body_energy_reserve_kj`"
+    )
+  })
+})
+
 test_that("daily runner uses the scalar core without the public step wrapper", {
   api <- .body_energy_day_api()
   original_core <- getFromNamespace(

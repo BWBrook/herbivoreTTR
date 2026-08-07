@@ -147,6 +147,24 @@ test_that("hourly step accepts semantic numeric values and harmless metadata", {
   )
 })
 
+test_that("hourly step rejects value-changing numeric classes", {
+  fixture <- .body_energy_transition_fixture()
+  fixture$state$body_energy_reserve_kj <-
+    .value_changing_double(fixture$state$body_energy_reserve_kj)
+
+  .with_value_changing_double_method({
+    expect_error(
+      fixture$api$step(
+        fixture$state,
+        fixture$parameters,
+        fixture$input_row,
+        fixture$activity_row
+      ),
+      "`state\\$body_energy_reserve_kj`"
+    )
+  })
+})
+
 test_that("hourly step applies exactly one hour of energy arithmetic", {
   fixture <- .body_energy_transition_fixture(
     reserve_kj = 100,

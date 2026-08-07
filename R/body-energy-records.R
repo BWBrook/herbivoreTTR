@@ -86,9 +86,26 @@ new_assimilated_energy_schedule <- function(
 }
 
 .is_semantic_numeric_vector <- function(value) {
-  typeof(value) %in% c("integer", "double") &&
-    !is.factor(value) &&
-    is.null(dim(value))
+  if (
+    !typeof(value) %in% c("integer", "double") ||
+      is.factor(value) ||
+      !is.null(dim(value))
+  ) {
+    return(FALSE)
+  }
+
+  isTRUE(tryCatch(
+    {
+      semantic_value <- as.double(value)
+      attributes(semantic_value) <- NULL
+      identical(
+        semantic_value,
+        as.double(unclass(value))
+      )
+    },
+    warning = function(condition) FALSE,
+    error = function(condition) FALSE
+  ))
 }
 
 .has_exact_named_fields <- function(value, required_names) {
@@ -99,9 +116,13 @@ new_assimilated_energy_schedule <- function(
 }
 
 .is_whole_number <- function(value) {
-  .is_semantic_numeric_vector(value) &&
-    all(is.finite(value)) &&
-    all(value == floor(value))
+  if (!.is_semantic_numeric_vector(value)) {
+    return(FALSE)
+  }
+
+  canonical_value <- as.double(unclass(value))
+  all(is.finite(canonical_value)) &&
+    all(canonical_value == floor(canonical_value))
 }
 
 .is_hour_of_day_schedule <- function(value) {

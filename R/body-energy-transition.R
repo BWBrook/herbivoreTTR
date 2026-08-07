@@ -23,8 +23,8 @@ step_body_energy <- function(state, parameters, input_row, activity_row) {
   .validate_assimilated_energy_input_row(input_row)
   .validate_routine_activity_expenditure_input_row(activity_row)
   if (
-    as.double(input_row$hour_of_day) !=
-      as.double(activity_row$hour_of_day)
+    as.double(unclass(input_row$hour_of_day)) !=
+      as.double(unclass(activity_row$hour_of_day))
   ) {
     stop(
       "`activity_row$hour_of_day` must match `input_row$hour_of_day`.",
@@ -33,12 +33,12 @@ step_body_energy <- function(state, parameters, input_row, activity_row) {
   }
 
   .step_body_energy_core(
-    as.double(state$body_energy_reserve_kj),
-    as.double(parameters$maintenance_expenditure_kj_h),
-    as.double(input_row$prescribed_assimilated_energy_kj_h),
-    as.double(
+    as.double(unclass(state$body_energy_reserve_kj)),
+    as.double(unclass(parameters$maintenance_expenditure_kj_h)),
+    as.double(unclass(input_row$prescribed_assimilated_energy_kj_h)),
+    as.double(unclass(
       activity_row$prescribed_routine_activity_expenditure_kj_h
-    )
+    ))
   )
 }
 
