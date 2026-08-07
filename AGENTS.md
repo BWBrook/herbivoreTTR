@@ -14,7 +14,8 @@ repository is historical evidence, not scientific or architectural authority.
 - Separate dynamic state, fixed parameters, prescribed inputs, process
   functions, and recorded history.
 - Use explicit unit suffixes in variable names and documentation.
-- Do not introduce an object-oriented framework or a compatibility layer.
+- Do not preserve backwards compatibility. Remove obsolete paths rather than
+  adding adapters, fallbacks, migrations, or dormant flags.
 
 ## Scientific Work
 
@@ -24,13 +25,27 @@ repository is historical evidence, not scientific or architectural authority.
 - Work in small goals: one principal question, one subsystem, compact
   predeclared outputs, proportionate tests, and an explicit stopping point.
 - Discuss and approve the next layer before implementing it.
+- Keep active goal working material minimal. On closeout, retain accepted
+  conclusions in `docs/decisions/` and the current contract in the model docs;
+  retire Goal, Plan, Runbook, and Log machinery.
 
-## Repository Discipline
+## Evidence And Repository Discipline
 
-- Keep source, experiments, references, and generated outputs separate.
+- Keep source, no-write scientific experiments, references, and generated
+  outputs separate.
 - Never commit `outputs/`, package tarballs, check directories, or generated
   validation evidence.
+- Do not retain review-pack publishers, bulk receipts, mutation suites, or
+  goal-specific publication guards after their accepted conclusion is recorded.
 - Do not copy legacy code or prose into this repository.
-- Run the skeleton test and external `R CMD build` and
-  `R CMD check --no-manual` for foundation changes.
 - Stop before physiology unless a later, separately approved goal authorizes it.
+
+## Validation
+
+- Fast change gate: parse retained R, run tests targeted at the affected
+  scientific behavior, and run `git diff --check`.
+- Explicit release gate: run the full test suite plus external `R CMD build`
+  and `R CMD check --no-manual` when a package boundary or accepted foundation
+  is being published.
+- Repeat a full gate only for a distinct named risk. Stop when more work is
+  unlikely to change the scientific or publication decision.

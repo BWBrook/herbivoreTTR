@@ -684,13 +684,12 @@ pulse` does not denote compensation, catch-up feeding, appetite, behavioral
 response, capacity, animal recovery, physiological recovery, or a realistic
 ecological repayment process.
 
-The no-write experiment exposes only client-side evidence. The ignored review
-pack contains a 97-row hourly boundary-contrast table, an eight-row daily
-sequence table, a five-row day-boundary realignment table, and one three-panel
-figure. Their exact evidence-only columns are defined in
-`variable-dictionary.md`. The clients chain `run_gut_body_energy_day()` four
-times per sequence and add no production runner, interface, state, schema,
-parameter, equation, validator, or test.
+The no-write experiment exposes only client-side evidence. It constructs a
+97-row hourly boundary-contrast table, an eight-row daily-sequence table, and a
+five-row day-boundary realignment table. Their exact evidence-only columns are
+defined in `variable-dictionary.md`. The experiment chains
+`run_gut_body_energy_day()` four times per sequence and adds no production
+runner, interface, state, schema, parameter, equation, validator, or test.
 
 ## Accounting
 
@@ -899,12 +898,11 @@ dynamic body mass, protein, water, thermoregulation, plants, weather, space,
 individuals, populations, empirical calibration, parameter estimation, or
 uncertainty analysis.
 
-Goal 012 ends after the common initialization, exact four-day control and
+Goal 012 ended after the common initialization, exact four-day control and
 prescribed-pulse sequences, analytical contrast partition, no-write experiment,
-ignored four-file review pack, and documentation are validated and reviewed.
-It adds no generalized production multi-day API or biological response. Goal
-013 remains unapproved and scientifically unspecified; any next layer is
-pending discussion.
+and documentation were validated and reviewed. It added no generalized
+production multi-day API or biological response. Goal 013 remains unapproved
+and scientifically unspecified; any next layer is pending discussion.
 
 The historical implementation is private at `BWBrook/herbivoreTTR-legacy`, tag
 `legacy-final-2026-07-16`; the pre-freeze scientific baseline is

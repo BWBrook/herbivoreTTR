@@ -122,12 +122,10 @@ initial state, fixed `0.25 h^-1` release fraction, exact carry-over, and the
 current deterministic, linear, lossless accounting model. It establishes a
 stock-partition identity under those assumptions, not an animal response.
 
-Evidence remains in:
+The retained source-controlled reproduction client is:
 
 ```text
 experiments/rebuild-011-one-day-prescribed-input-shortfall.R
-experiments/rebuild-011-review-pack.R
-outputs/rebuild-011-one-day-prescribed-input-shortfall/
 ```
 
 ## Limits And Next Gate
@@ -137,5 +135,5 @@ configurable horizon or production sequence runner. The labels
 `return_to_reference` and return-to-reference forcing describe resumption of
 the balanced prescribed schedule only.
 
-Goal 012 remains unapproved. Goal 011 does not select its scientific question,
-mechanism, duration, or evidence design.
+At Goal 011 closeout, Goal 012 had not yet been approved and Goal 011 did not
+select its scientific question, mechanism, duration, or evidence design.

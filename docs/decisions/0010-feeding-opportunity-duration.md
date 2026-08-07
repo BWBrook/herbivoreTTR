@@ -88,8 +88,8 @@ ecological accounting reference. The restricted fixtures are evidence
 comparators, not production configurations or inferred behaviors.
 
 All prescribed-intake-window, overlap, threshold, comparison, and identity
-fields remain confined to experiments and ignored review tables. They do not
-enter package state, forcing records, result schemas, constructors, or
+fields remain confined to experiments and generated evidence tables. They do
+not enter package state, forcing records, result schemas, constructors, or
 validators.
 
 ## Limits And Next Gate

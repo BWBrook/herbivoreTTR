@@ -94,9 +94,10 @@ of food, total metabolism, or an emergent response.
 ## Goal 009 Evidence-Only Review Columns
 
 Goal 009 adds no package variable, state, parameter, record, or return schema.
-The names below exist only in the no-write experiment and ignored review pack.
-They describe a synthetic client-side `pmin` prescription, not appetite,
-feeding behavior, forage availability, gut capacity, or a production ceiling.
+The names below exist only in the no-write experiment and its generated
+evidence tables. They describe a synthetic client-side `pmin` prescription,
+not appetite, feeding behavior, forage availability, gut capacity, or a
+production ceiling.
 
 The hourly screen contains:
 
@@ -195,9 +196,10 @@ are distinct. None is a new production forcing or state variable.
 
 Goal 010 adds no package variable, state, parameter, record, or return schema.
 The prescribed intake window fields below exist only in the no-write experiment
-and ignored review pack. `prescribed_intake_window_open = TRUE` means that the
-labeled interval is fully used at the fixed prescribed intake rate; it is not
-voluntary opportunity, realized behavior, forage access, or empirical capacity.
+and its generated evidence tables. `prescribed_intake_window_open = TRUE`
+means that the labeled interval is fully used at the fixed prescribed intake
+rate; it is not voluntary opportunity, realized behavior, forage access, or
+empirical capacity.
 
 The hourly prescribed-intake-window table contains:
 
@@ -298,8 +300,8 @@ schema.
 
 Goal 011 adds no package variable, state, parameter, record, or return schema.
 The sequence, phase, boundary, contrast, recurrence, and complement fields
-below exist only in the no-write experiment and ignored review pack. Every
-contrast is `one_day_rate_shortfall - all_balanced_control`.
+below exist only in the no-write experiment and its generated evidence tables.
+Every contrast is `one_day_rate_shortfall - all_balanced_control`.
 
 The hourly boundary-contrast table has 73 rows for elapsed boundaries
 `0:72 h` and contains:
@@ -382,12 +384,12 @@ The Goal 011-specific fields and evidence-table aliases are:
 from the unchanged coupled daily result and retain their definitions below.
 None of the Goal 011 fields widens the production runner or package schema.
 
-## Goal 012 Evidence-Only Review Columns
+## Goal 012 Evidence-Only Client Columns
 
 Goal 012 adds no package variable, state, parameter, record, return schema,
 validator, or test. The names below are client-side evidence aliases used only
-in the no-write experiment and ignored review pack. Every contrast is
-`shortfall_then_repayment - all_balanced_control`. The label
+in the no-write experiment. Every contrast is `shortfall_then_repayment -
+all_balanced_control`. The label
 `prescribed_repayment_pulse` denotes the direct exogenous
 `0.025 kg DM h^-1` prescription over the 16 active hours, not compensation,
 a modeled animal response, or a production input type.

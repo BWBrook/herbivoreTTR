@@ -120,18 +120,14 @@ current deterministic, linear, lossless accounting model. It establishes a
 stock-partition identity under those assumptions, not a production-model or
 biological-response claim.
 
-Evidence remains in:
+The retained source-controlled reproduction client is:
 
 ```text
 experiments/rebuild-012-prescribed-energy-repayment-pulse.R
-experiments/rebuild-012-review-pack.R
-outputs/rebuild-012-prescribed-energy-repayment-pulse/
 ```
 
-The review pack contains a 97-row hourly boundary-contrast table, an eight-row
-daily-sequence table, a five-row day-boundary realignment table, and one
-three-panel figure. All sequence, phase, boundary, contrast, recurrence, and
-complement fields are evidence-only aliases.
+All sequence, phase, boundary, contrast, recurrence, and complement fields are
+evidence-only aliases.
 
 ## Limits And Next Gate
 
