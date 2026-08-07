@@ -10,7 +10,7 @@ new_routine_activity_expenditure_schedule(
 )
 }
 \arguments{
-\item{hour_of_day}{Integer vector equal to `0:23`, in order.}
+\item{hour_of_day}{Numeric vector equal to `0:23`, in order.}
 
 \item{prescribed_routine_activity_expenditure_kj_h}{Finite, non-negative
 numeric vector of 24 prescribed routine-activity expenditure rates in

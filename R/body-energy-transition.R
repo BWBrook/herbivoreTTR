@@ -4,9 +4,9 @@
 #' already-assimilated energy, fixed maintenance expenditure, and prescribed
 #' routine-activity expenditure.
 #'
-#' @param state A plain body-energy state record created by
+#' @param state A body-energy state record created by
 #'   [new_body_energy_state()].
-#' @param parameters A plain body-energy parameter record created by
+#' @param parameters A body-energy parameter record created by
 #'   [new_body_energy_parameters()].
 #' @param input_row Exactly one row from a validated schedule created by
 #'   [new_assimilated_energy_schedule()].

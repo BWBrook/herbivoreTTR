@@ -12,10 +12,10 @@ run_body_energy_day(
 )
 }
 \arguments{
-\item{initial_state}{A plain body-energy state record created by
+\item{initial_state}{A body-energy state record created by
 [new_body_energy_state()].}
 
-\item{parameters}{A plain body-energy parameter record created by
+\item{parameters}{A body-energy parameter record created by
 [new_body_energy_parameters()].}
 
 \item{schedule}{A 24-row schedule created by

@@ -7,10 +7,10 @@
 step_gut_energy(state, parameters, input_row)
 }
 \arguments{
-\item{state}{A plain gut-energy state record created by
+\item{state}{A gut-energy state record created by
 [new_gut_energy_state()].}
 
-\item{parameters}{A plain gut-energy parameter record created by
+\item{parameters}{A gut-energy parameter record created by
 [new_gut_energy_parameters()].}
 
 \item{input_row}{Exactly one row from a validated schedule created by

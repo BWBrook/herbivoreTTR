@@ -10,7 +10,7 @@ new_dry_matter_intake_schedule(
 )
 }
 \arguments{
-\item{hour_of_day}{Integer vector equal to `0:23`, in order.}
+\item{hour_of_day}{Numeric vector equal to `0:23`, in order.}
 
 \item{prescribed_dry_matter_intake_kg_dm_h}{Finite, non-negative numeric
 vector of 24 prescribed dry-matter intake rates in kilograms dry matter

@@ -4,13 +4,13 @@
 #' into the existing body-energy transition, and derive daily gut, body, and
 #' whole-system energy summaries from the resulting hourly ledger.
 #'
-#' @param initial_gut_state A plain gut-energy state record created by
+#' @param initial_gut_state A gut-energy state record created by
 #'   [new_gut_energy_state()].
-#' @param initial_body_state A plain body-energy state record created by
+#' @param initial_body_state A body-energy state record created by
 #'   [new_body_energy_state()].
-#' @param gut_parameters A plain gut-energy parameter record created by
+#' @param gut_parameters A gut-energy parameter record created by
 #'   [new_gut_energy_parameters()].
-#' @param body_parameters A plain body-energy parameter record created by
+#' @param body_parameters A body-energy parameter record created by
 #'   [new_body_energy_parameters()].
 #' @param schedule A 24-row prescribed ingestion schedule created by
 #'   [new_ingested_available_energy_schedule()].

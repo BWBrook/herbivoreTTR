@@ -14,16 +14,16 @@ run_gut_body_energy_day(
 )
 }
 \arguments{
-\item{initial_gut_state}{A plain gut-energy state record created by
+\item{initial_gut_state}{A gut-energy state record created by
 [new_gut_energy_state()].}
 
-\item{initial_body_state}{A plain body-energy state record created by
+\item{initial_body_state}{A body-energy state record created by
 [new_body_energy_state()].}
 
-\item{gut_parameters}{A plain gut-energy parameter record created by
+\item{gut_parameters}{A gut-energy parameter record created by
 [new_gut_energy_parameters()].}
 
-\item{body_parameters}{A plain body-energy parameter record created by
+\item{body_parameters}{A body-energy parameter record created by
 [new_body_energy_parameters()].}
 
 \item{schedule}{A 24-row prescribed ingestion schedule created by

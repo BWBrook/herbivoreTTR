@@ -7,10 +7,10 @@
 step_body_energy(state, parameters, input_row, activity_row)
 }
 \arguments{
-\item{state}{A plain body-energy state record created by
+\item{state}{A body-energy state record created by
 [new_body_energy_state()].}
 
-\item{parameters}{A plain body-energy parameter record created by
+\item{parameters}{A body-energy parameter record created by
 [new_body_energy_parameters()].}
 
 \item{input_row}{Exactly one row from a validated schedule created by

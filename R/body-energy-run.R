@@ -3,9 +3,9 @@
 #' Apply 24 fixed one-hour body-energy transitions and derive a daily energy
 #' summary from the resulting hourly ledger.
 #'
-#' @param initial_state A plain body-energy state record created by
+#' @param initial_state A body-energy state record created by
 #'   [new_body_energy_state()].
-#' @param parameters A plain body-energy parameter record created by
+#' @param parameters A body-energy parameter record created by
 #'   [new_body_energy_parameters()].
 #' @param schedule A 24-row schedule created by
 #'   [new_assimilated_energy_schedule()].

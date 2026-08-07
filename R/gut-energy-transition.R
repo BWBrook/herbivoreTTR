@@ -4,9 +4,9 @@
 #' hour's prescribed ingested available energy. Energy ingested in the current
 #' hour cannot be assimilated until a later transition.
 #'
-#' @param state A plain gut-energy state record created by
+#' @param state A gut-energy state record created by
 #'   [new_gut_energy_state()].
-#' @param parameters A plain gut-energy parameter record created by
+#' @param parameters A gut-energy parameter record created by
 #'   [new_gut_energy_parameters()].
 #' @param input_row Exactly one row from a validated schedule created by
 #'   [new_ingested_available_energy_schedule()].

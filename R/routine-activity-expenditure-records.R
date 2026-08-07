@@ -4,7 +4,7 @@
 #' one-hour intervals in a day. Routine activity is incremental to the fixed
 #' maintenance expenditure.
 #'
-#' @param hour_of_day Integer vector equal to `0:23`, in order.
+#' @param hour_of_day Numeric vector equal to `0:23`, in order.
 #' @param prescribed_routine_activity_expenditure_kj_h Finite, non-negative
 #'   numeric vector of 24 prescribed routine-activity expenditure rates in
 #'   kilojoules per hour.

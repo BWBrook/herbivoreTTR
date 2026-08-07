@@ -40,7 +40,7 @@ new_gut_energy_parameters <- function(gut_release_fraction_h) {
 #' Create the prescribed available-energy input to the gut for each of the 24
 #' one-hour intervals in a day.
 #'
-#' @param hour_of_day Integer vector equal to `0:23`, in order.
+#' @param hour_of_day Numeric vector equal to `0:23`, in order.
 #' @param prescribed_ingested_available_energy_kj_h Finite, non-negative
 #'   numeric vector of 24 prescribed available-energy ingestion rates in
 #'   kilojoules per hour.

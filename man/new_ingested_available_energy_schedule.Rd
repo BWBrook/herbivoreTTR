@@ -10,7 +10,7 @@ new_ingested_available_energy_schedule(
 )
 }
 \arguments{
-\item{hour_of_day}{Integer vector equal to `0:23`, in order.}
+\item{hour_of_day}{Numeric vector equal to `0:23`, in order.}
 
 \item{prescribed_ingested_available_energy_kj_h}{Finite, non-negative
 numeric vector of 24 prescribed available-energy ingestion rates in

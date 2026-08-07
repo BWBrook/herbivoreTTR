@@ -16,16 +16,16 @@ run_gut_body_energy_reference_cycle(
 )
 }
 \arguments{
-\item{initial_gut_state}{A plain gut-energy state record created by
+\item{initial_gut_state}{A gut-energy state record created by
 [new_gut_energy_state()].}
 
-\item{measurement_body_state}{A plain body-energy state record created by
+\item{measurement_body_state}{A body-energy state record created by
 [new_body_energy_state()].}
 
-\item{gut_parameters}{A plain gut-energy parameter record created by
+\item{gut_parameters}{A gut-energy parameter record created by
 [new_gut_energy_parameters()].}
 
-\item{body_parameters}{A plain body-energy parameter record created by
+\item{body_parameters}{A body-energy parameter record created by
 [new_body_energy_parameters()].}
 
 \item{schedule}{A 24-row prescribed ingestion schedule created by
@@ -35,10 +35,10 @@ run_gut_body_energy_reference_cycle(
 [new_routine_activity_expenditure_schedule()]. It is applied only during
 the two measured body days.}
 
-\item{gut_convergence_relative_tolerance}{A bare finite numeric scalar
+\item{gut_convergence_relative_tolerance}{A finite numeric scalar
 strictly between zero and one.}
 
-\item{max_burn_in_days}{A bare integer scalar of at least two.}
+\item{max_burn_in_days}{A whole numeric scalar of at least two.}
 }
 \value{
 A plain list containing the burn-in `convergence` table, the

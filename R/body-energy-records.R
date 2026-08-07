@@ -46,7 +46,7 @@ new_body_energy_parameters <- function(maintenance_expenditure_kj_h) {
 #' Create the prescribed already-assimilated energy input for each of the 24
 #' one-hour intervals in a day.
 #'
-#' @param hour_of_day Integer vector equal to `0:23`, in order.
+#' @param hour_of_day Numeric vector equal to `0:23`, in order.
 #' @param prescribed_assimilated_energy_kj_h Finite, non-negative numeric
 #'   vector of 24 prescribed assimilated-energy rates in kilojoules per hour.
 #'

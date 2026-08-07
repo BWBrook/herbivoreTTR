@@ -5,22 +5,22 @@
 #' advances only the gut; measured days use [run_gut_body_energy_day()]
 #' unchanged and carry both closing states forward.
 #'
-#' @param initial_gut_state A plain gut-energy state record created by
+#' @param initial_gut_state A gut-energy state record created by
 #'   [new_gut_energy_state()].
-#' @param measurement_body_state A plain body-energy state record created by
+#' @param measurement_body_state A body-energy state record created by
 #'   [new_body_energy_state()].
-#' @param gut_parameters A plain gut-energy parameter record created by
+#' @param gut_parameters A gut-energy parameter record created by
 #'   [new_gut_energy_parameters()].
-#' @param body_parameters A plain body-energy parameter record created by
+#' @param body_parameters A body-energy parameter record created by
 #'   [new_body_energy_parameters()].
 #' @param schedule A 24-row prescribed ingestion schedule created by
 #'   [new_ingested_available_energy_schedule()].
 #' @param routine_activity_schedule A 24-row schedule created by
 #'   [new_routine_activity_expenditure_schedule()]. It is applied only during
 #'   the two measured body days.
-#' @param gut_convergence_relative_tolerance A bare finite numeric scalar
+#' @param gut_convergence_relative_tolerance A finite numeric scalar
 #'   strictly between zero and one.
-#' @param max_burn_in_days A bare integer scalar of at least two.
+#' @param max_burn_in_days A whole numeric scalar of at least two.
 #'
 #' @return A plain list containing the burn-in `convergence` table, the
 #'   48-row measured `hourly` ledger, and the two-row measured `daily` summary.
@@ -104,7 +104,7 @@ run_gut_body_energy_reference_cycle <- function(
   ) {
     stop(
       paste0(
-        "`gut_convergence_relative_tolerance` must be one bare finite ",
+        "`gut_convergence_relative_tolerance` must be one finite ",
         "numeric value strictly between 0 and 1."
       ),
       call. = FALSE
