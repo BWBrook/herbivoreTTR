@@ -74,6 +74,55 @@ test_that("gut step has the exact public signature and nested schema", {
   )
 })
 
+test_that("gut transition core has the exact private scalar signature", {
+  core <- getFromNamespace(".step_gut_energy_core", "herbivoreTTR")
+
+  expect_identical(
+    names(formals(core)),
+    c(
+      "gut_available_energy_start_kj",
+      "gut_release_fraction_h",
+      "prescribed_ingested_available_energy_kj_h"
+    )
+  )
+})
+
+test_that("gut step accepts semantic numeric values and harmless metadata", {
+  api <- .gut_energy_transition_api()
+  state <- structure(
+    list(
+      gut_available_energy_kj = structure(
+        12L,
+        class = "energy_kj",
+        source = "test"
+      )
+    ),
+    class = c("annotated_gut_state", "list"),
+    source = "test"
+  )
+  parameters <- structure(
+    list(gut_release_fraction_h = structure(1L, source = "test")),
+    source = "test"
+  )
+  input_row <- data.frame(
+    prescribed_ingested_available_energy_kj_h = 3L,
+    hour_of_day = 7,
+    row.names = "input-7"
+  )
+  class(input_row) <- c("annotated_ingestion_row", "data.frame")
+  attr(input_row, "source") <- "test"
+
+  result <- expect_no_condition(api$step(state, parameters, input_row))
+
+  expect_identical(result$state$gut_available_energy_kj, 3)
+  expect_identical(result$fluxes$assimilated_energy_kj_h, 12)
+  expect_identical(result$fluxes$assimilated_energy_kj, 12)
+  expect_identical(
+    result$fluxes$prescribed_ingested_available_energy_kj,
+    3
+  )
+})
+
 test_that("gut step releases opening stock before adding current ingestion", {
   api <- .gut_energy_transition_api()
   schedule <- api$new_schedule(
@@ -225,30 +274,28 @@ test_that("gut step rejects malformed state and parameter records", {
     list(),
     list(wrong_name = 400),
     list(gut_available_energy_kj = 400, extra = 1),
-    as.pairlist(list(gut_available_energy_kj = 400)),
-    structure(list(gut_available_energy_kj = 400), note = "attributed"),
     list(gut_available_energy_kj = c(400, 401)),
     list(gut_available_energy_kj = matrix(400)),
-    list(gut_available_energy_kj = structure(400, class = "energy_kj")),
     list(gut_available_energy_kj = Inf),
     list(gut_available_energy_kj = -1),
-    list(gut_available_energy_kj = "400")
+    list(gut_available_energy_kj = "400"),
+    list(gut_available_energy_kj = TRUE),
+    list(gut_available_energy_kj = 400 + 0i),
+    list(gut_available_energy_kj = factor("400"))
   )
   invalid_parameters <- list(
     list(),
     list(wrong_name = 0.25),
     list(gut_release_fraction_h = 0.25, extra = 1),
-    as.pairlist(list(gut_release_fraction_h = 0.25)),
-    structure(list(gut_release_fraction_h = 0.25), note = "attributed"),
     list(gut_release_fraction_h = c(0.25, 0.5)),
     list(gut_release_fraction_h = matrix(0.25)),
-    list(
-      gut_release_fraction_h = structure(0.25, class = "release_fraction")
-    ),
     list(gut_release_fraction_h = 0),
     list(gut_release_fraction_h = 1.01),
     list(gut_release_fraction_h = Inf),
-    list(gut_release_fraction_h = "0.25")
+    list(gut_release_fraction_h = "0.25"),
+    list(gut_release_fraction_h = TRUE),
+    list(gut_release_fraction_h = 0.25 + 0i),
+    list(gut_release_fraction_h = factor("0.25"))
   )
 
   for (state in invalid_states) {
@@ -263,35 +310,34 @@ test_that("gut step rejects malformed state and parameter records", {
   }
 })
 
-test_that("gut step accepts exactly one validated schedule row", {
+test_that("gut step rejects malformed or lossy input rows", {
   fixture <- .gut_energy_transition_fixture()
   row <- fixture$input_row
-  integer_rate_row <- row
-  integer_rate_row$prescribed_ingested_available_energy_kj_h <- 100L
-  attributed_rate_row <- row
-  attributed_rate_row$prescribed_ingested_available_energy_kj_h <- structure(
-    100,
-    note = "attributed"
-  )
   invalid_rows <- list(
-    structure(row, note = "attributed"),
     row[0, , drop = FALSE],
     rbind(row, row),
     row["hour_of_day"],
     row["prescribed_ingested_available_energy_kj_h"],
     transform(row, extra = 1),
-    row[c(
-      "prescribed_ingested_available_energy_kj_h",
-      "hour_of_day"
-    )],
-    transform(row, hour_of_day = as.numeric(hour_of_day)),
+    transform(row, hour_of_day = 0.5),
+    transform(row, hour_of_day = -1L),
     transform(row, hour_of_day = 24L),
+    transform(row, hour_of_day = NA_real_),
+    transform(row, hour_of_day = Inf),
+    transform(row, hour_of_day = "0"),
+    transform(row, hour_of_day = TRUE),
+    transform(row, hour_of_day = 0 + 0i),
+    transform(row, hour_of_day = factor("0")),
     transform(row, prescribed_ingested_available_energy_kj_h = -1),
     transform(row, prescribed_ingested_available_energy_kj_h = Inf),
     transform(row, prescribed_ingested_available_energy_kj_h = NA_real_),
     transform(row, prescribed_ingested_available_energy_kj_h = "100"),
-    integer_rate_row,
-    attributed_rate_row
+    transform(row, prescribed_ingested_available_energy_kj_h = TRUE),
+    transform(row, prescribed_ingested_available_energy_kj_h = 100 + 0i),
+    transform(
+      row,
+      prescribed_ingested_available_energy_kj_h = factor("100")
+    )
   )
 
   for (input_row in invalid_rows) {

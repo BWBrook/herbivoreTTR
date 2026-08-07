@@ -22,24 +22,42 @@ step_body_energy <- function(state, parameters, input_row, activity_row) {
   .validate_body_energy_parameters(parameters)
   .validate_assimilated_energy_input_row(input_row)
   .validate_routine_activity_expenditure_input_row(activity_row)
-  if (!identical(input_row$hour_of_day, activity_row$hour_of_day)) {
+  if (
+    as.double(input_row$hour_of_day) !=
+      as.double(activity_row$hour_of_day)
+  ) {
     stop(
       "`activity_row$hour_of_day` must match `input_row$hour_of_day`.",
       call. = FALSE
     )
   }
 
-  body_energy_reserve_start_kj <- state$body_energy_reserve_kj
-  prescribed_assimilated_energy_kj <-
-    input_row$prescribed_assimilated_energy_kj_h
-  maintenance_expenditure_kj <-
-    parameters$maintenance_expenditure_kj_h
-  prescribed_routine_activity_expenditure_kj <-
-    activity_row$prescribed_routine_activity_expenditure_kj_h
-  net_body_energy_rate_kj_h <-
-    input_row$prescribed_assimilated_energy_kj_h -
-      parameters$maintenance_expenditure_kj_h -
+  .step_body_energy_core(
+    as.double(state$body_energy_reserve_kj),
+    as.double(parameters$maintenance_expenditure_kj_h),
+    as.double(input_row$prescribed_assimilated_energy_kj_h),
+    as.double(
       activity_row$prescribed_routine_activity_expenditure_kj_h
+    )
+  )
+}
+
+.step_body_energy_core <- function(
+  body_energy_reserve_start_kj,
+  maintenance_expenditure_kj_h,
+  prescribed_assimilated_energy_kj_h,
+  prescribed_routine_activity_expenditure_kj_h
+) {
+  prescribed_assimilated_energy_kj <-
+    prescribed_assimilated_energy_kj_h
+  maintenance_expenditure_kj <-
+    maintenance_expenditure_kj_h
+  prescribed_routine_activity_expenditure_kj <-
+    prescribed_routine_activity_expenditure_kj_h
+  net_body_energy_rate_kj_h <-
+    prescribed_assimilated_energy_kj_h -
+      maintenance_expenditure_kj_h -
+      prescribed_routine_activity_expenditure_kj_h
   body_energy_change_kj <-
     prescribed_assimilated_energy_kj -
       maintenance_expenditure_kj -
@@ -88,10 +106,10 @@ step_body_energy <- function(state, parameters, input_row, activity_row) {
 
 .validate_body_energy_state <- function(state) {
   if (
-    !.is_exact_plain_named_list(state, "body_energy_reserve_kj")
+    !.has_exact_named_fields(state, "body_energy_reserve_kj")
   ) {
     stop(
-      "`state` must be a plain list containing only `body_energy_reserve_kj`.",
+      "`state` must contain only `body_energy_reserve_kj`.",
       call. = FALSE
     )
   }
@@ -104,14 +122,14 @@ step_body_energy <- function(state, parameters, input_row, activity_row) {
 
 .validate_body_energy_parameters <- function(parameters) {
   if (
-    !.is_exact_plain_named_list(
+    !.has_exact_named_fields(
       parameters,
       "maintenance_expenditure_kj_h"
     )
   ) {
     stop(
       paste0(
-        "`parameters` must be a plain list containing only ",
+        "`parameters` must contain only ",
         "`maintenance_expenditure_kj_h`."
       ),
       call. = FALSE
@@ -130,44 +148,32 @@ step_body_energy <- function(state, parameters, input_row, activity_row) {
     "prescribed_assimilated_energy_kj_h"
   )
   if (
-    !identical(class(input_row), "data.frame") ||
-      !identical(dim(input_row), c(1L, 2L)) ||
-      !identical(names(input_row), expected_names)
+    !is.data.frame(input_row) ||
+      nrow(input_row) != 1L ||
+      !.has_exact_named_fields(input_row, expected_names)
   ) {
     stop(
-      "`input_row` must be exactly one row from an assimilated-energy schedule.",
+      paste0(
+        "`input_row` must be a one-row data frame containing only ",
+        "`hour_of_day` and `prescribed_assimilated_energy_kj_h`."
+      ),
       call. = FALSE
     )
   }
 
   if (
-    typeof(input_row$hour_of_day) != "integer" ||
-      !is.null(attributes(input_row$hour_of_day)) ||
-      is.na(input_row$hour_of_day) ||
-      input_row$hour_of_day < 0L ||
-      input_row$hour_of_day > 23L
+    !.is_hour_of_day_scalar(input_row$hour_of_day)
   ) {
-    stop("`input_row$hour_of_day` must be an integer from 0 to 23.", call. = FALSE)
+    stop(
+      "`input_row$hour_of_day` must be one whole numeric value from 0 to 23.",
+      call. = FALSE
+    )
   }
 
   .validate_nonnegative_numeric_scalar(
     input_row$prescribed_assimilated_energy_kj_h,
     "input_row$prescribed_assimilated_energy_kj_h"
   )
-  if (typeof(input_row$prescribed_assimilated_energy_kj_h) != "double") {
-    stop(
-      paste0(
-        "`input_row$prescribed_assimilated_energy_kj_h` must retain double ",
-        "storage from the schedule constructor."
-      ),
-      call. = FALSE
-    )
-  }
-}
-
-.is_exact_plain_named_list <- function(value, expected_names) {
-  identical(typeof(value), "list") &&
-    identical(attributes(value), list(names = expected_names))
 }
 
 .body_energy_tolerance <- function(

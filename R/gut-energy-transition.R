@@ -19,11 +19,22 @@ step_gut_energy <- function(state, parameters, input_row) {
   .validate_gut_energy_parameters(parameters)
   .validate_ingested_available_energy_input_row(input_row)
 
-  gut_available_energy_start_kj <- state$gut_available_energy_kj
+  .step_gut_energy_core(
+    as.double(state$gut_available_energy_kj),
+    as.double(parameters$gut_release_fraction_h),
+    as.double(input_row$prescribed_ingested_available_energy_kj_h)
+  )
+}
+
+.step_gut_energy_core <- function(
+  gut_available_energy_start_kj,
+  gut_release_fraction_h,
+  prescribed_ingested_available_energy_kj_h
+) {
   prescribed_ingested_available_energy_kj <-
-    input_row$prescribed_ingested_available_energy_kj_h
+    prescribed_ingested_available_energy_kj_h
   assimilated_energy_kj_h <-
-    parameters$gut_release_fraction_h * gut_available_energy_start_kj
+    gut_release_fraction_h * gut_available_energy_start_kj
   assimilated_energy_kj <- assimilated_energy_kj_h
   gut_energy_change_kj <-
     prescribed_ingested_available_energy_kj - assimilated_energy_kj
@@ -79,9 +90,9 @@ step_gut_energy <- function(state, parameters, input_row) {
 }
 
 .validate_gut_energy_state <- function(state) {
-  if (!.is_exact_plain_named_list(state, "gut_available_energy_kj")) {
+  if (!.has_exact_named_fields(state, "gut_available_energy_kj")) {
     stop(
-      "`state` must be a plain list containing only `gut_available_energy_kj`.",
+      "`state` must contain only `gut_available_energy_kj`.",
       call. = FALSE
     )
   }
@@ -93,10 +104,10 @@ step_gut_energy <- function(state, parameters, input_row) {
 }
 
 .validate_gut_energy_parameters <- function(parameters) {
-  if (!.is_exact_plain_named_list(parameters, "gut_release_fraction_h")) {
+  if (!.has_exact_named_fields(parameters, "gut_release_fraction_h")) {
     stop(
       paste0(
-        "`parameters` must be a plain list containing only ",
+        "`parameters` must contain only ",
         "`gut_release_fraction_h`."
       ),
       call. = FALSE
@@ -112,46 +123,33 @@ step_gut_energy <- function(state, parameters, input_row) {
     "prescribed_ingested_available_energy_kj_h"
   )
   if (
-    !identical(class(input_row), "data.frame") ||
-      !identical(dim(input_row), c(1L, 2L)) ||
-      !identical(names(input_row), expected_names) ||
-      !identical(
-        names(attributes(input_row)),
-        c("names", "row.names", "class")
-      )
+    !is.data.frame(input_row) ||
+      nrow(input_row) != 1L ||
+      !.has_exact_named_fields(input_row, expected_names)
   ) {
     stop(
       paste0(
-        "`input_row` must be exactly one row from an ingested ",
-        "available-energy schedule."
+        "`input_row` must be a one-row data frame containing only ",
+        "`hour_of_day` and ",
+        "`prescribed_ingested_available_energy_kj_h`."
       ),
       call. = FALSE
     )
   }
 
   if (
-    typeof(input_row$hour_of_day) != "integer" ||
-      !is.null(attributes(input_row$hour_of_day)) ||
-      is.na(input_row$hour_of_day) ||
-      input_row$hour_of_day < 0L ||
-      input_row$hour_of_day > 23L
+    !.is_hour_of_day_scalar(input_row$hour_of_day)
   ) {
-    stop("`input_row$hour_of_day` must be an integer from 0 to 23.", call. = FALSE)
+    stop(
+      "`input_row$hour_of_day` must be one whole numeric value from 0 to 23.",
+      call. = FALSE
+    )
   }
 
   .validate_nonnegative_numeric_scalar(
     input_row$prescribed_ingested_available_energy_kj_h,
     "input_row$prescribed_ingested_available_energy_kj_h"
   )
-  if (typeof(input_row$prescribed_ingested_available_energy_kj_h) != "double") {
-    stop(
-      paste0(
-        "`input_row$prescribed_ingested_available_energy_kj_h` must retain ",
-        "double storage from the schedule constructor."
-      ),
-      call. = FALSE
-    )
-  }
 }
 
 .gut_energy_tolerance <- function(

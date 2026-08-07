@@ -88,6 +88,65 @@ test_that("hourly step has the exact public signature and nested schema", {
   )
 })
 
+test_that("body transition core has the exact private scalar signature", {
+  core <- getFromNamespace(".step_body_energy_core", "herbivoreTTR")
+
+  expect_identical(
+    names(formals(core)),
+    c(
+      "body_energy_reserve_start_kj",
+      "maintenance_expenditure_kj_h",
+      "prescribed_assimilated_energy_kj_h",
+      "prescribed_routine_activity_expenditure_kj_h"
+    )
+  )
+})
+
+test_that("hourly step accepts semantic numeric values and harmless metadata", {
+  api <- .body_energy_transition_api()
+  state <- structure(
+    list(
+      body_energy_reserve_kj = structure(
+        100L,
+        class = "energy_kj",
+        source = "test"
+      )
+    ),
+    class = c("annotated_body_state", "list"),
+    source = "test"
+  )
+  parameters <- structure(
+    list(maintenance_expenditure_kj_h = structure(3L, source = "test")),
+    source = "test"
+  )
+  input_row <- data.frame(
+    prescribed_assimilated_energy_kj_h = 12L,
+    hour_of_day = 7,
+    row.names = "input-7"
+  )
+  class(input_row) <- c("annotated_assimilated_row", "data.frame")
+  attr(input_row, "source") <- "test"
+  activity_row <- data.frame(
+    hour_of_day = 7L,
+    prescribed_routine_activity_expenditure_kj_h = 2L,
+    row.names = "activity-7"
+  )
+  class(activity_row) <- c("annotated_activity_row", "data.frame")
+  attr(activity_row, "source") <- "test"
+
+  result <- expect_no_condition(
+    api$step(state, parameters, input_row, activity_row)
+  )
+
+  expect_identical(result$state$body_energy_reserve_kj, 107)
+  expect_identical(result$fluxes$prescribed_assimilated_energy_kj, 12)
+  expect_identical(result$fluxes$maintenance_expenditure_kj, 3)
+  expect_identical(
+    result$fluxes$prescribed_routine_activity_expenditure_kj,
+    2
+  )
+})
+
 test_that("hourly step applies exactly one hour of energy arithmetic", {
   fixture <- .body_energy_transition_fixture(
     reserve_kj = 100,
@@ -233,35 +292,27 @@ test_that("hourly step rejects malformed state and parameter records", {
     list(),
     list(wrong_name = 5000),
     list(body_energy_reserve_kj = 5000, extra = 1),
-    as.pairlist(list(body_energy_reserve_kj = 5000)),
-    structure(
-      list(body_energy_reserve_kj = 5000),
-      note = "attributed"
-    ),
     list(body_energy_reserve_kj = c(5000, 5001)),
     list(body_energy_reserve_kj = matrix(5000)),
-    list(body_energy_reserve_kj = structure(5000, class = "energy_kj")),
     list(body_energy_reserve_kj = Inf),
     list(body_energy_reserve_kj = -1),
-    list(body_energy_reserve_kj = "5000")
+    list(body_energy_reserve_kj = "5000"),
+    list(body_energy_reserve_kj = TRUE),
+    list(body_energy_reserve_kj = 5000 + 0i),
+    list(body_energy_reserve_kj = factor("5000"))
   )
   invalid_parameters <- list(
     list(),
     list(wrong_name = 100),
     list(maintenance_expenditure_kj_h = 100, extra = 1),
-    as.pairlist(list(maintenance_expenditure_kj_h = 100)),
-    structure(
-      list(maintenance_expenditure_kj_h = 100),
-      note = "attributed"
-    ),
     list(maintenance_expenditure_kj_h = c(100, 101)),
     list(maintenance_expenditure_kj_h = matrix(100)),
-    list(
-      maintenance_expenditure_kj_h = structure(100, class = "energy_rate")
-    ),
     list(maintenance_expenditure_kj_h = Inf),
     list(maintenance_expenditure_kj_h = -1),
-    list(maintenance_expenditure_kj_h = "100")
+    list(maintenance_expenditure_kj_h = "100"),
+    list(maintenance_expenditure_kj_h = TRUE),
+    list(maintenance_expenditure_kj_h = 100 + 0i),
+    list(maintenance_expenditure_kj_h = factor("100"))
   )
 
   for (state in invalid_states) {
@@ -286,31 +337,31 @@ test_that("hourly step rejects malformed state and parameter records", {
   }
 })
 
-test_that("hourly step accepts exactly one validated schedule row", {
+test_that("hourly step rejects malformed or lossy input rows", {
   fixture <- .body_energy_transition_fixture()
   row <- fixture$input_row
-  integer_rate_row <- row
-  integer_rate_row$prescribed_assimilated_energy_kj_h <- 90L
-  attributed_rate_row <- row
-  attributed_rate_row$prescribed_assimilated_energy_kj_h <- structure(
-    90,
-    note = "attributed"
-  )
   invalid_rows <- list(
     row[0, , drop = FALSE],
     rbind(row, row),
     row["hour_of_day"],
     row["prescribed_assimilated_energy_kj_h"],
     transform(row, extra = 1),
-    row[c("prescribed_assimilated_energy_kj_h", "hour_of_day")],
-    transform(row, hour_of_day = as.numeric(hour_of_day)),
+    transform(row, hour_of_day = 0.5),
+    transform(row, hour_of_day = -1L),
     transform(row, hour_of_day = 24L),
+    transform(row, hour_of_day = NA_real_),
+    transform(row, hour_of_day = Inf),
+    transform(row, hour_of_day = "0"),
+    transform(row, hour_of_day = TRUE),
+    transform(row, hour_of_day = 0 + 0i),
+    transform(row, hour_of_day = factor("0")),
     transform(row, prescribed_assimilated_energy_kj_h = -1),
     transform(row, prescribed_assimilated_energy_kj_h = Inf),
     transform(row, prescribed_assimilated_energy_kj_h = NA_real_),
     transform(row, prescribed_assimilated_energy_kj_h = "90"),
-    integer_rate_row,
-    attributed_rate_row
+    transform(row, prescribed_assimilated_energy_kj_h = TRUE),
+    transform(row, prescribed_assimilated_energy_kj_h = 90 + 0i),
+    transform(row, prescribed_assimilated_energy_kj_h = factor("90"))
   )
 
   for (input_row in invalid_rows) {
@@ -323,4 +374,72 @@ test_that("hourly step accepts exactly one validated schedule row", {
       )
     )
   }
+})
+
+test_that("hourly step rejects malformed activity rows and hour mismatch", {
+  fixture <- .body_energy_transition_fixture(hour_of_day = 7L)
+  row <- fixture$activity_row
+  invalid_rows <- list(
+    row[0, , drop = FALSE],
+    rbind(row, row),
+    row["hour_of_day"],
+    row["prescribed_routine_activity_expenditure_kj_h"],
+    transform(row, extra = 1),
+    transform(row, hour_of_day = 7.5),
+    transform(row, hour_of_day = "7"),
+    transform(row, hour_of_day = TRUE),
+    transform(row, hour_of_day = 7 + 0i),
+    transform(row, hour_of_day = factor("7")),
+    transform(row, prescribed_routine_activity_expenditure_kj_h = -1),
+    transform(row, prescribed_routine_activity_expenditure_kj_h = Inf),
+    transform(row, prescribed_routine_activity_expenditure_kj_h = "0"),
+    transform(row, prescribed_routine_activity_expenditure_kj_h = TRUE),
+    transform(
+      row,
+      prescribed_routine_activity_expenditure_kj_h = 0 + 0i
+    ),
+    transform(
+      row,
+      prescribed_routine_activity_expenditure_kj_h = factor("0")
+    )
+  )
+
+  for (activity_row in invalid_rows) {
+    expect_error(
+      fixture$api$step(
+        fixture$state,
+        fixture$parameters,
+        fixture$input_row,
+        activity_row
+      )
+    )
+  }
+
+  expect_error(
+    fixture$api$step(
+      fixture$state,
+      fixture$parameters,
+      fixture$input_row,
+      transform(row, hour_of_day = 8)
+    ),
+    "must match `input_row\\$hour_of_day`"
+  )
+})
+
+test_that("hourly step rejects non-finite proposed arithmetic", {
+  fixture <- .body_energy_transition_fixture(
+    reserve_kj = .Machine$double.xmax,
+    maintenance_kj_h = 0,
+    input_kj_h = .Machine$double.xmax
+  )
+
+  expect_error(
+    fixture$api$step(
+      fixture$state,
+      fixture$parameters,
+      fixture$input_row,
+      fixture$activity_row
+    ),
+    "finite"
+  )
 })
