@@ -803,10 +803,10 @@ dynamic body mass, protein, water, thermoregulation, plants, weather, space,
 individuals, populations, empirical calibration, parameter estimation, or
 uncertainty analysis.
 
-Goal 011 ends after the common initialization, exact three-day control and
+Goal 011 ended after the common initialization, exact three-day control and
 shortfall sequences, analytical contrast partition, no-write experiment,
-ignored four-file review pack, and documentation are validated and reviewed.
-It adds no generalized production multi-day API or biological response.
+generated evidence, and documentation were validated and reviewed. It added no
+generalized production multi-day API or biological response.
 Goal 012 remains unapproved, and its scientific question has not been selected.
 
 The historical implementation is private at `BWBrook/herbivoreTTR-legacy`, tag

@@ -230,8 +230,8 @@ Under return-to-reference forcing, the gut contrast contracts by `0.75` per
 hour, or `0.75^24` per day, while the body contrast is
 `-800 kJ - gut-stock contrast`. This is numerical gut-state realignment and a
 changing partition of a fixed combined-system contrast, not body-energy or
-whole-system restoration. The evidence clients obtain the fixed three-day
-sequence by chaining existing one-day calls; they add no generalized
+whole-system restoration. The retained Goal 011 experiment obtains the fixed
+three-day sequence by chaining existing one-day calls; it adds no generalized
 production multi-day API.
 
 The 24-hour partition rounds to `-182 kJ` in the gut and `-618 kJ` in the body.
@@ -258,51 +258,37 @@ demonstrates exact zero, constant, pulse, and factorization conversions and
 their unchanged downstream results. The Goal 005 experiment
 [`experiments/rebuild-005-repeated-day-reference-cycle.R`](experiments/rebuild-005-repeated-day-reference-cycle.R)
 demonstrates gut-only spin-up, the single body reset, state carry-over, and the
-zero, constant, and concentrated late-feeding reference cycles. Its separate
-review script writes only the five ignored synthetic figures and tables
-declared by the Goal 005 contract.
+zero, constant, and concentrated late-feeding reference cycles.
 
 The Goal 006 experiment
 [`experiments/rebuild-006-ecological-daily-reference.R`](experiments/rebuild-006-ecological-daily-reference.R)
 compares the mathematical and ecological references without changing package
-code. Its separate review script writes only the five ignored review files
-declared by the Goal 006 contract.
+code.
 
 The Goal 007 experiment
 [`experiments/rebuild-007-routine-activity-expenditure.R`](experiments/rebuild-007-routine-activity-expenditure.R)
 compares the zero-activity regression control with the four-hour arithmetic
-pulse. Its separate review script writes only the five ignored review files
-declared by the Goal 007 contract.
+pulse.
 
 The Goal 008 experiment
 [`experiments/rebuild-008-ecological-activity-intake-balance.R`](experiments/rebuild-008-ecological-activity-intake-balance.R)
-verifies the three-scenario chain and its paired contrasts. Its review script
-retains four tables and one figure under
-[`outputs/rebuild-008-ecological-activity-intake-balance/`](outputs/rebuild-008-ecological-activity-intake-balance/)
-as ignored evidence.
+verifies the three-scenario chain and its paired contrasts.
 
 The Goal 009 experiment
 [`experiments/rebuild-009-synthetic-intake-ceiling-threshold.R`](experiments/rebuild-009-synthetic-intake-ceiling-threshold.R)
 verifies the three-level synthetic ceiling bracket and exact Goal 008 result
-identities. Its review script retains one figure and three tables under
-[`outputs/rebuild-009-synthetic-intake-ceiling-threshold/`](outputs/rebuild-009-synthetic-intake-ceiling-threshold/)
-as ignored evidence.
+identities.
 
 The Goal 010 experiment
 [`experiments/rebuild-010-feeding-opportunity-duration.R`](experiments/rebuild-010-feeding-opportunity-duration.R)
 verifies the four prescribed-intake-window fixtures, analytical duration
-relation, and bounded Goal 008 comparisons. Its review script retains one
-figure and three tables under
-[`outputs/rebuild-010-feeding-opportunity-duration/`](outputs/rebuild-010-feeding-opportunity-duration/)
-as ignored evidence.
+relation, and bounded Goal 008 comparisons.
 
 The Goal 011 experiment
 [`experiments/rebuild-011-one-day-prescribed-input-shortfall.R`](experiments/rebuild-011-one-day-prescribed-input-shortfall.R)
 verifies the common initialization, three-day control and treatment sequences,
 exact stock carry-over, `-800 kJ` combined-system invariant, and analytical gut
-recurrence. Its review script retains one figure and three tables under
-[`outputs/rebuild-011-one-day-prescribed-input-shortfall/`](outputs/rebuild-011-one-day-prescribed-input-shortfall/)
-as ignored evidence.
+recurrence.
 
 These demonstrations prove arithmetic, timing, and accounting semantics only.
 They do not estimate a maintenance requirement, residence time, gut fill,

@@ -57,8 +57,8 @@ dependency, or caller.
 
 ## Observed Evidence
 
-The retained no-write experiment and five-file review pack verify the following
-numerical observations:
+The retained no-write experiment verifies the following numerical
+observations:
 
 - all three gut cycles first converge on burn-in day 7;
 - daily prescribed input, assimilation, and routine activity are respectively
@@ -99,12 +99,10 @@ baseline and balanced fixtures equivalent: their within-day gut,
 assimilation, net body-rate, and body-reserve trajectories differ.
 
 No variable-dictionary update is required because Goal 008 adds no variable,
-field, record, or schema. Evidence remains in:
+field, record, or schema. The retained source-controlled reproduction client is:
 
 ```text
 experiments/rebuild-008-ecological-activity-intake-balance.R
-experiments/rebuild-008-review-pack.R
-outputs/rebuild-008-ecological-activity-intake-balance/
 ```
 
 ## Limits And Next Gate

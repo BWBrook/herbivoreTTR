@@ -122,12 +122,10 @@ initial state, fixed `0.25 h^-1` release fraction, exact carry-over, and the
 current deterministic, linear, lossless accounting model. It establishes a
 stock-partition identity under those assumptions, not an animal response.
 
-Evidence remains in:
+The retained source-controlled reproduction client is:
 
 ```text
 experiments/rebuild-011-one-day-prescribed-input-shortfall.R
-experiments/rebuild-011-review-pack.R
-outputs/rebuild-011-one-day-prescribed-input-shortfall/
 ```
 
 ## Limits And Next Gate

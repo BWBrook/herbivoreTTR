@@ -61,7 +61,7 @@ threshold is:
   = 200 kJ h^-1
 ```
 
-The retained experiment and review pack verify:
+The retained no-write experiment verifies:
 
 - at `0.015 kg DM h^-1`, all 16 active intervals exceed the ceiling, none
   touches it, daily candidate/constrained/curtailed intake is

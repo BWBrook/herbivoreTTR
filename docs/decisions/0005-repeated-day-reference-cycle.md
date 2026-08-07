@@ -94,29 +94,11 @@ lossless one-for-one transfer, identical daily forcing, and feasible body paths.
 It is an accounting result, not evidence that real foods or feeding schedules
 are biologically interchangeable.
 
-## Review Evidence
+## Evidence
 
 The no-write experiment asserts the three fixtures in memory and uses compact
 whole-kilojoule display for human-facing stocks and amounts while retaining
 full precision internally.
-
-The separate base-R review script accepts exactly one output-directory argument
-and may replace only:
-
-```text
-figure-1-burn-in-convergence.png
-figure-2-measured-reference-cycles.png
-table-1-convergence.csv
-table-2-daily-summary.csv
-table-3-hourly-ledgers.csv
-```
-
-It stops before publishing if the destination contains any other entry.
-Convergence, daily, and hourly tables prepend `scenario_id` to their exact
-runner schemas and retain round-trippable numeric precision. Human rounding is
-restricted to console and figure presentation. The measured figure derives a
-continuous 0-48 hour clock; the convergence figure distinguishes unavailable
-first-day comparisons from exact zero differences.
 
 ## Rejected Alternatives
 
@@ -139,10 +121,10 @@ no state record, transition equation, one-day schema, food conversion, release
 order, maintenance process, or body-reserve boundary.
 
 Stop after the repeated identical-day gut reference, one body reset, two
-carried measured days, three synthetic fixtures, documentation, and five
-ignored review files are validated. Do not add variable or stochastic days,
-seasons, chronic decline, recovery, viability criteria, gut capacity, intake
-limits, digestive losses, multiple compartments or foods, feeding choice,
-body-state feedback, dynamic mass, other physiology, plants, weather, space,
-individuals, populations, empirical calibration, parameter estimation,
-uncertainty analysis, a dependency, or a generalized simulation framework.
+carried measured days, three synthetic fixtures, and documentation are
+validated. Do not add variable or stochastic days, seasons, chronic decline,
+recovery, viability criteria, gut capacity, intake limits, digestive losses,
+multiple compartments or foods, feeding choice, body-state feedback, dynamic
+mass, other physiology, plants, weather, space, individuals, populations,
+empirical calibration, parameter estimation, uncertainty analysis, a
+dependency, or a generalized simulation framework.
