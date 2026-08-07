@@ -25,6 +25,11 @@ reference-cycle runner supplies a controlled periodic gut starting state and
 two carried measurement days for diagnostic comparisons. Experiments compose
 these exported functions; they do not implement another model.
 
+Public boundaries validate numeric inputs by semantic value and return the
+canonical plain records and schemas. Day and reference runners validate once,
+then call the private scalar cores and the prevalidated coupled-day helper.
+Public hourly steps remain the validated entry points for direct callers.
+
 ## Protected Scientific Invariants
 
 - Every quantity has an explicit unit and dry-matter basis where relevant.
@@ -52,7 +57,7 @@ these exported functions; they do not implement another model.
 | `docs/decisions/` and current model docs | Retain | They record accepted scientific conclusions and the live contract. |
 | Closed goal packets | Delete | Git preserves their execution history; they are not part of the active product. |
 | Review-pack publishers and bulk receipt machinery | Delete | They duplicate validation and have no current runtime consumer. |
-| Exact-schema validation and overlapping runner internals | Simplify in a separate behavior-preserving tranche | They are real design candidates but touch the protected model path. |
+| Semantic validation and validate-once runner internals | Retain | Public boundaries validate direct callers; validated loops use scalar cores without changing equations or schemas. |
 | New physiology, behavior, plants, and spatial coupling | Defer | Each layer must answer a separately approved scientific question. |
 | Compatibility adapters for obsolete paths | Delete or decline | There is one private current user and no supported legacy contract. |
 

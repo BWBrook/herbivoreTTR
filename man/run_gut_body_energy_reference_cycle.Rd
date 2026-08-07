@@ -47,6 +47,6 @@ A plain list containing the burn-in `convergence` table, the
 \description{
 Repeat one 24-hour ingestion schedule until the gut trajectory converges,
 then run two measured days from a declared body-energy state. Burn-in
-advances only the gut; measured days use [run_gut_body_energy_day()]
-unchanged and carry both closing states forward.
+advances only the gut; measured days use the prevalidated coupled-day path
+and carry both closing states forward.
 }

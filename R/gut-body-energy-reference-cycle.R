@@ -2,8 +2,8 @@
 #'
 #' Repeat one 24-hour ingestion schedule until the gut trajectory converges,
 #' then run two measured days from a declared body-energy state. Burn-in
-#' advances only the gut; measured days use [run_gut_body_energy_day()]
-#' unchanged and carry both closing states forward.
+#' advances only the gut; measured days use the prevalidated coupled-day path
+#' and carry both closing states forward.
 #'
 #' @param initial_gut_state A gut-energy state record created by
 #'   [new_gut_energy_state()].
@@ -96,7 +96,7 @@ run_gut_body_energy_reference_cycle <- function(
 
 .validate_gut_convergence_relative_tolerance <- function(value) {
   if (
-    !.is_bare_numeric_vector(value) ||
+    !.is_semantic_numeric_vector(value) ||
       length(value) != 1L ||
       !is.finite(value) ||
       value <= 0 ||

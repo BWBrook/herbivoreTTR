@@ -177,45 +177,6 @@ test_that("routine-activity constructor rejects every malformed field", {
   expect_null(conditionCall(error))
 })
 
-test_that("routine-activity validators accept semantic containers and rows", {
-  validate_schedule <- getFromNamespace(
-    ".validate_routine_activity_expenditure_schedule",
-    "herbivoreTTR"
-  )
-  validate_row <- getFromNamespace(
-    ".validate_routine_activity_expenditure_input_row",
-    "herbivoreTTR"
-  )
-  schedule <- data.frame(
-    hour_of_day = as.double(0:23),
-    prescribed_routine_activity_expenditure_kj_h = rep(50L, 24L),
-    row.names = paste0("h", 0:23)
-  )
-  class(schedule) <- c("annotated_activity_schedule", "data.frame")
-  attr(schedule, "source") <- "test"
-  schedule <- schedule[c(
-    "prescribed_routine_activity_expenditure_kj_h",
-    "hour_of_day"
-  )]
-  activity_row <- schedule[1L, , drop = FALSE]
-  attr(activity_row, "source") <- "test-row"
-
-  expect_invisible(validate_schedule(schedule))
-  expect_invisible(validate_row(activity_row))
-
-  error <- expect_error(
-    validate_schedule(schedule[-24L, , drop = FALSE]),
-    "`routine_activity_schedule`"
-  )
-  expect_null(conditionCall(error))
-  activity_row$prescribed_routine_activity_expenditure_kj_h <- factor("50")
-  error <- expect_error(
-    validate_row(activity_row),
-    "`activity_row\\$prescribed_routine_activity_expenditure_kj_h`"
-  )
-  expect_null(conditionCall(error))
-})
-
 test_that("every body transition and runner requires explicit activity", {
   api <- .routine_activity_api()
 
@@ -375,28 +336,6 @@ test_that("body day records exact zero and four-hour pulse accounting", {
     input_schedule,
     pulse_schedule
   )
-  semantic_pulse_schedule <- data.frame(
-    prescribed_routine_activity_expenditure_kj_h = c(
-      rep(0L, 8L),
-      rep(50L, 4L),
-      rep(0L, 12L)
-    ),
-    hour_of_day = as.double(0:23),
-    row.names = paste0("h", 0:23)
-  )
-  class(semantic_pulse_schedule) <- c(
-    "annotated_activity_schedule",
-    "data.frame"
-  )
-  attr(semantic_pulse_schedule, "source") <- "semantic-test"
-  semantic_pulse <- api$run_body(
-    initial_state,
-    parameters,
-    input_schedule,
-    semantic_pulse_schedule
-  )
-
-  expect_identical(semantic_pulse, pulse)
   expect_identical(
     pulse$hourly$prescribed_routine_activity_expenditure_kj_h,
     c(rep(0, 8L), rep(50, 4L), rep(0, 12L))

@@ -138,10 +138,6 @@ new_assimilated_energy_schedule <- function(
     as.double(unclass(value)) <= 23
 }
 
-.is_bare_numeric_vector <- function(value) {
-  .is_semantic_numeric_vector(value)
-}
-
 .validate_assimilated_energy_schedule_fields <- function(
   hour_of_day,
   prescribed_assimilated_energy_kj_h

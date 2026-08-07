@@ -239,16 +239,18 @@ run_gut_body_energy_reference_cycle(
 )
 ```
 
-The state, parameter, gut-input schedule, and routine-activity schedule
-arguments use their exact validators. The convergence control is a bare finite
-numeric scalar strictly between zero and one, stored as a double. The maximum
-burn-in is a bare integer scalar of at least two because convergence requires
-successive daily trajectories.
+At public boundaries, state, parameter, schedule, and convergence arguments
+are validated by semantic numeric value; harmless classes and metadata are
+accepted when conversion preserves those values. Returned records and tables
+remain canonical plain objects. The convergence control must be finite and
+strictly between zero and one, and maximum burn-in must be a whole numeric
+scalar of at least two because convergence requires successive daily
+trajectories.
 
-Every burn-in day applies `step_gut_energy()` across the same ordered 24-row
-schedule. Only gut state advances. For each day, the runner retains the 25
-boundary stocks formed by the openings of hours 0 through 23 and the closing
-stock after hour 23. Define:
+Every burn-in day applies the private gut scalar core across the already
+validated ordered 24-row schedule. Only gut state advances. For each day, the
+runner retains the 25 boundary stocks formed by the openings of hours 0 through
+23 and the closing stock after hour 23. Define:
 
 ```text
 cycle_boundary_change_kj =
@@ -284,12 +286,13 @@ a partial result.
 The converged closing gut stock opens measured day 1. The supplied measurement
 body state is used exactly once at this boundary; no body transition occurs
 during burn-in. The declared routine-activity schedule is validated by the
-top-level runner but applies only when `run_gut_body_energy_day()` records
-measured day 1 and measured day 2. Gut-only burn-in remains activity-free
+top-level runner and passed to the model-specific prevalidated coupled-day
+helper for measured days 1 and 2. Gut-only burn-in remains activity-free
 because it advances no body state or history. The closing gut and body stocks
-of measured day 1 open measured day 2. Each measured daily slice therefore
-reduces exactly to a direct one-day runner result after removing
-`measurement_day` and restoring canonical row names.
+of measured day 1 open measured day 2. Public step functions serve direct
+callers; validated day and reference loops call private scalar cores. Each
+measured daily slice therefore reduces exactly to a direct one-day runner
+result after removing `measurement_day` and restoring canonical row names.
 
 The body reset removes the one-off debt associated with an arbitrary empty-gut
 initialization. It is a diagnostic protocol, not a physiological process. A

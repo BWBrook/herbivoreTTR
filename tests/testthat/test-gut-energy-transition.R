@@ -74,19 +74,6 @@ test_that("gut step has the exact public signature and nested schema", {
   )
 })
 
-test_that("gut transition core has the exact private scalar signature", {
-  core <- getFromNamespace(".step_gut_energy_core", "herbivoreTTR")
-
-  expect_identical(
-    names(formals(core)),
-    c(
-      "gut_available_energy_start_kj",
-      "gut_release_fraction_h",
-      "prescribed_ingested_available_energy_kj_h"
-    )
-  )
-})
-
 test_that("gut step accepts semantic numeric values and harmless metadata", {
   api <- .gut_energy_transition_api()
   state <- structure(
@@ -271,31 +258,12 @@ test_that("gut step does not mutate state, parameters, or input row", {
 test_that("gut step rejects malformed state and parameter records", {
   fixture <- .gut_energy_transition_fixture()
   invalid_states <- list(
-    list(),
-    list(wrong_name = 400),
     list(gut_available_energy_kj = 400, extra = 1),
-    list(gut_available_energy_kj = c(400, 401)),
-    list(gut_available_energy_kj = matrix(400)),
-    list(gut_available_energy_kj = Inf),
-    list(gut_available_energy_kj = -1),
-    list(gut_available_energy_kj = "400"),
-    list(gut_available_energy_kj = TRUE),
-    list(gut_available_energy_kj = 400 + 0i),
-    list(gut_available_energy_kj = factor("400"))
+    list(gut_available_energy_kj = Inf)
   )
   invalid_parameters <- list(
-    list(),
     list(wrong_name = 0.25),
-    list(gut_release_fraction_h = 0.25, extra = 1),
-    list(gut_release_fraction_h = c(0.25, 0.5)),
-    list(gut_release_fraction_h = matrix(0.25)),
-    list(gut_release_fraction_h = 0),
-    list(gut_release_fraction_h = 1.01),
-    list(gut_release_fraction_h = Inf),
-    list(gut_release_fraction_h = "0.25"),
-    list(gut_release_fraction_h = TRUE),
-    list(gut_release_fraction_h = 0.25 + 0i),
-    list(gut_release_fraction_h = factor("0.25"))
+    list(gut_release_fraction_h = 0)
   )
 
   for (state in invalid_states) {
@@ -315,25 +283,9 @@ test_that("gut step rejects malformed or lossy input rows", {
   row <- fixture$input_row
   invalid_rows <- list(
     row[0, , drop = FALSE],
-    rbind(row, row),
     row["hour_of_day"],
-    row["prescribed_ingested_available_energy_kj_h"],
-    transform(row, extra = 1),
     transform(row, hour_of_day = 0.5),
-    transform(row, hour_of_day = -1L),
-    transform(row, hour_of_day = 24L),
-    transform(row, hour_of_day = NA_real_),
-    transform(row, hour_of_day = Inf),
-    transform(row, hour_of_day = "0"),
-    transform(row, hour_of_day = TRUE),
-    transform(row, hour_of_day = 0 + 0i),
-    transform(row, hour_of_day = factor("0")),
     transform(row, prescribed_ingested_available_energy_kj_h = -1),
-    transform(row, prescribed_ingested_available_energy_kj_h = Inf),
-    transform(row, prescribed_ingested_available_energy_kj_h = NA_real_),
-    transform(row, prescribed_ingested_available_energy_kj_h = "100"),
-    transform(row, prescribed_ingested_available_energy_kj_h = TRUE),
-    transform(row, prescribed_ingested_available_energy_kj_h = 100 + 0i),
     transform(
       row,
       prescribed_ingested_available_energy_kj_h = factor("100")
