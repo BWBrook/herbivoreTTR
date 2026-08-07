@@ -463,10 +463,19 @@ test_that("reference-cycle runner semantically validates every argument", {
   expect_error(do.call(run, arguments[-8L]))
   expect_error(do.call(run, c(arguments, list(extra = 1))))
 
-  large_maximum_arguments <- arguments
-  large_maximum_arguments[[8L]] <- .Machine$integer.max
-  large_maximum_result <- do.call(run, large_maximum_arguments)
-  expect_identical(nrow(large_maximum_result$convergence), 2L)
+  validate_maximum_days <- getFromNamespace(
+    ".validate_max_burn_in_days",
+    "herbivoreTTR"
+  )
+  expect_identical(
+    validate_maximum_days(as.double(.Machine$integer.max)),
+    .Machine$integer.max
+  )
+  error <- expect_error(
+    validate_maximum_days(as.double(.Machine$integer.max) + 1),
+    "`max_burn_in_days`"
+  )
+  expect_null(conditionCall(error))
 })
 
 test_that("reference cycle bypasses public wrappers after validation", {

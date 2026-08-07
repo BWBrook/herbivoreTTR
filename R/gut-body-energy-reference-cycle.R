@@ -118,18 +118,19 @@ run_gut_body_energy_reference_cycle <- function(
   if (
     !.is_whole_number(value) ||
       length(value) != 1L ||
-      as.double(unclass(value)) < 2
+      as.double(unclass(value)) < 2 ||
+      as.double(unclass(value)) > .Machine$integer.max
   ) {
     stop(
       paste0(
         "`max_burn_in_days` must be one finite whole numeric value ",
-        "of at least 2."
+        "from 2 to `.Machine$integer.max`."
       ),
       call. = FALSE
     )
   }
 
-  as.double(unclass(value))
+  as.integer(unclass(value))
 }
 
 .run_reference_cycle_gut_burn_in <- function(
