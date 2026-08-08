@@ -3,10 +3,12 @@
 ## Status
 
 These are the exact public record, flux, and ledger names implemented through
-Goal 012. The production schema last changed in Goal 007; Goals 008 through 012
-add evidence outputs only. Rates in kJ h^-1 and one-hour amounts in kJ remain
-distinct even when their numerical values match for the fixed one-hour
-transition.
+Goal 016. The prescribed coupled ledger schema last changed in Goal 007; Goals
+008 through 012 add evidence outputs only, Goal 013 adds appetite records, Goal
+015 adds the repeated-day appetite runner, and Goal 016 separates appetite
+target from forage-limited realized intake. Rates in kJ h^-1 and one-hour
+amounts in kJ remain distinct even when their numerical values match for the
+fixed one-hour transition.
 
 The Goal 004 density is already metabolizable energy on a dry-matter basis. Its
 product with prescribed dry-matter ingestion is the accounting equivalent
@@ -32,6 +34,9 @@ physiological quantity.
 | `max_burn_in_days` | numerical runner control | d | Integer maximum number of identical gut-only burn-in days; at least two because convergence compares successive days. |
 | `burn_in_day` | convergence index | integer d | Completed gut-only burn-in day, beginning at 1. |
 | `measurement_day` | measured-day key | integer 1-2 | Identifies the two carried gut-body days after the single body reset. |
+| `number_of_days` | appetite-runner control | d | One finite whole numeric value from 1 to `.Machine$integer.max`; repeats one fixed daily schedule without adding day-specific forcing. |
+| `simulation_day` | appetite-runner day key | integer d | Identifies a repeated appetite-controlled day, beginning at 1. |
+| `forage_acquisition_ceiling_kg_dm_h` | external environmental rate | kg DM h^-1 | Maximum dry matter that can be acquired during the labeled hour; finite and non-negative, with no implied forage stock, depletion, or plant process. |
 
 ## Goal 004 Food-Energy Record Schemas
 
@@ -90,6 +95,168 @@ For `step_body_energy()`, the one-row activity input must have the same
 The schedule is an externally prescribed incremental body-energy sink. It does
 not represent a behavioral state, directed locomotion, exercise, thermic effect
 of food, total metabolism, or an emergent response.
+
+## Goal 013 Appetite-Control Records And Output
+
+`new_appetite_control_parameters()` returns an exact plain named list with:
+
+```text
+maximum_dry_matter_intake_kg_dm_h
+body_energy_feedback_fraction_h
+gut_energy_feedback_fraction_h
+```
+
+The maximum is a finite, strictly positive physiological ceiling on appetite
+target in kg DM h^-1. Each feedback fraction is a finite, non-negative double
+in h^-1. Multiplying a feedback fraction by its energy-stock deviation in kJ
+gives a signed contribution in kJ h^-1.
+
+`new_appetite_reference_schedule()` returns an exact 24-row base data frame:
+
+```text
+hour_of_day
+feeding_opportunity_open
+reference_dry_matter_intake_kg_dm_h
+reference_body_energy_reserve_kj
+reference_gut_available_energy_kj
+```
+
+The clock is integer `0:23`, opportunity is logical, and the remaining columns
+are finite non-negative doubles. Reference intake must be zero in closed hours.
+The two reference stocks are opening-state targets for the labeled hour.
+
+`calculate_appetite_target()` returns one exact plain named list:
+
+| Name | Role | Unit | Meaning |
+| --- | --- | --- | --- |
+| `feeding_opportunity_open` | controller gate | logical | Whether a positive appetite target is permitted in the labeled hour. |
+| `reference_dry_matter_intake_kg_dm_h` | feedforward reference | kg DM h^-1 | Accepted reference intake before state feedback. |
+| `maximum_dry_matter_intake_kg_dm_h` | physiological upper bound | kg DM h^-1 | Declared maximum appetite-target rate. |
+| `reference_ingested_available_energy_kj_h` | feedforward reference | kJ h^-1 | Reference dry matter multiplied by fixed metabolizable-energy density. |
+| `body_energy_deviation_from_reference_kj` | slow state signal | kJ | Current opening body reserve minus its hour-specific reference; negative means deficit. |
+| `body_energy_feedback_kj_h` | signed intake adjustment | kJ h^-1 | Negative body feedback fraction multiplied by body deviation; positive under deficit. |
+| `gut_energy_deviation_from_reference_kj` | fast state signal | kJ | Current opening gut-energy stock minus its hour-specific reference; positive means above reference. |
+| `gut_energy_feedback_kj_h` | signed intake adjustment | kJ h^-1 | Negative gut feedback fraction multiplied by gut deviation; negative above reference. |
+| `unconstrained_ingested_available_energy_kj_h` | integrated controller rate | kJ h^-1 | Reference energy plus the two signed feedback contributions before bounds or opportunity closure. |
+| `unconstrained_dry_matter_intake_kg_dm_h` | integrated controller rate | kg DM h^-1 | Unconstrained energy rate divided by fixed metabolizable-energy density. |
+| `appetite_target_dry_matter_intake_kg_dm_h` | animal-side intake target | kg DM h^-1 | Unconstrained rate after opportunity closure and physiological lower and upper bounds, before environmental limitation. |
+| `appetite_target_ingested_available_energy_kj_h` | animal-side energy target | kJ h^-1 | Appetite-target dry matter multiplied by the fixed density; it enters the gut only when realized after the forage ceiling. |
+| `lower_intake_bound_active` | diagnostic | logical | Whether an open-hour unconstrained rate was below zero. |
+| `upper_intake_bound_active` | diagnostic | logical | Whether an open-hour unconstrained rate exceeded the declared maximum. |
+
+The Goal 013 experiment additionally uses evidence-only `sequence_day`,
+`forcing`, daily realized-intake totals, and closing gut, body, and combined
+deviations from reference. These are not a package return schema or generalized
+multi-day state.
+
+## Goal 016 Forage-Acquisition Record
+
+`new_forage_acquisition_ceiling_schedule()` returns an exact 24-row base data
+frame:
+
+```text
+hour_of_day
+forage_acquisition_ceiling_kg_dm_h
+```
+
+The clock is integer `0:23`; the ceiling is a finite, non-negative double in
+kg DM h^-1. The record supplies an external rate constraint only. It contains
+no forage mass, depletion, renewal, vegetation type, or location.
+
+## Goal 015–016 Repeated-Day Appetite-Controlled Ledgers
+
+`run_appetite_controlled_energy_days()` returns a plain list containing
+`hourly` and `daily`. The exact 42-column hourly order is:
+
+```text
+simulation_day
+hour_of_day
+time_start_h
+time_end_h
+feeding_opportunity_open
+reference_dry_matter_intake_kg_dm_h
+maximum_dry_matter_intake_kg_dm_h
+reference_ingested_available_energy_kj_h
+body_energy_deviation_from_reference_kj
+body_energy_feedback_kj_h
+gut_energy_deviation_from_reference_kj
+gut_energy_feedback_kj_h
+unconstrained_ingested_available_energy_kj_h
+unconstrained_dry_matter_intake_kg_dm_h
+appetite_target_dry_matter_intake_kg_dm_h
+appetite_target_ingested_available_energy_kj_h
+lower_intake_bound_active
+upper_intake_bound_active
+forage_acquisition_ceiling_kg_dm_h
+forage_acquisition_ceiling_active
+realized_dry_matter_intake_kg_dm_h
+realized_ingested_available_energy_kj_h
+gut_available_energy_start_kj
+gut_release_fraction_h
+assimilated_energy_kj_h
+realized_ingested_available_energy_kj
+assimilated_energy_kj
+gut_energy_change_kj
+gut_available_energy_end_kj
+gut_energy_balance_residual_kj
+body_energy_reserve_start_kj
+maintenance_expenditure_kj_h
+prescribed_routine_activity_expenditure_kj_h
+net_body_energy_rate_kj_h
+maintenance_expenditure_kj
+prescribed_routine_activity_expenditure_kj
+body_energy_change_kj
+body_energy_reserve_end_kj
+body_energy_balance_residual_kj
+total_system_energy_start_kj
+total_system_energy_end_kj
+system_energy_balance_residual_kj
+```
+
+The exact 32-column daily order is:
+
+```text
+simulation_day
+reference_dry_matter_intake_kg_dm
+appetite_target_dry_matter_intake_kg_dm
+realized_dry_matter_intake_kg_dm
+total_reference_ingested_available_energy_kj
+total_appetite_target_ingested_available_energy_kj
+lower_intake_bound_hours
+upper_intake_bound_hours
+forage_acquisition_ceiling_active_hours
+gut_available_energy_initial_kj
+total_realized_ingested_available_energy_kj
+total_assimilated_energy_kj
+expected_gut_energy_change_kj
+observed_gut_energy_change_kj
+gut_available_energy_final_kj
+gut_energy_balance_residual_kj
+body_energy_reserve_initial_kj
+total_maintenance_expenditure_kj
+total_prescribed_routine_activity_expenditure_kj
+expected_body_energy_change_kj
+observed_body_energy_change_kj
+body_energy_reserve_final_kj
+body_energy_balance_residual_kj
+total_system_energy_initial_kj
+expected_total_system_energy_change_kj
+observed_total_system_energy_change_kj
+total_system_energy_final_kj
+system_energy_balance_residual_kj
+body_energy_status
+gut_energy_deviation_from_reference_final_kj
+body_energy_deviation_from_reference_final_kj
+combined_energy_deviation_from_reference_final_kj
+```
+
+The hourly table has `24 * number_of_days` rows and cumulative clock fields;
+the daily table has one row per day. `appetite_target_*` fields describe the
+animal-side bounded target. `realized_*` fields describe the amount remaining
+after the forage-acquisition ceiling, and only that amount enters the gut.
+Reference deviations in the daily table compare the closing stocks with the
+reference opening stocks for hour 0 of the next repeated day. Closing states
+carry exactly and are not stored again as separate result objects.
 
 ## Goal 009 Evidence-Only Review Columns
 
@@ -656,18 +823,23 @@ Its daily summary uses:
 | `scenario_id` | experiment identifier | none | Identifies a synthetic demonstration fixture. |
 | `body_mass_ref_kg` | experiment metadata | kg | Fixed value 50 used only to describe the Goal 002 demonstration animal. |
 
-State, fixed parameters, prescribed inputs, process fluxes, and recorded
-history remain distinct even when they share a derived output table. Goal 003
+State, fixed parameters, prescribed or realized inputs, process fluxes, and
+recorded history remain distinct even when they share a derived output table.
+Goal 003
 adds storage and delay only; Goal 004 adds one fixed food property and one
 prescribed dry-matter input without new state; Goal 005 adds numerical
 gut-cycle construction, one measurement reset, and two carried day keys without
 new biology; Goal 006 adds named reference fixtures; Goal 007 adds one
 externally prescribed incremental routine-activity expenditure without new
-state or gut dynamics; and Goals 008 through 012 add evidence only. Offered
-or wet forage, variable food properties, digestive losses or efficiency,
-dry-matter gut state, capacity, production intake limits, behavior, directed
-locomotion, activity choice or feedback, mass change, variable or stochastic
-days, seasons, chronic change, viability, plants, and calibration have no
+state or gut dynamics; Goals 008 through 012 add evidence only; and Goal 013
+adds the bounded appetite controller without new dynamic state. Goal 015 adds
+the repeated fixed-day appetite-controlled ledgers without a new biological
+variable. Goal 016 adds one external forage-acquisition rate and its binding
+indicator without resource state. Forage biomass, depletion or renewal, wet
+forage, variable food properties, digestive losses or efficiency, dry-matter
+gut state, physical capacity, meals, broader behavior, directed locomotion,
+activity choice or feedback, mass change, variable or stochastic daily
+forcing, seasons, chronic change, viability, plants, and calibration have no
 implemented variables.
 
 Goal 009's `0.020 kg DM h^-1` threshold is conditional on the declared
@@ -677,10 +849,16 @@ duration relation is likewise conditional on the fixed open-interval rate,
 activity schedule, and four declared clock placements. It does not establish
 voluntary use, empirical capacity, or a generic within-day duration effect.
 Goal 011's fixed sequence and contrast fields are likewise evidence-only. Goal
-012's direct prescribed-pulse sequence and aliases are also evidence-only. Both
-clients chain existing one-day calls and add no production multi-day API,
-state, schema, parameter, or test. Goal 013 remains unapproved and
-scientifically unspecified.
+012's direct prescribed-pulse sequence and aliases are also evidence-only.
+Those clients chain existing one-day calls and add no production multi-day API,
+state, schema, parameter, or test. Goal 013's fixed sequence is likewise
+evidence-only beyond the three declared package records/functions. Goal 014's
+factorial and component summaries remain evidence-only. Goal 015 replaces the
+Goal 013 and 014 local recovery loops with the declared package runner and
+ledgers above; it does not promote evidence-only gain, deficit, or recovery
+summaries into package state. Goal 016 adds only the declared ceiling schedule
+and target-to-realized ledger fields; its matched scenario summaries remain
+evidence-only.
 
 Historical names in `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16` are not binding. The corresponding pre-freeze

@@ -18,8 +18,8 @@ comparisons, but is never scientific truth or architectural authority.
 - R is the only implementation language.
 - Package code is functional; experiments are thin clients.
 - State is represented by plain validated records.
-- State, fixed parameters, prescribed inputs, processes, and history remain
-  distinct.
+- State, fixed parameters, prescribed or realized inputs, processes, and
+  history remain distinct.
 - Conversion and process functions are pure and use names and documentation
   with explicit unit suffixes.
 - Generated outputs remain outside source control.
@@ -212,6 +212,38 @@ ceiling result and not compensation, catch-up feeding, appetite, behavioral
 response, capacity, or recovery. The clients add no production API, state,
 schema, parameter, equation, validator, or test.
 
+Goal 013 adds one pure bounded appetite controller while leaving the prescribed
+day runner unchanged. It compares current opening body and gut energy with an
+hour-specific accepted reference, converts their signed deviations to intake-
+energy feedback, and adds those contributions to the reference intake. The
+result is converted to dry matter, bounded between zero and a declared maximum,
+and set to zero when feeding opportunity is closed.
+
+The diagnostic uses synthetic feedback fractions of `0.05 h^-1` for body
+energy and `0.10 h^-1` for gut energy. The exact balanced trajectory remains an
+identity. After the Goal 011 shortfall, realized intake approaches reference
+from above and the body reserve approaches reference from below without
+crossing it. This is a controlled homeostatic demonstration, not calibrated
+appetite physiology. Gut energy is a post-ingestive satiation proxy rather than
+physical gut fill.
+
+Goal 015 adds one canonical repeated fixed-day runner around those unchanged
+equations. Goal 016 clarifies its coupling boundary: the controller calculates
+an appetite target, one external forage-acquisition rate caps that target, and
+only the resulting realized intake enters the gut. The runner validates the
+supplied records once, advances gut and body energy in order for each hour, and
+carries both stocks exactly across hours and days. The same appetite reference,
+forage ceiling, and routine-activity schedules repeat each day. Numerical
+periodicity is checked within tolerance and never manufactured by clamping
+state to the reference.
+
+The forage-acquisition ceiling is not dynamic state. It does not deplete,
+renew, grow, move, or identify why acquisition is limited. Under a non-binding
+ceiling, all accepted Goal 013–015 trajectories are unchanged. Under the
+declared one-day `0.015 kg DM h^-1` ceiling, appetite targets `0.359 kg DM`,
+realized intake is `0.240 kg DM`, and the combined system loses exactly
+`800 kJ`.
+
 The 50 kg reference mass used in the Goal 002 demonstration is experiment
 metadata only. No implemented equation depends on body mass. All food-energy
 and gut-body fixtures are synthetic. The current layer establishes unit
@@ -223,19 +255,22 @@ multi-day dynamics.
 ## Current Stop Boundary
 
 The implemented gut stock is energy, not dry matter, gross energy, plant
-biomass, or measured gut fill. Variable or stochastic days, configurable
-measurement horizons, seasons, chronic decline, recovery, and viability
-criteria are absent. Offered and wet forage, variable or multiple foods,
-digestive loss, efficiency, waste, capacity, production intake limits, feeding
-behavior, activity choice or feedback, directed locomotion, dynamic body mass,
-protein, water, thermoregulation, plants, space, calibration, and all other
+biomass, or measured gut fill. Variable or stochastic daily forcing, seasons,
+recurrent disturbance, chronic decline, and viability criteria are absent.
+Forage biomass, depletion or renewal, wet forage, variable or multiple foods,
+digestive loss, efficiency, waste, physical capacity, meals, food choice,
+activity choice or feedback, directed locomotion, dynamic body mass, protein,
+water, thermoregulation, plants, space, calibration, and all other
 physiological or ecological detail remain outside the executable boundary.
 
 Goals 009 through 012 establish only the declared synthetic threshold,
-prescribed intake window, and two fixed forcing-sequence results. Their
-client-side fields are not package state or schemas, and neither fixed sequence
-is a generalized production runner. Goal 013 remains unapproved and
-scientifically unspecified; any next layer is pending discussion.
+prescribed intake window, and two fixed forcing-sequence results. Goal 013 adds
+the pure hourly controller, Goal 014 adds the declared synthetic
+gain-and-deficit sensitivity and component comparison, and Goal 015 adds the
+minimal repeated fixed-day runtime around those accepted equations. Goal 016
+adds the non-depleting forage-acquisition ceiling between appetite target and
+realized intake. It adds no resource stock, plant process, or variable day
+forcing. Any next layer is pending discussion.
 
 The predecessor is preserved privately as `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16`; its scientific baseline commit is

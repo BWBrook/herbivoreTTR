@@ -3,10 +3,11 @@
 ## Product Promise
 
 `herbivoreTTR` is a small functional R package for transparent hourly
-accounting from prescribed dry-matter intake to metabolizable energy, gut
-energy, and body-energy reserve. Its current user is Barry Brook. The package
-exists to make scientific assumptions, units, transition order, and energy
-conservation inspectable while the model is rebuilt in deliberate layers.
+accounting from prescribed or appetite-controlled dry-matter intake to
+metabolizable energy, gut energy, and body-energy reserve. Its current user is
+Barry Brook. The package exists to make scientific assumptions, units,
+transition order, and energy conservation inspectable while the model is
+rebuilt in deliberate layers.
 
 ## Canonical Active Flow
 
@@ -22,13 +23,43 @@ prescribed dry-matter schedule
 
 `run_gut_body_energy_day()` is the canonical one-day coupled path. The
 reference-cycle runner supplies a controlled periodic gut starting state and
-two carried measurement days for diagnostic comparisons. Experiments compose
-these exported functions; they do not implement another model.
+two carried measurement days for diagnostic comparisons.
+
+`calculate_appetite_target()` is a separate pure animal-side boundary:
+
+```text
+reference intake + signed body feedback + signed gut feedback
+  -> zero and maximum bounds + feeding-opportunity gate
+  -> appetite-target dry-matter and available-energy rates
+```
+
+The environment-side boundary is deliberately smaller:
+
+```text
+min(appetite target, forage-acquisition ceiling)
+  -> realized dry-matter and available-energy intake rates
+```
+
+The ceiling is an external rate schedule, not a forage stock. It has no
+depletion, renewal, plant process, or spatial state.
+
+`run_appetite_controlled_energy_days()` is the canonical repeated fixed-day
+path. It repeats one appetite reference and routine-activity schedule, then
+calculates appetite target, applies one repeated forage ceiling, and calls the
+gut and body scalar cores in that order for each hour. Closing stocks carry
+exactly; reference periodicity is assessed numerically and is never imposed by
+clamping. Experiments call this runner rather than carrying a second multi-day
+model loop.
+
+Goal 014's fixed sensitivity client varies only the two synthetic feedback
+fractions and one-day deficit size. It is evidence about controller behaviour,
+not another runtime path or an empirical parameter-selection procedure.
 
 Public boundaries validate numeric inputs by semantic value and return the
-canonical plain records and schemas. Day and reference runners validate once,
-then call the private scalar cores and the prevalidated coupled-day helper.
-Public hourly steps remain the validated entry points for direct callers.
+canonical plain records and schemas. Day, reference, and appetite-controlled
+runners validate once, then call private scalar cores or the prevalidated
+coupled-day helper. Public hourly steps remain the validated entry points for
+direct callers.
 
 ## Protected Scientific Invariants
 
@@ -46,6 +77,14 @@ Public hourly steps remain the validated entry points for direct callers.
 - Synthetic balance, convergence, and shortfall results remain conditional on
   their prescribed schedules and are not interpreted as behavior, viability,
   or empirical physiology.
+- Appetite target equals the reference rate when both stocks equal their
+  hour-specific references, is zero when opportunity is closed, and remains
+  within its declared physiological bounds.
+- Realized intake is the smaller of appetite target and the external forage-
+  acquisition ceiling; only realized intake enters the gut.
+- The repeated appetite-controlled runner uses one fixed 24-hour reference and
+  fixed forage and activity schedules; it does not encode day-specific forcing
+  or events.
 
 ## Surface Dispositions
 
@@ -58,7 +97,7 @@ Public hourly steps remain the validated entry points for direct callers.
 | Closed goal packets | Delete | Git preserves their execution history; they are not part of the active product. |
 | Review-pack publishers and bulk receipt machinery | Delete | They duplicate validation and have no current runtime consumer. |
 | Semantic validation and validate-once runner internals | Retain | Public boundaries validate direct callers; validated loops use scalar cores without changing equations or schemas. |
-| New physiology, behavior, plants, and spatial coupling | Defer | Each layer must answer a separately approved scientific question. |
+| Forage biomass, depletion or renewal, physiology beyond the minimal appetite controller, plants, and spatial coupling | Defer | Each layer must answer a separately approved scientific question. |
 | Compatibility adapters for obsolete paths | Delete or decline | There is one private current user and no supported legacy contract. |
 
 ## Proportional Validation

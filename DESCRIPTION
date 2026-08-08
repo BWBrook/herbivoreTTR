@@ -8,9 +8,10 @@ Description: Provides transparent functional models of herbivore energetics.
     The current version converts prescribed dry-matter ingestion through one
     fixed dry-matter-basis metabolizable-energy density into a one-pool
     gut-energy buffer that delays release into a minimal body-energy ledger.
-    It can also establish a numerical period-24 gut reference under repeated
-    identical forcing, reset body energy once, and record two carried
-    measurement days.
+    It can establish a numerical period-24 reference, calculate an hourly
+    appetite target from deviations in body and gut energy, constrain realized
+    intake with a non-depleting forage-acquisition ceiling, and repeat that
+    coupled system over fixed identical days with exact state carry-over.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Suggests:

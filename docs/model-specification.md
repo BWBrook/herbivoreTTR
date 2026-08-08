@@ -14,8 +14,13 @@ threshold screen in evidence clients only. Goal 010 adds a four-fixture
 prescribed intake window duration screen in the same evidence-only layer. Goal
 011 uses evidence clients to chain existing one-day calls across one lower-rate
 day and two return-to-reference days. Goal 012 chains a separate fixed four-day
-control and prescribed-pulse sequence. All of these evidence goals leave the
-executable contract unchanged.
+control and prescribed-pulse sequence. These evidence goals leave the
+executable contract unchanged. Goal 013 adds a separate pure hourly appetite
+controller, Goal 014 adds a fixed sensitivity and component-attribution client,
+and Goal 015 adds the canonical repeated fixed-day runner. Goal 016 names the
+controller output as an appetite target and places one explicit non-depleting
+forage-acquisition ceiling between that target and realized intake. The
+existing prescribed runners remain unchanged.
 
 The fixed density is already metabolizable. Its product with dry matter is
 treated as the accounting equivalent entering the existing gut available-energy
@@ -694,6 +699,176 @@ defined in `variable-dictionary.md`. The experiment chains
 `run_gut_body_energy_day()` four times per sequence and adds no production
 runner, interface, state, schema, parameter, equation, validator, or test.
 
+## Goal 013 Minimal Endogenous Appetite Controller
+
+The public interface is:
+
+```text
+new_appetite_control_parameters(
+  maximum_dry_matter_intake_kg_dm_h,
+  body_energy_feedback_fraction_h,
+  gut_energy_feedback_fraction_h
+)
+
+new_appetite_reference_schedule(
+  hour_of_day,
+  feeding_opportunity_open,
+  reference_dry_matter_intake_kg_dm_h,
+  reference_body_energy_reserve_kj,
+  reference_gut_available_energy_kj
+)
+
+calculate_appetite_target(
+  gut_state,
+  body_state,
+  food_parameters,
+  appetite_parameters,
+  reference_row
+)
+```
+
+The parameter record contains one strictly positive maximum intake rate and
+two finite, non-negative feedback fractions. The reference schedule contains
+ordered hours `0:23`, one logical opportunity flag per hour, non-negative
+reference dry-matter intake, and non-negative opening body- and gut-energy
+references. Reference intake must be zero whenever opportunity is closed and
+must not exceed the maximum used by the controller.
+
+For current opening states `B` and `G` and the matching reference row:
+
+```text
+body_deviation_kj = B - B_ref
+gut_deviation_kj  = G - G_ref
+
+body_feedback_kj_h =
+  -body_energy_feedback_fraction_h * body_deviation_kj
+
+gut_feedback_kj_h =
+  -gut_energy_feedback_fraction_h * gut_deviation_kj
+
+unconstrained_energy_kj_h =
+  reference_dry_matter_intake_kg_dm_h *
+    metabolizable_energy_density_kj_kg_dm +
+  body_feedback_kj_h + gut_feedback_kj_h
+```
+
+The unconstrained energy rate is divided by the fixed density, bounded to
+`[0, maximum_dry_matter_intake_kg_dm_h]` while opportunity is open, and set to
+zero while it is closed. Goal 016 names this bounded animal-side result the
+appetite target. The function returns every component and the active lower and
+upper physiological-bound indicators without mutating state or applying an
+environmental constraint.
+
+The fixed diagnostic sets reference and maximum rates to `0.020` and
+`0.025 kg DM h^-1`, closes opportunity in hours `8:15`, and uses body and gut
+feedback fractions of `0.05 h^-1` and `0.10 h^-1`. These are synthetic response
+timescales, not fitted parameters. The balanced reference is reproduced
+exactly. After the established `-800 kJ` shortfall day, intake approaches the
+reference from above while body reserve approaches from below; rounded body
+and combined-system deviations are `-2` and `-1 kJ` on day 10.
+
+The retained no-write experiment now supplies a non-binding Goal 016 forage
+ceiling to the canonical runner. `gut_available_energy_kj` acts only as a
+post-ingestive satiation proxy: it is not physical gut fill, volume, or dry
+matter.
+
+## Goal 014 Evidence-Only Controller Sensitivity
+
+Goal 014 retains the Goal 013 equation, exact reference trajectory, feeding
+windows, and `0.025 kg DM h^-1` maximum. Its fixed client crosses body feedback
+timescales of 40, 20, and 10 hours with gut feedback timescales of 20, 10, and
+5 hours and one-day deficits of `400`, `800`, and `1,600 kJ`. Each of the 27
+scenarios is followed for 14 appetite-controlled recovery days.
+
+Every scenario preserves the exact reference, respects opportunity and intake
+bounds, closes its hourly energy accounts, removes at least 90% of the deficit
+within 2 to 9 days, and avoids body-reserve overshoot. The maximum intake bound
+is inactive for every `400 kJ` case but active in five `800 kJ` and eight
+`1,600 kJ` cases. The screen therefore demonstrates stable behaviour over the
+declared range while also identifying where capacity masks unconstrained gain
+effects.
+
+The separate `800 kJ` component comparison switches off neither, either, or
+both feedback terms. Body feedback supplies persistent deficit recovery; gut
+feedback alone replaces only 6.3% of the deficit, while the integrated signal
+slows and tempers the body-only response. These outcomes do not calibrate the
+feedback fractions, validate the maximum rate, or establish physical gut fill.
+All factorial and component summaries remain evidence quantities.
+
+## Goal 015 Canonical Repeated-Day Appetite Runner
+
+The public interface is:
+
+```text
+run_appetite_controlled_energy_days(
+  initial_gut_state,
+  initial_body_state,
+  gut_parameters,
+  body_parameters,
+  food_parameters,
+  appetite_parameters,
+  appetite_reference_schedule,
+  forage_acquisition_ceiling_schedule,
+  routine_activity_schedule,
+  number_of_days
+)
+```
+
+The runner repeats the same 24-hour appetite reference, forage-acquisition
+ceiling, and routine-activity schedules for one or more days. It validates and
+canonicalizes the supplied records once, then calculates appetite target,
+applies the forage ceiling, advances gut release and realized ingestion, and
+advances body assimilation and expenditure in that order for every hour.
+Closing gut and body stocks carry exactly into the next hour and day.
+
+`number_of_days` is one finite whole numeric value from 1 to
+`.Machine$integer.max`. It controls only the length of this fixed-day run; the
+interface has no day-specific schedules, events, callbacks, automatic burn-in,
+or disturbance rules.
+
+The runner returns `hourly` and `daily` data frames. The hourly ledger adds
+`simulation_day`, cumulative clock fields, the full appetite-target result,
+forage ceiling and binding status, realized ingestion, the existing gut and
+body transitions, and combined-system accounts. The daily summary records
+reference, target, and realized intake totals; physiological-bound and forage-
+ceiling hours; the existing daily accounts; and closing deviations from the
+next day-start reference. Endogenous ingestion fields use `realized`, not
+`prescribed`; final states are already present in the final daily row and are
+not duplicated as separate outputs.
+
+Starting on the accepted period-24 reference reproduces it within the declared
+floating-point tolerance, with exact state continuity and negligible feedback.
+No state is clamped to its reference. Starting after the accepted `800 kJ`
+shortfall reproduces the Goal 013 nine-day trajectory, and the Goal 014
+sensitivity summaries remain unchanged.
+
+## Goal 016 Non-Depleting Forage-Acquisition Ceiling
+
+The public environmental input is:
+
+```text
+new_forage_acquisition_ceiling_schedule(
+  hour_of_day,
+  forage_acquisition_ceiling_kg_dm_h
+)
+```
+
+It returns an exact 24-row schedule of finite, non-negative dry-matter
+acquisition-rate ceilings. For each hour, realized dry-matter intake is the
+minimum of appetite target and forage ceiling. Realized available energy is
+that dry-matter rate multiplied by the existing fixed metabolizable-energy
+density; only this realized energy enters the gut.
+
+A ceiling of `0.025 kg DM h^-1` is non-binding under the accepted controller
+and preserves Goals 013–015. In the matched binding diagnostic, the ceiling is
+`0.015 kg DM h^-1` during the 16 open feeding hours and zero while feeding is
+closed. The animal targets `0.359 kg DM`, realizes exactly `0.240 kg DM` or
+`2400 kJ`, and closes `800 kJ` below reference.
+
+The ceiling is an external rate, not resource state. It has no biomass,
+depletion, renewal, plant dynamics, location, or mechanism assigning the
+limitation.
+
 ## Accounting
 
 Each gut transition records prescribed ingestion, assimilation, gut-stock
@@ -711,18 +886,26 @@ negative or non-finite stocks or substantive imbalance.
 
 ## Separation Of Roles
 
-Dynamic state, fixed parameters, prescribed hourly inputs, process functions,
-and recorded history are distinct plain R objects. A transition receives
-validated state, parameters, and matching energy and activity rows, then
-returns a new state and explicitly named fluxes without hidden mutation. The
-coupled daily runner calls the gut and body transitions rather than duplicating
-their arithmetic.
+Dynamic state, fixed parameters, prescribed or realized hourly inputs, process
+functions, and recorded history are distinct plain R objects. A transition
+receives validated state, parameters, and matching energy and activity rows,
+then returns a new state and explicitly named fluxes without hidden mutation.
+The coupled daily runner calls the gut and body transitions rather than
+duplicating their arithmetic.
 
 The food parameter, dry-matter schedule, derived energy schedule, initial
 states, gut and body parameters, routine-activity schedule, and downstream
 result remain separate. The pure converter does not hide composition behind a
 higher-level runner. The reference-cycle runner accepts the existing energy and
 activity schedules rather than absorbing the food records or converter.
+
+The appetite parameter record, reference schedule, current states, forage-
+acquisition schedule, and pure controller result likewise remain separate. The
+controller calculates an appetite target but does not apply forage limitation
+or advance either stock. The repeated appetite runner takes the minimum of
+target and forage ceiling, then orchestrates the existing scalar gut and body
+cores without duplicating their equations; the prescribed-input runners remain
+unchanged.
 
 ## Implemented Outputs
 
@@ -731,6 +914,16 @@ assimilation, change, and residual fluxes.
 
 `derive_ingested_available_energy_schedule()` returns the exact existing
 24-row gut-input schedule and no food columns or attributes.
+
+`calculate_appetite_target()` returns one plain named list containing
+the reference and maximum rates, signed body and gut deviations and feedbacks,
+unconstrained and appetite-target dry-matter and available-energy rates, the
+feeding-opportunity flag, and lower and upper physiological-bound indicators.
+Exact names and units are defined in `variable-dictionary.md`.
+
+`new_forage_acquisition_ceiling_schedule()` returns an exact 24-row, two-column
+schedule containing ordered `hour_of_day` and one finite, non-negative forage-
+acquisition ceiling per hour.
 
 `step_body_energy()` returns a closing body state plus prescribed assimilation,
 fixed maintenance, prescribed routine activity, net body-energy rate, body
@@ -760,6 +953,17 @@ stored.
   24-column coupled hourly ledger; and
 - a two-row `daily` data frame that prepends `measurement_day` to the current
   20-column coupled daily summary.
+
+`run_appetite_controlled_energy_days()` returns an exact plain list containing:
+
+- a `24 * number_of_days`-row, 42-column `hourly` ledger with
+  `simulation_day`, a cumulative clock, the appetite target, forage ceiling and
+  binding status, realized ingestion, gut and body transitions, and whole-
+  system accounts; and
+- a `number_of_days`-row, 32-column `daily` summary with reference, target and
+  realized intake totals, physiological-bound and forage-ceiling hours,
+  gut/body/system accounts, and closing deviations from the next day-start
+  reference.
 
 Exact names and units are defined in `variable-dictionary.md`. No package
 function writes a CSV, RDS, figure, cache, or evidence bundle.
@@ -887,25 +1091,44 @@ repayment-pulse prescription and all sequence, phase, boundary, contrast,
 recurrence, and complement fields remain evidence quantities. The clients add
 no model mechanism, endogenous response, or production horizon.
 
+Goal 013 adds the pure controller and uses one fixed ten-day client sequence to
+establish exact reference identity, bounded shortfall response, and an isolated
+gut-satiation probe. Controller parameter, reference schedule, and result names
+are package records or outputs; sequence-day summaries remain evidence only.
+
+Goal 014 adds one fixed 27-scenario sensitivity client and a four-case component
+comparison. Gain, perturbation, recovery, and intake-bound summaries remain
+evidence only; no model equation, package result, or runner schema is added.
+
+Goal 015 adds the canonical appetite-controlled repeated fixed-day runner and
+replaces the two experiment-local recovery loops with it. Its hourly and daily
+schemas are package outputs. It introduces no new model equation, biological
+state, day-specific forcing, or evidence interpretation.
+
+Goal 016 renames the controller output as an appetite target and adds the
+forage-acquisition ceiling record and target-to-realized coupling in the
+canonical runner. It adds no resource stock, depletion, plant process, or
+spatial state.
+
 ## Exclusions And Stop
 
-The model does not represent variable or stochastic days, a configurable
-measurement horizon, seasons, chronic decline, recovery, viability criteria,
-offered or wet forage, water content, gross or digestible energy, time-varying
-density, multiple food types, food choice, preference, diet mixing, nutrient
-composition, assimilation efficiency, digestive loss, waste, dry-matter gut
-state, gut capacity, production intake limits, multiple gut compartments,
-feeding decisions, behavior, activity choice or feedback, directed locomotion,
-feeding-associated expenditure, thermic effect of food, total metabolism,
-dynamic body mass, protein, water, thermoregulation, plants, weather, space,
-individuals, populations, empirical calibration, parameter estimation, or
-uncertainty analysis.
+The model does not represent variable or stochastic daily forcing, seasons,
+recurrent disturbance, chronic decline, viability criteria, forage biomass,
+depletion or renewal, wet forage, water content, gross or digestible energy,
+time-varying density, multiple food types, food choice, preference, diet
+mixing, nutrient composition, assimilation efficiency, digestive loss, waste,
+dry-matter gut state, physical gut capacity, multiple gut compartments, meals,
+meal-start or meal-stop rules, explicit endocrine signalling, learning,
+broader behavior, activity choice or feedback, directed locomotion, feeding-
+associated expenditure, thermic effect of food, total metabolism, dynamic body
+mass, protein, water, thermoregulation, plants, weather, space, individuals,
+populations, empirical calibration, parameter estimation, or uncertainty
+analysis.
 
-Goal 012 ended after the common initialization, exact four-day control and
-prescribed-pulse sequences, analytical contrast partition, no-write experiment,
-and documentation were validated and reviewed. It added no generalized
-production multi-day API or biological response. Goal 013 remains unapproved
-and scientifically unspecified; any next layer is pending discussion.
+Goal 016 ends after the non-binding ceiling reproduces the accepted Goals
+013–015 and the one-day binding ceiling closes at the analytical `-800 kJ`
+result. It adds no recurrent disturbance, parameter estimation, plant process,
+or empirical physiology. Any next layer is pending discussion.
 
 The historical implementation is private at `BWBrook/herbivoreTTR-legacy`, tag
 `legacy-final-2026-07-16`; the pre-freeze scientific baseline is

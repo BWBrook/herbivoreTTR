@@ -130,19 +130,87 @@ response, demonstrated capacity, or recovery. The fixed sequence chains the
 existing one-day runner and adds no production API, state, schema, parameter,
 equation, or test.
 
+Rebuild Goal 013 adds the first package-level endogenous intake calculation.
+One pure hourly controller combines the accepted reference intake with signed
+feedback from body- and gut-energy deviations, then applies zero and maximum
+intake bounds plus the established feeding-opportunity closure. The accepted
+reference remains an exact fixed trajectory. A fixed experiment applies the
+Goal 011 shortfall and then activates the controller for nine days: daily
+intake approaches the balanced reference from above, body reserve approaches
+its reference without overshoot, and the combined-system deviation contracts
+from `-800 kJ` to approximately `-1 kJ` by day 10.
+
+The diagnostic feedback fractions (`0.05 h^-1` for body energy and `0.10 h^-1`
+for gut energy) and the `0.025 kg DM h^-1` maximum are synthetic. Gut energy is
+a post-ingestive satiation proxy rather than physical gut fill. Goal 013 adds
+no meals, hormones, physical capacity, empirical calibration, generalized
+appetite-controlled runner, or production multi-day horizon.
+
+Rebuild Goal 014 adds a bounded evidence-only sensitivity and attribution
+diagnostic over the unchanged Goal 013 controller. It combines body feedback
+timescales of 40, 20, and 10 hours; gut feedback timescales of 20, 10, and 5
+hours; and one-day deficits of `400`, `800`, and `1,600 kJ`. All 27 scenarios
+preserve the exact reference and recover stably without body-reserve overshoot;
+90% recovery takes 2 to 9 days. Faster body feedback accelerates recovery,
+while faster gut feedback brakes it. The maximum intake constraint is inactive
+at `400 kJ` but active in five `800 kJ` and eight `1,600 kJ` scenarios.
+
+An `800 kJ` component comparison shows that body feedback provides the
+persistent recovery drive. Gut feedback alone replaces only 6.3% of the
+deficit, while adding gut feedback to body feedback modestly slows and tempers
+the response. These are synthetic structural results, not empirical gain or
+capacity estimates. Goal 014 changes no package equation, state, schema, or
+production runner.
+
+Rebuild Goal 015 promotes the accepted appetite-controlled composition into
+one canonical package runner. It repeats one fixed 24-hour appetite reference
+and routine-activity schedule, carries gut and body stocks exactly, and returns
+explicit hourly and daily ledgers using realized-intake names. Goal 013's
+nine-day recovery and Goal 014's sensitivity results are unchanged. The runner
+adds no new equation, ecological process, day-specific forcing, or automatic
+reference correction.
+
+Rebuild Goal 016 separates the appetite target from environmentally realized
+intake. One explicit 24-hour forage-acquisition ceiling caps the bounded target
+before energy enters the gut. A `0.025 kg DM h^-1` ceiling preserves all
+accepted trajectories. A matched `0.015 kg DM h^-1` ceiling during the 16 open
+feeding hours binds throughout those hours: the animal targets `0.359 kg DM`,
+realizes `0.240 kg DM`, and closes the day exactly `800 kJ` below reference.
+The ceiling is a non-depleting rate input, not forage biomass or a plant model.
+
+Rebuild Goal 017 adds a fixed recurrence experiment in evidence clients only.
+Over 48 days, the Goal 016 limited day occurs never, once, or every 8, 4, or 2
+days while every other model input remains fixed. Eight-day recurrence permits
+effective inter-event recovery. Four-day recurrence settles near `-107 kJ`
+before and `-907 kJ` after each event. Two-day recurrence approaches a much
+deeper, capacity-limited cycle, reaching approximately `-1060 kJ` before and
+`-1860 kJ` after the final event. These are synthetic combined-energy debt
+regimes, not body-mass, mortality, or demographic outcomes. Goal 017 changes no
+package equation, state, schema, parameter, API, dependency, or test.
+
+Rebuild Goal 018 crosses the existing 8-, 4-, and 2-day recurrence intervals
+with exact `400`, `800`, and `1,200 kJ` event losses in a 3-by-3 evidence-only
+map. Every 8-day treatment recovers effectively, every 4-day treatment settles
+into modest persistent debt, and the 2-day treatments separate by capacity:
+the mild treatment settles without reaching maximum intake, the central
+treatment approaches neutrality only near maximum intake, and the strong
+treatment reaches the positive body-reserve boundary on day 47. The last result
+is explained by an unavoidable `-400 kJ` maximum-capacity cycle margin, not
+interpreted as mortality or viability. Goal 018 changes no package equation,
+state, schema, parameter, API, dependency, or test.
+
 ## Next Decision Gate
 
-Goal 013 remains unapproved and scientifically unspecified. The next layer is
-pending discussion. Goal 012 establishes only the declared prescribed-forcing
-contrast under the current deterministic accounting model; it does not
-authorize a configurable horizon, production sequence runner, endogenous
-response, or later biological or empirical layer.
+Goal 019 remains unapproved. The current appetite-forage response surface is
+sufficiently understood that the next discussion should choose one genuinely
+new layer rather than enlarge the treatment grid. Leading candidates are an
+explicit body-mass/reserve consequence or a static spatial forage environment.
 
 ## Candidate Later Layers
 
 Previously discussed candidates include dynamic body mass, protein, water,
 thermoregulation, plants, spatial foraging, and coupling between established
-subsystems. Variable food quality, digestion, gut capacity, feeding behavior,
+subsystems. Variable food quality, digestion, physical gut capacity, meals,
 directed locomotion, and activity feedback also remain unimplemented. This list
 records possible directions, not an approved sequence, a claim that any layer
 comes next, or a promise to implement one.

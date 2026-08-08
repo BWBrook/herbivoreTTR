@@ -5,7 +5,11 @@ energetics. The current executable model composes one pure food-energy
 conversion, a one-pool gut-energy buffer, and a minimal hourly body-energy
 ledger with fixed maintenance and prescribed routine-activity expenditure. It
 can run one 24-hour schedule directly or repeat that same schedule to establish
-a numerical daily gut reference before recording two measured days.
+a numerical daily gut reference before recording two measured days. A separate
+pure appetite controller calculates a bounded intake target from body- and
+gut-energy deviations. One non-depleting forage-acquisition ceiling then limits
+realized intake, and the canonical runner can repeat the coupled system over
+fixed identical days with exact state carry-over.
 
 ## Current Capability
 
@@ -38,7 +42,9 @@ hour. The current hour's converted ingestion is added afterwards, so it cannot
 be released until a later transition. The coupled runner returns an exact
 24-row hourly ledger and a one-row daily summary derived from it, including
 separate gut, body, and combined-system accounting residuals. There is no new
-dynamic state or integrated food-gut-body runner.
+dynamic state. The prescribed-input path remains a one-day runner; the separate
+appetite-controlled path introduced in Goal 015 supplies the repeated fixed-day
+horizon described below.
 
 Goal 005 adds
 `run_gut_body_energy_reference_cycle()`. It accepts the unchanged Goal 003
@@ -263,6 +269,56 @@ behavioral response, capacity, or biological recovery. The fixed four-day
 sequence chains existing one-day calls and adds no production multi-day API,
 state, schema, parameter, or test.
 
+Goal 013 adds the first endogenous intake calculation. For each hour it starts
+from the accepted reference intake, subtracts signed feedback proportional to
+the body's and gut's deviations above their hour-specific reference states,
+then applies zero and maximum intake bounds and the established feeding-
+opportunity closure. A state below reference therefore increases intake; a
+state above reference suppresses it. Gut energy is a post-ingestive satiation
+proxy here, not a physical dry-matter fill state.
+
+The retained diagnostic uses synthetic feedback fractions of `0.05 h^-1` for
+body energy and `0.10 h^-1` for gut energy, with reference and maximum rates of
+`0.020` and `0.025 kg DM h^-1`. The exact balanced trajectory remains unchanged.
+After the established `-800 kJ` shortfall day, realized intake rises to
+approximately `0.363 kg DM` on the first feedback day and then approaches the
+`0.320 kg DM` reference. At day 10 the body and combined-system deviations are
+approximately `-2 kJ` and `-1 kJ`, without body-reserve overshoot or intake
+outside the feeding window.
+
+The package exposes the pure records and hourly controller. Goal 013 originally
+kept its recovery sequence in a no-write experiment rather than widening the
+runtime boundary.
+
+Goal 014 tests that unchanged controller across 27 combinations of synthetic
+body response, gut response, and one-day deficit. Every declared scenario
+recovers stably without body-reserve overshoot; 90% recovery takes 2 to 9 days.
+Body feedback controls recovery speed, gut feedback tempers it, and the maximum
+intake rate becomes active mainly under larger deficits and faster body
+responses. A four-case component comparison confirms that gut feedback alone
+cannot restore a persistent body-energy deficit. This is structural evidence,
+not empirical calibration.
+
+Goal 015 promotes the accepted repeated-day composition into
+`run_appetite_controlled_energy_days()`. It repeats one fixed 24-hour appetite
+reference and routine-activity schedule for a declared number of days, applying
+the appetite, gut, and body transitions in that order each hour and carrying
+both closing stocks exactly. Its hourly and daily ledgers distinguish realized
+from prescribed intake and retain explicit gut, body, and combined-system
+accounts. The accepted Goal 013 recovery and all Goal 014 scenarios are
+unchanged. A numerical period-24 reference repeats within floating-point
+tolerance; it is never clamped to exact reference values.
+
+Goal 016 separates animal-side appetite from environment-limited acquisition.
+`calculate_appetite_target()` now names the controller's bounded output as an
+appetite target. `new_forage_acquisition_ceiling_schedule()` supplies one
+external, non-depleting rate ceiling, and realized intake is the smaller of the
+two. A non-binding ceiling preserves every accepted result. A ceiling of
+`0.015 kg DM h^-1` during the 16 feeding hours limits realized intake to
+`0.240 kg DM` despite a `0.359 kg DM` daily target and produces the analytical
+`-800 kJ` combined-system day. This is a coupling interface, not a forage stock
+or plant model.
+
 Only the product of intake and density reaches downstream dynamics. Scaling
 intake by a positive constant and density by its reciprocal therefore produces
 identical energy trajectories. The two prescribed inputs are structurally
@@ -320,31 +376,52 @@ verifies the common initialization, four-day control and treatment sequences,
 exact stock carry-over, the `-800 -> 0 kJ` combined-system path, and the
 post-pulse gut recurrence.
 
+The Goal 013 experiment
+[`experiments/rebuild-013-minimal-endogenous-appetite-control.R`](experiments/rebuild-013-minimal-endogenous-appetite-control.R)
+verifies exact reference identity, the shortfall-to-feedback sequence, bounded
+and opportunity-gated realized intake, accounting closure, and an isolated
+gut-satiation probe through the canonical repeated-day runner.
+
+The Goal 014 experiment
+[`experiments/rebuild-014-appetite-controller-sensitivity.R`](experiments/rebuild-014-appetite-controller-sensitivity.R)
+verifies the bounded gain-and-deficit screen, controller component comparison,
+reference identity, intake constraints, energy closure, and recovery
+classification through the same canonical runner.
+
+The Goal 016 experiment
+[`experiments/rebuild-016-forage-acquisition-ceiling.R`](experiments/rebuild-016-forage-acquisition-ceiling.R)
+compares the accepted non-binding reference with one matched binding
+forage-acquisition ceiling and verifies target–realized separation and exact
+energy accounting.
+
 These demonstrations prove arithmetic, timing, and accounting semantics only.
-They do not estimate a maintenance requirement, residence time, gut fill,
-feeding schedule, animal viability, ecological equilibrium, or any macropod
-trait. The model contains no offered forage, wet-mass conversion, variable food
-quality, digestive loss, waste, dry-matter gut stock, gut capacity, production
-intake ceiling, feeding behavior, directed locomotion, activity choice or
-feedback, body-mass change, plants, or empirical calibration. It also contains
-no variable or stochastic days, configurable measurement horizon, season,
-chronic-decline process, recovery process, or viability criterion.
+They do not estimate a maintenance requirement, residence time, physical gut
+fill, animal viability, ecological equilibrium, or any macropod trait. The
+model contains no forage biomass or depletion, wet-mass conversion, variable
+food quality, digestive loss, waste, dry-matter gut stock, physical gut
+capacity, meals, food choice, directed locomotion, activity choice or feedback,
+body-mass change, plants, or empirical calibration. It also contains no
+variable or stochastic daily forcing, season, recurrent disturbance,
+chronic-decline process, or viability criterion.
 
 ## Design
 
 The rebuild uses plain validated state records, pure functions, and strict
-separation of dynamic state, fixed parameters, prescribed inputs, process
-functions, and history. Variables and documentation use explicit unit suffixes.
-Experiments remain thin clients of the package. Each future goal addresses one
-principal question and one subsystem, with compact outputs, proportionate tests,
-an explicit stop, and discussion before another layer is added.
+separation of dynamic state, fixed parameters, prescribed or realized inputs,
+process functions, and history. Variables and documentation use explicit unit
+suffixes. Experiments remain thin clients of the package. Each future goal
+addresses one principal question and one subsystem, with compact outputs,
+proportionate tests, an explicit stop, and discussion before another layer is
+added.
 
 The executable package contract remains specified in
 [`docs/model-specification.md`](docs/model-specification.md). Goals 009 through
 012 add evidence about a synthetic accounting threshold, prescribed-intake
-window duration, and two fixed forcing sequences without changing that
-contract. Goal 013 remains unapproved and scientifically unspecified. Candidate
-later layers are listed without authorization in
+window duration, and two fixed forcing sequences. Goal 013 adds the bounded
+hourly controller, Goal 014 adds a fixed sensitivity client, Goal 015 adds the
+canonical repeated-day runner, and Goal 016 adds the non-depleting
+forage-acquisition boundary. The next layer remains unapproved; candidates are
+listed without authorization in
 [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Provenance

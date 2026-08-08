@@ -136,5 +136,5 @@ horizon or generalized production sequence runner. It adds no endogenous
 forcing, compensation process, appetite, intake capacity, behavioral feedback,
 or recovery criterion.
 
-Goal 013 remains unapproved and scientifically unspecified. Any next layer is
-pending discussion and requires a separately approved goal.
+At Goal 012 closeout, Goal 013 remained unapproved and scientifically
+unspecified. Any later layer required a separately approved goal.
