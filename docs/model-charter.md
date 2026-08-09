@@ -244,24 +244,27 @@ declared one-day `0.015 kg DM h^-1` ceiling, appetite targets `0.359 kg DM`,
 realized intake is `0.240 kg DM`, and the combined system loses exactly
 `800 kJ`.
 
-The 50 kg reference mass used in the Goal 002 demonstration is experiment
-metadata only. No implemented equation depends on body mass. All food-energy
-and gut-body fixtures are synthetic. The current layer establishes unit
-conversion, arithmetic closure, delayed stock-flow behavior, accounting
-semantics, and opening-to-closing state continuity; it does not establish
-empirical realism, animal viability, ecological equilibrium, or chronic
-multi-day dynamics.
+The 50 kg value used in the Goal 002 demonstration remains historical
+experiment metadata. Goal 019 introduces the current synthetic mass
+interpretation: 38 kg fixed structural mass plus body-energy reserve divided by
+an effective `20,000 kJ kg^-1` reserve-tissue density. A `40,000 kJ` reference
+reserve therefore gives 2 kg labile reserve tissue and 40 kg total mass. No
+implemented equation depends on either derived mass. All food-energy and gut-
+body fixtures remain synthetic.
 
 ## Current Stop Boundary
 
 The implemented gut stock is energy, not dry matter, gross energy, plant
-biomass, or measured gut fill. Variable or stochastic daily forcing, seasons,
-recurrent disturbance, chronic decline, and viability criteria are absent.
+biomass, or measured gut fill. Production runners contain no variable or
+stochastic daily forcing, seasons, recurrent disturbance, chronic decline, or
+viability criteria; Goals 017-019 compose fixed recurrence treatments only in
+no-write evidence clients.
 Forage biomass, depletion or renewal, wet forage, variable or multiple foods,
 digestive loss, efficiency, waste, physical capacity, meals, food choice,
-activity choice or feedback, directed locomotion, dynamic body mass, protein,
-water, thermoregulation, plants, space, calibration, and all other
-physiological or ecological detail remain outside the executable boundary.
+activity choice or feedback, directed locomotion, mass-dependent dynamics,
+tissue turnover or partitioning, protein, water, thermoregulation, plants,
+space, calibration, and all other physiological or ecological detail remain
+outside the executable boundary.
 
 Goals 009 through 012 establish only the declared synthetic threshold,
 prescribed intake window, and two fixed forcing-sequence results. Goal 013 adds
@@ -270,7 +273,9 @@ gain-and-deficit sensitivity and component comparison, and Goal 015 adds the
 minimal repeated fixed-day runtime around those accepted equations. Goal 016
 adds the non-depleting forage-acquisition ceiling between appetite target and
 realized intake. It adds no resource stock, plant process, or variable day
-forcing. Any next layer is pending discussion.
+forcing. Goals 017-018 diagnose fixed recurrence and severity, and Goal 019
+adds only a pure mass conversion plus the 40,000 kJ appetite-reference scale.
+Any next layer is pending discussion.
 
 The predecessor is preserved privately as `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16`; its scientific baseline commit is

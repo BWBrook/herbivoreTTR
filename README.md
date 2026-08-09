@@ -319,6 +319,21 @@ two. A non-binding ceiling preserves every accepted result. A ceiling of
 `-800 kJ` combined-system day. This is a coupling interface, not a forage stock
 or plant model.
 
+Goals 017 and 018 use no-write experiments to vary recurrence and event
+severity over 48 days. Their main capacity result is analytical: a recovery day
+can add at most `800 kJ`, so a `1,200 kJ` event every two days must continue
+losing `400 kJ` per cycle even at maximum intake.
+
+Goal 019 adds a downstream physical interpretation without another dynamic
+state. The current synthetic animal has 38 kg fixed structural mass and 2 kg
+labile reserve tissue at `20,000 kJ kg^-1`, giving a `40,000 kJ`, 40 kg
+reference. `derive_body_mass_from_energy_reserve()` converts energy outputs to
+reserve-tissue and total mass, but mass does not feed back to any transition.
+A paired 10,000-versus-40,000 kJ diagnostic preserves all reference-relative
+dynamics within floating-point roundoff. The larger reference removes Goal
+018's former arbitrary day-47 reserve floor; the strong two-day treatment now
+completes 48 days at approximately `-9,792 kJ` combined deviation.
+
 Only the product of intake and density reaches downstream dynamics. Scaling
 intake by a positive constant and density by its reciprocal therefore produces
 identical energy trajectories. The two prescribed inputs are structurally
@@ -394,15 +409,25 @@ compares the accepted non-binding reference with one matched binding
 forage-acquisition ceiling and verifies target–realized separation and exact
 energy accounting.
 
+The Goal 017 and Goal 018 experiments
+[`experiments/rebuild-017-recurrent-forage-limitation.R`](experiments/rebuild-017-recurrent-forage-limitation.R)
+and
+[`experiments/rebuild-018-severity-recurrence-map.R`](experiments/rebuild-018-severity-recurrence-map.R)
+verify the fixed recurrence and severity response surfaces. The Goal 019
+experiment
+[`experiments/rebuild-019-derived-body-mass.R`](experiments/rebuild-019-derived-body-mass.R)
+verifies the energy-coordinate translation and derived mass interpretation.
+
 These demonstrations prove arithmetic, timing, and accounting semantics only.
 They do not estimate a maintenance requirement, residence time, physical gut
 fill, animal viability, ecological equilibrium, or any macropod trait. The
 model contains no forage biomass or depletion, wet-mass conversion, variable
 food quality, digestive loss, waste, dry-matter gut stock, physical gut
 capacity, meals, food choice, directed locomotion, activity choice or feedback,
-body-mass change, plants, or empirical calibration. It also contains no
-variable or stochastic daily forcing, season, recurrent disturbance,
-chronic-decline process, or viability criterion.
+mass-dependent energetics, tissue turnover or partitioning, plants, or
+empirical calibration. Production runners also contain no variable or
+stochastic daily forcing, season, recurrent disturbance, chronic-decline
+process, or viability criterion.
 
 ## Design
 
@@ -420,8 +445,10 @@ The executable package contract remains specified in
 window duration, and two fixed forcing sequences. Goal 013 adds the bounded
 hourly controller, Goal 014 adds a fixed sensitivity client, Goal 015 adds the
 canonical repeated-day runner, and Goal 016 adds the non-depleting
-forage-acquisition boundary. The next layer remains unapproved; candidates are
-listed without authorization in
+forage-acquisition boundary. Goals 017-018 add fixed evidence-only recurrence
+diagnostics, and Goal 019 adds the pure mass conversion and current synthetic
+reference scale. The next layer remains unapproved; candidates are listed
+without authorization in
 [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Provenance

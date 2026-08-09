@@ -12,6 +12,8 @@ Description: Provides transparent functional models of herbivore energetics.
     appetite target from deviations in body and gut energy, constrain realized
     intake with a non-depleting forage-acquisition ceiling, and repeat that
     coupled system over fixed identical days with exact state carry-over.
+    Body-energy reserve can also be interpreted as labile reserve tissue and
+    total body mass without feeding that derived quantity back into the model.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Suggests:

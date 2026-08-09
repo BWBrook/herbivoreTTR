@@ -2,7 +2,7 @@
 
 Date: 2026-08-08
 
-Status: implemented for ecological review
+Status: implemented; reserve-boundary interpretation corrected by Goal 019
 
 ## Context
 
@@ -43,7 +43,7 @@ The resulting map is:
 |---:|---|---|---|
 | `400 kJ` | effective recovery | depressed cycle | depressed cycle |
 | `800 kJ` | effective recovery | depressed cycle | deep depressed cycle |
-| `1,200 kJ` | effective recovery | depressed cycle | reserve boundary on day 47 |
+| `1,200 kJ` | effective recovery | depressed cycle | energy debt continues to accumulate |
 
 At 8-day recurrence, final pre-event debt is approximately `3`, `6`, and
 `9 kJ` for the mild, central, and strong events. The physiological maximum is
@@ -60,10 +60,18 @@ before and `-761 kJ` after each event without activating the physiological
 maximum. The central event approaches the deeper Goal 017 cycle near `-1060`
 and `-1860 kJ`, with the maximum active for 582 hourly transitions.
 
-The strong 2-day treatment completes 46 days and rejects day 47. Its last
-completed event, on day 45, moves combined deviation from approximately
-`-8992` to `-10192 kJ`; the recovery day closes at `-9392 kJ` with `426 kJ` of
-body reserve. The lowest completed closing body reserve is `80 kJ`.
+Under the current `40,000 kJ` reference body reserve, the strong 2-day
+treatment completes all 48 days. Its final event moves combined deviation from
+approximately `-9,392` to `-10,592 kJ`; the final recovery day closes at
+approximately `-9,792 kJ`, with `30,026 kJ` of body reserve. The lowest
+completed closing reserve is `29,680 kJ`.
+
+The original `10,000 kJ` body-reserve fixture followed the same relative
+trajectory through day 46 but rejected day 47 because the absolute reserve
+would have become negative. Goal 019 demonstrates that shifting actual and
+reference body energy together by `30,000 kJ` preserves the controller and all
+relative energy dynamics within floating-point roundoff. The earlier day-47
+result was therefore an arbitrary coordinate floor, not a scientific boundary.
 
 ## Interpretation
 
@@ -83,23 +91,24 @@ maximum daily recovery surplus. Over a two-day cycle:
 - the `1,200 kJ` event has an unavoidable `-400 kJ` cycle deficit even at
   maximum intake, so reserve depletion must continue within the present model.
 
-This analytical margin explains why the strong treatment reaches the reserve
-boundary rather than merely settling more deeply.
+This analytical margin explains why the strong treatment cannot settle within
+the present model and must continue depleting reserve while this forcing
+persists.
 
 ## Limits And Next Gate
 
 This is a deterministic 3-by-3 synthetic map, not calibration or a general
 sensitivity analysis. The event severities, recurrence intervals, appetite
-gains, and physiological maximum are not empirical estimates. Reaching the
-positive-reserve boundary means only that the current state transition cannot
-continue; it is not a modeled death, starvation threshold, body-mass outcome,
-or demographic conclusion.
+gains, and physiological maximum are not empirical estimates. Continued energy
+debt is not a modeled death, starvation threshold, or demographic conclusion.
+Goal 019 supplies a transparent synthetic mass interpretation but does not turn
+this response surface into empirical body-mass or viability evidence.
 
-Goal 019 remains unapproved. The appetite-forage coupling is now sufficiently
+Goal 020 remains unapproved. The appetite-forage coupling is sufficiently
 understood that the next discussion should choose one genuinely new layer,
-rather than expanding this response surface. The leading candidates are an
-explicit body-mass/reserve consequence or a static spatial forage environment;
-either requires a separate scientific contract.
+rather than expanding this response surface. A static spatial forage
+environment is a leading candidate and requires a separate scientific
+contract.
 
 The retained no-write reproduction client is:
 

@@ -76,7 +76,7 @@ routine_activity_schedule <-
 
 balanced_reference <- herbivoreTTR::run_gut_body_energy_reference_cycle(
   initial_gut_state = herbivoreTTR::new_gut_energy_state(0),
-  measurement_body_state = herbivoreTTR::new_body_energy_state(10000),
+  measurement_body_state = herbivoreTTR::new_body_energy_state(40000),
   gut_parameters = gut_parameters,
   body_parameters = body_parameters,
   schedule = reference_energy_schedule,

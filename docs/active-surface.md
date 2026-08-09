@@ -7,7 +7,8 @@ accounting from prescribed or appetite-controlled dry-matter intake to
 metabolizable energy, gut energy, and body-energy reserve. Its current user is
 Barry Brook. The package exists to make scientific assumptions, units,
 transition order, and energy conservation inspectable while the model is
-rebuilt in deliberate layers.
+rebuilt in deliberate layers. It can also translate body-energy output into a
+derived labile reserve and total body mass without changing the dynamics.
 
 ## Canonical Active Flow
 
@@ -51,6 +52,17 @@ exactly; reference periodicity is assessed numerically and is never imposed by
 clamping. Experiments call this runner rather than carrying a second multi-day
 model loop.
 
+`derive_body_mass_from_energy_reserve()` is downstream of both runtime paths:
+
+```text
+body-energy reserve / effective reserve-tissue density
+  -> labile reserve-tissue mass
+  -> plus fixed structural mass
+  -> total body mass
+```
+
+It is a read-only interpretation. No derived mass is stored or fed back.
+
 Goal 014's fixed sensitivity client varies only the two synthetic feedback
 fractions and one-day deficit size. It is evidence about controller behaviour,
 not another runtime path or an empirical parameter-selection procedure.
@@ -85,6 +97,9 @@ direct callers.
 - The repeated appetite-controlled runner uses one fixed 24-hour reference and
   fixed forage and activity schedules; it does not encode day-specific forcing
   or events.
+- Derived reserve-tissue and total mass are deterministic functions of body-
+  energy reserve and fixed conversion parameters; they do not alter a
+  transition.
 
 ## Surface Dispositions
 
@@ -97,7 +112,7 @@ direct callers.
 | Closed goal packets | Delete | Git preserves their execution history; they are not part of the active product. |
 | Review-pack publishers and bulk receipt machinery | Delete | They duplicate validation and have no current runtime consumer. |
 | Semantic validation and validate-once runner internals | Retain | Public boundaries validate direct callers; validated loops use scalar cores without changing equations or schemas. |
-| Forage biomass, depletion or renewal, physiology beyond the minimal appetite controller, plants, and spatial coupling | Defer | Each layer must answer a separately approved scientific question. |
+| Mass-dependent energetics, forage biomass, depletion or renewal, physiology beyond the minimal appetite controller, plants, and spatial coupling | Defer | Each layer must answer a separately approved scientific question. |
 | Compatibility adapters for obsolete paths | Delete or decline | There is one private current user and no supported legacy contract. |
 
 ## Proportional Validation

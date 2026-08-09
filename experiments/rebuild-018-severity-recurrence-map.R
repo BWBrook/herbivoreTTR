@@ -56,7 +56,10 @@ run_severity_recurrence_scenario <- function(
   severity_id,
   forage_ceiling_kg_dm_h,
   event_loss_kj,
-  recurrence_interval_days
+  recurrence_interval_days,
+  initial_body_state = reference_opening_body_state,
+  reference_schedule = appetite_reference_schedule,
+  experiment_days = experiment_days_goal018
 ) {
   scenario_id <- sprintf(
     "%s_every_%d_days",
@@ -67,12 +70,12 @@ run_severity_recurrence_scenario <- function(
     forage_ceiling_kg_dm_h
   )
   current_gut_state <- reference_opening_gut_state
-  current_body_state <- reference_opening_body_state
-  day_results <- vector("list", experiment_days_goal018)
+  current_body_state <- initial_body_state
+  day_results <- vector("list", experiment_days)
   boundary_day <- NA_integer_
   completed_days <- 0L
 
-  for (simulation_day in seq_len(experiment_days_goal018)) {
+  for (simulation_day in seq_len(experiment_days)) {
     limited_forage_day <-
       (simulation_day - 1L) %% recurrence_interval_days == 0L
     ceiling_schedule <- if (limited_forage_day) {
@@ -88,7 +91,7 @@ run_severity_recurrence_scenario <- function(
         body_parameters = body_parameters,
         food_parameters = food_parameters,
         appetite_parameters = appetite_parameters,
-        appetite_reference_schedule = appetite_reference_schedule,
+        appetite_reference_schedule = reference_schedule,
         forage_acquisition_ceiling_schedule = ceiling_schedule,
         routine_activity_schedule = routine_activity_schedule,
         number_of_days = 1L
@@ -119,7 +122,7 @@ run_severity_recurrence_scenario <- function(
       daily$gut_available_energy_initial_kj -
         reference_opening_gut_energy_kj +
         daily$body_energy_reserve_initial_kj -
-        reference_opening_body_energy_kj
+        reference_schedule$reference_body_energy_reserve_kj[[1L]]
     day_results[[simulation_day]] <- data.frame(
       scenario_id = scenario_id,
       severity_id = severity_id,

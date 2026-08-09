@@ -30,9 +30,16 @@ without adding forage state, depletion, plant dynamics, or spatial behavior.
 a common 48-day horizon with no event, one event, or recurrence every 8, 4, or
 2 days. It varies recurrence alone and reports inter-event recovery and
 finite-horizon energy-debt cycles without adding production recurrence logic,
-vegetation, space, body-mass change, or viability thresholds.
+vegetation, space, mass feedback, or viability thresholds.
 
 `rebuild-018-severity-recurrence-map.R` crosses fixed event losses of 400, 800,
 and 1,200 kJ with recurrence every 8, 4, and 2 days. It reproduces Goal 017's
-central trajectories, records the existing positive-reserve boundary without
-bypassing it, and adds no model process, production interface, or test.
+central trajectories and reports whether energy debt recovers, settles, or
+continues to accumulate. At the current 40,000 kJ reference reserve all nine
+scenarios complete 48 days; it adds no model process or production interface.
+
+`rebuild-019-derived-body-mass.R` proves that shifting the appetite reference
+from 10,000 to 40,000 kJ changes no reference-relative energetic trajectory
+beyond floating-point roundoff. It then applies the pure body-mass converter to
+Goal 018 output. The derived masses are interpretations of energy state, not a
+second dynamic stock or feedback process.

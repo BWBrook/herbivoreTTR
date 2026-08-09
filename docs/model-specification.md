@@ -762,10 +762,11 @@ environmental constraint.
 The fixed diagnostic sets reference and maximum rates to `0.020` and
 `0.025 kg DM h^-1`, closes opportunity in hours `8:15`, and uses body and gut
 feedback fractions of `0.05 h^-1` and `0.10 h^-1`. These are synthetic response
-timescales, not fitted parameters. The balanced reference is reproduced
+timescales, not fitted parameters. From Goal 019 onward the appetite reference
+uses a `40,000 kJ` opening body reserve. The balanced reference is reproduced
 exactly. After the established `-800 kJ` shortfall day, intake approaches the
-reference from above while body reserve approaches from below; rounded body
-and combined-system deviations are `-2` and `-1 kJ` on day 10.
+reference from above while body reserve approaches from below; rounded body and
+combined-system deviations are `-2` and `-1 kJ` on day 10.
 
 The retained no-write experiment now supplies a non-binding Goal 016 forage
 ceiling to the canonical runner. `gut_available_energy_kj` acts only as a
@@ -869,6 +870,48 @@ The ceiling is an external rate, not resource state. It has no biomass,
 depletion, renewal, plant dynamics, location, or mechanism assigning the
 limitation.
 
+## Goal 019 Derived Body-Mass Interpretation
+
+The public read-only interface is:
+
+```text
+new_body_mass_parameters(
+  structural_body_mass_kg,
+  reserve_tissue_energy_density_kj_kg
+)
+
+derive_body_mass_from_energy_reserve(
+  parameters,
+  body_energy_reserve_kj
+)
+```
+
+Both parameters are finite and strictly positive. One or more finite,
+non-negative body-energy reserves are converted as:
+
+```text
+reserve_tissue_mass_kg =
+  body_energy_reserve_kj / reserve_tissue_energy_density_kj_kg
+
+total_body_mass_kg =
+  structural_body_mass_kg + reserve_tissue_mass_kg
+```
+
+The current synthetic reference uses 38 kg structural mass and 20,000 kJ kg^-1
+effective reserve-tissue density. Its 40,000 kJ body-energy reserve therefore
+corresponds to 2 kg labile reserve tissue and 40 kg total body mass. The
+converter is vectorized and pure. It neither creates dynamic mass state nor
+changes maintenance, activity, appetite, intake, gut, or forage equations.
+Total mass here contains only modeled structural and reserve tissue; it excludes
+unrepresented physical gut contents.
+
+A paired 10,000-versus-40,000 kJ diagnostic shifts actual and reference body
+energy together by 30,000 kJ. Reference-relative controller and energy
+trajectories agree within scale-aware floating-point roundoff. Under the new
+reference all Goal 018 treatments complete 48 days; the strong two-day
+treatment continues losing 400 kJ per maximum-capacity cycle instead of
+encountering the former arbitrary day-47 reserve floor.
+
 ## Accounting
 
 Each gut transition records prescribed ingestion, assimilation, gut-stock
@@ -907,6 +950,10 @@ target and forage ceiling, then orchestrates the existing scalar gut and body
 cores without duplicating their equations; the prescribed-input runners remain
 unchanged.
 
+The body-mass parameter record and derived mass table remain downstream of all
+transitions. They interpret body-energy output and are never accepted by a
+runner or controller.
+
 ## Implemented Outputs
 
 `step_gut_energy()` returns a closing gut state and the one-hour ingestion,
@@ -924,6 +971,10 @@ Exact names and units are defined in `variable-dictionary.md`.
 `new_forage_acquisition_ceiling_schedule()` returns an exact 24-row, two-column
 schedule containing ordered `hour_of_day` and one finite, non-negative forage-
 acquisition ceiling per hour.
+
+`derive_body_mass_from_energy_reserve()` returns one plain data frame with a row
+per supplied reserve and the columns `body_energy_reserve_kj`,
+`reserve_tissue_mass_kg`, and `total_body_mass_kg`.
 
 `step_body_energy()` returns a closing body state plus prescribed assimilation,
 fixed maintenance, prescribed routine activity, net body-energy rate, body
@@ -1110,25 +1161,35 @@ forage-acquisition ceiling record and target-to-realized coupling in the
 canonical runner. It adds no resource stock, depletion, plant process, or
 spatial state.
 
+Goals 017 and 018 compose fixed recurrence and severity treatments in no-write
+clients. Their day, event, cycle, recovery, and classification fields are
+evidence quantities, not production schedules, states, or generalized event
+machinery.
+
+Goal 019 adds the fixed body-mass parameter record and pure derived output. Its
+paired coordinate and Goal 018 mass summaries remain evidence quantities. No
+runner returns mass or accepts it as an input.
+
 ## Exclusions And Stop
 
-The model does not represent variable or stochastic daily forcing, seasons,
-recurrent disturbance, chronic decline, viability criteria, forage biomass,
-depletion or renewal, wet forage, water content, gross or digestible energy,
-time-varying density, multiple food types, food choice, preference, diet
+Production functions do not represent variable or stochastic daily forcing,
+seasons, recurrent disturbance, chronic decline, viability criteria, forage
+biomass, depletion or renewal, wet forage, water content, gross or digestible
+energy, time-varying density, multiple food types, food choice, preference, diet
 mixing, nutrient composition, assimilation efficiency, digestive loss, waste,
 dry-matter gut state, physical gut capacity, multiple gut compartments, meals,
 meal-start or meal-stop rules, explicit endocrine signalling, learning,
 broader behavior, activity choice or feedback, directed locomotion, feeding-
-associated expenditure, thermic effect of food, total metabolism, dynamic body
-mass, protein, water, thermoregulation, plants, weather, space, individuals,
-populations, empirical calibration, parameter estimation, or uncertainty
-analysis.
+associated expenditure, thermic effect of food, total metabolism, dynamic mass
+feedback, tissue turnover or partitioning, protein, water, thermoregulation,
+plants, weather, space, individuals, populations, empirical calibration,
+parameter estimation, or uncertainty analysis.
 
-Goal 016 ends after the non-binding ceiling reproduces the accepted Goals
-013–015 and the one-day binding ceiling closes at the analytical `-800 kJ`
-result. It adds no recurrent disturbance, parameter estimation, plant process,
-or empirical physiology. Any next layer is pending discussion.
+Goal 019 ends after the pure mass conversion, the 40,000 kJ appetite-reference
+shift, the coordinate-invariance check, and the corrected Goal 018
+interpretation. Fixed evidence-only recurrence does not add generalized event
+forcing. No mass feedback, parameter estimation, plant process, or empirical
+physiology is added. Any next layer is pending discussion.
 
 The historical implementation is private at `BWBrook/herbivoreTTR-legacy`, tag
 `legacy-final-2026-07-16`; the pre-freeze scientific baseline is

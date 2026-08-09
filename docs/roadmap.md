@@ -194,26 +194,39 @@ map. Every 8-day treatment recovers effectively, every 4-day treatment settles
 into modest persistent debt, and the 2-day treatments separate by capacity:
 the mild treatment settles without reaching maximum intake, the central
 treatment approaches neutrality only near maximum intake, and the strong
-treatment reaches the positive body-reserve boundary on day 47. The last result
-is explained by an unavoidable `-400 kJ` maximum-capacity cycle margin, not
-interpreted as mortality or viability. Goal 018 changes no package equation,
-state, schema, parameter, API, dependency, or test.
+treatment accumulates energy debt because its maximum-capacity cycle margin is
+an unavoidable `-400 kJ`. Under the current 40,000 kJ reference reserve it
+completes the 48-day horizon at approximately `-9,792 kJ` combined deviation;
+the earlier day-47 boundary under a 10,000 kJ fixture was an arbitrary energy-
+coordinate floor, not a biological threshold. Goal 018 changes no package
+equation, state, schema, parameter, API, dependency, or test.
+
+Rebuild Goal 019 adds a pure, read-only body-mass interpretation. The synthetic
+reference animal has 38 kg fixed structural mass and 2 kg labile reserve tissue
+at an effective 20,000 kJ kg^-1, so its 40,000 kJ energy reserve corresponds to
+40 kg total mass. Body energy remains the sole dynamic state. Derived reserve-
+tissue and total mass have no feedback on any transition. A paired 10,000-
+versus-40,000 kJ experiment confirms the appetite, intake, gut, and relative
+body-energy trajectories are invariant within floating-point roundoff, while
+the larger reference removes Goal 018's artificial day-47 floor. This is a
+synthetic interpretation layer, not macropod calibration or a claim that all
+reserve tissue is fat.
 
 ## Next Decision Gate
 
-Goal 019 remains unapproved. The current appetite-forage response surface is
-sufficiently understood that the next discussion should choose one genuinely
-new layer rather than enlarge the treatment grid. Leading candidates are an
-explicit body-mass/reserve consequence or a static spatial forage environment.
+Goal 020 remains unapproved. The next discussion should decide whether one
+small animal-side consequence is still required or whether the model is ready
+for a static, heterogeneous, non-depleting spatial forage environment. No
+dynamic vegetation or mass-dependent energetic feedback is authorized.
 
 ## Candidate Later Layers
 
-Previously discussed candidates include dynamic body mass, protein, water,
-thermoregulation, plants, spatial foraging, and coupling between established
-subsystems. Variable food quality, digestion, physical gut capacity, meals,
-directed locomotion, and activity feedback also remain unimplemented. This list
-records possible directions, not an approved sequence, a claim that any layer
-comes next, or a promise to implement one.
+Previously discussed candidates include mass-dependent energetics, protein,
+water, thermoregulation, plants, spatial foraging, and coupling between
+established subsystems. Variable food quality, digestion, physical gut
+capacity, meals, directed locomotion, and activity feedback also remain
+unimplemented. This list records possible directions, not an approved sequence,
+a claim that any layer comes next, or a promise to implement one.
 
 Each layer requires a separately approved small goal with one principal
 question, one subsystem, compact predeclared outputs, proportionate tests, and

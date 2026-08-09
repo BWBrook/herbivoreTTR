@@ -3,12 +3,13 @@
 ## Status
 
 These are the exact public record, flux, and ledger names implemented through
-Goal 016. The prescribed coupled ledger schema last changed in Goal 007; Goals
+Goal 019. The prescribed coupled ledger schema last changed in Goal 007; Goals
 008 through 012 add evidence outputs only, Goal 013 adds appetite records, Goal
-015 adds the repeated-day appetite runner, and Goal 016 separates appetite
-target from forage-limited realized intake. Rates in kJ h^-1 and one-hour
-amounts in kJ remain distinct even when their numerical values match for the
-fixed one-hour transition.
+015 adds the repeated-day appetite runner, Goal 016 separates appetite target
+from forage-limited realized intake, and Goal 019 adds a downstream derived-
+mass record without changing a ledger. Rates in kJ h^-1 and one-hour amounts in
+kJ remain distinct even when their numerical values match for the fixed one-
+hour transition.
 
 The Goal 004 density is already metabolizable energy on a dry-matter basis. Its
 product with prescribed dry-matter ingestion is the accounting equivalent
@@ -24,6 +25,8 @@ physiological quantity.
 | `prescribed_dry_matter_intake_kg_dm_h` | prescribed food-input rate | kg DM h^-1 | Dry matter ingested during the labeled hour; not offered or wet forage, availability, or output from a feeding decision. |
 | `gut_available_energy_kj` | dynamic gut state | kJ | Available-energy accounting equivalent in the single gut pool at a transition boundary. |
 | `body_energy_reserve_kj` | dynamic body state | kJ | Physical body-energy reserve at a transition boundary. |
+| `structural_body_mass_kg` | fixed mass-conversion parameter | kg | Strictly positive body mass held fixed when energy reserve is interpreted as total mass. |
+| `reserve_tissue_energy_density_kj_kg` | fixed mass-conversion parameter | kJ kg^-1 | Strictly positive effective energy density used only to translate body-energy reserve into labile reserve-tissue mass. |
 | `gut_release_fraction_h` | fixed gut parameter | h^-1 | Fraction of opening gut energy released during each fixed one-hour transition; constrained to `(0, 1]`. |
 | `maintenance_expenditure_kj_h` | fixed body parameter rate | kJ h^-1 | Constant synthetic maintenance-only expenditure rate; not an empirically parameterized metabolic requirement. |
 | `prescribed_routine_activity_expenditure_kj_h` | prescribed body-expenditure rate | kJ h^-1 | Finite, non-negative routine-activity expenditure imposed externally for the labeled hour, incremental to fixed maintenance; not behavior or locomotion. |
@@ -75,6 +78,33 @@ kg DM h^-1 * kJ kg^-1 DM = kJ h^-1
 ```
 
 The converter adds no food columns, attributes, amount variables, or state.
+
+## Goal 019 Derived Body-Mass Record And Output
+
+`new_body_mass_parameters()` returns an exact plain named list with:
+
+```text
+structural_body_mass_kg
+reserve_tissue_energy_density_kj_kg
+```
+
+Both values are finite, strictly positive doubles. The accepted synthetic
+reference uses `38 kg` and `20,000 kJ kg^-1`, respectively.
+
+`derive_body_mass_from_energy_reserve()` returns a base data frame with one row
+per supplied non-negative body-energy reserve and columns in this order:
+
+```text
+body_energy_reserve_kj
+reserve_tissue_mass_kg
+total_body_mass_kg
+```
+
+All columns are finite doubles. Reserve-tissue mass is body-energy reserve
+divided by the fixed effective density; total mass is fixed structural mass
+plus reserve-tissue mass. It excludes physical gut contents, which are not a
+modeled mass stock. These are derived outputs, not dynamic states or runner
+inputs.
 
 ## Goal 007 Routine-Activity Record Schema
 
@@ -838,9 +868,9 @@ variable. Goal 016 adds one external forage-acquisition rate and its binding
 indicator without resource state. Forage biomass, depletion or renewal, wet
 forage, variable food properties, digestive losses or efficiency, dry-matter
 gut state, physical capacity, meals, broader behavior, directed locomotion,
-activity choice or feedback, mass change, variable or stochastic daily
-forcing, seasons, chronic change, viability, plants, and calibration have no
-implemented variables.
+activity choice or feedback, mass-dependent dynamics, tissue turnover,
+variable or stochastic daily forcing, seasons, chronic change, viability,
+plants, and calibration have no implemented variables.
 
 Goal 009's `0.020 kg DM h^-1` threshold is conditional on the declared
 16-hour, density, maintenance, activity, and discarded-curtailment fixture. It
