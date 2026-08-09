@@ -212,12 +212,24 @@ the larger reference removes Goal 018's artificial day-47 floor. This is a
 synthetic interpretation layer, not macropod calibration or a claim that all
 reserve tissue is fat.
 
+Rebuild Goal 020 adds one evidence-only, once-daily feeding-duration response.
+After the accepted `800 kJ` shortfall, the opening body deficit recruits four
+extra feeding hours on recovery day 1 and none thereafter. Those hours preserve
+the central four-hour rest block, retain every accepted within-hour rate, and
+add exactly `200 kJ` of activity expenditure. Realized day-1 intake rises from
+approximately `0.363` to `0.421 kg DM`; 90% combined-energy recovery occurs on
+day 1 rather than day 4. A transient crossing of the reference remains below
+`7 kJ` combined and `2 kJ` in body reserve. The acquisition ceiling and appetite
+bounds do not bind. This is a coherent synthetic duration mechanism, not an
+empirical feeding schedule or production scheduler.
+
 ## Next Decision Gate
 
-Goal 020 remains unapproved. The next discussion should decide whether one
-small animal-side consequence is still required or whether the model is ready
-for a static, heterogeneous, non-depleting spatial forage environment. No
-dynamic vegetation or mass-dependent energetic feedback is authorized.
+Goal 021 should isolate deficit-responsive acquisition rate while retaining the
+Goal 020 duration result as context. Its design should distinguish the
+effect of feeding faster from feeding longer, use one matched perturbation, and
+stop before jointly adaptive duration and rate, movement, spatial forage,
+depletion, or vegetation dynamics. Goal 021 is not yet authorized.
 
 ## Candidate Later Layers
 

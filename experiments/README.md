@@ -43,3 +43,9 @@ from 10,000 to 40,000 kJ changes no reference-relative energetic trajectory
 beyond floating-point roundoff. It then applies the pure body-mass converter to
 Goal 018 output. The derived masses are interpretations of energy state, not a
 second dynamic stock or feedback process.
+
+`rebuild-020-deficit-responsive-feeding-duration.R` compares fixed-duration
+recovery with a once-daily rule that can open up to two symmetric feeding-hour
+pairs from opening body deficit. It preserves the accepted within-hour model,
+central rest block, and activity charge, and adds no production scheduler or
+acquisition-rate response.

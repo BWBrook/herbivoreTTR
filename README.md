@@ -417,6 +417,10 @@ verify the fixed recurrence and severity response surfaces. The Goal 019
 experiment
 [`experiments/rebuild-019-derived-body-mass.R`](experiments/rebuild-019-derived-body-mass.R)
 verifies the energy-coordinate translation and derived mass interpretation.
+The Goal 020 experiment
+[`experiments/rebuild-020-deficit-responsive-feeding-duration.R`](experiments/rebuild-020-deficit-responsive-feeding-duration.R)
+tests a bounded once-daily feeding-duration response after the accepted
+shortfall while leaving the production model unchanged.
 
 These demonstrations prove arithmetic, timing, and accounting semantics only.
 They do not estimate a maintenance requirement, residence time, physical gut
@@ -446,9 +450,9 @@ window duration, and two fixed forcing sequences. Goal 013 adds the bounded
 hourly controller, Goal 014 adds a fixed sensitivity client, Goal 015 adds the
 canonical repeated-day runner, and Goal 016 adds the non-depleting
 forage-acquisition boundary. Goals 017-018 add fixed evidence-only recurrence
-diagnostics, and Goal 019 adds the pure mass conversion and current synthetic
-reference scale. The next layer remains unapproved; candidates are listed
-without authorization in
+diagnostics, Goal 019 adds the pure mass conversion and current synthetic
+reference scale, and Goal 020 adds the evidence-only duration response. The
+next layer remains unapproved and is framed in
 [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Provenance

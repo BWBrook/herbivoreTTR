@@ -1170,6 +1170,14 @@ Goal 019 adds the fixed body-mass parameter record and pure derived output. Its
 paired coordinate and Goal 018 mass summaries remain evidence quantities. No
 runner returns mass or accepts it as an input.
 
+Goal 020 composes a once-daily, evidence-only feeding-duration decision around
+the accepted runner. Opening body deficit recruits zero, one, or two symmetric
+two-hour extension pairs while retaining a four-hour central rest block and all
+within-hour appetite, acquisition, food, gut, activity, and body parameters.
+The rule, extension schedule, decision fields, and comparison summaries are
+experiment quantities; no production scheduler, state, schema, or equation is
+added.
+
 ## Exclusions And Stop
 
 Production functions do not represent variable or stochastic daily forcing,
@@ -1185,11 +1193,11 @@ feedback, tissue turnover or partitioning, protein, water, thermoregulation,
 plants, weather, space, individuals, populations, empirical calibration,
 parameter estimation, or uncertainty analysis.
 
-Goal 019 ends after the pure mass conversion, the 40,000 kJ appetite-reference
-shift, the coordinate-invariance check, and the corrected Goal 018
-interpretation. Fixed evidence-only recurrence does not add generalized event
-forcing. No mass feedback, parameter estimation, plant process, or empirical
-physiology is added. Any next layer is pending discussion.
+Goal 020 ends after the matched nine-day duration contrast. The tested
+discrete rule remains evidence only and does not establish empirical feeding
+hours or a generalized scheduler. No acquisition-rate response, mass feedback,
+parameter estimation, plant process, or empirical physiology is added. Any
+next layer requires a separate decision.
 
 The historical implementation is private at `BWBrook/herbivoreTTR-legacy`, tag
 `legacy-final-2026-07-16`; the pre-freeze scientific baseline is
