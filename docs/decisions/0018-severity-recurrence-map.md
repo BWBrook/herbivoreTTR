@@ -113,7 +113,6 @@ contract.
 The retained no-write reproduction client is:
 
 ```text
-experiments/rebuild-018-severity-recurrence-map.R
 ```
 
 Generated tables and the diagnostic panel remain disposable under the ignored

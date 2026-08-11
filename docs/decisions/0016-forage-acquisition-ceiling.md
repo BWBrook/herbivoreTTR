@@ -75,5 +75,4 @@ no plant state.
 The retained no-write reproduction client is:
 
 ```text
-experiments/rebuild-016-forage-acquisition-ceiling.R
 ```

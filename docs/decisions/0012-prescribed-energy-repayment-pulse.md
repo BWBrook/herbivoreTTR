@@ -123,7 +123,6 @@ biological-response claim.
 The retained source-controlled reproduction client is:
 
 ```text
-experiments/rebuild-012-prescribed-energy-repayment-pulse.R
 ```
 
 All sequence, phase, boundary, contrast, recurrence, and complement fields are

@@ -76,7 +76,6 @@ scientific decision.
 The retained no-write reproduction client is:
 
 ```text
-experiments/rebuild-019-derived-body-mass.R
 ```
 
 Generated tables and the diagnostic panel remain disposable under the ignored

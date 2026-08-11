@@ -21,9 +21,9 @@ new_forage_acquisition_ceiling_schedule <- function(
   )
 
   data.frame(
-    hour_of_day = as.integer(unclass(hour_of_day)),
+    hour_of_day = as.integer(hour_of_day),
     forage_acquisition_ceiling_kg_dm_h =
-      as.double(unclass(forage_acquisition_ceiling_kg_dm_h))
+      as.double(forage_acquisition_ceiling_kg_dm_h)
   )
 }
 
@@ -39,12 +39,10 @@ new_forage_acquisition_ceiling_schedule <- function(
   }
 
   if (
-    !.is_semantic_numeric_vector(forage_acquisition_ceiling_kg_dm_h) ||
+    !.is_numeric_vector(forage_acquisition_ceiling_kg_dm_h) ||
       length(forage_acquisition_ceiling_kg_dm_h) != 24L ||
-      any(!is.finite(as.double(unclass(
-        forage_acquisition_ceiling_kg_dm_h
-      )))) ||
-      any(as.double(unclass(forage_acquisition_ceiling_kg_dm_h)) < 0)
+      any(!is.finite(as.double(forage_acquisition_ceiling_kg_dm_h))) ||
+      any(as.double(forage_acquisition_ceiling_kg_dm_h) < 0)
   ) {
     stop(
       paste0(

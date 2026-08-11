@@ -80,7 +80,6 @@ fixed. Lost feeding time should remain a later, separate effect.
 The retained no-write client is:
 
 ```text
-experiments/rebuild-023-two-day-patch-carryover.R
 ```
 
 Generated evidence remains disposable under the ignored Goal 023 output

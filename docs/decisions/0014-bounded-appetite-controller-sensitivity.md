@@ -101,7 +101,6 @@ possible without continuing to build multi-day loops inside experiments.
 The retained no-write reproduction client is:
 
 ```text
-experiments/rebuild-014-appetite-controller-sensitivity.R
 ```
 
 Generated review tables and the diagnostic panel remain disposable under the

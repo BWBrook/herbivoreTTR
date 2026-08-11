@@ -113,7 +113,6 @@ with the smallest auditable biomass stock-flow system under constant forcing.
 The retained no-write client is:
 
 ```text
-experiments/rebuild-027-lower-quality-duration-response.R
 ```
 
 Generated evidence remains disposable under the ignored Goal 027 output

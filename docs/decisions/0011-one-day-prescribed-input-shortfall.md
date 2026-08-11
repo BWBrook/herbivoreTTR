@@ -125,7 +125,6 @@ stock-partition identity under those assumptions, not an animal response.
 The retained source-controlled reproduction client is:
 
 ```text
-experiments/rebuild-011-one-day-prescribed-input-shortfall.R
 ```
 
 ## Limits And Next Gate

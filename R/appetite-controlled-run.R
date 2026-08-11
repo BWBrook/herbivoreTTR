@@ -56,53 +56,43 @@ run_appetite_controlled_energy_days <- function(
   )
   number_of_days <- .validate_number_of_simulation_days(number_of_days)
 
-  initial_gut_energy_kj <- as.double(unclass(
-    initial_gut_state$gut_available_energy_kj
-  ))
-  initial_body_energy_kj <- as.double(unclass(
-    initial_body_state$body_energy_reserve_kj
-  ))
-  gut_release_fraction_h <- as.double(unclass(
-    gut_parameters$gut_release_fraction_h
-  ))
-  maintenance_expenditure_kj_h <- as.double(unclass(
+  initial_gut_energy_kj <- as.double(initial_gut_state$gut_available_energy_kj)
+  initial_body_energy_kj <- as.double(initial_body_state$body_energy_reserve_kj)
+  gut_release_fraction_h <- as.double(gut_parameters$gut_release_fraction_h)
+  maintenance_expenditure_kj_h <- as.double(
     body_parameters$maintenance_expenditure_kj_h
-  ))
-  energy_density_kj_kg_dm <- as.double(unclass(
+  )
+  energy_density_kj_kg_dm <- as.double(
     food_parameters$metabolizable_energy_density_kj_kg_dm
-  ))
-  maximum_intake_kg_dm_h <- as.double(unclass(
+  )
+  maximum_intake_kg_dm_h <- as.double(
     appetite_parameters$maximum_dry_matter_intake_kg_dm_h
-  ))
-  body_feedback_fraction_h <- as.double(unclass(
+  )
+  body_feedback_fraction_h <- as.double(
     appetite_parameters$body_energy_feedback_fraction_h
-  ))
-  gut_feedback_fraction_h <- as.double(unclass(
+  )
+  gut_feedback_fraction_h <- as.double(
     appetite_parameters$gut_energy_feedback_fraction_h
-  ))
-  hour_of_day <- as.integer(unclass(
-    appetite_reference_schedule$hour_of_day
-  ))
-  feeding_opportunity_open <- as.logical(unclass(
+  )
+  hour_of_day <- as.integer(appetite_reference_schedule$hour_of_day)
+  feeding_opportunity_open <- as.logical(
     appetite_reference_schedule$feeding_opportunity_open
-  ))
-  reference_intake_kg_dm_h <- as.double(unclass(
+  )
+  reference_intake_kg_dm_h <- as.double(
     appetite_reference_schedule$reference_dry_matter_intake_kg_dm_h
-  ))
-  reference_body_energy_kj <- as.double(unclass(
+  )
+  reference_body_energy_kj <- as.double(
     appetite_reference_schedule$reference_body_energy_reserve_kj
-  ))
-  reference_gut_energy_kj <- as.double(unclass(
+  )
+  reference_gut_energy_kj <- as.double(
     appetite_reference_schedule$reference_gut_available_energy_kj
-  ))
-  forage_acquisition_ceiling_kg_dm_h <- as.double(unclass(
-    forage_acquisition_ceiling_schedule$
-      forage_acquisition_ceiling_kg_dm_h
-  ))
-  routine_activity_kj_h <- as.double(unclass(
-    routine_activity_schedule$
-      prescribed_routine_activity_expenditure_kj_h
-  ))
+  )
+  forage_acquisition_ceiling_kg_dm_h <- as.double(
+    forage_acquisition_ceiling_schedule$forage_acquisition_ceiling_kg_dm_h
+  )
+  routine_activity_kj_h <- as.double(
+    routine_activity_schedule$prescribed_routine_activity_expenditure_kj_h
+  )
 
   .validate_appetite_reference_maximum(
     reference_intake_kg_dm_h,
@@ -169,8 +159,8 @@ run_appetite_controlled_energy_days <- function(
   if (
     !.is_whole_number(value) ||
       length(value) != 1L ||
-      as.double(unclass(value)) < 1 ||
-      as.double(unclass(value)) > .Machine$integer.max
+      as.double(value) < 1 ||
+      as.double(value) > .Machine$integer.max
   ) {
     stop(
       paste0(
@@ -181,7 +171,7 @@ run_appetite_controlled_energy_days <- function(
     )
   }
 
-  as.integer(unclass(value))
+  as.integer(value)
 }
 
 .run_appetite_controlled_energy_day_prevalidated <- function(
@@ -282,20 +272,18 @@ run_appetite_controlled_energy_days <- function(
     )
     realized_intake_energy_kj_h <-
       realized_intake_kg_dm_h * energy_density_kj_kg_dm
-    gut_transition <- .step_gut_energy_core(
+    transition <- .step_gut_body_energy_core(
       current_gut_energy_kj,
-      gut_release_fraction_h,
-      realized_intake_energy_kj_h
-    )
-    body_transition <- .step_body_energy_core(
       current_body_energy_kj,
+      gut_release_fraction_h,
       maintenance_expenditure_kj_h,
-      gut_transition$fluxes$assimilated_energy_kj_h,
+      realized_intake_energy_kj_h,
       routine_activity_kj_h[[row_index]]
     )
-
-    gut_energy_start_kj <- current_gut_energy_kj
-    body_energy_start_kj <- current_body_energy_kj
+    gut_transition <- transition$gut
+    body_transition <- transition$body
+    gut_energy_start_kj <- transition$system$gut_energy_start_kj
+    body_energy_start_kj <- transition$system$body_energy_start_kj
     gut_energy_end_kj <-
       gut_transition$state$gut_available_energy_kj
     body_energy_end_kj <-
@@ -309,44 +297,10 @@ run_appetite_controlled_energy_days <- function(
     routine_activity_energy_kj <-
       body_transition$fluxes$
         prescribed_routine_activity_expenditure_kj
-    total_system_energy_start_kj <-
-      gut_energy_start_kj + body_energy_start_kj
-    total_system_energy_end_kj <-
-      gut_energy_end_kj + body_energy_end_kj
+    total_system_energy_start_kj <- transition$system$total_energy_start_kj
+    total_system_energy_end_kj <- transition$system$total_energy_end_kj
     system_energy_balance_residual_kj <-
-      total_system_energy_end_kj - total_system_energy_start_kj -
-        (
-          realized_ingested_energy_kj -
-            maintenance_energy_kj -
-            routine_activity_energy_kj
-        )
-    system_arithmetic <- c(
-      total_system_energy_start_kj,
-      total_system_energy_end_kj,
-      system_energy_balance_residual_kj
-    )
-    if (any(!is.finite(system_arithmetic))) {
-      stop(
-        "The hourly whole-system energy accounting must remain finite.",
-        call. = FALSE
-      )
-    }
-    system_tolerance <- .gut_body_hourly_system_tolerance(
-      gut_energy_start_kj,
-      gut_energy_end_kj,
-      body_energy_start_kj,
-      body_energy_end_kj,
-      realized_ingested_energy_kj,
-      assimilated_energy_kj,
-      maintenance_energy_kj,
-      routine_activity_energy_kj
-    )
-    if (abs(system_energy_balance_residual_kj) > system_tolerance) {
-      stop(
-        "The hourly whole-system energy balance does not close.",
-        call. = FALSE
-      )
-    }
+      transition$system$energy_balance_residual_kj
 
     controller_names <- names(control)
     for (field_name in controller_names) {

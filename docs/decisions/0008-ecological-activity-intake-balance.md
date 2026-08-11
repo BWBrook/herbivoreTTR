@@ -102,7 +102,6 @@ No variable-dictionary update is required because Goal 008 adds no variable,
 field, record, or schema. The retained source-controlled reproduction client is:
 
 ```text
-experiments/rebuild-008-ecological-activity-intake-balance.R
 ```
 
 ## Limits And Next Gate

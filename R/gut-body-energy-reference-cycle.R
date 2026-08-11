@@ -49,26 +49,21 @@ run_gut_body_energy_reference_cycle <- function(
     )
   max_burn_in_days <- .validate_max_burn_in_days(max_burn_in_days)
 
-  initial_gut_energy_kj <- as.double(unclass(
-    initial_gut_state$gut_available_energy_kj
-  ))
-  measurement_body_energy_kj <- as.double(unclass(
+  initial_gut_energy_kj <- as.double(initial_gut_state$gut_available_energy_kj)
+  measurement_body_energy_kj <- as.double(
     measurement_body_state$body_energy_reserve_kj
-  ))
-  gut_release_fraction_h <- as.double(unclass(
-    gut_parameters$gut_release_fraction_h
-  ))
-  maintenance_expenditure_kj_h <- as.double(unclass(
+  )
+  gut_release_fraction_h <- as.double(gut_parameters$gut_release_fraction_h)
+  maintenance_expenditure_kj_h <- as.double(
     body_parameters$maintenance_expenditure_kj_h
-  ))
-  hour_of_day <- as.integer(unclass(schedule$hour_of_day))
-  ingested_energy_kj_h <- as.double(unclass(
+  )
+  hour_of_day <- as.integer(schedule$hour_of_day)
+  ingested_energy_kj_h <- as.double(
     schedule$prescribed_ingested_available_energy_kj_h
-  ))
-  routine_activity_kj_h <- as.double(unclass(
-    routine_activity_schedule$
-      prescribed_routine_activity_expenditure_kj_h
-  ))
+  )
+  routine_activity_kj_h <- as.double(
+    routine_activity_schedule$prescribed_routine_activity_expenditure_kj_h
+  )
 
   burn_in <- .run_reference_cycle_gut_burn_in(
     initial_gut_energy_kj,
@@ -96,7 +91,7 @@ run_gut_body_energy_reference_cycle <- function(
 
 .validate_gut_convergence_relative_tolerance <- function(value) {
   if (
-    !.is_semantic_numeric_vector(value) ||
+    !.is_numeric_vector(value) ||
       length(value) != 1L ||
       !is.finite(value) ||
       value <= 0 ||
@@ -111,15 +106,15 @@ run_gut_body_energy_reference_cycle <- function(
     )
   }
 
-  as.double(unclass(value))
+  as.double(value)
 }
 
 .validate_max_burn_in_days <- function(value) {
   if (
     !.is_whole_number(value) ||
       length(value) != 1L ||
-      as.double(unclass(value)) < 2 ||
-      as.double(unclass(value)) > .Machine$integer.max
+      as.double(value) < 2 ||
+      as.double(value) > .Machine$integer.max
   ) {
     stop(
       paste0(
@@ -130,7 +125,7 @@ run_gut_body_energy_reference_cycle <- function(
     )
   }
 
-  as.integer(unclass(value))
+  as.integer(value)
 }
 
 .run_reference_cycle_gut_burn_in <- function(

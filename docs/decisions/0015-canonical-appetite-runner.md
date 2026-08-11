@@ -69,6 +69,4 @@ moves to the proposed Goal 017.
 The retained no-write reproduction clients are:
 
 ```text
-experiments/rebuild-013-minimal-endogenous-appetite-control.R
-experiments/rebuild-014-appetite-controller-sensitivity.R
 ```

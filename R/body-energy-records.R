@@ -15,7 +15,7 @@ new_body_energy_state <- function(body_energy_reserve_kj) {
   )
 
   list(
-    body_energy_reserve_kj = as.double(unclass(body_energy_reserve_kj))
+    body_energy_reserve_kj = as.double(body_energy_reserve_kj)
   )
 }
 
@@ -37,7 +37,7 @@ new_body_energy_parameters <- function(maintenance_expenditure_kj_h) {
 
   list(
     maintenance_expenditure_kj_h =
-      as.double(unclass(maintenance_expenditure_kj_h))
+      as.double(maintenance_expenditure_kj_h)
   )
 }
 
@@ -63,18 +63,18 @@ new_assimilated_energy_schedule <- function(
   )
 
   data.frame(
-    hour_of_day = as.integer(unclass(hour_of_day)),
+    hour_of_day = as.integer(hour_of_day),
     prescribed_assimilated_energy_kj_h =
-      as.double(unclass(prescribed_assimilated_energy_kj_h))
+      as.double(prescribed_assimilated_energy_kj_h)
   )
 }
 
 .validate_nonnegative_numeric_scalar <- function(value, field_name) {
   if (
-    !.is_semantic_numeric_vector(value) ||
+    !.is_numeric_vector(value) ||
       length(value) != 1L ||
-      !is.finite(as.double(unclass(value))) ||
-      as.double(unclass(value)) < 0
+      !is.finite(as.double(value)) ||
+      as.double(value) < 0
   ) {
     stop(
       sprintf("`%s` must be one finite, non-negative numeric value.", field_name),
@@ -85,27 +85,10 @@ new_assimilated_energy_schedule <- function(
   invisible(NULL)
 }
 
-.is_semantic_numeric_vector <- function(value) {
-  if (
-    !typeof(value) %in% c("integer", "double") ||
-      is.factor(value) ||
-      !is.null(dim(value))
-  ) {
-    return(FALSE)
-  }
-
-  isTRUE(tryCatch(
-    {
-      semantic_value <- as.double(value)
-      attributes(semantic_value) <- NULL
-      identical(
-        semantic_value,
-        as.double(unclass(value))
-      )
-    },
-    warning = function(condition) FALSE,
-    error = function(condition) FALSE
-  ))
+.is_numeric_vector <- function(value) {
+  typeof(value) %in% c("integer", "double") &&
+    !is.object(value) &&
+    is.null(dim(value))
 }
 
 .has_exact_named_fields <- function(value, required_names) {
@@ -116,11 +99,11 @@ new_assimilated_energy_schedule <- function(
 }
 
 .is_whole_number <- function(value) {
-  if (!.is_semantic_numeric_vector(value)) {
+  if (!.is_numeric_vector(value)) {
     return(FALSE)
   }
 
-  canonical_value <- as.double(unclass(value))
+  canonical_value <- as.double(value)
   all(is.finite(canonical_value)) &&
     all(canonical_value == floor(canonical_value))
 }
@@ -128,14 +111,14 @@ new_assimilated_energy_schedule <- function(
 .is_hour_of_day_schedule <- function(value) {
   .is_whole_number(value) &&
     length(value) == 24L &&
-    all(as.double(unclass(value)) == 0:23)
+    all(as.double(value) == 0:23)
 }
 
 .is_hour_of_day_scalar <- function(value) {
   .is_whole_number(value) &&
     length(value) == 1L &&
-    as.double(unclass(value)) >= 0 &&
-    as.double(unclass(value)) <= 23
+    as.double(value) >= 0 &&
+    as.double(value) <= 23
 }
 
 .validate_assimilated_energy_schedule_fields <- function(
@@ -150,12 +133,10 @@ new_assimilated_energy_schedule <- function(
   }
 
   if (
-    !.is_semantic_numeric_vector(prescribed_assimilated_energy_kj_h) ||
+    !.is_numeric_vector(prescribed_assimilated_energy_kj_h) ||
       length(prescribed_assimilated_energy_kj_h) != 24L ||
-      any(!is.finite(as.double(unclass(
-        prescribed_assimilated_energy_kj_h
-      )))) ||
-      any(as.double(unclass(prescribed_assimilated_energy_kj_h)) < 0)
+      any(!is.finite(as.double(prescribed_assimilated_energy_kj_h))) ||
+      any(as.double(prescribed_assimilated_energy_kj_h) < 0)
   ) {
     stop(
       paste0(

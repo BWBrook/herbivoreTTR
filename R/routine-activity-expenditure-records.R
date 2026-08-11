@@ -22,9 +22,9 @@ new_routine_activity_expenditure_schedule <- function(
   )
 
   data.frame(
-    hour_of_day = as.integer(unclass(hour_of_day)),
+    hour_of_day = as.integer(hour_of_day),
     prescribed_routine_activity_expenditure_kj_h =
-      as.double(unclass(prescribed_routine_activity_expenditure_kj_h))
+      as.double(prescribed_routine_activity_expenditure_kj_h)
   )
 }
 
@@ -40,16 +40,12 @@ new_routine_activity_expenditure_schedule <- function(
   }
 
   if (
-    !.is_semantic_numeric_vector(
+    !.is_numeric_vector(
       prescribed_routine_activity_expenditure_kj_h
     ) ||
       length(prescribed_routine_activity_expenditure_kj_h) != 24L ||
-      any(!is.finite(as.double(unclass(
-        prescribed_routine_activity_expenditure_kj_h
-      )))) ||
-      any(as.double(unclass(
-        prescribed_routine_activity_expenditure_kj_h
-      )) < 0)
+      any(!is.finite(as.double(prescribed_routine_activity_expenditure_kj_h))) ||
+      any(as.double(prescribed_routine_activity_expenditure_kj_h) < 0)
   ) {
     stop(
       paste0(

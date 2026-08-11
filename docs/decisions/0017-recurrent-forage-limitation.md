@@ -89,7 +89,6 @@ capacity boundary. Vegetation and space remain outside both goals.
 The retained no-write reproduction client is:
 
 ```text
-experiments/rebuild-017-recurrent-forage-limitation.R
 ```
 
 Generated tables and the diagnostic panel remain disposable under the ignored

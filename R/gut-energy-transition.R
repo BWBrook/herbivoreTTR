@@ -20,11 +20,9 @@ step_gut_energy <- function(state, parameters, input_row) {
   .validate_ingested_available_energy_input_row(input_row)
 
   .step_gut_energy_core(
-    as.double(unclass(state$gut_available_energy_kj)),
-    as.double(unclass(parameters$gut_release_fraction_h)),
-    as.double(unclass(
-      input_row$prescribed_ingested_available_energy_kj_h
-    ))
+    as.double(state$gut_available_energy_kj),
+    as.double(parameters$gut_release_fraction_h),
+    as.double(input_row$prescribed_ingested_available_energy_kj_h)
   )
 }
 

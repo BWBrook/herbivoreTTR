@@ -83,7 +83,6 @@ gut fill, macropod intake capacity, or physiological reserve recovery.
 The retained no-write client is:
 
 ```text
-experiments/rebuild-026-repeated-food-quality.R
 ```
 
 Generated evidence remains disposable under the ignored Goal 026 output

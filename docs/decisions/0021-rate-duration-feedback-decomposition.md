@@ -83,7 +83,6 @@ synergy.
 The retained no-write client is:
 
 ```text
-experiments/rebuild-021-rate-duration-feedback-decomposition.R
 ```
 
 Generated evidence remains disposable under the ignored Goal 021 output

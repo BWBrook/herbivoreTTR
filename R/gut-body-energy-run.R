@@ -38,26 +38,23 @@ run_gut_body_energy_day <- function(
   )
 
   .run_gut_body_energy_day_prevalidated(
-    initial_gut_energy_kj = as.double(unclass(
+    initial_gut_energy_kj = as.double(
       initial_gut_state$gut_available_energy_kj
-    )),
-    initial_body_energy_kj = as.double(unclass(
+    ),
+    initial_body_energy_kj = as.double(
       initial_body_state$body_energy_reserve_kj
-    )),
-    gut_release_fraction_h = as.double(unclass(
-      gut_parameters$gut_release_fraction_h
-    )),
-    maintenance_expenditure_kj_h = as.double(unclass(
+    ),
+    gut_release_fraction_h = as.double(gut_parameters$gut_release_fraction_h),
+    maintenance_expenditure_kj_h = as.double(
       body_parameters$maintenance_expenditure_kj_h
-    )),
-    hour_of_day = as.integer(unclass(schedule$hour_of_day)),
-    ingested_energy_kj_h = as.double(unclass(
+    ),
+    hour_of_day = as.integer(schedule$hour_of_day),
+    ingested_energy_kj_h = as.double(
       schedule$prescribed_ingested_available_energy_kj_h
-    )),
-    routine_activity_kj_h = as.double(unclass(
-      routine_activity_schedule$
-        prescribed_routine_activity_expenditure_kj_h
-    ))
+    ),
+    routine_activity_kj_h = as.double(
+      routine_activity_schedule$prescribed_routine_activity_expenditure_kj_h
+    )
   )
 }
 
@@ -108,22 +105,18 @@ run_gut_body_energy_day <- function(
   current_body_energy_kj <- initial_body_energy_kj
 
   for (row_index in seq_len(24L)) {
-    gut_available_energy_start_kj <-
-      current_gut_energy_kj
-    body_energy_reserve_start_kj <-
-      current_body_energy_kj
-    gut_transition <- .step_gut_energy_core(
+    transition <- .step_gut_body_energy_core(
       current_gut_energy_kj,
-      gut_release_fraction_h,
-      ingested_energy_kj_h[[row_index]]
-    )
-    body_transition <- .step_body_energy_core(
       current_body_energy_kj,
+      gut_release_fraction_h,
       maintenance_expenditure_kj_h,
-      gut_transition$fluxes$assimilated_energy_kj_h,
+      ingested_energy_kj_h[[row_index]],
       routine_activity_kj_h[[row_index]]
     )
-
+    gut_transition <- transition$gut
+    body_transition <- transition$body
+    gut_available_energy_start_kj <- transition$system$gut_energy_start_kj
+    body_energy_reserve_start_kj <- transition$system$body_energy_start_kj
     gut_available_energy_end_kj <-
       gut_transition$state$gut_available_energy_kj
     body_energy_reserve_end_kj <-
@@ -137,47 +130,10 @@ run_gut_body_energy_day <- function(
     prescribed_routine_activity_expenditure_kj <-
       body_transition$fluxes$
         prescribed_routine_activity_expenditure_kj
-    total_system_energy_start_kj <-
-      gut_available_energy_start_kj + body_energy_reserve_start_kj
-    total_system_energy_end_kj <-
-      gut_available_energy_end_kj + body_energy_reserve_end_kj
+    total_system_energy_start_kj <- transition$system$total_energy_start_kj
+    total_system_energy_end_kj <- transition$system$total_energy_end_kj
     system_energy_balance_residual_kj <-
-      (
-        total_system_energy_end_kj -
-          total_system_energy_start_kj
-      ) - (
-        prescribed_ingested_available_energy_kj -
-          maintenance_expenditure_kj -
-          prescribed_routine_activity_expenditure_kj
-      )
-
-    system_arithmetic <- c(
-      total_system_energy_start_kj,
-      total_system_energy_end_kj,
-      system_energy_balance_residual_kj
-    )
-    if (any(!is.finite(system_arithmetic))) {
-      stop(
-        "The hourly whole-system energy accounting must remain finite.",
-        call. = FALSE
-      )
-    }
-    system_tolerance <- .gut_body_hourly_system_tolerance(
-      gut_available_energy_start_kj,
-      gut_available_energy_end_kj,
-      body_energy_reserve_start_kj,
-      body_energy_reserve_end_kj,
-      prescribed_ingested_available_energy_kj,
-      assimilated_energy_kj,
-      maintenance_expenditure_kj,
-      prescribed_routine_activity_expenditure_kj
-    )
-    if (abs(system_energy_balance_residual_kj) > system_tolerance) {
-      stop(
-        "The hourly whole-system energy balance does not close.",
-        call. = FALSE
-      )
-    }
+      transition$system$energy_balance_residual_kj
 
     hourly$gut_available_energy_start_kj[[row_index]] <-
       gut_available_energy_start_kj
@@ -223,6 +179,78 @@ run_gut_body_energy_day <- function(
   daily <- .summarize_gut_body_energy_day(hourly)
 
   list(hourly = hourly, daily = daily)
+}
+
+.step_gut_body_energy_core <- function(
+  gut_energy_start_kj,
+  body_energy_start_kj,
+  gut_release_fraction_h,
+  maintenance_expenditure_kj_h,
+  ingested_energy_kj_h,
+  routine_activity_kj_h
+) {
+  gut <- .step_gut_energy_core(
+    gut_energy_start_kj,
+    gut_release_fraction_h,
+    ingested_energy_kj_h
+  )
+  body <- .step_body_energy_core(
+    body_energy_start_kj,
+    maintenance_expenditure_kj_h,
+    gut$fluxes$assimilated_energy_kj_h,
+    routine_activity_kj_h
+  )
+
+  gut_energy_end_kj <- gut$state$gut_available_energy_kj
+  body_energy_end_kj <- body$state$body_energy_reserve_kj
+  total_energy_start_kj <- gut_energy_start_kj + body_energy_start_kj
+  total_energy_end_kj <- gut_energy_end_kj + body_energy_end_kj
+  energy_balance_residual_kj <-
+    total_energy_end_kj - total_energy_start_kj -
+      (
+        gut$fluxes$prescribed_ingested_available_energy_kj -
+          body$fluxes$maintenance_expenditure_kj -
+          body$fluxes$prescribed_routine_activity_expenditure_kj
+      )
+
+  if (any(!is.finite(c(
+    total_energy_start_kj,
+    total_energy_end_kj,
+    energy_balance_residual_kj
+  )))) {
+    stop(
+      "The hourly whole-system energy accounting must remain finite.",
+      call. = FALSE
+    )
+  }
+  tolerance <- .gut_body_hourly_system_tolerance(
+    gut_energy_start_kj,
+    gut_energy_end_kj,
+    body_energy_start_kj,
+    body_energy_end_kj,
+    gut$fluxes$prescribed_ingested_available_energy_kj,
+    gut$fluxes$assimilated_energy_kj,
+    body$fluxes$maintenance_expenditure_kj,
+    body$fluxes$prescribed_routine_activity_expenditure_kj
+  )
+  if (abs(energy_balance_residual_kj) > tolerance) {
+    stop(
+      "The hourly whole-system energy balance does not close.",
+      call. = FALSE
+    )
+  }
+
+  list(
+    gut = gut,
+    body = body,
+    system = list(
+      gut_energy_start_kj = gut_energy_start_kj,
+      body_energy_start_kj = body_energy_start_kj,
+      total_energy_start_kj = total_energy_start_kj,
+      total_energy_end_kj = total_energy_end_kj,
+      energy_balance_residual_kj = energy_balance_residual_kj
+    )
+  )
 }
 
 .summarize_gut_body_energy_day <- function(hourly) {

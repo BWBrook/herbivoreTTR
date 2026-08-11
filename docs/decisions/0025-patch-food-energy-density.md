@@ -85,7 +85,6 @@ limits the compensatory dry-matter response before spatial order is added.
 The retained no-write client is:
 
 ```text
-experiments/rebuild-025-patch-food-energy-density.R
 ```
 
 Generated evidence remains disposable under the ignored Goal 025 output

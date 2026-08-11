@@ -75,7 +75,6 @@ time would confound carry-over with movement expenditure.
 The retained no-write client is:
 
 ```text
-experiments/rebuild-022-implicit-two-patch-forage.R
 ```
 
 Generated evidence remains disposable under the ignored Goal 022 output

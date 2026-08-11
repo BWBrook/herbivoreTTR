@@ -71,7 +71,6 @@ duration changes alone; acquisition-rate response remains unimplemented.
 The retained no-write client is:
 
 ```text
-experiments/rebuild-020-deficit-responsive-feeding-duration.R
 ```
 
 Generated evidence remains disposable under the ignored Goal 020 output

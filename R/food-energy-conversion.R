@@ -20,12 +20,8 @@ derive_ingested_available_energy_schedule <- function(
   .validate_dry_matter_intake_schedule(schedule)
 
   converted_rates_kj_h <-
-    as.double(unclass(
-      schedule$prescribed_dry_matter_intake_kg_dm_h
-    )) *
-      as.double(unclass(
-        parameters$metabolizable_energy_density_kj_kg_dm
-      ))
+    as.double(schedule$prescribed_dry_matter_intake_kg_dm_h) *
+      as.double(parameters$metabolizable_energy_density_kj_kg_dm)
   if (any(!is.finite(converted_rates_kj_h))) {
     stop(
       "Converted ingested available-energy rates must all be finite.",
@@ -34,7 +30,7 @@ derive_ingested_available_energy_schedule <- function(
   }
 
   new_ingested_available_energy_schedule(
-    as.integer(unclass(schedule$hour_of_day)),
+    as.integer(schedule$hour_of_day),
     converted_rates_kj_h
   )
 }

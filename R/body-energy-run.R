@@ -29,17 +29,16 @@ run_body_energy_day <- function(
   )
 
   initial_body_energy_kj <-
-    as.double(unclass(initial_state$body_energy_reserve_kj))
+    as.double(initial_state$body_energy_reserve_kj)
   maintenance_expenditure_kj_h <-
-    as.double(unclass(parameters$maintenance_expenditure_kj_h))
-  hour_of_day <- as.integer(unclass(schedule$hour_of_day))
-  assimilated_energy_kj_h <- as.double(unclass(
+    as.double(parameters$maintenance_expenditure_kj_h)
+  hour_of_day <- as.integer(schedule$hour_of_day)
+  assimilated_energy_kj_h <- as.double(
     schedule$prescribed_assimilated_energy_kj_h
-  ))
-  routine_activity_kj_h <- as.double(unclass(
-    routine_activity_schedule$
-      prescribed_routine_activity_expenditure_kj_h
-  ))
+  )
+  routine_activity_kj_h <- as.double(
+    routine_activity_schedule$prescribed_routine_activity_expenditure_kj_h
+  )
 
   hourly <- data.frame(
     hour_of_day = hour_of_day,

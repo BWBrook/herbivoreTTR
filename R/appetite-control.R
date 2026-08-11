@@ -35,11 +35,11 @@ new_appetite_control_parameters <- function(
 
   list(
     maximum_dry_matter_intake_kg_dm_h =
-      as.double(unclass(maximum_dry_matter_intake_kg_dm_h)),
+      as.double(maximum_dry_matter_intake_kg_dm_h),
     body_energy_feedback_fraction_h =
-      as.double(unclass(body_energy_feedback_fraction_h)),
+      as.double(body_energy_feedback_fraction_h),
     gut_energy_feedback_fraction_h =
-      as.double(unclass(gut_energy_feedback_fraction_h))
+      as.double(gut_energy_feedback_fraction_h)
   )
 }
 
@@ -77,15 +77,15 @@ new_appetite_reference_schedule <- function(
   )
 
   data.frame(
-    hour_of_day = as.integer(unclass(hour_of_day)),
+    hour_of_day = as.integer(hour_of_day),
     feeding_opportunity_open =
-      as.logical(unclass(feeding_opportunity_open)),
+      as.logical(feeding_opportunity_open),
     reference_dry_matter_intake_kg_dm_h =
-      as.double(unclass(reference_dry_matter_intake_kg_dm_h)),
+      as.double(reference_dry_matter_intake_kg_dm_h),
     reference_body_energy_reserve_kj =
-      as.double(unclass(reference_body_energy_reserve_kj)),
+      as.double(reference_body_energy_reserve_kj),
     reference_gut_available_energy_kj =
-      as.double(unclass(reference_gut_available_energy_kj))
+      as.double(reference_gut_available_energy_kj)
   )
 }
 
@@ -126,36 +126,26 @@ calculate_appetite_target <- function(
   .validate_appetite_control_parameters(appetite_parameters)
   .validate_appetite_reference_row(reference_row)
 
-  gut_energy_kj <- as.double(unclass(
-    gut_state$gut_available_energy_kj
-  ))
-  body_energy_kj <- as.double(unclass(
-    body_state$body_energy_reserve_kj
-  ))
-  energy_density_kj_kg_dm <- as.double(unclass(
+  gut_energy_kj <- as.double(gut_state$gut_available_energy_kj)
+  body_energy_kj <- as.double(body_state$body_energy_reserve_kj)
+  energy_density_kj_kg_dm <- as.double(
     food_parameters$metabolizable_energy_density_kj_kg_dm
-  ))
-  maximum_intake_kg_dm_h <- as.double(unclass(
+  )
+  maximum_intake_kg_dm_h <- as.double(
     appetite_parameters$maximum_dry_matter_intake_kg_dm_h
-  ))
-  body_feedback_fraction_h <- as.double(unclass(
+  )
+  body_feedback_fraction_h <- as.double(
     appetite_parameters$body_energy_feedback_fraction_h
-  ))
-  gut_feedback_fraction_h <- as.double(unclass(
+  )
+  gut_feedback_fraction_h <- as.double(
     appetite_parameters$gut_energy_feedback_fraction_h
-  ))
-  feeding_opportunity_open <- as.logical(unclass(
-    reference_row$feeding_opportunity_open
-  ))
-  reference_intake_kg_dm_h <- as.double(unclass(
+  )
+  feeding_opportunity_open <- as.logical(reference_row$feeding_opportunity_open)
+  reference_intake_kg_dm_h <- as.double(
     reference_row$reference_dry_matter_intake_kg_dm_h
-  ))
-  reference_body_energy_kj <- as.double(unclass(
-    reference_row$reference_body_energy_reserve_kj
-  ))
-  reference_gut_energy_kj <- as.double(unclass(
-    reference_row$reference_gut_available_energy_kj
-  ))
+  )
+  reference_body_energy_kj <- as.double(reference_row$reference_body_energy_reserve_kj)
+  reference_gut_energy_kj <- as.double(reference_row$reference_gut_available_energy_kj)
 
   .validate_appetite_reference_maximum(
     reference_intake_kg_dm_h,
@@ -302,10 +292,10 @@ calculate_appetite_target <- function(
 
 .validate_appetite_numeric_vector <- function(value, field_name) {
   if (
-    !.is_semantic_numeric_vector(value) ||
+    !.is_numeric_vector(value) ||
       length(value) != 24L ||
-      any(!is.finite(as.double(unclass(value)))) ||
-      any(as.double(unclass(value)) < 0)
+      any(!is.finite(as.double(value))) ||
+      any(as.double(value) < 0)
   ) {
     stop(
       sprintf(
@@ -357,10 +347,8 @@ calculate_appetite_target <- function(
     "reference_gut_available_energy_kj"
   )
 
-  opportunity <- as.logical(unclass(feeding_opportunity_open))
-  reference_intake <- as.double(unclass(
-    reference_dry_matter_intake_kg_dm_h
-  ))
+  opportunity <- as.logical(feeding_opportunity_open)
+  reference_intake <- as.double(reference_dry_matter_intake_kg_dm_h)
   if (any(!opportunity & reference_intake != 0)) {
     stop(
       "Reference dry-matter intake must be zero when feeding opportunity is closed.",
@@ -452,10 +440,8 @@ calculate_appetite_target <- function(
     "reference_row$reference_gut_available_energy_kj"
   )
   if (
-    !as.logical(unclass(reference_row$feeding_opportunity_open)) &&
-      as.double(unclass(
-        reference_row$reference_dry_matter_intake_kg_dm_h
-      )) != 0
+    !as.logical(reference_row$feeding_opportunity_open) &&
+      as.double(reference_row$reference_dry_matter_intake_kg_dm_h) != 0
   ) {
     stop(
       "Reference dry-matter intake must be zero when feeding opportunity is closed.",

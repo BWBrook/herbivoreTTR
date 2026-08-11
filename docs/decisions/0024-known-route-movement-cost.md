@@ -93,7 +93,6 @@ depletion or plant dynamics are introduced.
 The retained no-write client is:
 
 ```text
-experiments/rebuild-024-known-route-movement-cost.R
 ```
 
 Generated evidence remains disposable under the ignored Goal 024 output

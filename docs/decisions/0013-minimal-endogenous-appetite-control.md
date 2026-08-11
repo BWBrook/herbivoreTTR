@@ -120,7 +120,6 @@ different physiological increment.
 The retained no-write reproduction client is:
 
 ```text
-experiments/rebuild-013-minimal-endogenous-appetite-control.R
 ```
 
 Generated review tables and the diagnostic panel remain disposable under the
