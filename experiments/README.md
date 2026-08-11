@@ -49,3 +49,42 @@ recovery with a once-daily rule that can open up to two symmetric feeding-hour
 pairs from opening body deficit. It preserves the accepted within-hour model,
 central rest block, and activity charge, and adds no production scheduler or
 acquisition-rate response.
+
+`rebuild-021-rate-duration-feedback-decomposition.R` crosses the existing
+hourly appetite-rate feedback off/on with the Goal 020 duration response off/on
+after one common shortfall. It quantifies their isolated recovery and
+sub-additive overlap without adding another acquisition controller or package
+mechanism.
+
+`rebuild-022-implicit-two-patch-forage.R` prescribes adequate and limited
+non-depleting acquisition ceilings across the two accepted feeding windows. It
+compares homogeneous anchors with two equal-exposure mixed orders and retains
+patch labels as evidence only, without adding location, movement, choice,
+depletion, vegetation, or a production spatial interface.
+
+`rebuild-023-two-day-patch-carryover.R` repeats each Goal 022 schedule for one
+additional identical day through the canonical carried-state runner. It tests
+whether the mixed-order intake and energy partition persist without adding a
+third day, recurrence machinery, movement cost, choice, depletion, vegetation,
+or production spatial state.
+
+`rebuild-024-known-route-movement-cost.R` crosses one lost feeding hour with an
+additional `100 kJ` movement charge for both mixed patch orders. It separates
+time and energy effects without adding distance, speed, search, choice, water,
+multi-day travel, or production movement state.
+
+`rebuild-025-patch-food-energy-density.R` composes public hourly transitions
+for adequate and lower metabolizable energy densities across the accepted
+feeding windows. Acquisition remains non-limiting and movement cost-free; the
+client adds no production density schedule, nutrient process, depletion, or
+vegetation.
+
+`rebuild-026-repeated-food-quality.R` calls the canonical repeated-day runner
+for 10 homogeneous adequate- and lower-quality days. It tests daily reactive
+compensation and accumulated reserve state without adding anticipation,
+learning, environmental variation, or another runner.
+
+`rebuild-027-lower-quality-duration-response.R` compares adequate fixed,
+lower-quality fixed, and lower-quality responsive-duration trajectories over
+10 days. It reuses the Goal 020 rule unchanged and closes the current
+herbivore-core stage without adding a scheduler or another animal mechanism.

@@ -1,5 +1,19 @@
 # Roadmap
 
+## Development Arc Map
+
+The long-range progression and stage exit criteria are maintained separately
+from the goal-by-goal record:
+
+1. [minimal herbivore core](arcs/01-herbivore-core.md) - closed through Goal 027;
+2. [isolated plant-forage subsystem](arcs/02-isolated-plant-forage.md) - next;
+3. [non-spatial herbivore-forage coupling](arcs/03-non-spatial-coupling.md);
+4. [explicit spatial patches and movement](arcs/04-explicit-spatial-patches-and-movement.md); and
+5. [landscape constraints and scenarios](arcs/05-landscape-constraints-and-scenarios.md).
+
+These arcs constrain scope and stopping decisions. Individual goals remain
+small and require separate authorization.
+
 ## Implemented Layers
 
 Rebuild Goal 001 establishes package metadata, reproducible environment support,
@@ -223,13 +237,93 @@ day 1 rather than day 4. A transient crossing of the reference remains below
 bounds do not bind. This is a coherent synthetic duration mechanism, not an
 empirical feeding schedule or production scheduler.
 
+Rebuild Goal 021 decomposes the existing appetite-rate and feeding-duration
+responses in a four-arm evidence-only contrast. With neither response, the
+common `-800 kJ` debt persists. Rate response alone reaches 90% recovery on day
+4. Duration response alone adds four hours and recovers a net `600 kJ`, then
+stops at `-200 kJ` because the remaining opening body deficit lies below its
+`300 kJ` pair threshold. Together, the responses reach 90% recovery on day 1
+and converge to zero. Their interaction contrast is negative, approaching
+`-599 kJ`, because both responses recover overlapping portions of the same
+finite debt; the combined arm is nevertheless the most recovered on every day.
+This closes the immediate case for a duplicate hunger-driven acquisition-rate
+controller.
+
+Rebuild Goal 022 adds the first implicit two-patch exposure diagnostic without
+adding production spatial state. Adequate-only and limited-only schedules
+exactly preserve the accepted reference and Goal 016 binding anchors. The two
+mixed schedules have the same eight-plus-eight-hour exposure and `0.32 kg DM`
+aggregate ceiling capacity, yet limited-then-adequate realizes `0.012 kg DM`
+and `124 kJ` more than adequate-then-limited. Early limitation raises appetite
+before the adequate second window. At midnight, `228 kJ` more remains in the
+gut and body reserve is `104 kJ` lower, so the whole-system advantage has not
+yet been fully assimilated. This is a prescribed within-day sequence effect,
+not evidence of choice or movement.
+
+Rebuild Goal 023 repeats all four schedules for one additional day with exact
+stock carry-over. The mixed-order effect persists but attenuates:
+limited-then-adequate adds another `0.006 kg DM` and `64 kJ` relative to the
+reverse order, increasing its cumulative whole-system advantage from `124` to
+`188 kJ`. Its closing gut advantage grows from `228` to `262 kJ`, while its
+body-reserve disadvantage shrinks from `104` to `74 kJ`. Thus the Goal 022
+effect is not only a midnight partition artifact, although it remains largely
+stored in the gut after two days. Limited-only appetite reaches the accepted
+upper bound for 15 hours on day 2 while the forage ceiling continues to bind,
+cleanly separating physiological demand from environmental capacity.
+
+Rebuild Goal 024 decomposes one known-route transition into a lost hour at the
+start of the second feeding window and an additional `100 kJ` locomotion
+charge. Lost time and energy cost limited-then-adequate `133` and `73 kJ`,
+respectively, versus `150` and `100 kJ` for adequate-then-limited. The adequate
+destination permits partial appetite-driven compensation; the limited
+destination does not. Effects are additive at numerical precision. Under both
+costs, the two schedules close at `-481` and `-650 kJ`, increasing the
+limited-then-adequate relative advantage from `124` to `169 kJ` while making
+both schedules absolutely worse. This completes the minimal evidence scaffold
+for known-route movement time and energy.
+
+Rebuild Goal 025 isolates metabolizable food-energy density while acquisition
+remains non-limiting. Lower quality throughout raises dry-matter intake from
+`0.320` to `0.348 kg DM`, recovering about `228 kJ` beyond fixed reference
+intake but still closing `412 kJ` down. No physiological or acquisition bound
+binds; compensation is incomplete because appetite responds after the deficit
+develops. Under equal mixed exposure, lower-then-adequate realizes `0.008 kg
+DM` and `76 kJ` more than adequate-then-lower. Its closing contrast is
+`+129 kJ` gut and `-53 kJ` body reserve. This establishes food quality as a
+second coherent static environmental axis without promoting a production
+density schedule.
+
+Rebuild Goal 026 repeats the two homogeneous food qualities for 10 days with
+exact gut and body-state carry-over. Adequate quality remains exactly neutral.
+Under lower quality, intake rises from `0.348` to `0.400 kg DM day^-1`, and the
+daily shortfall falls from `412` to `1 kJ`, passing the prespecified 90%
+recovery criterion on day 5. The accumulated deficit nevertheless approaches
+`800 kJ`, almost entirely in body reserve. At `8,000 kJ kg DM^-1`, the accepted
+16-hour maximum intake supplies almost exactly the `3,200 kJ` daily expense,
+so reactive appetite arrests further decline but cannot repay the initial
+loss. This is a stable depressed state, not chronic decline or evidence of a
+faulty controller.
+
+Rebuild Goal 027 applies the accepted bounded feeding-duration rule to the
+same persistent lower-quality exposure. The responsive animal adds two feeding
+hours on days 2 through 10, increasing day-10 intake from `0.400` to
+`0.412 kg DM` and improving the closing combined state from `-799` to
+`-476 kJ`. It nevertheless fails the prespecified reserve-restoration target:
+the day-10 deficit remains larger than the initial `412 kJ` loss. One extension
+pair supplies approximately `3,300 kJ` against `3,300 kJ` maintenance plus
+activity, producing another stable depressed control point. This coherent
+failure closes the current minimal herbivore arc without tuning the evidence-
+only rule.
+
 ## Next Decision Gate
 
-Goal 021 should isolate deficit-responsive acquisition rate while retaining the
-Goal 020 duration result as context. Its design should distinguish the
-effect of feeding faster from feeding longer, use one matched perturbation, and
-stop before jointly adaptive duration and rate, movement, spatial forage,
-depletion, or vegetation dynamics. Goal 021 is not yet authorized.
+The next discussion should define the first goal in the isolated plant-forage
+arc: one homogeneous, non-negative forage biomass stock with explicit dry-
+matter and spatial units, separately recorded growth and loss, and a stable
+constant-forcing reference. The choice of time step and minimal growth/loss
+formulation remains a scientific decision. No plant implementation, herbivory,
+coupling, seasonal forcing, spatial patch, or composition process is yet
+authorized.
 
 ## Candidate Later Layers
 

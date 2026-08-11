@@ -421,6 +421,35 @@ The Goal 020 experiment
 [`experiments/rebuild-020-deficit-responsive-feeding-duration.R`](experiments/rebuild-020-deficit-responsive-feeding-duration.R)
 tests a bounded once-daily feeding-duration response after the accepted
 shortfall while leaving the production model unchanged.
+The Goal 021 experiment
+[`experiments/rebuild-021-rate-duration-feedback-decomposition.R`](experiments/rebuild-021-rate-duration-feedback-decomposition.R)
+separates the recovery contributions of the existing appetite-rate and duration
+responses and measures their overlap.
+The Goal 022 experiment
+[`experiments/rebuild-022-implicit-two-patch-forage.R`](experiments/rebuild-022-implicit-two-patch-forage.R)
+compares four prescribed one-day exposures to adequate and limited acquisition
+ceilings, establishing a sequence effect without adding production spatial
+state, movement, depletion, or vegetation.
+The Goal 023 experiment
+[`experiments/rebuild-023-two-day-patch-carryover.R`](experiments/rebuild-023-two-day-patch-carryover.R)
+repeats those schedules for one additional day and isolates how exact gut and
+body-state carry-over changes the mixed-order contrast.
+The Goal 024 experiment
+[`experiments/rebuild-024-known-route-movement-cost.R`](experiments/rebuild-024-known-route-movement-cost.R)
+decomposes one known-route transition into a lost feeding hour and an
+additional locomotion charge without adding production movement machinery.
+The Goal 025 experiment
+[`experiments/rebuild-025-patch-food-energy-density.R`](experiments/rebuild-025-patch-food-energy-density.R)
+isolates adequate and lower metabolizable food-energy densities under
+non-limiting acquisition and cost-free switching.
+The Goal 026 experiment
+[`experiments/rebuild-026-repeated-food-quality.R`](experiments/rebuild-026-repeated-food-quality.R)
+tests whether the accepted reactive appetite controller stabilizes daily
+energy balance over 10 carried-state days of homogeneous lower-quality forage.
+The Goal 027 experiment
+[`experiments/rebuild-027-lower-quality-duration-response.R`](experiments/rebuild-027-lower-quality-duration-response.R)
+tests the accepted bounded duration response under the same lower-quality
+exposure and closes the current herbivore-core development stage.
 
 These demonstrations prove arithmetic, timing, and accounting semantics only.
 They do not estimate a maintenance requirement, residence time, physical gut
@@ -451,9 +480,29 @@ hourly controller, Goal 014 adds a fixed sensitivity client, Goal 015 adds the
 canonical repeated-day runner, and Goal 016 adds the non-depleting
 forage-acquisition boundary. Goals 017-018 add fixed evidence-only recurrence
 diagnostics, Goal 019 adds the pure mass conversion and current synthetic
-reference scale, and Goal 020 adds the evidence-only duration response. The
-next layer remains unapproved and is framed in
+reference scale, Goal 020 adds the evidence-only duration response, and Goal
+021 decomposes rate and duration recovery. Goal 022 adds the first prescribed,
+implicit two-patch evidence diagnostic, and Goal 023 tests its two-day
+carry-over. Goal 024 adds the evidence-only known-route movement decomposition.
+Goal 025 adds the evidence-only patch food-quality contrast, and Goal 026 tests
+its repeated homogeneous exposure without changing the controller. Goal 027
+integrates the existing duration response and closes the current herbivore
+stage without promoting another production mechanism. The next layer remains
+unapproved and is framed in
 [`docs/roadmap.md`](docs/roadmap.md).
+
+## Development Arcs
+
+The staged scientific progression is recorded in five durable plans:
+
+- [minimal herbivore core](docs/arcs/01-herbivore-core.md);
+- [isolated plant-forage subsystem](docs/arcs/02-isolated-plant-forage.md);
+- [non-spatial herbivore-forage coupling](docs/arcs/03-non-spatial-coupling.md);
+- [explicit spatial patches and movement](docs/arcs/04-explicit-spatial-patches-and-movement.md); and
+- [landscape constraints and scenarios](docs/arcs/05-landscape-constraints-and-scenarios.md).
+
+These arcs define direction, decision gates, and stopping points. They are not
+pre-authorized implementation backlogs.
 
 ## Provenance
 

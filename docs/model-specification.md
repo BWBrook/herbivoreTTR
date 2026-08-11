@@ -22,6 +22,10 @@ controller output as an appetite target and places one explicit non-depleting
 forage-acquisition ceiling between that target and realized intake. The
 existing prescribed runners remain unchanged.
 
+Goals 017 through 027 remain evidence clients around that executable contract.
+Goal 022 prescribes two non-depleting patch labels that differ only in hourly
+acquisition ceiling; it adds no production spatial state or process.
+
 The fixed density is already metabolizable. Its product with dry matter is
 treated as the accounting equivalent entering the existing gut available-energy
 pool. This is a deliberately synthetic accounting model, not an empirical model
@@ -1178,6 +1182,51 @@ The rule, extension schedule, decision fields, and comparison summaries are
 experiment quantities; no production scheduler, state, schema, or equation is
 added.
 
+Goal 021 composes a four-arm, evidence-only decomposition of the existing
+hourly appetite-rate feedback and Goal 020 duration response. Zero-gain arms
+use the accepted public controller with body and gut feedback fractions set to
+zero. Arm labels, factor indicators, interaction contrasts, recovery summaries,
+and derived-mass comparisons are experiment quantities; no second acquisition
+controller or production interface is added.
+
+Goal 022 composes four one-day, evidence-only exposure schedules from adequate
+and limited forage-acquisition ceilings. Patch identity, feeding-window
+exposure, and mixed-order contrasts are experiment quantities. The homogeneous
+arms preserve the accepted non-binding and Goal 016 binding anchors. The mixed
+arms have identical aggregate ceiling capacity but differ in realized intake
+because the first window changes the appetite target presented to the second.
+No location state, movement, choice, forage stock, depletion, or spatial
+production interface is added.
+
+Goal 023 repeats each Goal 022 exposure schedule for exactly one additional
+day through the canonical carried-state runner. Day labels, carry-over
+contrasts, and the two-day interpretation remain experiment quantities. No
+recurrence mechanism, movement charge, or production interface is added.
+
+Goal 024 crosses a prescribed hour-16 feeding suspension and an additional
+`100 kJ` routine-activity charge for the two mixed Goal 022 patch orders. The
+movement hour, factor labels, and attribution contrasts remain experiment
+quantities. No distance, speed, search, choice, location state, or production
+movement interface is added.
+
+Goal 025 composes the public hourly appetite, gut, and body transitions for
+four prescribed one-day quality schedules using `10,000` and
+`8,000 kJ kg DM^-1`. Density schedules, quality-patch labels, and mixed-order
+contrasts remain experiment quantities. No production density schedule,
+alternate runner, nutrient process, or food-quality state is added.
+
+Goal 026 calls the canonical repeated-day runner once for each homogeneous
+Goal 025 density over 10 exact carried-state days. Horizon, arm labels,
+recovery threshold, cumulative-deficit interpretation, and comparison fields
+remain experiment quantities. No production schedule, anticipatory controller,
+learning state, or alternative repeated-day runner is added.
+
+Goal 027 applies the existing Goal 020 once-daily duration decision to the
+lower-quality Goal 026 environment for 10 exact carried-state days. Extension
+hours, activity charges, restoration threshold, and closure interpretation
+remain experiment quantities. No duration scheduler, quality-aware controller,
+plant process, or new production path is added.
+
 ## Exclusions And Stop
 
 Production functions do not represent variable or stochastic daily forcing,
@@ -1193,11 +1242,14 @@ feedback, tissue turnover or partitioning, protein, water, thermoregulation,
 plants, weather, space, individuals, populations, empirical calibration,
 parameter estimation, or uncertainty analysis.
 
-Goal 020 ends after the matched nine-day duration contrast. The tested
-discrete rule remains evidence only and does not establish empirical feeding
-hours or a generalized scheduler. No acquisition-rate response, mass feedback,
-parameter estimation, plant process, or empirical physiology is added. Any
-next layer requires a separate decision.
+Goal 027 closes the current herbivore-core stage after three 10-day duration-
+quality trajectories and the prespecified reserve-restoration assessment.
+Quality labels, horizon, duration decisions, and restoration threshold remain
+evidence only. No longer horizon, tuned duration rule, production scheduler,
+third density, quality-access interaction, anticipatory controller, learning,
+nutrient process, digestion change, depletion, vegetation, parameter
+estimation, or empirical physiology is added. The next implementation stage is
+the isolated plant-forage subsystem and requires a separate decision.
 
 The historical implementation is private at `BWBrook/herbivoreTTR-legacy`, tag
 `legacy-final-2026-07-16`; the pre-freeze scientific baseline is

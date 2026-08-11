@@ -10,6 +10,19 @@ transition order, and energy conservation inspectable while the model is
 rebuilt in deliberate layers. It can also translate body-energy output into a
 derived labile reserve and total body mass without changing the dynamics.
 
+## Stage Status
+
+The minimal herbivore-core development arc is closed through Goal 027. The
+package boundary remains the compact functional animal described below;
+duration response, variable quality, implicit patches, and movement remain
+no-write evidence clients rather than generalized runtime machinery.
+
+The next development arc is an isolated plant-forage stock-flow model. The
+five stage contracts are indexed in [`docs/roadmap.md`](roadmap.md) and stored
+under [`docs/arcs/`](arcs/). Protein, water, thermoregulation, composition, and
+other richer animal processes are important deferred extensions, not rejected
+features or prerequisites for the first forage stock.
+
 ## Canonical Active Flow
 
 ```text
@@ -112,7 +125,8 @@ direct callers.
 | Closed goal packets | Delete | Git preserves their execution history; they are not part of the active product. |
 | Review-pack publishers and bulk receipt machinery | Delete | They duplicate validation and have no current runtime consumer. |
 | Semantic validation and validate-once runner internals | Retain | Public boundaries validate direct callers; validated loops use scalar cores without changing equations or schemas. |
-| Mass-dependent energetics, forage biomass, depletion or renewal, physiology beyond the minimal appetite controller, plants, and spatial coupling | Defer | Each layer must answer a separately approved scientific question. |
+| Isolated forage biomass stock-flow | Next stage, pending authorization | It is the smallest new subsystem needed before homogeneous coupling. |
+| Protein, water, thermoregulation, mass-dependent energetics, depletion, spatial coupling, and richer physiology | Defer | Each layer must answer a separately approved scientific question. |
 | Compatibility adapters for obsolete paths | Delete or decline | There is one private current user and no supported legacy contract. |
 
 ## Proportional Validation

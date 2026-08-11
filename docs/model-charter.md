@@ -257,14 +257,16 @@ body fixtures remain synthetic.
 The implemented gut stock is energy, not dry matter, gross energy, plant
 biomass, or measured gut fill. Production runners contain no variable or
 stochastic daily forcing, seasons, recurrent disturbance, chronic decline, or
-viability criteria; Goals 017-019 compose fixed recurrence treatments only in
-no-write evidence clients.
-Forage biomass, depletion or renewal, wet forage, variable or multiple foods,
-digestive loss, efficiency, waste, physical capacity, meals, food choice,
-activity choice or feedback, directed locomotion, mass-dependent dynamics,
-tissue turnover or partitioning, protein, water, thermoregulation, plants,
-space, calibration, and all other physiological or ecological detail remain
-outside the executable boundary.
+viability criteria. Goals 017-027 compose recurrence, duration, implicit patch,
+movement, food-quality, and closure treatments only in no-write evidence
+clients.
+
+Forage biomass, depletion or renewal, wet forage, multiple foods, digestive
+loss, efficiency, waste, physical capacity, meals, food choice, activity choice
+or feedback, directed locomotion, mass-dependent dynamics, tissue turnover or
+partitioning, protein, water, thermoregulation, plants, space, calibration, and
+all other physiological or ecological detail remain outside the executable
+boundary.
 
 Goals 009 through 012 establish only the declared synthetic threshold,
 prescribed intake window, and two fixed forcing-sequence results. Goal 013 adds
@@ -275,7 +277,16 @@ adds the non-depleting forage-acquisition ceiling between appetite target and
 realized intake. It adds no resource stock, plant process, or variable day
 forcing. Goals 017-018 diagnose fixed recurrence and severity, and Goal 019
 adds only a pure mass conversion plus the 40,000 kJ appetite-reference scale.
-Any next layer is pending discussion.
+Goals 020-021 diagnose bounded feeding-duration response and its overlap with
+appetite rate. Goals 022-024 add implicit patch order, carried exposure, and a
+known-route movement decomposition in evidence only. Goals 025-027 diagnose
+food-energy density, repeated compensation, and duration-quality integration.
+
+Goal 027 closes the current minimal herbivore-core arc. Its responsive-duration
+arm reduces but does not eliminate the lower-quality reserve offset, and that
+prespecified result is retained without tuning. The next stage is an isolated
+plant-forage stock-flow subsystem. The staged scope and re-entry rules are in
+`docs/arcs/`; any implementation requires a separate goal.
 
 The predecessor is preserved privately as `BWBrook/herbivoreTTR-legacy` at tag
 `legacy-final-2026-07-16`; its scientific baseline commit is
