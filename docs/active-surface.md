@@ -39,6 +39,10 @@ opening standing biomass + prescribed growth - prescribed background loss
 `run_forage_biomass_day()` is the canonical plant-side accounting day. It has
 no endogenous growth equation and no connection to herbivore intake.
 
+`run_forage_turnover_days()` is the canonical constant-reference trajectory.
+It combines constant production with proportional background loss around a
+declared equilibrium, still without herbivore intake or environmental forcing.
+
 ## Protected Invariants
 
 - Every modeled quantity has an explicit unit suffix.
@@ -54,6 +58,8 @@ no endogenous growth equation and no connection to herbivore intake.
   feeding opportunity is closed, and remains within declared bounds.
 - Realized intake is the smaller of appetite target and forage acquisition.
 - Hourly and daily forage stock-flow identities close numerically.
+- The turnover reference is neutral at equilibrium and approaches it
+  monotonically from positive low or high biomass.
 - Synthetic balance is not interpreted as viability or empirical calibration.
 
 ## Retained Surface
@@ -62,7 +68,7 @@ no endogenous growth equation and no connection to herbivore intake.
 | --- | --- |
 | Functional package core | Retain and extend by approved layers |
 | Explicit records, units, and balance residuals | Retain |
-| Four current diagnostics | Retain |
+| Five current diagnostics | Retain |
 | Focused invariant tests | Retain |
 | Scientific decision notes | Retain as the research notebook |
 | Goal-by-goal experiment ancestry | Removed from the active tree; Git retains it |
@@ -74,7 +80,7 @@ no endogenous growth equation and no connection to herbivore intake.
 
 For ordinary changes, parse retained R, run the tests affected by the change,
 and inspect the diff. When publishing a package boundary or completed model
-stage, run the full focused suite, all four diagnostics, an external build,
+stage, run the full focused suite, all five diagnostics, an external build,
 and `R CMD check --no-manual` once.
 
 Repeat a gate only for a distinct named risk. Additional polish or repeated
@@ -82,8 +88,8 @@ confirmation is not a release criterion.
 
 ## Current Stop
 
-The herbivore-energy core is closed, and the isolated forage accounting
-foundation is implemented. The next plant decision is the smallest endogenous
-growth-and-loss formulation that yields an interpretable positive equilibrium.
-Protein, water, thermoregulation, coupling, seasonality, and explicit spatial
-choice remain deferred.
+The herbivore-energy core is closed, and the isolated forage stock plus linear
+turnover reference are implemented. The next plant decision is a deliberately
+simple standing-to-accessible forage boundary. Protein, water,
+thermoregulation, coupling, seasonality, and explicit spatial choice remain
+deferred.

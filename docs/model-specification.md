@@ -124,6 +124,35 @@ residual. Prescribed fluxes may vary by hour but are not calculated from
 biomass, weather, or another process state, and the forage stock does not
 constrain animal intake.
 
+## Constant-Turnover Forage Reference
+
+The first plant process reference declares a positive equilibrium `B*` and an
+hourly turnover fraction `tau` in `(0, 1]`:
+
+```text
+forage_growth_kg_dm_ha_h[h] = tau * B*
+
+forage_background_loss_kg_dm_ha_h[h] = tau * B[h]
+
+B[h + 1] = B[h] + tau * B* - tau * B[h]
+         = (1 - tau) * B[h] + tau * B*
+```
+
+At `B*`, growth and loss are equal and positive. Away from equilibrium, closing
+biomass is a convex combination of current biomass and `B*`, giving positive,
+monotonic recovery without overshoot. The exact hourly trajectory is:
+
+```text
+B[n] - B* = (B[0] - B*) * (1 - tau)^n
+```
+
+`run_forage_turnover_days()` repeats this transition on the shared hourly clock
+and reports hourly process fluxes plus daily stock-flow summaries. Constant
+production represents aggregate regeneration supported by unrepresented basal
+tissue, meristems, or recruitment. Recovery is therefore linear, symmetric,
+and independent of perturbation size. Those properties define an operational
+null, not an empirical plant-growth claim.
+
 ## Reference Cycle
 
 `run_gut_body_energy_reference_cycle()` repeatedly applies one fixed 24-hour
@@ -217,7 +246,7 @@ assertion that daily energetic balance alone establishes health or viability.
 
 ## Retained Diagnostics
 
-Four no-write experiments protect the current scientific interpretation:
+Five no-write experiments protect the current scientific interpretation:
 
 - the reference diagnostic checks neutrality, conservation, and gut order;
 - the appetite-forage diagnostic checks a binding ceiling, deficit recovery,
@@ -225,14 +254,17 @@ Four no-write experiments protect the current scientific interpretation:
 - the implicit-patch diagnostic checks patch order, movement costs, variable
   food quality, and bounded feeding-duration response; and
 - the forage stock diagnostic checks balanced turnover, net gain, net loss,
-  state carry-over, and stock-flow closure.
+  state carry-over, and stock-flow closure; and
+- the forage-turnover diagnostic checks positive equilibrium and analytic,
+  monotonic recovery from matched low and high perturbations.
 
 Patch labels, movement, variable hourly food density, and duration response are
 diagnostic treatments only. They are not additional package state.
 
 ## Exclusions
 
-The current model excludes endogenous plant production and loss equations,
-forage availability transformations, herbivore depletion, protein, water,
-thermoregulation, explicit space, search, mortality, reproduction, and
-population dynamics. These require separately approved layers.
+The current model excludes resource- or weather-dependent plant production,
+explicit senescence processes, forage availability transformations, herbivore
+depletion, protein, water, thermoregulation, explicit space, search, mortality,
+reproduction, and population dynamics. These require separately approved
+layers.

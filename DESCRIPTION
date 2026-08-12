@@ -17,7 +17,9 @@ Description: Provides transparent functional models of herbivore energetics
     total body mass without feeding that derived quantity back into the model.
     A separate isolated forage ledger carries homogeneous standing biomass
     under prescribed growth and background loss with exact stock-flow
-    accounting; it is not yet coupled to the herbivore.
+    accounting. A linear turnover reference adds constant production and
+    proportional background loss around a declared positive equilibrium. The
+    forage subsystem is not yet coupled to the herbivore.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Suggests:

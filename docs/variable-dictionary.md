@@ -31,6 +31,8 @@ The forage ledger uses the corresponding `_start_kg_dm_ha`, `_end_kg_dm_ha`,
 | `gut_energy_feedback_fraction_h` | h^-1 | Gut-deviation feedback fraction |
 | `structural_body_mass_kg` | kg | Fixed mass outside labile reserve tissue |
 | `reserve_tissue_energy_density_kj_kg` | kJ kg^-1 | Effective energy density of reserve tissue |
+| `equilibrium_forage_biomass_kg_dm_ha` | kg DM ha^-1 | Positive equilibrium for the linear forage reference |
+| `forage_turnover_fraction_h` | h^-1 | Fraction controlling hourly reference production and current-biomass loss |
 
 ## Prescribed Schedules
 
@@ -58,7 +60,11 @@ Every schedule has 24 rows and `hour_of_day = 0:23`.
 | `prescribed_forage_growth_kg_dm_ha` | kg DM ha^-1 | Growth added during one hour |
 | `prescribed_forage_background_loss_kg_dm_ha` | kg DM ha^-1 | Background loss during one hour |
 | `forage_biomass_change_kg_dm_ha` | kg DM ha^-1 | Net one-hour stock change |
-| `forage_biomass_balance_residual_kg_dm_ha` | kg DM ha^-1 | Observed change minus prescribed net flow |
+| `forage_biomass_balance_residual_kg_dm_ha` | kg DM ha^-1 | Observed change minus expected net flow |
+| `forage_growth_kg_dm_ha_h` | kg DM ha^-1 h^-1 | Turnover-reference production rate |
+| `forage_background_loss_kg_dm_ha_h` | kg DM ha^-1 h^-1 | Turnover-reference proportional loss rate |
+| `forage_growth_kg_dm_ha` | kg DM ha^-1 | Turnover-reference production during one hour |
+| `forage_background_loss_kg_dm_ha` | kg DM ha^-1 | Turnover-reference loss during one hour |
 
 ## Appetite Quantities
 
@@ -113,6 +119,10 @@ bounds; and final deviations from the reference trajectory.
 The forage daily summary reports opening and closing standing biomass, total
 prescribed growth and background loss, expected and observed biomass change,
 and their balance residual.
+
+Turnover-reference daily summaries additionally report the declared
+equilibrium, total derived growth and loss, and opening and closing deviations
+from equilibrium.
 
 `body_energy_status` or `energy_status` is `deficit`, `neutral`, or `surplus`
 according to the scale-aware arithmetic tolerance. It is not a viability or

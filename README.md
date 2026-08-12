@@ -38,6 +38,16 @@ opening standing forage biomass
 It uses `kg DM ha^-1` on the same hourly clock. It is not connected to the
 animal's forage-acquisition ceiling.
 
+The first process reference adds constant production and proportional
+background loss:
+
+```text
+B[next] = (1 - tau) * B[current] + tau * B[equilibrium]
+```
+
+This linear turnover null has an exact positive equilibrium and monotonic
+recovery from either side. It is not an empirical growth model.
+
 The current synthetic reference uses:
 
 | Quantity | Value |
@@ -64,6 +74,7 @@ Rscript --vanilla experiments/herbivore-core-reference.R
 Rscript --vanilla experiments/herbivore-core-appetite-forage.R
 Rscript --vanilla experiments/herbivore-core-implicit-patches.R
 Rscript --vanilla experiments/forage-stock-conservation.R
+Rscript --vanilla experiments/forage-turnover-reference.R
 ```
 
 Run the focused test suite with:
@@ -83,10 +94,10 @@ The package exposes six related groups:
 - plain state, parameter, and 24-hour schedule constructors;
 - one-hour gut and body transitions;
 - one-day body-only and coupled gut-body runners;
-- a repeated-day reference-cycle and appetite-controlled runner; and
+- a repeated-day reference-cycle and appetite-controlled runner;
 - pure food-energy and body-mass conversions; and
-- an isolated forage-biomass state, prescribed flux schedule, hourly
-  transition, and daily runner.
+- isolated forage accounting plus a constant-turnover reference and
+  repeated-day runner.
 
 See [`docs/model-specification.md`](docs/model-specification.md) for equations
 and transition order, and [`docs/variable-dictionary.md`](docs/variable-dictionary.md)
@@ -95,21 +106,21 @@ for the current variables and units.
 ## Scientific Boundary
 
 The herbivore and forage systems are still isolated. The plant side contains
-one prescribed biomass ledger but no endogenous production, senescence,
-availability transformation, depletion, or seasonal forcing. The animal side
-still uses a non-depleting external acquisition ceiling. Neither subsystem
-contains spatial state, protein, water, thermoregulation, or mass-dependent
-feedback.
+prescribed biomass accounting and a linear constant-turnover reference, but no
+environmental forcing, accessible-forage transformation, depletion, or
+seasonality. The animal side still uses a non-depleting external acquisition
+ceiling. Neither subsystem contains spatial state, protein, water,
+thermoregulation, or mass-dependent feedback.
 
-The next plant decision is the smallest interpretable constant-forcing growth
-and loss formulation. The staged programme is indexed in
+The next plant decision is how standing biomass maps to forage available for
+animal acquisition. The staged programme is indexed in
 [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Repository Map
 
 - `R/`: reusable model records, transitions, and runners.
 - `tests/testthat/`: focused protection of scientific invariants.
-- `experiments/`: four current no-write diagnostics and one fixture helper.
+- `experiments/`: five current no-write diagnostics and one fixture helper.
 - `docs/model-charter.md`: governing scientific and architectural contract.
 - `docs/model-specification.md`: equations, transition order, and outputs.
 - `docs/variable-dictionary.md`: current quantities and units.

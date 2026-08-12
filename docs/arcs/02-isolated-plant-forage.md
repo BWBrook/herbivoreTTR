@@ -1,6 +1,6 @@
 # Arc 02: Isolated Plant-Forage Subsystem
 
-Status: in progress; units and conservation implemented in Goal 028
+Status: in progress; accounting and constant reference implemented
 
 ## Purpose
 
@@ -20,29 +20,28 @@ species composition, or stochasticity.
 1. **Units and conservation (implemented):** standing forage is
    `kg DM ha^-1` on the shared hourly clock; prescribed growth and background
    loss are separate, and negative closing biomass fails explicitly.
-2. **Constant-forcing reference:** select one transparent synthetic growth/loss
-   formulation and demonstrate a known equilibrium plus recovery from high and
-   low starting biomass.
-3. **Availability boundary:** define the forage quantity that can later inform
+2. **Constant-forcing reference (implemented):** constant production and
+   proportional background loss yield an exact positive equilibrium and
+   monotonic recovery from high and low starting biomass.
+3. **Availability boundary (next):** define the forage quantity that can inform
    animal acquisition without yet invoking consumption.
 4. **Controlled forcing:** only after the constant reference is understood,
    consider one deterministic seasonal or disturbance input.
 5. **Composition extensions:** later separate biomass from metabolizable energy,
    protein, water, fibre, or digestibility when a coupled question requires it.
 
-The exact growth equation is the next scientific decision. This arc does not
-prespecify logistic growth or another familiar form merely for convenience.
+The implemented turnover reference is an operational null rather than a claim
+that plant growth is truly constant. More mechanistic growth should wait until
+environmental forcing or another scientific question requires it.
 
 ## Decision Gates
 
-- What minimal growth and senescence formulation has an interpretable constant
-  equilibrium?
 - Which forage quantity should control later acquisition: standing biomass,
   accessible biomass, or a deliberately simple transformation?
 
-Goal 028 resolved the first two gates in favour of standing biomass density and
-hourly accounting. The hourly clock is a shared integration architecture, not
-a claim that plant processes are observed at that resolution.
+Goals 028 and 029 resolved the physical stock, hourly accounting, and constant
+reference gates. The hourly clock is a shared integration architecture, not a
+claim that plant processes are observed at that resolution.
 
 ## Exit Criteria
 

@@ -5,7 +5,7 @@
 | Stage | Question | Status |
 | --- | --- | --- |
 | 1. Herbivore core | Can intake, gut delay, expenditure, appetite, and simple forage constraints be understood as one energy system? | Closed |
-| 2. Isolated plant-forage | Can a simple forage biomass stock remain stable under prescribed growth, loss, and later seasonal forcing without herbivory? | In progress: stock accounting implemented |
+| 2. Isolated plant-forage | Can a simple forage biomass stock remain stable under growth, loss, and later seasonal forcing without herbivory? | In progress: stable constant reference implemented |
 | 3. Non-spatial coupling | How do herbivore intake and forage depletion alter one another in a homogeneous system? | Planned |
 | 4. Explicit patches and movement | How do location, patch choice, travel time, and travel energy change intake and state? | Planned |
 | 5. Landscape constraints and scenarios | How do water, depletion, heterogeneity, climate, and disturbance produce chronic stress? | Planned |
@@ -35,12 +35,12 @@ justify generalized production state or behavior.
 
 The plant side now has one homogeneous standing-biomass stock in
 `kg DM ha^-1`, prescribed hourly growth and background-loss fluxes, and exact
-hourly and daily accounting. These fluxes are diagnostic forcing, not plant
-process equations.
+hourly and daily accounting. A linear turnover reference adds constant
+production and proportional loss around a positive equilibrium, with an exact
+analytic trajectory.
 
-The next decision gate is a minimal endogenous growth-and-loss formulation with
-a known positive equilibrium and intelligible recovery from high and low
-starting biomass. Herbivory, seasonality, and animal-facing availability remain
+The next decision gate is a minimal mapping from standing biomass to forage
+available for animal acquisition. Herbivory, seasonality, and coupling remain
 deferred.
 
 ## Deferred Animal Layers

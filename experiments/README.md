@@ -11,6 +11,8 @@ installed package:
   costs, patch-specific food quality, and feeding-duration response.
 - `forage-stock-conservation.R` checks isolated standing-biomass accounting
   under balanced turnover, net gain, and net loss.
+- `forage-turnover-reference.R` checks positive equilibrium and analytic,
+  monotonic recovery from matched low and high standing biomass.
 - `herbivore-core-fixtures.R` supplies their shared synthetic reference.
 
 The herbivore diagnostics source only the fixture helper; the forage diagnostic

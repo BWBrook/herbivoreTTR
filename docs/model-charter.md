@@ -40,8 +40,9 @@ not estimates for a named species or proof of physiological viability.
 
 The isolated plant-side model contains one homogeneous standing edible-forage
 stock, prescribed growth and non-herbivore background loss, and exact hourly
-and daily biomass accounting. It is not yet a growth model and is not coupled
-to the animal.
+and daily biomass accounting. Its first process reference combines constant
+production with proportional background loss around a declared positive
+equilibrium. It remains synthetic and is not coupled to the animal.
 
 ## Development Contract
 
@@ -56,8 +57,9 @@ paths; the active tree contains only current code, evidence, and documentation.
 
 ## Boundaries
 
-The current package does not include endogenous plant growth, carrying
-capacity, senescence, forage availability, herbivore depletion, explicit
-locations, search, water balance, protein, thermoregulation, disease,
-reproduction, mortality, or population dynamics. These are candidate future
-layers, not placeholders in the current code.
+The current package does not include resource-dependent plant production,
+weather or seasonal forcing, explicit senescence mechanisms, forage
+availability, herbivore depletion, explicit locations, search, water balance,
+protein, thermoregulation, disease, reproduction, mortality, or population
+dynamics. These are candidate future layers, not placeholders in the current
+code.
