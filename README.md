@@ -1,9 +1,9 @@
 # herbivoreTTR
 
 `herbivoreTTR` is a small functional R package for transparent hourly models
-of herbivore energetics. It is a clean scientific rebuild: ecological logic,
-explicit units, and inspectable energy accounting take precedence over the
-historical implementation.
+of herbivore energetics and forage biomass. It is a clean scientific rebuild:
+ecological logic, explicit units, and inspectable stock-flow accounting take
+precedence over the historical implementation.
 
 ## Current Model
 
@@ -24,6 +24,19 @@ feeding opportunity and appetite reference
 State is carried exactly between hours and days. The model uses plain lists and
 data frames rather than an object system. Transition functions are pure, and
 generated diagnostics do not write into the repository.
+
+The isolated forage path currently provides accounting rather than plant
+biology:
+
+```text
+opening standing forage biomass
+  + prescribed growth
+  - prescribed non-herbivore background loss
+  -> closing standing forage biomass
+```
+
+It uses `kg DM ha^-1` on the same hourly clock. It is not connected to the
+animal's forage-acquisition ceiling.
 
 The current synthetic reference uses:
 
@@ -50,6 +63,7 @@ R CMD INSTALL .
 Rscript --vanilla experiments/herbivore-core-reference.R
 Rscript --vanilla experiments/herbivore-core-appetite-forage.R
 Rscript --vanilla experiments/herbivore-core-implicit-patches.R
+Rscript --vanilla experiments/forage-stock-conservation.R
 ```
 
 Run the focused test suite with:
@@ -64,13 +78,15 @@ execution path.
 
 ## Public Surface
 
-The package exposes five related groups:
+The package exposes six related groups:
 
 - plain state, parameter, and 24-hour schedule constructors;
 - one-hour gut and body transitions;
 - one-day body-only and coupled gut-body runners;
 - a repeated-day reference-cycle and appetite-controlled runner; and
-- pure food-energy and body-mass conversions.
+- pure food-energy and body-mass conversions; and
+- an isolated forage-biomass state, prescribed flux schedule, hourly
+  transition, and daily runner.
 
 See [`docs/model-specification.md`](docs/model-specification.md) for equations
 and transition order, and [`docs/variable-dictionary.md`](docs/variable-dictionary.md)
@@ -78,20 +94,22 @@ for the current variables and units.
 
 ## Scientific Boundary
 
-The current core represents energy only. It includes a non-depleting external
-forage-acquisition ceiling but no plant biomass, renewal, spatial state,
-protein, water, thermoregulation, or mass-dependent feedback. Patch labels,
-movement costs, variable food quality, and feeding-duration response remain
-diagnostic treatments rather than production state.
+The herbivore and forage systems are still isolated. The plant side contains
+one prescribed biomass ledger but no endogenous production, senescence,
+availability transformation, depletion, or seasonal forcing. The animal side
+still uses a non-depleting external acquisition ceiling. Neither subsystem
+contains spatial state, protein, water, thermoregulation, or mass-dependent
+feedback.
 
-The next approved development arc is an isolated plant-forage stock-flow
-model. The staged programme is indexed in [`docs/roadmap.md`](docs/roadmap.md).
+The next plant decision is the smallest interpretable constant-forcing growth
+and loss formulation. The staged programme is indexed in
+[`docs/roadmap.md`](docs/roadmap.md).
 
 ## Repository Map
 
 - `R/`: reusable model records, transitions, and runners.
 - `tests/testthat/`: focused protection of scientific invariants.
-- `experiments/`: three current no-write diagnostics and one fixture helper.
+- `experiments/`: four current no-write diagnostics and one fixture helper.
 - `docs/model-charter.md`: governing scientific and architectural contract.
 - `docs/model-specification.md`: equations, transition order, and outputs.
 - `docs/variable-dictionary.md`: current quantities and units.

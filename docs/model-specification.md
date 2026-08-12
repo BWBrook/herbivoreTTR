@@ -2,11 +2,13 @@
 
 ## Scope
 
-The current package implements a synthetic hourly herbivore-energy model. It
-tracks energy entering through dry-matter intake, delayed in one gut stock, and
-transferred to a body-energy reserve after maintenance and routine activity.
-An appetite controller can set intake demand, while an external rate schedule
-can constrain forage acquisition.
+The current package implements a synthetic hourly herbivore-energy model and a
+separate isolated forage-biomass ledger. The animal model tracks energy entering
+through dry-matter intake, delayed in one gut stock, and transferred to a
+body-energy reserve after maintenance and routine activity. An appetite
+controller can set intake demand, while an external rate schedule can constrain
+forage acquisition. The plant-side ledger carries standing biomass under
+prescribed growth and background loss without coupling it to the animal.
 
 The model is deterministic. All rates apply over one-hour intervals, so their
 one-hour amounts have the same numerical value but retain distinct names.
@@ -14,12 +16,14 @@ one-hour amounts have the same numerical value but retain distinct names.
 ## Clock And State
 
 Each day contains intervals `hour_of_day = 0:23`. Interval `h` represents
-`[h, h + 1)`. The two dynamic stocks are:
+`[h, h + 1)`. The three implemented dynamic stocks are:
 
 - `gut_available_energy_kj`: energy available for later release from the gut;
-- `body_energy_reserve_kj`: labile body-energy reserve.
+- `body_energy_reserve_kj`: labile body-energy reserve; and
+- `forage_biomass_kg_dm_ha`: homogeneous standing edible forage biomass
+  density.
 
-Both stocks are finite and non-negative. Closing stocks become the next
+All stocks are finite and non-negative. Closing stocks become the next
 interval's opening stocks without implicit reset or clamping.
 
 ## Fixed Parameters
@@ -91,6 +95,34 @@ combined_energy_change_kj[h] =
 Hourly and daily residuals are checked against a scale-aware floating-point
 tolerance. These tolerances address arithmetic only, not biological variation
 or measurement uncertainty.
+
+## Isolated Forage-Biomass Transition
+
+The plant-side accounting layer has no endogenous process parameters. For each
+hour it receives independent prescribed growth and non-herbivore background
+loss rates:
+
+```text
+forage_biomass_change_kg_dm_ha[h] =
+  prescribed_forage_growth_kg_dm_ha[h]
+  - prescribed_forage_background_loss_kg_dm_ha[h]
+
+forage_biomass_end_kg_dm_ha[h] =
+  forage_biomass_start_kg_dm_ha[h]
+  + forage_biomass_change_kg_dm_ha[h]
+```
+
+Because each interval is one hour, the prescribed rates in
+`kg DM ha^-1 h^-1` have the same numerical values as their one-hour amounts in
+`kg DM ha^-1`; their names remain distinct. Closing biomass carries into the
+next hour exactly. A proposed negative closing stock raises an error rather
+than being clamped.
+
+`run_forage_biomass_day()` records the 24 hourly transitions and reports daily
+growth, background loss, expected change, observed change, and the balance
+residual. Prescribed fluxes may vary by hour but are not calculated from
+biomass, weather, or another process state, and the forage stock does not
+constrain animal intake.
 
 ## Reference Cycle
 
@@ -185,19 +217,22 @@ assertion that daily energetic balance alone establishes health or viability.
 
 ## Retained Diagnostics
 
-Three no-write experiments protect the current scientific interpretation:
+Four no-write experiments protect the current scientific interpretation:
 
 - the reference diagnostic checks neutrality, conservation, and gut order;
 - the appetite-forage diagnostic checks a binding ceiling, deficit recovery,
   and lower-quality compensation; and
 - the implicit-patch diagnostic checks patch order, movement costs, variable
-  food quality, and bounded feeding-duration response.
+  food quality, and bounded feeding-duration response; and
+- the forage stock diagnostic checks balanced turnover, net gain, net loss,
+  state carry-over, and stock-flow closure.
 
 Patch labels, movement, variable hourly food density, and duration response are
 diagnostic treatments only. They are not additional package state.
 
 ## Exclusions
 
-The current model excludes plant stocks, protein, water, thermoregulation,
-explicit space, search, depletion, mortality, reproduction, and population
-dynamics. These require separately approved layers.
+The current model excludes endogenous plant production and loss equations,
+forage availability transformations, herbivore depletion, protein, water,
+thermoregulation, explicit space, search, mortality, reproduction, and
+population dynamics. These require separately approved layers.

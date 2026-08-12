@@ -38,6 +38,11 @@ The active animal model contains:
 Synthetic reference values are chosen for tractability and diagnosis. They are
 not estimates for a named species or proof of physiological viability.
 
+The isolated plant-side model contains one homogeneous standing edible-forage
+stock, prescribed growth and non-herbivore background loss, and exact hourly
+and daily biomass accounting. It is not yet a growth model and is not coupled
+to the animal.
+
 ## Development Contract
 
 Each substantive goal must introduce one interpretable process or scientific
@@ -51,7 +56,8 @@ paths; the active tree contains only current code, evidence, and documentation.
 
 ## Boundaries
 
-The closed herbivore core does not include plant biomass, depletion, renewal,
-explicit locations, search, water balance, protein, thermoregulation, disease,
+The current package does not include endogenous plant growth, carrying
+capacity, senescence, forage availability, herbivore depletion, explicit
+locations, search, water balance, protein, thermoregulation, disease,
 reproduction, mortality, or population dynamics. These are candidate future
 layers, not placeholders in the current code.

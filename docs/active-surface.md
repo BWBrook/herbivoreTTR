@@ -2,10 +2,10 @@
 
 ## Product Promise
 
-`herbivoreTTR` provides an inspectable hourly stock-flow model linking intake,
-gut energy, assimilation, activity expenditure, and body-energy reserve. Its
-current user is Barry Brook. Its purpose is scientific understanding, not a
-general-purpose simulation platform.
+`herbivoreTTR` provides inspectable hourly stock-flow models for herbivore
+energy and isolated forage biomass. Its current user is Barry Brook. Its
+purpose is scientific understanding, not a general-purpose simulation
+platform.
 
 ## Canonical Paths
 
@@ -29,12 +29,22 @@ forage-acquisition schedule.
 `derive_body_mass_from_energy_reserve()` is a downstream interpretation. Its
 result is never stored in or fed back to a transition.
 
+The isolated forage path is:
+
+```text
+opening standing biomass + prescribed growth - prescribed background loss
+  -> closing standing biomass
+```
+
+`run_forage_biomass_day()` is the canonical plant-side accounting day. It has
+no endogenous growth equation and no connection to herbivore intake.
+
 ## Protected Invariants
 
 - Every modeled quantity has an explicit unit suffix.
 - The clock is 24 one-hour intervals labelled `0:23`.
 - Dynamic stocks and prescribed inputs are finite and non-negative.
-- A negative closing body reserve fails explicitly.
+- A negative closing body reserve or forage stock fails explicitly.
 - Gut release uses opening stock; current intake enters after release.
 - Assimilation transfers energy between modeled stocks and cancels from the
   whole-system balance.
@@ -43,6 +53,7 @@ result is never stored in or fed back to a transition.
 - Appetite equals its reference on the reference trajectory, is zero when
   feeding opportunity is closed, and remains within declared bounds.
 - Realized intake is the smaller of appetite target and forage acquisition.
+- Hourly and daily forage stock-flow identities close numerically.
 - Synthetic balance is not interpreted as viability or empirical calibration.
 
 ## Retained Surface
@@ -51,7 +62,7 @@ result is never stored in or fed back to a transition.
 | --- | --- |
 | Functional package core | Retain and extend by approved layers |
 | Explicit records, units, and balance residuals | Retain |
-| Three current diagnostics | Retain |
+| Four current diagnostics | Retain |
 | Focused invariant tests | Retain |
 | Scientific decision notes | Retain as the research notebook |
 | Goal-by-goal experiment ancestry | Removed from the active tree; Git retains it |
@@ -63,7 +74,7 @@ result is never stored in or fed back to a transition.
 
 For ordinary changes, parse retained R, run the tests affected by the change,
 and inspect the diff. When publishing a package boundary or completed model
-stage, run the full focused suite, all three diagnostics, an external build,
+stage, run the full focused suite, all four diagnostics, an external build,
 and `R CMD check --no-manual` once.
 
 Repeat a gate only for a distinct named risk. Additional polish or repeated
@@ -71,6 +82,8 @@ confirmation is not a release criterion.
 
 ## Current Stop
 
-The herbivore-energy core is closed. Protein, water, thermoregulation,
-mass-dependent expenditure, explicit spatial choice, and plant feedback remain
-deferred. The next stage is the isolated plant-forage stock-flow arc.
+The herbivore-energy core is closed, and the isolated forage accounting
+foundation is implemented. The next plant decision is the smallest endogenous
+growth-and-loss formulation that yields an interpretable positive equilibrium.
+Protein, water, thermoregulation, coupling, seasonality, and explicit spatial
+choice remain deferred.

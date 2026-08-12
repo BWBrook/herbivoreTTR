@@ -3,9 +3,9 @@
 ## Naming Rules
 
 Names state both meaning and unit. `_h` denotes a rate per hour, `_kj` an energy
-amount or stock, `_kg_dm` dry-matter mass, and `_kg` body or tissue mass. Rates
-and one-hour amounts remain separate even though their numerical values match
-on the current hourly clock.
+amount or stock, `_kg_dm` dry-matter mass, `_ha` a per-hectare basis, and `_kg`
+body or tissue mass. Rates and one-hour amounts remain separate even though
+their numerical values match on the current hourly clock.
 
 ## Dynamic State
 
@@ -13,9 +13,11 @@ on the current hourly clock.
 | --- | --- | --- |
 | `gut_available_energy_kj` | kJ | Energy available for later gut release |
 | `body_energy_reserve_kj` | kJ | Labile physical body-energy reserve |
+| `forage_biomass_kg_dm_ha` | kg DM ha^-1 | Homogeneous standing edible forage biomass density |
 
-Hourly ledgers suffix these with `_start_kj` and `_end_kj`. Repeated-day daily
-tables use `_initial_kj` and `_final_kj`.
+Energy ledgers use `_start_kj`, `_end_kj`, `_initial_kj`, and `_final_kj`.
+The forage ledger uses the corresponding `_start_kg_dm_ha`, `_end_kg_dm_ha`,
+`_initial_kg_dm_ha`, and `_final_kg_dm_ha` suffixes.
 
 ## Fixed Parameters
 
@@ -45,6 +47,18 @@ Every schedule has 24 rows and `hour_of_day = 0:23`.
 | `reference_dry_matter_intake_kg_dm_h` | kg DM h^-1 | Appetite target on the reference trajectory |
 | `reference_body_energy_reserve_kj` | kJ | Reference opening body stock |
 | `reference_gut_available_energy_kj` | kJ | Reference opening gut stock |
+| `prescribed_forage_growth_kg_dm_ha_h` | kg DM ha^-1 h^-1 | External forage growth input |
+| `prescribed_forage_background_loss_kg_dm_ha_h` | kg DM ha^-1 h^-1 | External non-herbivore forage loss |
+
+## Forage-Biomass Fluxes
+
+| Variable | Unit | Meaning |
+| --- | --- | --- |
+| `net_forage_biomass_rate_kg_dm_ha_h` | kg DM ha^-1 h^-1 | Growth rate minus background-loss rate |
+| `prescribed_forage_growth_kg_dm_ha` | kg DM ha^-1 | Growth added during one hour |
+| `prescribed_forage_background_loss_kg_dm_ha` | kg DM ha^-1 | Background loss during one hour |
+| `forage_biomass_change_kg_dm_ha` | kg DM ha^-1 | Net one-hour stock change |
+| `forage_biomass_balance_residual_kg_dm_ha` | kg DM ha^-1 | Observed change minus prescribed net flow |
 
 ## Appetite Quantities
 
@@ -95,6 +109,10 @@ input, assimilation, maintenance, and activity; expected and observed changes;
 and their balance residuals. Appetite-controlled summaries additionally report
 daily reference, target, and realized dry-matter intake; counts of active
 bounds; and final deviations from the reference trajectory.
+
+The forage daily summary reports opening and closing standing biomass, total
+prescribed growth and background loss, expected and observed biomass change,
+and their balance residual.
 
 `body_energy_status` or `energy_status` is `deficit`, `neutral`, or `surplus`
 according to the scale-aware arithmetic tolerance. It is not a viability or
