@@ -1,6 +1,6 @@
 # Arc 03: Non-Spatial Herbivore-Forage Coupling
 
-Status: planned after the isolated forage arc
+Status: ready; isolated herbivore and forage entry conditions met
 
 ## Purpose
 

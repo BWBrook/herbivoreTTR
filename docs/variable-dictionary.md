@@ -33,6 +33,7 @@ The forage ledger uses the corresponding `_start_kg_dm_ha`, `_end_kg_dm_ha`,
 | `reserve_tissue_energy_density_kj_kg` | kJ kg^-1 | Effective energy density of reserve tissue |
 | `equilibrium_forage_biomass_kg_dm_ha` | kg DM ha^-1 | Positive equilibrium for the linear forage reference |
 | `forage_turnover_fraction_h` | h^-1 | Fraction controlling hourly reference production and current-biomass loss |
+| `residual_unavailable_forage_threshold_kg_dm_ha` | kg DM ha^-1 | Fixed standing-biomass threshold unavailable for acquisition |
 
 ## Prescribed Schedules
 
@@ -65,6 +66,12 @@ Every schedule has 24 rows and `hour_of_day = 0:23`.
 | `forage_background_loss_kg_dm_ha_h` | kg DM ha^-1 h^-1 | Turnover-reference proportional loss rate |
 | `forage_growth_kg_dm_ha` | kg DM ha^-1 | Turnover-reference production during one hour |
 | `forage_background_loss_kg_dm_ha` | kg DM ha^-1 | Turnover-reference loss during one hour |
+
+## Derived Forage Quantity
+
+| Variable | Unit | Meaning |
+| --- | --- | --- |
+| `accessible_forage_biomass_kg_dm_ha` | kg DM ha^-1 | Standing biomass above the fixed residual threshold; a quantity, not an acquisition rate |
 
 ## Appetite Quantities
 

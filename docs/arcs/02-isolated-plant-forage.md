@@ -1,6 +1,6 @@
 # Arc 02: Isolated Plant-Forage Subsystem
 
-Status: in progress; accounting and constant reference implemented
+Status: closed; minimum constant reference and availability boundary accepted
 
 ## Purpose
 
@@ -23,10 +23,11 @@ species composition, or stochasticity.
 2. **Constant-forcing reference (implemented):** constant production and
    proportional background loss yield an exact positive equilibrium and
    monotonic recovery from high and low starting biomass.
-3. **Availability boundary (next):** define the forage quantity that can inform
-   animal acquisition without yet invoking consumption.
-4. **Controlled forcing:** only after the constant reference is understood,
-   consider one deterministic seasonal or disturbance input.
+3. **Availability boundary (implemented):** accessible biomass is standing
+   edible biomass above a fixed residual threshold, without consumption or an
+   acquisition rate.
+4. **Controlled forcing (deferred):** introduce a deterministic seasonal or
+   disturbance input only when a coupled scientific question requires it.
 5. **Composition extensions:** later separate biomass from metabolizable energy,
    protein, water, fibre, or digestibility when a coupled question requires it.
 
@@ -39,9 +40,10 @@ environmental forcing or another scientific question requires it.
 - Which forage quantity should control later acquisition: standing biomass,
   accessible biomass, or a deliberately simple transformation?
 
-Goals 028 and 029 resolved the physical stock, hourly accounting, and constant
-reference gates. The hourly clock is a shared integration architecture, not a
-claim that plant processes are observed at that resolution.
+Goals 028-030 resolved the physical stock, hourly accounting, constant
+reference, and animal-facing availability gates. The hourly clock is a shared
+integration architecture, not a claim that plant processes are observed at
+that resolution.
 
 ## Exit Criteria
 
@@ -63,5 +65,6 @@ water, and empirical calibration remain outside the first forage core.
 
 ## Handoff
 
-The next arc is [`03-non-spatial-coupling.md`](03-non-spatial-coupling.md).
-Coupling begins only after both isolated subsystems have stable references.
+The minimum constant forage core meets these exit criteria. Controlled forcing
+is deliberately deferred so that the stable null can anchor
+[`03-non-spatial-coupling.md`](03-non-spatial-coupling.md).

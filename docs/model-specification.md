@@ -8,7 +8,8 @@ through dry-matter intake, delayed in one gut stock, and transferred to a
 body-energy reserve after maintenance and routine activity. An appetite
 controller can set intake demand, while an external rate schedule can constrain
 forage acquisition. The plant-side ledger carries standing biomass under
-prescribed growth and background loss without coupling it to the animal.
+prescribed growth and background loss. A pure residual-threshold transformation
+derives accessible biomass without coupling it to the animal.
 
 The model is deterministic. All rates apply over one-hour intervals, so their
 one-hour amounts have the same numerical value but retain distinct names.
@@ -33,6 +34,7 @@ interval's opening stocks without implicit reset or clamping.
 - `metabolizable_energy_density_kj_kg_dm` is strictly positive.
 - appetite feedback fractions are non-negative.
 - `maximum_dry_matter_intake_kg_dm_h` is strictly positive.
+- `residual_unavailable_forage_threshold_kg_dm_ha` is non-negative.
 
 Metabolizable-energy density is already an available-energy quantity. The
 current model does not separately represent gross energy, digestibility,
@@ -153,6 +155,24 @@ tissue, meristems, or recruitment. Recovery is therefore linear, symmetric,
 and independent of perturbation size. Those properties define an operational
 null, not an empirical plant-growth claim.
 
+## Standing-To-Accessible Forage Boundary
+
+For standing edible forage biomass `B` and fixed residual threshold `R`:
+
+```text
+accessible_forage_biomass_kg_dm_ha = max(0, B - R)
+```
+
+Both `B` and `R` are biomass densities in `kg DM ha^-1`. The residual threshold
+represents aggregate structural inaccessibility. It is not a second stock and
+does not change the standing forage trajectory.
+
+`derive_accessible_forage_biomass()` applies the transformation to one or more
+standing-biomass values. The output is bounded between zero and standing
+biomass. Above the threshold it increases one-for-one; at or below the threshold
+it is zero. It remains a quantity per hectare rather than an animal acquisition
+rate, so demand, intake, consumption, and depletion remain outside this layer.
+
 ## Reference Cycle
 
 `run_gut_body_energy_reference_cycle()` repeatedly applies one fixed 24-hour
@@ -246,7 +266,7 @@ assertion that daily energetic balance alone establishes health or viability.
 
 ## Retained Diagnostics
 
-Five no-write experiments protect the current scientific interpretation:
+Six no-write experiments protect the current scientific interpretation:
 
 - the reference diagnostic checks neutrality, conservation, and gut order;
 - the appetite-forage diagnostic checks a binding ceiling, deficit recovery,
@@ -256,7 +276,9 @@ Five no-write experiments protect the current scientific interpretation:
 - the forage stock diagnostic checks balanced turnover, net gain, net loss,
   state carry-over, and stock-flow closure; and
 - the forage-turnover diagnostic checks positive equilibrium and analytic,
-  monotonic recovery from matched low and high perturbations.
+  monotonic recovery from matched low and high perturbations; and
+- the forage-availability diagnostic checks the residual threshold against the
+  accepted turnover trajectories without consumption or depletion.
 
 Patch labels, movement, variable hourly food density, and duration response are
 diagnostic treatments only. They are not additional package state.
@@ -264,7 +286,7 @@ diagnostic treatments only. They are not additional package state.
 ## Exclusions
 
 The current model excludes resource- or weather-dependent plant production,
-explicit senescence processes, forage availability transformations, herbivore
-depletion, protein, water, thermoregulation, explicit space, search, mortality,
+explicit senescence processes, forage acquisition rates, herbivore depletion,
+protein, water, thermoregulation, explicit space, search, mortality,
 reproduction, and population dynamics. These require separately approved
 layers.

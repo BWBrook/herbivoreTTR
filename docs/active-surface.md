@@ -43,6 +43,10 @@ no endogenous growth equation and no connection to herbivore intake.
 It combines constant production with proportional background loss around a
 declared equilibrium, still without herbivore intake or environmental forcing.
 
+`derive_accessible_forage_biomass()` is a pure animal-facing interpretation of
+standing biomass. It subtracts a fixed residual threshold and floors the result
+at zero; it does not change forage state or define an acquisition rate.
+
 ## Protected Invariants
 
 - Every modeled quantity has an explicit unit suffix.
@@ -60,6 +64,8 @@ declared equilibrium, still without herbivore intake or environmental forcing.
 - Hourly and daily forage stock-flow identities close numerically.
 - The turnover reference is neutral at equilibrium and approaches it
   monotonically from positive low or high biomass.
+- Accessible forage is non-negative, no greater than standing forage, and
+  increases one-for-one only above the declared residual threshold.
 - Synthetic balance is not interpreted as viability or empirical calibration.
 
 ## Retained Surface
@@ -68,7 +74,7 @@ declared equilibrium, still without herbivore intake or environmental forcing.
 | --- | --- |
 | Functional package core | Retain and extend by approved layers |
 | Explicit records, units, and balance residuals | Retain |
-| Five current diagnostics | Retain |
+| Six current diagnostics | Retain |
 | Focused invariant tests | Retain |
 | Scientific decision notes | Retain as the research notebook |
 | Goal-by-goal experiment ancestry | Removed from the active tree; Git retains it |
@@ -80,7 +86,7 @@ declared equilibrium, still without herbivore intake or environmental forcing.
 
 For ordinary changes, parse retained R, run the tests affected by the change,
 and inspect the diff. When publishing a package boundary or completed model
-stage, run the full focused suite, all five diagnostics, an external build,
+stage, run the full focused suite, all six diagnostics, an external build,
 and `R CMD check --no-manual` once.
 
 Repeat a gate only for a distinct named risk. Additional polish or repeated
@@ -88,8 +94,8 @@ confirmation is not a release criterion.
 
 ## Current Stop
 
-The herbivore-energy core is closed, and the isolated forage stock plus linear
-turnover reference are implemented. The next plant decision is a deliberately
-simple standing-to-accessible forage boundary. Protein, water,
-thermoregulation, coupling, seasonality, and explicit spatial choice remain
-deferred.
+The herbivore-energy core is closed. The isolated forage stock, linear turnover
+reference, and standing-to-accessible boundary form a minimum constant
+coupling-ready plant core. The next stage is minimum non-spatial coupling.
+Protein, water, thermoregulation, controlled forcing, depletion, seasonality,
+and explicit spatial choice remain deferred.

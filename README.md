@@ -48,6 +48,16 @@ B[next] = (1 - tau) * B[current] + tau * B[equilibrium]
 This linear turnover null has an exact positive equilibrium and monotonic
 recovery from either side. It is not an empirical growth model.
 
+Standing biomass maps to an animal-facing quantity through one fixed residual
+threshold:
+
+```text
+accessible forage biomass = max(0, standing biomass - residual threshold)
+```
+
+This is a pure biomass-density transformation. It neither removes forage nor
+defines how quickly an animal can acquire it.
+
 The current synthetic reference uses:
 
 | Quantity | Value |
@@ -75,6 +85,7 @@ Rscript --vanilla experiments/herbivore-core-appetite-forage.R
 Rscript --vanilla experiments/herbivore-core-implicit-patches.R
 Rscript --vanilla experiments/forage-stock-conservation.R
 Rscript --vanilla experiments/forage-turnover-reference.R
+Rscript --vanilla experiments/forage-availability-boundary.R
 ```
 
 Run the focused test suite with:
@@ -96,8 +107,8 @@ The package exposes six related groups:
 - one-day body-only and coupled gut-body runners;
 - a repeated-day reference-cycle and appetite-controlled runner;
 - pure food-energy and body-mass conversions; and
-- isolated forage accounting plus a constant-turnover reference and
-  repeated-day runner.
+- isolated forage accounting, a constant-turnover reference and repeated-day
+  runner, and a pure standing-to-accessible biomass transformation.
 
 See [`docs/model-specification.md`](docs/model-specification.md) for equations
 and transition order, and [`docs/variable-dictionary.md`](docs/variable-dictionary.md)
@@ -106,21 +117,21 @@ for the current variables and units.
 ## Scientific Boundary
 
 The herbivore and forage systems are still isolated. The plant side contains
-prescribed biomass accounting and a linear constant-turnover reference, but no
-environmental forcing, accessible-forage transformation, depletion, or
-seasonality. The animal side still uses a non-depleting external acquisition
-ceiling. Neither subsystem contains spatial state, protein, water,
+prescribed biomass accounting, a linear constant-turnover reference, and a
+fixed residual-threshold availability boundary, but no environmental forcing,
+depletion, or seasonality. The animal side still uses a non-depleting external
+acquisition ceiling. Neither subsystem contains spatial state, protein, water,
 thermoregulation, or mass-dependent feedback.
 
-The next plant decision is how standing biomass maps to forage available for
-animal acquisition. The staged programme is indexed in
-[`docs/roadmap.md`](docs/roadmap.md).
+The isolated forage arc is closed. The next stage is the minimum non-spatial
+herbivore-forage coupling; controlled environmental forcing remains deferred.
+The staged programme is indexed in [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Repository Map
 
 - `R/`: reusable model records, transitions, and runners.
 - `tests/testthat/`: focused protection of scientific invariants.
-- `experiments/`: five current no-write diagnostics and one fixture helper.
+- `experiments/`: six current no-write diagnostics and one fixture helper.
 - `docs/model-charter.md`: governing scientific and architectural contract.
 - `docs/model-specification.md`: equations, transition order, and outputs.
 - `docs/variable-dictionary.md`: current quantities and units.
