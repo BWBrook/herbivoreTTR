@@ -2,14 +2,16 @@
 
 ## Scope
 
-The current package implements a synthetic hourly herbivore-energy model and a
-separate isolated forage-biomass ledger. The animal model tracks energy entering
+The current package implements a synthetic hourly herbivore-energy model, an
+isolated forage-biomass ledger, and their minimum non-spatial coupling. The
+animal model tracks energy entering
 through dry-matter intake, delayed in one gut stock, and transferred to a
 body-energy reserve after maintenance and routine activity. An appetite
 controller can set intake demand, while an external rate schedule can constrain
 forage acquisition. The plant-side ledger carries standing biomass under
 prescribed growth and background loss. A pure residual-threshold transformation
-derives accessible biomass without coupling it to the animal.
+derives accessible biomass. The first non-spatial coupling scales per-animal
+intake by a fixed animal density and removes the corresponding forage biomass.
 
 The model is deterministic. All rates apply over one-hour intervals, so their
 one-hour amounts have the same numerical value but retain distinct names.
@@ -35,6 +37,7 @@ interval's opening stocks without implicit reset or clamping.
 - appetite feedback fractions are non-negative.
 - `maximum_dry_matter_intake_kg_dm_h` is strictly positive.
 - `residual_unavailable_forage_threshold_kg_dm_ha` is non-negative.
+- `herbivore_density_animals_ha` is strictly positive.
 
 Metabolizable-energy density is already an available-energy quantity. The
 current model does not separately represent gross energy, digestibility,
@@ -173,6 +176,53 @@ biomass. Above the threshold it increases one-for-one; at or below the threshold
 it is zero. It remains a quantity per hectare rather than an animal acquisition
 rate, so demand, intake, consumption, and depletion remain outside this layer.
 
+## Minimum Non-Spatial Coupling
+
+Let `D` be a fixed aggregate herbivore density in animals per hectare. One
+representative animal physiology supplies the per-animal appetite and intake;
+the model does not instantiate `D` separate individuals.
+
+Autonomous turnover is applied first each hour:
+
+```text
+B[before herbivory] = (1 - tau) * B[start] + tau * B*
+
+A = max(0, B[before herbivory] - R)
+
+accessible forage per animal = A / D
+```
+
+The existing appetite and external acquisition-rate ceiling first define a
+rate-limited one-hour candidate amount `q[candidate]`. The stock then supplies
+one additional ceiling:
+
+```text
+q[realized] = min(q[candidate], A / D)
+
+herbivory removal = q[realized] * D
+
+B[end] = B[before herbivory] - herbivory removal
+```
+
+The same `q[realized]` enters the gut-energy conversion. This gives two linked
+conservation identities: plant removal equals realized per-animal intake times
+density, and the forage stock changes by growth minus background loss minus
+herbivory. Rates and one-hour amounts are named separately.
+
+Because autonomous turnover precedes herbivory, production during the shared
+hour can contribute to accessible biomass. This is an explicit discrete-time
+integration order. It is not a claim that production causally precedes feeding
+within a real hour.
+
+`step_forage_herbivory()` isolates scaling and stock limitation without plant
+fluxes or animal-energy change. `run_nonspatial_coupled_energy_days()` carries
+forage, gut, and body stocks over repeated days with complete dry-matter and
+energy ledgers.
+
+The constant coupled reference is period-24 rather than static because feeding
+and herbivory occur in two daily windows. Stability requires a repeating forage
+and gut trajectory together with neutral daily body-energy balance.
+
 ## Reference Cycle
 
 `run_gut_body_energy_reference_cycle()` repeatedly applies one fixed 24-hour
@@ -266,7 +316,7 @@ assertion that daily energetic balance alone establishes health or viability.
 
 ## Retained Diagnostics
 
-Six no-write experiments protect the current scientific interpretation:
+Eight no-write experiments protect the current scientific interpretation:
 
 - the reference diagnostic checks neutrality, conservation, and gut order;
 - the appetite-forage diagnostic checks a binding ceiling, deficit recovery,
@@ -278,7 +328,12 @@ Six no-write experiments protect the current scientific interpretation:
 - the forage-turnover diagnostic checks positive equilibrium and analytic,
   monotonic recovery from matched low and high perturbations; and
 - the forage-availability diagnostic checks the residual threshold against the
-  accepted turnover trajectories without consumption or depletion.
+  accepted turnover trajectories without consumption or depletion; and
+- the non-spatial coupled-reference diagnostic checks density scaling, a
+  binding stock ceiling, joint conservation, and period-24 stability; and
+- the animal-load pulse diagnostic changes density alone and checks forage
+  depletion, stock-limited intake, animal-energy loss, and recovery after load
+  release against a constant-density control.
 
 Patch labels, movement, variable hourly food density, and duration response are
 diagnostic treatments only. They are not additional package state.
@@ -286,7 +341,7 @@ diagnostic treatments only. They are not additional package state.
 ## Exclusions
 
 The current model excludes resource- or weather-dependent plant production,
-explicit senescence processes, forage acquisition rates, herbivore depletion,
-protein, water, thermoregulation, explicit space, search, mortality,
-reproduction, and population dynamics. These require separately approved
-layers.
+explicit senescence processes, acquisition functional responses beyond the
+accepted ceilings, multiple explicit or heterogeneous animals, protein, water,
+thermoregulation, explicit space, search, mortality, reproduction, and
+population dynamics. These require separately approved layers.

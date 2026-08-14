@@ -44,7 +44,13 @@ and daily biomass accounting. Its first process reference combines constant
 production with proportional background loss around a declared positive
 equilibrium. A fixed residual threshold purely derives standing biomass
 accessible for later animal acquisition. The plant subsystem remains synthetic
-and is not coupled to the animal.
+and retains its isolated reference.
+
+The minimum non-spatial coupling represents one focal physiology at a fixed
+animal density per hectare. It scales realized per-animal intake to forage
+removal, constrains intake by accessible forage per represented animal, and
+carries forage, gut, and body state together. The density is an aggregate load,
+not explicit population state.
 
 ## Development Contract
 
@@ -61,7 +67,7 @@ paths; the active tree contains only current code, evidence, and documentation.
 
 The current package does not include resource-dependent plant production,
 weather or seasonal forcing, explicit senescence mechanisms, forage
-acquisition rates, herbivore depletion, explicit locations, search, water
-balance, protein, thermoregulation, disease, reproduction, mortality, or
-population dynamics. These are candidate future layers, not placeholders in
-the current code.
+functional responses beyond the accepted ceilings, explicit or heterogeneous
+multiple animals, locations, search, water balance, protein, thermoregulation,
+disease, reproduction, mortality, or population dynamics. These are candidate
+future layers, not placeholders in the current code.

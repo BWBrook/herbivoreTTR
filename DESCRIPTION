@@ -20,8 +20,9 @@ Description: Provides transparent functional models of herbivore energetics
     accounting. A linear turnover reference adds constant production and
     proportional background loss around a declared positive equilibrium. A
     pure residual-threshold transformation derives biomass accessible for later
-    animal acquisition. The forage subsystem is not yet coupled to the
-    herbivore.
+    animal acquisition. A minimum non-spatial coupling scales per-animal intake
+    by a fixed animal density, removes that biomass from forage, and constrains
+    intake when accessible forage is insufficient.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Suggests:

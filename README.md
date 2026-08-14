@@ -35,8 +35,8 @@ opening standing forage biomass
   -> closing standing forage biomass
 ```
 
-It uses `kg DM ha^-1` on the same hourly clock. It is not connected to the
-animal's forage-acquisition ceiling.
+It uses `kg DM ha^-1` on the same hourly clock and remains available as an
+isolated reference path. The coupled path below composes it with animal intake.
 
 The first process reference adds constant production and proportional
 background loss:
@@ -58,6 +58,20 @@ accessible forage biomass = max(0, standing biomass - residual threshold)
 This is a pure biomass-density transformation. It neither removes forage nor
 defines how quickly an animal can acquire it.
 
+The minimum non-spatial coupling then connects the two accepted subsystems:
+
+```text
+autonomous forage turnover
+  -> accessible forage per represented animal
+  -> appetite, rate, and stock ceilings
+  -> realized per-animal intake
+  -> gut input and density-scaled forage removal
+  -> carried forage, gut, and body states
+```
+
+One representative physiology is scaled by a fixed animal density per hectare.
+This is an aggregate homogeneous load, not an explicit population model.
+
 The current synthetic reference uses:
 
 | Quantity | Value |
@@ -70,6 +84,10 @@ The current synthetic reference uses:
 | Reference intake while feeding | 0.020 kg DM h^-1 |
 | Routine activity while feeding | 50 kJ h^-1 |
 | Maximum intake | 0.025 kg DM h^-1 |
+| Forage equilibrium | 1,000 kg DM ha^-1 |
+| Forage turnover fraction | 0.001 h^-1 |
+| Residual unavailable forage | 500 kg DM ha^-1 |
+| Coupled-reference animal density | 10 animals ha^-1 |
 
 These are deliberately synthetic reference values, not an empirical kangaroo
 parameterization.
@@ -86,6 +104,8 @@ Rscript --vanilla experiments/herbivore-core-implicit-patches.R
 Rscript --vanilla experiments/forage-stock-conservation.R
 Rscript --vanilla experiments/forage-turnover-reference.R
 Rscript --vanilla experiments/forage-availability-boundary.R
+Rscript --vanilla experiments/nonspatial-coupled-reference.R
+Rscript --vanilla experiments/nonspatial-animal-load-pulse.R
 ```
 
 Run the focused test suite with:
@@ -100,15 +120,16 @@ execution path.
 
 ## Public Surface
 
-The package exposes six related groups:
+The package exposes seven related groups:
 
 - plain state, parameter, and 24-hour schedule constructors;
 - one-hour gut and body transitions;
 - one-day body-only and coupled gut-body runners;
 - a repeated-day reference-cycle and appetite-controlled runner;
-- pure food-energy and body-mass conversions; and
+- pure food-energy and body-mass conversions;
 - isolated forage accounting, a constant-turnover reference and repeated-day
-  runner, and a pure standing-to-accessible biomass transformation.
+  runner, and a pure standing-to-accessible biomass transformation; and
+- a density-scaled herbivory step and repeated-day non-spatial coupled runner.
 
 See [`docs/model-specification.md`](docs/model-specification.md) for equations
 and transition order, and [`docs/variable-dictionary.md`](docs/variable-dictionary.md)
@@ -116,22 +137,26 @@ for the current variables and units.
 
 ## Scientific Boundary
 
-The herbivore and forage systems are still isolated. The plant side contains
-prescribed biomass accounting, a linear constant-turnover reference, and a
-fixed residual-threshold availability boundary, but no environmental forcing,
-depletion, or seasonality. The animal side still uses a non-depleting external
-acquisition ceiling. Neither subsystem contains spatial state, protein, water,
+The herbivore and forage systems now have one minimum homogeneous coupling.
+The plant side contains prescribed biomass accounting, a linear turnover
+reference, and a fixed residual-threshold availability boundary. Realized
+per-animal intake is scaled by a fixed density and removed from forage, while
+accessible biomass can cap intake. A diagnostic animal-load pulse demonstrates
+depletion, stock-limited intake, animal-energy loss, and recovery after release
+without adding population state. The coupled system still has no environmental
+forcing, seasonality, spatial state, explicit multiple animals, protein, water,
 thermoregulation, or mass-dependent feedback.
 
-The isolated forage arc is closed. The next stage is the minimum non-spatial
-herbivore-forage coupling; controlled environmental forcing remains deferred.
-The staged programme is indexed in [`docs/roadmap.md`](docs/roadmap.md).
+The non-spatial arc is closed. The next stage introduces explicit fixed patches,
+animal location, and known-route movement while keeping choice and dynamic
+spatial vegetation deferred. The staged programme is indexed in
+[`docs/roadmap.md`](docs/roadmap.md).
 
 ## Repository Map
 
 - `R/`: reusable model records, transitions, and runners.
 - `tests/testthat/`: focused protection of scientific invariants.
-- `experiments/`: six current no-write diagnostics and one fixture helper.
+- `experiments/`: eight current no-write diagnostics and one fixture helper.
 - `docs/model-charter.md`: governing scientific and architectural contract.
 - `docs/model-specification.md`: equations, transition order, and outputs.
 - `docs/variable-dictionary.md`: current quantities and units.

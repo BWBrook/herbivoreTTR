@@ -16,7 +16,9 @@ expenditure. A reference-cycle runner can advance only the gut under repeated
 identical daily forcing until a numerical period-24 cycle is reached, reset
 body energy once, and record two carried measurement days. The model separates
 validated dynamic state, fixed parameters, prescribed inputs, pure conversions
-and transitions, and recorded history.
+and transitions, and recorded history. A separate homogeneous forage stock
+has an isolated turnover reference and a minimum density-scaled non-spatial
+coupling to realized animal intake.
 }
 \author{
 \strong{Maintainer}: Barry Brook \email{barry.brook@utas.edu.au}

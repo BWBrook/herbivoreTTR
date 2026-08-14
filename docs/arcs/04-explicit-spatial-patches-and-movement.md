@@ -1,6 +1,6 @@
 # Arc 04: Explicit Spatial Patches And Movement
 
-Status: planned after non-spatial coupling
+Status: ready; non-spatial coupling entry conditions met
 
 ## Purpose
 

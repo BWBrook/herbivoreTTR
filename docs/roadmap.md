@@ -6,8 +6,8 @@
 | --- | --- | --- |
 | 1. Herbivore core | Can intake, gut delay, expenditure, appetite, and simple forage constraints be understood as one energy system? | Closed |
 | 2. Isolated plant-forage | Can a simple forage biomass stock remain stable under growth, loss, and later seasonal forcing without herbivory? | Closed; controlled forcing deferred until required |
-| 3. Non-spatial coupling | How do herbivore intake and forage depletion alter one another in a homogeneous system? | Ready |
-| 4. Explicit patches and movement | How do location, patch choice, travel time, and travel energy change intake and state? | Planned |
+| 3. Non-spatial coupling | How do herbivore intake and forage depletion alter one another in a homogeneous system? | Closed |
+| 4. Explicit patches and movement | How do location, patch choice, travel time, and travel energy change intake and state? | Ready |
 | 5. Landscape constraints and scenarios | How do water, depletion, heterogeneity, climate, and disturbance produce chronic stress? | Planned |
 
 The detailed contracts are stored under `docs/arcs/`.
@@ -43,6 +43,16 @@ accessible biomass without changing the plant stock or defining animal intake.
 The minimum constant core is ready for coupling. Controlled environmental
 forcing is deferred so the stable plant null can anchor the first homogeneous
 coupled reference. Herbivory begins in Stage 3; seasonality remains deferred.
+
+## Non-Spatial Coupling Progress
+
+The first homogeneous coupling uses one representative physiology at a fixed
+animal density per hectare. Realized per-animal intake scales exact forage
+removal, accessible forage supplies a stock ceiling, and accepted turnover
+supports a stable period-24 reference. A temporary animal-load pulse then
+produces attributable forage depletion, intake limitation, animal-energy loss,
+and recovery after release. This closes the homogeneous arc and releases
+explicit spatial development.
 
 ## Deferred Animal Layers
 

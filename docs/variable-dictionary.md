@@ -34,6 +34,7 @@ The forage ledger uses the corresponding `_start_kg_dm_ha`, `_end_kg_dm_ha`,
 | `equilibrium_forage_biomass_kg_dm_ha` | kg DM ha^-1 | Positive equilibrium for the linear forage reference |
 | `forage_turnover_fraction_h` | h^-1 | Fraction controlling hourly reference production and current-biomass loss |
 | `residual_unavailable_forage_threshold_kg_dm_ha` | kg DM ha^-1 | Fixed standing-biomass threshold unavailable for acquisition |
+| `herbivore_density_animals_ha` | animals ha^-1 | Aggregate homogeneous load scaling per-animal intake to forage removal |
 
 ## Prescribed Schedules
 
@@ -72,6 +73,19 @@ Every schedule has 24 rows and `hour_of_day = 0:23`.
 | Variable | Unit | Meaning |
 | --- | --- | --- |
 | `accessible_forage_biomass_kg_dm_ha` | kg DM ha^-1 | Standing biomass above the fixed residual threshold; a quantity, not an acquisition rate |
+| `accessible_forage_per_animal_kg_dm` | kg DM animal^-1 | Accessible biomass divided across the represented density |
+
+## Coupled Dry-Matter Quantities
+
+| Variable | Unit | Meaning |
+| --- | --- | --- |
+| `rate_limited_dry_matter_intake_kg_dm_h` | kg DM animal^-1 h^-1 | Appetite after the external acquisition-rate ceiling |
+| `rate_limited_dry_matter_intake_kg_dm` | kg DM animal^-1 | Candidate amount over the one-hour interval |
+| `realized_dry_matter_intake_kg_dm` | kg DM animal^-1 | Candidate amount after the accessible-stock ceiling |
+| `herbivory_removal_kg_dm_ha` | kg DM ha^-1 | Realized per-animal amount multiplied by animal density |
+| `forage_biomass_before_herbivory_kg_dm_ha` | kg DM ha^-1 | Biomass after autonomous turnover and before removal |
+| `forage_stock_ceiling_active` | logical | Whether accessible forage limits intake |
+| `herbivore_forage_coupling_residual_kg_dm_ha` | kg DM ha^-1 | Removal minus realized per-animal intake times density |
 
 ## Appetite Quantities
 
@@ -130,6 +144,11 @@ and their balance residual.
 Turnover-reference daily summaries additionally report the declared
 equilibrium, total derived growth and loss, and opening and closing deviations
 from equilibrium.
+
+Coupled daily summaries report animal density; opening and closing forage;
+growth, background loss, and herbivory removal; forage and coupling residuals;
+stock-limited hours; minimum accessible forage; and the complete animal-energy
+summary.
 
 `body_energy_status` or `energy_status` is `deficit`, `neutral`, or `surplus`
 according to the scale-aware arithmetic tolerance. It is not a viability or
