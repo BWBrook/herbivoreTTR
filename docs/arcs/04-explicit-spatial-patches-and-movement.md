@@ -1,6 +1,6 @@
 # Arc 04: Explicit Spatial Patches And Movement
 
-Status: ready; non-spatial coupling entry conditions met
+Status: closed; one-choice spatial null accepted
 
 ## Purpose
 
@@ -17,27 +17,44 @@ Begin with fixed, known patch properties and mentally mapped routes.
 
 ## Proposed Progression
 
-1. **Patch and location records:** represent a small fixed set of patches,
-   explicit animal location, and a declared route matrix or simple geometry.
-2. **Known-route transition:** reproduce the accepted Goal 024 time and energy
-   effects from an explicit move with no search or uncertainty.
-3. **Prescribed itinerary:** run a deterministic daily sequence through static,
-   inexhaustible patches and verify exact location, time, intake, and energy
-   accounting.
-4. **Minimal choice:** compare a small number of known destinations using one
-   transparent decision rule based on current cues, without perfect foresight.
-5. **Static heterogeneity:** vary patch acquisition capacity or food quality
-   while retaining fixed stocks and no plant depletion.
+1. **Patch and location records (implemented):** a plain patch table, directed
+   one-hour routes, and one explicit patch-location state.
+2. **Known-route transition (implemented):** a pure move suspends feeding,
+   exposes incremental movement expenditure, and reproduces the accepted Goal
+   024 outcomes without search or uncertainty.
+3. **Prescribed itinerary (implemented):** a deterministic closing-patch
+   sequence now carries location and composes travel with feeding opportunity,
+   appetite, and energy accounting through one day.
+4. **Static heterogeneity (implemented):** each patch now supplies one fixed
+   non-depleting acquisition ceiling under a prescribed itinerary.
+5. **Minimal choice (implemented):** one fixed-demand remaining-bout score
+   compares staying with one known route and is checked against both prescribed
+   full-model counterfactuals.
 
 ## Decision Gates
 
-- Does a graph, coordinate geometry, or simpler route table best serve the
-  first scientific question?
-- At what clock boundary can movement start and finish?
-- Which information is known to the animal, and which would require search or
-  learning?
-- What minimal choice rule remains interpretable under competing time and
-  energy costs?
+- **Resolved:** a directed route table is sufficient; coordinates and a graph
+  dependency are deferred.
+- **Resolved:** current movement starts at an opening hourly boundary and ends
+  at the destination boundary one hour later.
+- **Resolved:** routes are known to the animal; search and learning are absent.
+- **Resolved:** itinerary entries prescribe closing patch; stay versus move is
+  inferred from opening location rather than redundantly prescribed.
+- **Resolved:** static heterogeneity precedes choice so patch effects can be
+  understood before behavior responds to them.
+- **Resolved:** acquisition capacity is a fixed patch property in this layer;
+  food-energy density and biomass dynamics remain common or absent.
+- **Resolved:** the first choice rule ranks expected remaining-bout acquisition
+  minus route expenditure, uses stay on ties, and does not claim to forecast
+  dynamic appetite feedback.
+
+## Closure Evidence
+
+At hour 16, a limited-patch animal selected movement to adequate forage and
+improved its realized combined-energy result from `-800` to `-481 kJ`. An
+adequate-patch animal selected staying and retained neutrality rather than
+moving to a `-650 kJ` outcome. All alternatives used the same accepted
+appetite-energy runner, and resource depletion remained absent.
 
 ## Exit Criteria
 

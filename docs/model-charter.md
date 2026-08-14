@@ -52,6 +52,14 @@ removal, constrains intake by accessible forage per represented animal, and
 carries forage, gut, and body state together. The density is an aggregate load,
 not explicit population state.
 
+The first spatial layer contains named patches with fixed non-depleting
+acquisition capacities, one focal animal location, directed one-hour routes,
+and a prescribed closing-patch itinerary. Movement suspends feeding for the
+interval and adds incremental expenditure to the accepted appetite-energy
+system. One fixed-demand remaining-bout score can choose between staying and
+one known route. Repeated choice, nutritional heterogeneity, and spatial
+vegetation remain deferred.
+
 ## Development Contract
 
 Each substantive goal must introduce one interpretable process or scientific
@@ -68,6 +76,7 @@ paths; the active tree contains only current code, evidence, and documentation.
 The current package does not include resource-dependent plant production,
 weather or seasonal forcing, explicit senescence mechanisms, forage
 functional responses beyond the accepted ceilings, explicit or heterogeneous
-multiple animals, locations, search, water balance, protein, thermoregulation,
-disease, reproduction, mortality, or population dynamics. These are candidate
-future layers, not placeholders in the current code.
+multiple animals, repeated or stochastic route choice, search, water
+balance, protein, thermoregulation, disease, reproduction, mortality, or
+population dynamics. These are candidate future layers, not placeholders in
+the current code.

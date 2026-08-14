@@ -7,7 +7,7 @@
 | 1. Herbivore core | Can intake, gut delay, expenditure, appetite, and simple forage constraints be understood as one energy system? | Closed |
 | 2. Isolated plant-forage | Can a simple forage biomass stock remain stable under growth, loss, and later seasonal forcing without herbivory? | Closed; controlled forcing deferred until required |
 | 3. Non-spatial coupling | How do herbivore intake and forage depletion alter one another in a homogeneous system? | Closed |
-| 4. Explicit patches and movement | How do location, patch choice, travel time, and travel energy change intake and state? | Ready |
+| 4. Explicit patches and movement | How do location, patch choice, travel time, and travel energy change intake and state? | Closed |
 | 5. Landscape constraints and scenarios | How do water, depletion, heterogeneity, climate, and disturbance produce chronic stress? | Planned |
 
 The detailed contracts are stored under `docs/arcs/`.
@@ -53,6 +53,19 @@ supports a stable period-24 reference. A temporary animal-load pulse then
 produces attributable forage depletion, intake limitation, animal-energy loss,
 and recovery after release. This closes the homogeneous arc and releases
 explicit spatial development.
+
+## Explicit Spatial Progress
+
+The first spatial layer uses named patches, one explicit animal location, and
+directed one-hour routes. A prescribed 24-hour closing-patch itinerary now
+infers stay versus movement and composes travel with feeding opportunity,
+appetite, and energy expenditure. An all-stay day reduces exactly to the
+accepted reference; a fixed two-move round trip closes all location, time, and
+energy accounts. Static patch acquisition capacity then reproduces the accepted
+limited-to-adequate and adequate-to-limited order effects while holding travel
+constant. A fixed-demand remaining-bout score then selects sensible stay or
+move actions and is checked against both full-model counterfactuals. This closes
+the explicit-patch arc without repeated decisions or dynamic resources.
 
 ## Deferred Animal Layers
 

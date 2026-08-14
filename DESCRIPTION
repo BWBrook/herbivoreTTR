@@ -22,7 +22,10 @@ Description: Provides transparent functional models of herbivore energetics
     pure residual-threshold transformation derives biomass accessible for later
     animal acquisition. A minimum non-spatial coupling scales per-animal intake
     by a fixed animal density, removes that biomass from forage, and constrains
-    intake when accessible forage is insufficient.
+    intake when accessible forage is insufficient. A minimum explicit spatial
+    layer represents named patches with static acquisition capacities, animal
+    location, one-hour known-route movement, a prescribed daily itinerary, and
+    one transparent feeding-bout choice between staying and a known route.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Suggests:

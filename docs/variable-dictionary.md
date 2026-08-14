@@ -14,6 +14,7 @@ their numerical values match on the current hourly clock.
 | `gut_available_energy_kj` | kJ | Energy available for later gut release |
 | `body_energy_reserve_kj` | kJ | Labile physical body-energy reserve |
 | `forage_biomass_kg_dm_ha` | kg DM ha^-1 | Homogeneous standing edible forage biomass density |
+| `patch_id` | identifier | Patch occupied by the focal animal at an hourly boundary |
 
 Energy ledgers use `_start_kj`, `_end_kj`, `_initial_kj`, and `_final_kj`.
 The forage ledger uses the corresponding `_start_kg_dm_ha`, `_end_kg_dm_ha`,
@@ -47,12 +48,13 @@ Every schedule has 24 rows and `hour_of_day = 0:23`.
 | `prescribed_ingested_available_energy_kj_h` | kJ h^-1 | Available energy prescribed to enter the gut |
 | `prescribed_assimilated_energy_kj_h` | kJ h^-1 | Body-only diagnostic input |
 | `prescribed_routine_activity_expenditure_kj_h` | kJ h^-1 | Activity expenditure incremental to maintenance |
-| `forage_acquisition_ceiling_kg_dm_h` | kg DM h^-1 | External upper bound on realized acquisition |
+| `forage_acquisition_ceiling_kg_dm_h` | kg DM h^-1 | External schedule or static patch-specific upper bound on realized acquisition |
 | `reference_dry_matter_intake_kg_dm_h` | kg DM h^-1 | Appetite target on the reference trajectory |
 | `reference_body_energy_reserve_kj` | kJ | Reference opening body stock |
 | `reference_gut_available_energy_kj` | kJ | Reference opening gut stock |
 | `prescribed_forage_growth_kg_dm_ha_h` | kg DM ha^-1 h^-1 | External forage growth input |
 | `prescribed_forage_background_loss_kg_dm_ha_h` | kg DM ha^-1 h^-1 | External non-herbivore forage loss |
+| `prescribed_closing_patch_id` | identifier | Patch prescribed at each closing hourly boundary |
 
 ## Forage-Biomass Fluxes
 
@@ -86,6 +88,38 @@ Every schedule has 24 rows and `hour_of_day = 0:23`.
 | `forage_biomass_before_herbivory_kg_dm_ha` | kg DM ha^-1 | Biomass after autonomous turnover and before removal |
 | `forage_stock_ceiling_active` | logical | Whether accessible forage limits intake |
 | `herbivore_forage_coupling_residual_kg_dm_ha` | kg DM ha^-1 | Removal minus realized per-animal intake times density |
+
+## Explicit Spatial Quantities
+
+| Variable | Unit | Meaning |
+| --- | --- | --- |
+| `origin_patch_id` | identifier | Patch occupied at the opening boundary of a move |
+| `destination_patch_id` | identifier | Declared patch occupied at the closing boundary |
+| `opening_patch_id` | identifier | Patch occupied at the opening boundary of an itinerary interval |
+| `closing_patch_id` | identifier | Patch occupied at the closing boundary of an itinerary interval |
+| `spatial_action` | category | Inferred `stay` or `move` during the interval |
+| `opening_patch_forage_acquisition_ceiling_kg_dm_h` | kg DM h^-1 | Fixed acquisition capacity attached to the opening patch |
+| `travel_duration_h` | h | Current fixed route duration of one hour |
+| `baseline_feeding_opportunity_open` | logical | Whether feeding would be open before travel suspension |
+| `feeding_suspended_during_travel` | logical | Whether feeding is unavailable during travel |
+| `feeding_time_lost_h` | h | Otherwise-open feeding time removed by travel |
+| `baseline_prescribed_routine_activity_expenditure_kj_h` | kJ h^-1 | Ordinary activity before route expenditure is added |
+| `incremental_movement_expenditure_kj_h` | kJ h^-1 | Route expenditure rate incremental to routine activity |
+| `incremental_movement_expenditure_kj` | kJ | Incremental route expenditure over the one-hour move |
+| `current_patch_id` | identifier | Patch occupied when the feeding-bout choice is made |
+| `expected_dry_matter_demand_kg_dm_h` | kg DM h^-1 | Constant demand proxy used only by the feeding-bout choice score |
+| `remaining_feeding_opportunity_h` | h | Feeding-opportunity horizon before route time is charged |
+| `current_patch_forage_acquisition_ceiling_kg_dm_h` | kg DM h^-1 | Acquisition capacity of the current-patch candidate |
+| `destination_patch_forage_acquisition_ceiling_kg_dm_h` | kg DM h^-1 | Acquisition capacity of the known destination candidate |
+| `stay_feeding_opportunity_h` | h | Feeding opportunity retained by staying |
+| `move_feeding_opportunity_h` | h | Feeding opportunity remaining after known-route travel |
+| `stay_expected_dry_matter_intake_kg_dm` | kg DM | Capacity-limited expected acquisition when staying |
+| `move_expected_dry_matter_intake_kg_dm` | kg DM | Capacity- and travel-limited expected acquisition after moving |
+| `stay_feeding_bout_score_kj` | kJ | Gross expected acquired energy when staying |
+| `move_feeding_bout_score_kj` | kJ | Gross expected acquired energy after moving minus route expenditure |
+| `move_score_advantage_kj` | kJ | Move score minus stay score; an ordinal decision quantity |
+| `selected_action` | category | `move` only for a strictly positive advantage; otherwise `stay` |
+| `selected_patch_id` | identifier | Current or destination patch implied by the selected action |
 
 ## Appetite Quantities
 
@@ -165,7 +199,6 @@ These are derived outputs and never dynamic state.
 
 ## Diagnostic-Only Terms
 
-Patch identifiers, treatment labels, movement flags, variable hourly food
-density, extra feeding hours, and recovery classifications exist only inside
-the retained experiments. They are not package records or supported model
-state.
+Treatment labels, actual feeding time lost, variable hourly food density, extra
+feeding hours, and recovery classifications exist only inside the retained
+experiments. They are not package records or supported model state.

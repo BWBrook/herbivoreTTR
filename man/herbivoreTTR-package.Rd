@@ -19,6 +19,10 @@ validated dynamic state, fixed parameters, prescribed inputs, pure conversions
 and transitions, and recorded history. A separate homogeneous forage stock
 has an isolated turnover reference and a minimum density-scaled non-spatial
 coupling to realized animal intake.
+A minimum explicit spatial layer adds named patches with static acquisition
+capacities, animal location, a pure one-hour known-route movement transition,
+one prescribed daily itinerary composed with the accepted appetite-energy
+system, and one transparent stay-versus-known-route feeding-bout choice.
 }
 \author{
 \strong{Maintainer}: Barry Brook \email{barry.brook@utas.edu.au}

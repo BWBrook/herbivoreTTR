@@ -3,9 +3,10 @@
 ## Product Promise
 
 `herbivoreTTR` provides inspectable hourly stock-flow models for herbivore
-energy, forage biomass, and their minimum non-spatial coupling. Its current
-user is Barry Brook. Its purpose is scientific understanding, not a
-general-purpose simulation platform.
+energy, forage biomass, their minimum non-spatial coupling, and one prescribed
+explicit-patch day with static acquisition heterogeneity and a bounded choice.
+Its current user is Barry Brook. Its purpose is scientific understanding, not
+a general-purpose simulation platform.
 
 ## Canonical Paths
 
@@ -51,6 +52,18 @@ at zero; it does not change forage state or define an acquisition rate.
 `run_nonspatial_coupled_energy_days()` applies autonomous turnover, availability,
 appetite, removal, and the accepted gut-body transition on the shared clock.
 
+`new_known_route_landscape()` and `new_patch_location_state()` define the first
+explicit spatial records, including one fixed acquisition capacity per patch.
+`step_known_route_movement()` moves the focal animal over one known one-hour
+route, suspends feeding, and exposes incremental movement expenditure for
+composition with the energy model.
+`new_prescribed_patch_itinerary()` declares the closing patch at every hourly
+boundary. `run_prescribed_spatial_energy_day()` infers stay versus move and
+composes that itinerary with the accepted appetite-energy day.
+`choose_known_patch_for_feeding_bout()` ranks staying against one known route
+using a declared fixed demand and remaining feeding opportunity. It is a choice
+heuristic, not a forecast of the ensuing appetite-energy trajectory.
+
 ## Protected Invariants
 
 - Every modeled quantity has an explicit unit suffix.
@@ -75,6 +88,16 @@ appetite, removal, and the accepted gut-body transition on the shared clock.
 - Herbivory cannot remove forage below the residual threshold.
 - The constant coupled reference repeats over 24 hours with neutral daily
   animal-energy balance.
+- Patch and route identifiers are unique and every route endpoint is valid.
+- A known-route move starts at its declared origin, suspends feeding during
+  travel, and closes at its destination with route expenditure reported
+  exactly. The hour-16 anchor loses one otherwise open feeding hour.
+- An all-stay itinerary reduces exactly to the non-spatial reference. Travel
+  time and actual feeding time lost remain separately observable.
+- During a stay, the opening patch supplies the applied non-depleting
+  acquisition ceiling; during travel, acquisition is zero.
+- The one-choice null subtracts travel time and route expenditure, selects stay
+  on ties, and is checked against both full-model counterfactuals.
 - Synthetic balance is not interpreted as viability or empirical calibration.
 
 ## Retained Surface
@@ -83,7 +106,7 @@ appetite, removal, and the accepted gut-body transition on the shared clock.
 | --- | --- |
 | Functional package core | Retain and extend by approved layers |
 | Explicit records, units, and balance residuals | Retain |
-| Eight current diagnostics | Retain |
+| Twelve current diagnostics | Retain |
 | Focused invariant tests | Retain |
 | Scientific decision notes | Retain as the research notebook |
 | Goal-by-goal experiment ancestry | Removed from the active tree; Git retains it |
@@ -95,7 +118,7 @@ appetite, removal, and the accepted gut-body transition on the shared clock.
 
 For ordinary changes, parse retained R, run the tests affected by the change,
 and inspect the diff. When publishing a package boundary or completed model
-stage, run the full focused suite, all eight diagnostics, an external build,
+stage, run the full focused suite, all twelve diagnostics, an external build,
 and `R CMD check --no-manual` once.
 
 Repeat a gate only for a distinct named risk. Additional polish or repeated
@@ -105,7 +128,8 @@ confirmation is not a release criterion.
 
 The herbivore, isolated forage, and non-spatial coupling arcs are closed. The
 coupled system has a stable period-24 reference and one controlled animal-load
-pulse with attributable depletion, intake limitation, and recovery. The next
-approved layer is explicit fixed patches, animal location, and known-route
-movement. Protein, water, thermoregulation, environmental forcing, spatial
-choice, and explicit population dynamics remain deferred.
+pulse with attributable depletion, intake limitation, and recovery. The first
+explicit spatial arc is also closed: location, known-route travel, static patch
+capacity, a prescribed day, and one validated choice are separated cleanly.
+Protein, water, thermoregulation, environmental forcing, dynamic spatial forage,
+repeated choice, and explicit population dynamics remain deferred.

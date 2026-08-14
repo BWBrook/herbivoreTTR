@@ -2,7 +2,7 @@
 
 Date: 2026-08-10
 
-Status: implemented for ecological review; evidence only
+Status: accepted historical evidence; promoted by Decision 0033
 
 ## Context
 
@@ -90,10 +90,10 @@ decision. The next environmental discussion should instead consider a second
 static patch property, preferably metabolizable food-energy density, before
 depletion or plant dynamics are introduced.
 
-The retained no-write client is:
-
-```text
-```
+The retained no-write evidence was consolidated into
+`experiments/herbivore-core-implicit-patches.R`. Decision 0033 promotes the
+accepted one-hour movement contract into explicit package state and a pure
+transition.
 
 Generated evidence remains disposable under the ignored Goal 024 output
 directory. Any food-quality or production promotion requires a separate

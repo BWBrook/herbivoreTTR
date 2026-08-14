@@ -19,6 +19,15 @@ installed package:
   binding residual boundary, and the minimum period-24 coupled reference.
 - `nonspatial-animal-load-pulse.R` compares a temporary density pulse with a
   constant-density control and checks depletion, limitation, and recovery.
+- `explicit-known-route-movement.R` checks patch-location change, one lost
+  feeding hour, incremental movement expenditure, and the accepted Goal 024
+  combined outcomes.
+- `explicit-prescribed-itinerary.R` checks exact all-stay reduction and one
+  two-move round trip with contextual feeding-time loss and energy accounting.
+- `explicit-static-patch-acquisition.R` reverses adequate and limited patch
+  order under matched travel to check static capacity selection and response.
+- `explicit-known-patch-choice.R` checks one feeding-bout stay-versus-move score
+  against both prescribed full-model counterfactuals.
 - `herbivore-core-fixtures.R` supplies their shared synthetic reference.
 
 The herbivore and coupled diagnostics source only the fixture helper; the

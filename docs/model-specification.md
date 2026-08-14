@@ -3,8 +3,10 @@
 ## Scope
 
 The current package implements a synthetic hourly herbivore-energy model, an
-isolated forage-biomass ledger, and their minimum non-spatial coupling. The
-animal model tracks energy entering
+isolated forage-biomass ledger, their minimum non-spatial coupling, and one
+prescribed explicit-patch day built from known-route transitions. The spatial
+null also includes one bounded stay-versus-known-route choice over a declared
+remaining feeding bout. The animal model tracks energy entering
 through dry-matter intake, delayed in one gut stock, and transferred to a
 body-energy reserve after maintenance and routine activity. An appetite
 controller can set intake demand, while an external rate schedule can constrain
@@ -19,12 +21,15 @@ one-hour amounts have the same numerical value but retain distinct names.
 ## Clock And State
 
 Each day contains intervals `hour_of_day = 0:23`. Interval `h` represents
-`[h, h + 1)`. The three implemented dynamic stocks are:
+`[h, h + 1)`. The implemented dynamic state comprises three stocks and one
+location identifier:
 
 - `gut_available_energy_kj`: energy available for later release from the gut;
 - `body_energy_reserve_kj`: labile body-energy reserve; and
 - `forage_biomass_kg_dm_ha`: homogeneous standing edible forage biomass
-  density.
+  density; and
+- `patch_id`: the named patch occupied by the focal animal at an hourly
+  boundary.
 
 All stocks are finite and non-negative. Closing stocks become the next
 interval's opening stocks without implicit reset or clamping.
@@ -223,6 +228,101 @@ The constant coupled reference is period-24 rather than static because feeding
 and herbivory occur in two daily windows. Stability requires a repeating forage
 and gut trajectory together with neutral daily body-energy balance.
 
+## Explicit Known-Route Movement
+
+The minimum spatial record contains a finite set of unique patch identifiers,
+one finite non-negative acquisition ceiling per patch, and unique directed
+routes between different declared patches. Every current route has a fixed
+duration of one hour and a finite, non-negative incremental movement
+expenditure in kilojoules.
+
+For an opening location `L[start]` and declared destination `L[destination]`:
+
+```text
+require one directed route L[start] -> L[destination]
+
+travel duration = 1 h
+feeding suspended during travel = TRUE
+L[end] = L[destination]
+```
+
+The route's incremental movement expenditure is reported as both a one-hour
+amount and rate. Maintenance and ordinary routine activity are not embedded in
+the spatial transition. A caller composes them explicitly with feeding
+suspension and the route increment. Actual feeding time lost depends on whether
+the travel interval overlaps an otherwise open feeding opportunity; the
+accepted hour-16 anchor loses one hour.
+
+Movement starts at the opening boundary, occupies the interval, and ends at the
+destination boundary. There is no in-transit state because multi-hour routes
+are excluded from this layer. The route is known to the focal animal; the step
+does not select among destinations.
+
+## Prescribed Explicit-Patch Day
+
+`new_prescribed_patch_itinerary()` records the patch occupied at each of the 24
+closing hourly boundaries. Given opening location `L[h]` and prescribed closing
+patch `P[h]`:
+
+```text
+if P[h] = L[h]: stay
+otherwise: require and traverse known route L[h] -> P[h]
+
+L[h + 1] = P[h]
+```
+
+`run_prescribed_spatial_energy_day()` performs this location transition before
+composing the interval with the accepted appetite-energy inputs. During travel,
+feeding opportunity, reference intake, and the acquisition ceiling are set to
+zero; route expenditure is added to ordinary routine activity. The unmodified
+reference body and gut trajectories remain the homeostatic targets, allowing
+appetite to respond to the resulting energetic deviation in later open hours.
+
+Travel duration and actual feeding time lost are distinct. The latter is one
+hour only when travel overlaps a baseline open feeding interval.
+
+## Static Patch Acquisition Capacity
+
+Each patch `p` carries one fixed non-depleting acquisition ceiling `C[p]` in
+`kg DM h^-1`. For an interval opening in patch `L[h]`:
+
+```text
+if staying: applied acquisition ceiling = C[L[h]]
+if moving:  applied acquisition ceiling = 0
+```
+
+The ceiling then constrains appetite through the accepted energy runner. Patch
+capacity is recorded independently of the applied ceiling, so a travel hour
+retains its opening-patch property while correctly applying zero acquisition.
+
+This is acquisition-rate heterogeneity only. `C[p]` is not standing biomass,
+does not deplete or renew, and does not alter metabolizable-energy density.
+The prescribed itinerary remains external to the energy runner.
+
+## One Known-Patch Feeding-Bout Choice
+
+`choose_known_patch_for_feeding_bout()` compares staying with one declared
+known-route destination. Let `d` be a constant expected demand proxy, `H` the
+remaining feeding-opportunity hours, `T` route duration, `E` metabolizable-
+energy density, and `M` incremental route expenditure:
+
+```text
+stay intake = min(d, C[current]) * H
+move intake = min(d, C[destination]) * max(0, H - T)
+
+stay score = stay intake * E
+move score = move intake * E - M
+```
+
+The animal moves only when `move score > stay score` beyond scale-aware
+floating-point tolerance; ties stay. Maintenance and ordinary routine activity
+are common to both candidates and therefore cancel from the comparison.
+
+Demand remains fixed within the score. The rule does not simulate future
+appetite, gut release, or body reserve and must not be interpreted as predicting
+the magnitude of the realized energetic benefit. The accepted spatial runner
+evaluates the chosen and rejected prescribed actions separately.
+
 ## Reference Cycle
 
 `run_gut_body_energy_reference_cycle()` repeatedly applies one fixed 24-hour
@@ -316,7 +416,7 @@ assertion that daily energetic balance alone establishes health or viability.
 
 ## Retained Diagnostics
 
-Eight no-write experiments protect the current scientific interpretation:
+Twelve no-write experiments protect the current scientific interpretation:
 
 - the reference diagnostic checks neutrality, conservation, and gut order;
 - the appetite-forage diagnostic checks a binding ceiling, deficit recovery,
@@ -333,15 +433,31 @@ Eight no-write experiments protect the current scientific interpretation:
   binding stock ceiling, joint conservation, and period-24 stability; and
 - the animal-load pulse diagnostic changes density alone and checks forage
   depletion, stock-limited intake, animal-energy loss, and recovery after load
-  release against a constant-density control.
+  release against a constant-density control; and
+- the explicit known-route diagnostic checks patch-location change, feeding
+  suspension, incremental movement expenditure, and reproduction of the
+  accepted Goal 024 energy outcomes; and
+- the prescribed-itinerary diagnostic checks exact all-stay reduction and a
+  two-move round trip with contextual feeding-time loss and energy closure;
+  and
+- the static patch-acquisition diagnostic reverses adequate and limited patch
+  order under matched travel and checks the resulting intake and energy state;
+  and
+- the known-patch choice diagnostic ranks staying and moving once, then checks
+  the selected action against both full appetite-energy counterfactuals.
 
-Patch labels, movement, variable hourly food density, and duration response are
-diagnostic treatments only. They are not additional package state.
+Implicit patch treatment labels, variable hourly food density, and feeding-
+duration response remain diagnostic treatments only. Explicit patch identity,
+static acquisition capacity, one-hour known-route movement, and one prescribed
+day are now supported package state. One bounded feeding-bout choice is a pure
+decision helper over that state.
 
 ## Exclusions
 
 The current model excludes resource- or weather-dependent plant production,
 explicit senescence processes, acquisition functional responses beyond the
 accepted ceilings, multiple explicit or heterogeneous animals, protein, water,
-thermoregulation, explicit space, search, mortality, reproduction, and
-population dynamics. These require separately approved layers.
+thermoregulation, repeated or stochastic route choice, dynamic anticipation,
+multi-hour transit, patch food-energy-density heterogeneity, patch biomass or
+production, search, mortality, reproduction, and population dynamics. These
+require separately approved layers.

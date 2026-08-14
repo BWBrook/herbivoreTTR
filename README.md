@@ -72,6 +72,15 @@ autonomous forage turnover
 One representative physiology is scaled by a fixed animal density per hectare.
 This is an aggregate homogeneous load, not an explicit population model.
 
+The first explicit spatial layer adds named patches with fixed non-depleting
+acquisition capacities, one animal location, directed one-hour known routes,
+and a prescribed daily itinerary. A move changes the boundary location,
+suspends feeding during travel, and adds its incremental expenditure to the
+accepted appetite-energy system. The occupied patch supplies the acquisition
+ceiling during a stay. One transparent choice can rank staying against one
+known route over a declared remaining feeding bout. Repeated decisions and
+spatial vegetation remain absent.
+
 The current synthetic reference uses:
 
 | Quantity | Value |
@@ -106,6 +115,10 @@ Rscript --vanilla experiments/forage-turnover-reference.R
 Rscript --vanilla experiments/forage-availability-boundary.R
 Rscript --vanilla experiments/nonspatial-coupled-reference.R
 Rscript --vanilla experiments/nonspatial-animal-load-pulse.R
+Rscript --vanilla experiments/explicit-known-route-movement.R
+Rscript --vanilla experiments/explicit-prescribed-itinerary.R
+Rscript --vanilla experiments/explicit-static-patch-acquisition.R
+Rscript --vanilla experiments/explicit-known-patch-choice.R
 ```
 
 Run the focused test suite with:
@@ -120,7 +133,7 @@ execution path.
 
 ## Public Surface
 
-The package exposes seven related groups:
+The package exposes eight related groups:
 
 - plain state, parameter, and 24-hour schedule constructors;
 - one-hour gut and body transitions;
@@ -129,7 +142,11 @@ The package exposes seven related groups:
 - pure food-energy and body-mass conversions;
 - isolated forage accounting, a constant-turnover reference and repeated-day
   runner, and a pure standing-to-accessible biomass transformation; and
-- a density-scaled herbivory step and repeated-day non-spatial coupled runner.
+- a density-scaled herbivory step and repeated-day non-spatial coupled runner;
+  and
+- explicit patch-landscape, location, and itinerary records plus known-route
+  movement, one-day prescribed spatial composition, and one feeding-bout
+  choice.
 
 See [`docs/model-specification.md`](docs/model-specification.md) for equations
 and transition order, and [`docs/variable-dictionary.md`](docs/variable-dictionary.md)
@@ -143,20 +160,21 @@ reference, and a fixed residual-threshold availability boundary. Realized
 per-animal intake is scaled by a fixed density and removed from forage, while
 accessible biomass can cap intake. A diagnostic animal-load pulse demonstrates
 depletion, stock-limited intake, animal-energy loss, and recovery after release
-without adding population state. The coupled system still has no environmental
-forcing, seasonality, spatial state, explicit multiple animals, protein, water,
+without adding population state. The non-spatial coupling still has no
+environmental forcing, seasonality, explicit multiple animals, protein, water,
 thermoregulation, or mass-dependent feedback.
 
-The non-spatial arc is closed. The next stage introduces explicit fixed patches,
-animal location, and known-route movement while keeping choice and dynamic
-spatial vegetation deferred. The staged programme is indexed in
+The non-spatial and explicit-patch arcs are closed. The spatial core now
+supports static patch-specific acquisition capacity and one validated
+stay-versus-move decision without dynamic resources. The next stage follows the
+landscape-constraints plan. The staged programme is indexed in
 [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Repository Map
 
 - `R/`: reusable model records, transitions, and runners.
 - `tests/testthat/`: focused protection of scientific invariants.
-- `experiments/`: eight current no-write diagnostics and one fixture helper.
+- `experiments/`: twelve current no-write diagnostics and one fixture helper.
 - `docs/model-charter.md`: governing scientific and architectural contract.
 - `docs/model-specification.md`: equations, transition order, and outputs.
 - `docs/variable-dictionary.md`: current quantities and units.
