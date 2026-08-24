@@ -1,9 +1,9 @@
 #' Create a known-route patch landscape
 #'
 #' Create a minimal fixed landscape containing named patches, one static
-#' non-depleting forage-acquisition capacity per patch, and directed one-hour
-#' routes known to the focal animal. Route choice and multi-hour transit are
-#' outside this record.
+#' non-depleting forage-acquisition capacity and metabolizable-energy density
+#' per patch, and directed one-hour routes known to the focal animal. Route
+#' choice and multi-hour transit are outside this record.
 #'
 #' @param patch_id Character vector of at least two unique, non-empty patch
 #'   identifiers.
@@ -17,6 +17,9 @@
 #' @param incremental_movement_expenditure_kj Finite, non-negative numeric
 #'   vector giving the energy expenditure added by each one-hour route, in
 #'   kilojoules.
+#' @param metabolizable_energy_density_kj_kg_dm Finite, strictly positive
+#'   numeric vector giving one metabolizable-energy density per patch, in
+#'   kilojoules per kilogram dry matter.
 #'
 #' @return A plain named list containing `patches` and `routes` data frames.
 #' @export
@@ -25,7 +28,8 @@ new_known_route_landscape <- function(
   forage_acquisition_ceiling_kg_dm_h,
   route_origin_patch_id,
   route_destination_patch_id,
-  incremental_movement_expenditure_kj
+  incremental_movement_expenditure_kj,
+  metabolizable_energy_density_kj_kg_dm
 ) {
   .validate_patch_ids(patch_id, "patch_id", minimum_length = 2L)
   .validate_patch_acquisition_capacities(
@@ -39,12 +43,20 @@ new_known_route_landscape <- function(
     route_destination_patch_id,
     incremental_movement_expenditure_kj
   )
+  .validate_patch_energy_densities(
+    metabolizable_energy_density_kj_kg_dm,
+    length(patch_id),
+    "metabolizable_energy_density_kj_kg_dm"
+  )
 
   list(
     patches = data.frame(
       patch_id = as.character(patch_id),
       forage_acquisition_ceiling_kg_dm_h = as.double(
         forage_acquisition_ceiling_kg_dm_h
+      ),
+      metabolizable_energy_density_kj_kg_dm = as.double(
+        metabolizable_energy_density_kj_kg_dm
       ),
       stringsAsFactors = FALSE
     ),
@@ -163,13 +175,18 @@ step_known_route_movement <- function(
     !is.data.frame(landscape$patches) ||
       !.has_exact_named_fields(
         landscape$patches,
-        c("patch_id", "forage_acquisition_ceiling_kg_dm_h")
+        c(
+          "patch_id",
+          "forage_acquisition_ceiling_kg_dm_h",
+          "metabolizable_energy_density_kj_kg_dm"
+        )
       )
   ) {
     stop(
       paste0(
-        "`landscape$patches` must contain only `patch_id` and ",
-        "`forage_acquisition_ceiling_kg_dm_h`."
+        "`landscape$patches` must contain only `patch_id`, ",
+        "`forage_acquisition_ceiling_kg_dm_h`, and ",
+        "`metabolizable_energy_density_kj_kg_dm`."
       ),
       call. = FALSE
     )
@@ -205,6 +222,11 @@ step_known_route_movement <- function(
     nrow(landscape$patches),
     "landscape$patches$forage_acquisition_ceiling_kg_dm_h"
   )
+  .validate_patch_energy_densities(
+    landscape$patches$metabolizable_energy_density_kj_kg_dm,
+    nrow(landscape$patches),
+    "landscape$patches$metabolizable_energy_density_kj_kg_dm"
+  )
   .validate_known_route_fields(
     landscape$patches$patch_id,
     landscape$routes$origin_patch_id,
@@ -236,6 +258,32 @@ step_known_route_movement <- function(
     stop(
       sprintf(
         "`%s` must contain one finite, non-negative numeric value per patch.",
+        field_name
+      ),
+      call. = FALSE
+    )
+  }
+
+  invisible(NULL)
+}
+
+.validate_patch_energy_densities <- function(
+  value,
+  patch_count,
+  field_name
+) {
+  if (
+    !.is_numeric_vector(value) ||
+      length(value) != patch_count ||
+      any(!is.finite(as.double(value))) ||
+      any(as.double(value) <= 0)
+  ) {
+    stop(
+      sprintf(
+        paste0(
+          "`%s` must contain one finite, strictly positive numeric value ",
+          "per patch."
+        ),
         field_name
       ),
       call. = FALSE

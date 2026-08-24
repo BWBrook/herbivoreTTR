@@ -53,12 +53,56 @@ carries forage, gut, and body state together. The density is an aggregate load,
 not explicit population state.
 
 The first spatial layer contains named patches with fixed non-depleting
-acquisition capacities, one focal animal location, directed one-hour routes,
-and a prescribed closing-patch itinerary. Movement suspends feeding for the
-interval and adds incremental expenditure to the accepted appetite-energy
-system. One fixed-demand remaining-bout score can choose between staying and
-one known route. Repeated choice, nutritional heterogeneity, and spatial
-vegetation remain deferred.
+acquisition capacities and metabolizable-energy densities, one focal animal
+location, directed one-hour routes, and a prescribed closing-patch itinerary.
+Movement suspends feeding for the interval and adds incremental expenditure to
+the accepted appetite-energy system. The opening patch supplies food density
+to the physiology. One fixed-demand remaining-bout score can choose between
+staying and one known route using the two patches' acquisition capacities and
+metabolizable-energy densities. Anticipation, richer nutritional composition,
+and dynamic vegetation require separate contracts.
+
+A prescribed scenario may designate one patch as a non-feeding water source
+and impose a daily visit using the same route and itinerary records. This adds
+only travel time, lost feeding opportunity, and incremental expenditure. It
+does not imply drinking, hydration state, or water balance.
+
+The first dynamic spatial-forage layer keeps one biomass-density stock per
+patch, separate from static patch acquisition capacity. Common autonomous
+turnover acts in every patch; the co-located representative animal load removes
+forage only from its occupied opening patch during a stay. The accepted first
+comparison prescribes location rather than allowing resource-aware choice.
+
+One retained diagnostic may use perfect knowledge of the complete opening
+state and accepted model to compare a stay and one move counterfactual. This is
+an upper benchmark for whether resource state can change the preferred action,
+not a behavioral mechanism. A one-factor sweep may locate and attribute that
+oracle boundary without promoting it into package behavior. Perception, memory,
+prediction, and repeated decision-making require separate scientific contracts.
+
+One independent diagnostic may compare full-day stay and move counterfactuals
+while varying only current-patch metabolizable-energy density against a fixed
+adequate destination. This perfect-model oracle establishes whether quality can
+repay a declared route. The minimal patch-quality helper may be compared with
+that oracle to expose its information error without becoming a forecast of
+appetite or body state.
+
+One diagnostic may compare the resource-state oracle with a myopic
+current-patch acquisition cue and a prescribed destination expectation. Any
+disagreement is reported as realized energetic regret. The cue remains an
+information-limited null rather than a claim about animal perception or an
+accepted repeated policy.
+
+One closed-loop diagnostic may apply that cue at successive day boundaries
+while carrying all accepted state. Both daily actions remain independently
+evaluated so repeated spatial patterns can be attributed before any richer
+behavioral mechanism is proposed.
+
+That same diagnostic may change one established patch-energy density while
+holding biomass dynamics and every other input fixed. This is the minimum
+quality-by-biomass interaction test. Daily oracle disagreement is a local
+information diagnostic along the carried myopic path, not the performance of a
+separately carried optimal policy.
 
 ## Development Contract
 
@@ -76,7 +120,8 @@ paths; the active tree contains only current code, evidence, and documentation.
 The current package does not include resource-dependent plant production,
 weather or seasonal forcing, explicit senescence mechanisms, forage
 functional responses beyond the accepted ceilings, explicit or heterogeneous
-multiple animals, repeated or stochastic route choice, search, water
-balance, protein, thermoregulation, disease, reproduction, mortality, or
-population dynamics. These are candidate future layers, not placeholders in
-the current code.
+multiple animals, repeated or stochastic route choice as package behavior,
+search, water balance, drinking physiology, protein, thermoregulation, disease,
+reproduction, mortality, anticipatory quality-aware choice, patch-specific
+turnover, or population dynamics. These are candidate future layers, not
+placeholders in the current code.

@@ -62,8 +62,9 @@ run_appetite_controlled_energy_days <- function(
   maintenance_expenditure_kj_h <- as.double(
     body_parameters$maintenance_expenditure_kj_h
   )
-  energy_density_kj_kg_dm <- as.double(
-    food_parameters$metabolizable_energy_density_kj_kg_dm
+  energy_density_kj_kg_dm <- rep(
+    as.double(food_parameters$metabolizable_energy_density_kj_kg_dm),
+    24L
   )
   maximum_intake_kg_dm_h <- as.double(
     appetite_parameters$maximum_dry_matter_intake_kg_dm_h
@@ -201,6 +202,7 @@ run_appetite_controlled_energy_days <- function(
       maximum_intake_kg_dm_h,
       24L
     ),
+    metabolizable_energy_density_kj_kg_dm = energy_density_kj_kg_dm,
     reference_ingested_available_energy_kj_h =
       reference_intake_kg_dm_h * energy_density_kj_kg_dm,
     body_energy_deviation_from_reference_kj = numeric(24L),
@@ -251,7 +253,7 @@ run_appetite_controlled_energy_days <- function(
     control <- .calculate_appetite_target_core(
       current_gut_energy_kj,
       current_body_energy_kj,
-      energy_density_kj_kg_dm,
+      energy_density_kj_kg_dm[[row_index]],
       maximum_intake_kg_dm_h,
       body_feedback_fraction_h,
       gut_feedback_fraction_h,
@@ -271,7 +273,7 @@ run_appetite_controlled_energy_days <- function(
       forage_ceiling_kg_dm_h
     )
     realized_intake_energy_kj_h <-
-      realized_intake_kg_dm_h * energy_density_kj_kg_dm
+      realized_intake_kg_dm_h * energy_density_kj_kg_dm[[row_index]]
     transition <- .step_gut_body_energy_core(
       current_gut_energy_kj,
       current_body_energy_kj,

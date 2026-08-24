@@ -12,7 +12,6 @@ run_prescribed_spatial_energy_day(
   initial_body_state,
   gut_parameters,
   body_parameters,
-  food_parameters,
   appetite_parameters,
   appetite_reference_schedule,
   routine_activity_schedule
@@ -40,9 +39,6 @@ run_prescribed_spatial_energy_day(
 \item{body_parameters}{A body-energy parameter record created by
 [new_body_energy_parameters()].}
 
-\item{food_parameters}{A food-energy parameter record created by
-[new_food_energy_parameters()].}
-
 \item{appetite_parameters}{An appetite-control parameter record created by
 [new_appetite_control_parameters()].}
 
@@ -60,6 +56,6 @@ A plain list containing a 24-row `hourly` ledger and one-row `daily`
 Carry explicit patch location through one prescribed 24-hour itinerary.
 A patch change uses the declared one-hour known route, closes feeding during
 that interval, and adds route expenditure to ordinary routine activity.
-Patch identity selects one static non-depleting forage-acquisition ceiling.
-Food quality remains common across patches.
+Patch identity selects one static non-depleting forage-acquisition ceiling
+and one metabolizable-energy density.
 }

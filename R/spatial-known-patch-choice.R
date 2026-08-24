@@ -5,6 +5,8 @@
 #' across the bout. Movement loses the route-duration portion of feeding
 #' opportunity and pays the route's incremental energy expenditure. Maintenance
 #' and ordinary activity are omitted because they are common to both options.
+#' Expected intake in each patch is converted with that patch's declared
+#' metabolizable-energy density.
 #'
 #' The score is a transparent choice heuristic, not a forecast of subsequent
 #' appetite feedback or realized body-energy change. A tie within scale-aware
@@ -15,8 +17,6 @@
 #' @param landscape A known-route landscape created by
 #'   [new_known_route_landscape()].
 #' @param destination_patch_id One alternative destination patch identifier.
-#' @param food_parameters Food-energy parameters created by
-#'   [new_food_energy_parameters()].
 #' @param expected_dry_matter_demand_kg_dm_h One finite, non-negative expected
 #'   demand rate held constant across the remaining bout, in kilograms dry
 #'   matter per hour.
@@ -30,13 +30,11 @@ choose_known_patch_for_feeding_bout <- function(
   state,
   landscape,
   destination_patch_id,
-  food_parameters,
   expected_dry_matter_demand_kg_dm_h,
   remaining_feeding_opportunity_h
 ) {
   .validate_patch_location_state(state)
   .validate_known_route_landscape(landscape)
-  .validate_food_energy_parameters(food_parameters)
   .validate_nonnegative_numeric_scalar(
     expected_dry_matter_demand_kg_dm_h,
     "expected_dry_matter_demand_kg_dm_h"
@@ -69,16 +67,18 @@ choose_known_patch_for_feeding_bout <- function(
   destination_capacity_kg_dm_h <-
     landscape$patches$
       forage_acquisition_ceiling_kg_dm_h[[destination_index]]
+  current_energy_density_kj_kg_dm <-
+    landscape$patches$
+      metabolizable_energy_density_kj_kg_dm[[current_index]]
+  destination_energy_density_kj_kg_dm <-
+    landscape$patches$
+      metabolizable_energy_density_kj_kg_dm[[destination_index]]
   demand_kg_dm_h <- as.double(expected_dry_matter_demand_kg_dm_h)
   remaining_h <- as.double(remaining_feeding_opportunity_h)
   travel_duration_h <- as.double(movement$fluxes$travel_duration_h)
   movement_expenditure_kj <- as.double(
     movement$fluxes$incremental_movement_expenditure_kj
   )
-  energy_density_kj_kg_dm <- as.double(
-    food_parameters$metabolizable_energy_density_kj_kg_dm
-  )
-
   stay_feeding_opportunity_h <- remaining_h
   move_feeding_opportunity_h <- max(0, remaining_h - travel_duration_h)
   stay_expected_intake_kg_dm <-
@@ -88,9 +88,9 @@ choose_known_patch_for_feeding_bout <- function(
     min(demand_kg_dm_h, destination_capacity_kg_dm_h) *
       move_feeding_opportunity_h
   stay_feeding_bout_score_kj <-
-    stay_expected_intake_kg_dm * energy_density_kj_kg_dm
+    stay_expected_intake_kg_dm * current_energy_density_kj_kg_dm
   move_feeding_bout_score_kj <-
-    move_expected_intake_kg_dm * energy_density_kj_kg_dm -
+    move_expected_intake_kg_dm * destination_energy_density_kj_kg_dm -
       movement_expenditure_kj
   move_score_advantage_kj <-
     move_feeding_bout_score_kj - stay_feeding_bout_score_kj
@@ -119,6 +119,10 @@ choose_known_patch_for_feeding_bout <- function(
       current_capacity_kg_dm_h,
     destination_patch_forage_acquisition_ceiling_kg_dm_h =
       destination_capacity_kg_dm_h,
+    current_patch_metabolizable_energy_density_kj_kg_dm =
+      current_energy_density_kj_kg_dm,
+    destination_patch_metabolizable_energy_density_kj_kg_dm =
+      destination_energy_density_kj_kg_dm,
     travel_duration_h = travel_duration_h,
     incremental_movement_expenditure_kj = movement_expenditure_kj,
     stay_feeding_opportunity_h = stay_feeding_opportunity_h,

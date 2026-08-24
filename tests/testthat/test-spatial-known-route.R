@@ -4,7 +4,8 @@ test_that("known-route landscapes are plain directed records", {
     forage_acquisition_ceiling_kg_dm_h = c(0.025, 0.015),
     route_origin_patch_id = c("patch_a", "patch_b"),
     route_destination_patch_id = c("patch_b", "patch_a"),
-    incremental_movement_expenditure_kj = c(100, 120)
+    incremental_movement_expenditure_kj = c(100, 120),
+    metabolizable_energy_density_kj_kg_dm = c(10000, 8000)
   )
 
   expect_identical(names(landscape), c("patches", "routes"))
@@ -12,6 +13,10 @@ test_that("known-route landscapes are plain directed records", {
   expect_identical(
     landscape$patches$forage_acquisition_ceiling_kg_dm_h,
     c(0.025, 0.015)
+  )
+  expect_identical(
+    landscape$patches$metabolizable_energy_density_kj_kg_dm,
+    c(10000, 8000)
   )
   expect_identical(
     landscape$routes$travel_duration_h,
@@ -33,7 +38,8 @@ test_that("landscape construction rejects inconsistent routes", {
       c(0.025, 0.025),
       "patch_a",
       "patch_a",
-      100
+      100,
+      c(10000, 10000)
     ),
     "unique"
   )
@@ -43,7 +49,8 @@ test_that("landscape construction rejects inconsistent routes", {
       c(0.025, 0.025),
       "patch_a",
       "patch_c",
-      100
+      100,
+      c(10000, 10000)
     ),
     "endpoint"
   )
@@ -53,7 +60,8 @@ test_that("landscape construction rejects inconsistent routes", {
       c(0.025, 0.025),
       "patch_a",
       "patch_a",
-      100
+      100,
+      c(10000, 10000)
     ),
     "different patches"
   )
@@ -63,7 +71,8 @@ test_that("landscape construction rejects inconsistent routes", {
       c(0.025, 0.025),
       c("patch_a", "patch_a"),
       c("patch_b", "patch_b"),
-      c(100, 100)
+      c(100, 100),
+      c(10000, 10000)
     ),
     "must be unique"
   )
@@ -73,7 +82,8 @@ test_that("landscape construction rejects inconsistent routes", {
       c(0.025, 0.025),
       "patch_a",
       "patch_b",
-      -1
+      -1,
+      c(10000, 10000)
     ),
     "non-negative"
   )
@@ -83,7 +93,8 @@ test_that("landscape construction rejects inconsistent routes", {
       0.025,
       "patch_a",
       "patch_b",
-      100
+      100,
+      c(10000, 10000)
     ),
     "per patch"
   )
@@ -93,9 +104,32 @@ test_that("landscape construction rejects inconsistent routes", {
       c(0.025, -0.001),
       "patch_a",
       "patch_b",
-      100
+      100,
+      c(10000, 10000)
     ),
     "non-negative"
+  )
+  expect_error(
+    new_known_route_landscape(
+      c("patch_a", "patch_b"),
+      c(0.025, 0.025),
+      "patch_a",
+      "patch_b",
+      100,
+      10000
+    ),
+    "per patch"
+  )
+  expect_error(
+    new_known_route_landscape(
+      c("patch_a", "patch_b"),
+      c(0.025, 0.025),
+      "patch_a",
+      "patch_b",
+      100,
+      c(10000, 0)
+    ),
+    "strictly positive"
   )
 })
 
@@ -105,7 +139,8 @@ test_that("one-hour movement changes location and exposes both costs", {
     forage_acquisition_ceiling_kg_dm_h = c(0.025, 0.015),
     route_origin_patch_id = c("patch_a", "patch_b"),
     route_destination_patch_id = c("patch_b", "patch_a"),
-    incremental_movement_expenditure_kj = c(100, 120)
+    incremental_movement_expenditure_kj = c(100, 120),
+    metabolizable_energy_density_kj_kg_dm = c(10000, 8000)
   )
   result <- step_known_route_movement(
     new_patch_location_state("patch_a"),
@@ -149,7 +184,8 @@ test_that("one-hour movement changes location and exposes both costs", {
     c(0.025, 0.015),
     "patch_a",
     "patch_b",
-    100
+    100,
+    c(10000, 8000)
   )
   expect_error(
     step_known_route_movement(

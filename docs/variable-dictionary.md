@@ -13,7 +13,7 @@ their numerical values match on the current hourly clock.
 | --- | --- | --- |
 | `gut_available_energy_kj` | kJ | Energy available for later gut release |
 | `body_energy_reserve_kj` | kJ | Labile physical body-energy reserve |
-| `forage_biomass_kg_dm_ha` | kg DM ha^-1 | Homogeneous standing edible forage biomass density |
+| `forage_biomass_kg_dm_ha` | kg DM ha^-1 | Standing edible forage biomass density, homogeneous or keyed by patch |
 | `patch_id` | identifier | Patch occupied by the focal animal at an hourly boundary |
 
 Energy ledgers use `_start_kj`, `_end_kj`, `_initial_kj`, and `_final_kj`.
@@ -26,7 +26,7 @@ The forage ledger uses the corresponding `_start_kg_dm_ha`, `_end_kg_dm_ha`,
 | --- | --- | --- |
 | `gut_release_fraction_h` | h^-1 | Fraction of opening gut stock released each hour |
 | `maintenance_expenditure_kj_h` | kJ h^-1 | Fixed body maintenance expenditure |
-| `metabolizable_energy_density_kj_kg_dm` | kJ kg^-1 DM | Available energy per dry-matter mass |
+| `metabolizable_energy_density_kj_kg_dm` | kJ kg^-1 DM | Available energy per dry-matter mass, scalar in non-spatial food parameters or keyed by explicit patch |
 | `maximum_dry_matter_intake_kg_dm_h` | kg DM h^-1 | Upper appetite target |
 | `body_energy_feedback_fraction_h` | h^-1 | Body-deviation feedback fraction |
 | `gut_energy_feedback_fraction_h` | h^-1 | Gut-deviation feedback fraction |
@@ -99,6 +99,7 @@ Every schedule has 24 rows and `hour_of_day = 0:23`.
 | `closing_patch_id` | identifier | Patch occupied at the closing boundary of an itinerary interval |
 | `spatial_action` | category | Inferred `stay` or `move` during the interval |
 | `opening_patch_forage_acquisition_ceiling_kg_dm_h` | kg DM h^-1 | Fixed acquisition capacity attached to the opening patch |
+| `opening_patch_metabolizable_energy_density_kj_kg_dm` | kJ kg^-1 DM | Fixed food-energy density attached to the opening patch |
 | `travel_duration_h` | h | Current fixed route duration of one hour |
 | `baseline_feeding_opportunity_open` | logical | Whether feeding would be open before travel suspension |
 | `feeding_suspended_during_travel` | logical | Whether feeding is unavailable during travel |
@@ -111,6 +112,8 @@ Every schedule has 24 rows and `hour_of_day = 0:23`.
 | `remaining_feeding_opportunity_h` | h | Feeding-opportunity horizon before route time is charged |
 | `current_patch_forage_acquisition_ceiling_kg_dm_h` | kg DM h^-1 | Acquisition capacity of the current-patch candidate |
 | `destination_patch_forage_acquisition_ceiling_kg_dm_h` | kg DM h^-1 | Acquisition capacity of the known destination candidate |
+| `current_patch_metabolizable_energy_density_kj_kg_dm` | kJ kg^-1 DM | Food-energy density of the current-patch candidate |
+| `destination_patch_metabolizable_energy_density_kj_kg_dm` | kJ kg^-1 DM | Food-energy density of the known destination candidate |
 | `stay_feeding_opportunity_h` | h | Feeding opportunity retained by staying |
 | `move_feeding_opportunity_h` | h | Feeding opportunity remaining after known-route travel |
 | `stay_expected_dry_matter_intake_kg_dm` | kg DM | Capacity-limited expected acquisition when staying |
@@ -120,6 +123,8 @@ Every schedule has 24 rows and `hour_of_day = 0:23`.
 | `move_score_advantage_kj` | kJ | Move score minus stay score; an ordinal decision quantity |
 | `selected_action` | category | `move` only for a strictly positive advantage; otherwise `stay` |
 | `selected_patch_id` | identifier | Current or destination patch implied by the selected action |
+| `occupied_at_opening` | logical | Whether a patch contains the representative load at the opening boundary |
+| `occupied_stay` | logical | Whether the load remains in that opening patch for the interval, permitting local herbivory |
 
 ## Appetite Quantities
 
@@ -184,6 +189,10 @@ growth, background loss, and herbivory removal; forage and coupling residuals;
 stock-limited hours; minimum accessible forage; and the complete animal-energy
 summary.
 
+Spatial coupled summaries retain those forage flows separately for each patch.
+Per-hectare stocks are never summed into a landscape mass because patch areas
+are not represented.
+
 `body_energy_status` or `energy_status` is `deficit`, `neutral`, or `surplus`
 according to the scale-aware arithmetic tolerance. It is not a viability or
 health classification.
@@ -199,6 +208,32 @@ These are derived outputs and never dynamic state.
 
 ## Diagnostic-Only Terms
 
-Treatment labels, actual feeding time lost, variable hourly food density, extra
-feeding hours, and recovery classifications exist only inside the retained
-experiments. They are not package records or supported model state.
+Treatment labels, extra feeding hours, and recovery classifications exist only
+inside the retained experiments. They are not package records or supported
+model state. Feeding time lost is supported spatial output, and hourly food
+density now records the scalar or opening-patch value used by the physiology.
+
+The resource-aware oracle's stay and move counterfactual scores, selected
+advantage, and perfect-information label are likewise diagnostic-only terms.
+The boundary sweep additionally reports intake energy gained by moving, route
+expenditure, move-minus-stay energy, and stock-limited hours. They are not
+animal state or an implemented behavioral policy.
+
+The myopic comparison's current attainable acquisition rate, prescribed
+destination expected rate, cue-versus-oracle agreement, and realized regret are
+also diagnostic-only. The current rate is an opening one-hour stock cue treated
+as persistent over the remaining feeding bout, not dynamic patch state.
+
+The daily closed-loop diagnostic additionally records treatment density,
+opening and destination patch identities, biomasses, and energy densities,
+opening and closing gut and body stocks, selected and oracle actions and score
+differences, switch day and interval, summed local daily regret, and carried
+patch trajectories. Regret compares one-day actions along the carried myopic
+path; it is not a separately carried oracle-policy contrast. These remain
+experiment outputs rather than supported behavioral state.
+
+The food-quality choice-boundary diagnostic records current and destination
+metabolizable-energy densities, matched stay and move intake and energy, the
+minimal helper action and score difference, the full-model oracle action and
+move-minus-stay energy, agreement, and realized regret. These are
+counterfactual experiment outputs, not persistent behavioral state.

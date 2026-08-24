@@ -8,7 +8,6 @@ choose_known_patch_for_feeding_bout(
   state,
   landscape,
   destination_patch_id,
-  food_parameters,
   expected_dry_matter_demand_kg_dm_h,
   remaining_feeding_opportunity_h
 )
@@ -21,9 +20,6 @@ choose_known_patch_for_feeding_bout(
 [new_known_route_landscape()].}
 
 \item{destination_patch_id}{One alternative destination patch identifier.}
-
-\item{food_parameters}{Food-energy parameters created by
-[new_food_energy_parameters()].}
 
 \item{expected_dry_matter_demand_kg_dm_h}{One finite, non-negative expected
 demand rate held constant across the remaining bout, in kilograms dry
@@ -42,6 +38,8 @@ declared remaining feeding bout. Expected dry-matter demand is held constant
 across the bout. Movement loses the route-duration portion of feeding
 opportunity and pays the route's incremental energy expenditure. Maintenance
 and ordinary activity are omitted because they are common to both options.
+Expected intake in each patch is converted with that patch's declared
+metabolizable-energy density.
 }
 \details{
 The score is a transparent choice heuristic, not a forecast of subsequent

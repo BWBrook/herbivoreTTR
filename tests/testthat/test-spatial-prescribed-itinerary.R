@@ -1,5 +1,6 @@
 test_landscape <- function(
-  forage_acquisition_ceiling_kg_dm_h = c(0.025, 0.025)
+  forage_acquisition_ceiling_kg_dm_h = c(0.025, 0.025),
+  metabolizable_energy_density_kj_kg_dm = c(10000, 10000)
 ) {
   new_known_route_landscape(
     patch_id = c("patch_a", "patch_b"),
@@ -7,7 +8,9 @@ test_landscape <- function(
       forage_acquisition_ceiling_kg_dm_h,
     route_origin_patch_id = c("patch_a", "patch_b"),
     route_destination_patch_id = c("patch_b", "patch_a"),
-    incremental_movement_expenditure_kj = c(100, 100)
+    incremental_movement_expenditure_kj = c(100, 100),
+    metabolizable_energy_density_kj_kg_dm =
+      metabolizable_energy_density_kj_kg_dm
   )
 }
 
@@ -28,7 +31,6 @@ test_spatial_day <- function(
     initial_body_state = fixture$opening_body,
     gut_parameters = fixture$gut,
     body_parameters = fixture$body,
-    food_parameters = fixture$food,
     appetite_parameters = fixture$appetite,
     appetite_reference_schedule = fixture$appetite_reference,
     routine_activity_schedule = fixture$activity
@@ -59,6 +61,50 @@ test_that("prescribed itineraries are canonical closing-boundary records", {
   expect_error(
     new_prescribed_patch_itinerary(0:23, rep("patch_a", 23L)),
     "at least 24"
+  )
+})
+
+test_that("an all-stay itinerary uses its patch food-energy density", {
+  fixture <- core_test_fixture()
+  landscape <- test_landscape(
+    metabolizable_energy_density_kj_kg_dm = c(10000, 8000)
+  )
+  adequate <- test_spatial_day(
+    fixture,
+    rep("patch_a", 24L),
+    landscape,
+    "patch_a"
+  )
+  lower <- test_spatial_day(
+    fixture,
+    rep("patch_b", 24L),
+    landscape,
+    "patch_b"
+  )
+  lower_reference <- run_core_test_days(
+    fixture,
+    food = new_food_energy_parameters(8000)
+  )
+
+  expect_identical(
+    lower$hourly[names(lower_reference$hourly)],
+    lower_reference$hourly
+  )
+  expect_identical(
+    lower$daily[names(lower_reference$daily)],
+    lower_reference$daily
+  )
+  expect_identical(
+    adequate$hourly$metabolizable_energy_density_kj_kg_dm,
+    rep(10000, 24L)
+  )
+  expect_identical(
+    lower$hourly$metabolizable_energy_density_kj_kg_dm,
+    rep(8000, 24L)
+  )
+  expect_identical(
+    c(adequate$daily$movement_hours, lower$daily$movement_hours),
+    c(0L, 0L)
   )
 })
 
@@ -145,7 +191,8 @@ test_that("static patch capacity exposes feeding-window order", {
     forage_acquisition_ceiling_kg_dm_h = c(0.015, 0.025),
     route_origin_patch_id = c("limited_patch", "adequate_patch"),
     route_destination_patch_id = c("adequate_patch", "limited_patch"),
-    incremental_movement_expenditure_kj = c(100, 100)
+    incremental_movement_expenditure_kj = c(100, 100),
+    metabolizable_energy_density_kj_kg_dm = c(10000, 10000)
   )
   run_order <- function(initial_patch_id, destination_patch_id) {
     closing_patch_id <- rep(initial_patch_id, 24L)
@@ -242,7 +289,6 @@ test_that("spatial days reject unknown locations and impossible switches", {
     initial_body_state = fixture$opening_body,
     gut_parameters = fixture$gut,
     body_parameters = fixture$body,
-    food_parameters = fixture$food,
     appetite_parameters = fixture$appetite,
     appetite_reference_schedule = fixture$appetite_reference,
     routine_activity_schedule = fixture$activity
@@ -271,7 +317,8 @@ test_that("spatial days reject unknown locations and impossible switches", {
     c(0.025, 0.025),
     "patch_a",
     "patch_b",
-    100
+    100,
+    c(10000, 10000)
   )
   one_way$itinerary <- new_prescribed_patch_itinerary(
     0:23,

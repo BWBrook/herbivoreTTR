@@ -152,6 +152,133 @@ step_forage_herbivory <- function(
   )
 }
 
+.step_post_turnover_coupled_energy_core <- function(
+  forage_biomass_before_herbivory_kg_dm_ha,
+  gut_energy_start_kj,
+  body_energy_start_kj,
+  fixed,
+  feeding_opportunity_open,
+  reference_intake_kg_dm_h,
+  reference_body_energy_kj,
+  reference_gut_energy_kj,
+  forage_acquisition_ceiling_kg_dm_h,
+  routine_activity_kj_h
+) {
+  control <- .calculate_appetite_target_core(
+    gut_energy_start_kj,
+    body_energy_start_kj,
+    fixed$energy_density_kj_kg_dm,
+    fixed$maximum_intake_kg_dm_h,
+    fixed$body_feedback_fraction_h,
+    fixed$gut_feedback_fraction_h,
+    feeding_opportunity_open,
+    reference_intake_kg_dm_h,
+    reference_body_energy_kj,
+    reference_gut_energy_kj
+  )
+  appetite_target_kg_dm_h <-
+    control$appetite_target_dry_matter_intake_kg_dm_h
+  rate_limited_intake_kg_dm_h <- min(
+    appetite_target_kg_dm_h,
+    forage_acquisition_ceiling_kg_dm_h
+  )
+  herbivory <- .step_forage_herbivory_core(
+    forage_biomass_before_herbivory_kg_dm_ha,
+    fixed$herbivore_density_animals_ha,
+    fixed$residual_threshold_kg_dm_ha,
+    rate_limited_intake_kg_dm_h
+  )
+  realized_intake_kg_dm <-
+    herbivory$fluxes$realized_dry_matter_intake_kg_dm
+  realized_intake_energy_kj_h <-
+    realized_intake_kg_dm * fixed$energy_density_kj_kg_dm
+  energy <- .step_gut_body_energy_core(
+    gut_energy_start_kj,
+    body_energy_start_kj,
+    fixed$gut_release_fraction_h,
+    fixed$maintenance_expenditure_kj_h,
+    realized_intake_energy_kj_h,
+    routine_activity_kj_h
+  )
+  gut <- energy$gut
+  body <- energy$body
+
+  list(
+    state = list(
+      forage_biomass_kg_dm_ha =
+        herbivory$state$forage_biomass_kg_dm_ha,
+      gut_available_energy_kj = gut$state$gut_available_energy_kj,
+      body_energy_reserve_kj = body$state$body_energy_reserve_kj
+    ),
+    fluxes = list(
+      herbivory_removal_kg_dm_ha =
+        herbivory$fluxes$herbivory_removal_kg_dm_ha,
+      herbivore_forage_coupling_residual_kg_dm_ha =
+        herbivory$fluxes$herbivore_forage_coupling_residual_kg_dm_ha
+    ),
+    intake_ledger = c(
+      list(
+        herbivore_density_animals_ha =
+          fixed$herbivore_density_animals_ha,
+        residual_unavailable_forage_threshold_kg_dm_ha =
+          fixed$residual_threshold_kg_dm_ha,
+        accessible_forage_biomass_kg_dm_ha =
+          herbivory$fluxes$accessible_forage_biomass_kg_dm_ha,
+        accessible_forage_per_animal_kg_dm =
+          herbivory$fluxes$accessible_forage_per_animal_kg_dm
+      ),
+      control,
+      list(
+        forage_acquisition_ceiling_kg_dm_h =
+          forage_acquisition_ceiling_kg_dm_h,
+        forage_acquisition_ceiling_active =
+          appetite_target_kg_dm_h > forage_acquisition_ceiling_kg_dm_h,
+        rate_limited_dry_matter_intake_kg_dm_h =
+          rate_limited_intake_kg_dm_h,
+        rate_limited_dry_matter_intake_kg_dm =
+          rate_limited_intake_kg_dm_h,
+        forage_stock_ceiling_active =
+          herbivory$fluxes$forage_stock_ceiling_active,
+        realized_dry_matter_intake_kg_dm_h = realized_intake_kg_dm,
+        realized_dry_matter_intake_kg_dm = realized_intake_kg_dm,
+        herbivory_removal_kg_dm_ha =
+          herbivory$fluxes$herbivory_removal_kg_dm_ha
+      )
+    ),
+    energy_ledger = list(
+      realized_ingested_available_energy_kj_h =
+        realized_intake_energy_kj_h,
+      gut_available_energy_start_kj = energy$system$gut_energy_start_kj,
+      gut_release_fraction_h = fixed$gut_release_fraction_h,
+      assimilated_energy_kj_h = gut$fluxes$assimilated_energy_kj_h,
+      realized_ingested_available_energy_kj =
+        gut$fluxes$prescribed_ingested_available_energy_kj,
+      assimilated_energy_kj = gut$fluxes$assimilated_energy_kj,
+      gut_energy_change_kj = gut$fluxes$gut_energy_change_kj,
+      gut_available_energy_end_kj = gut$state$gut_available_energy_kj,
+      gut_energy_balance_residual_kj =
+        gut$fluxes$gut_energy_balance_residual_kj,
+      body_energy_reserve_start_kj = energy$system$body_energy_start_kj,
+      maintenance_expenditure_kj_h = fixed$maintenance_expenditure_kj_h,
+      prescribed_routine_activity_expenditure_kj_h =
+        routine_activity_kj_h,
+      net_body_energy_rate_kj_h = body$fluxes$net_body_energy_rate_kj_h,
+      maintenance_expenditure_kj =
+        body$fluxes$maintenance_expenditure_kj,
+      prescribed_routine_activity_expenditure_kj =
+        body$fluxes$prescribed_routine_activity_expenditure_kj,
+      body_energy_change_kj = body$fluxes$body_energy_change_kj,
+      body_energy_reserve_end_kj = body$state$body_energy_reserve_kj,
+      body_energy_balance_residual_kj =
+        body$fluxes$energy_balance_residual_kj,
+      total_system_energy_start_kj = energy$system$total_energy_start_kj,
+      total_system_energy_end_kj = energy$system$total_energy_end_kj,
+      system_energy_balance_residual_kj =
+        energy$system$energy_balance_residual_kj
+    )
+  )
+}
+
 #' Run repeated non-spatial coupled herbivore-forage days
 #'
 #' Couple the accepted appetite-controlled herbivore to the constant-turnover
@@ -349,55 +476,26 @@ run_nonspatial_coupled_energy_days <- function(
     )
     forage_before_herbivory_kg_dm_ha <-
       turnover$state$forage_biomass_kg_dm_ha
-    control <- .calculate_appetite_target_core(
+    step <- .step_post_turnover_coupled_energy_core(
+      forage_before_herbivory_kg_dm_ha,
       current_gut_energy_kj,
       current_body_energy_kj,
-      fixed$energy_density_kj_kg_dm,
-      fixed$maximum_intake_kg_dm_h,
-      fixed$body_feedback_fraction_h,
-      fixed$gut_feedback_fraction_h,
+      fixed,
       schedules$feeding_opportunity_open[[row_index]],
       schedules$reference_intake_kg_dm_h[[row_index]],
       schedules$reference_body_energy_kj[[row_index]],
-      schedules$reference_gut_energy_kj[[row_index]]
-    )
-    appetite_target_kg_dm_h <-
-      control$appetite_target_dry_matter_intake_kg_dm_h
-    external_ceiling_kg_dm_h <-
-      schedules$forage_acquisition_ceiling_kg_dm_h[[row_index]]
-    rate_limited_intake_kg_dm_h <- min(
-      appetite_target_kg_dm_h,
-      external_ceiling_kg_dm_h
-    )
-    rate_limited_intake_kg_dm <- rate_limited_intake_kg_dm_h
-    herbivory <- .step_forage_herbivory_core(
-      forage_before_herbivory_kg_dm_ha,
-      fixed$herbivore_density_animals_ha,
-      fixed$residual_threshold_kg_dm_ha,
-      rate_limited_intake_kg_dm
-    )
-    realized_intake_kg_dm <-
-      herbivory$fluxes$realized_dry_matter_intake_kg_dm
-    realized_intake_kg_dm_h <- realized_intake_kg_dm
-    realized_intake_energy_kj_h <-
-      realized_intake_kg_dm_h * fixed$energy_density_kj_kg_dm
-    energy <- .step_gut_body_energy_core(
-      current_gut_energy_kj,
-      current_body_energy_kj,
-      fixed$gut_release_fraction_h,
-      fixed$maintenance_expenditure_kj_h,
-      realized_intake_energy_kj_h,
+      schedules$reference_gut_energy_kj[[row_index]],
+      schedules$forage_acquisition_ceiling_kg_dm_h[[row_index]],
       schedules$routine_activity_kj_h[[row_index]]
     )
 
-    forage_end_kg_dm_ha <-
-      herbivory$state$forage_biomass_kg_dm_ha
+    forage_end_kg_dm_ha <- step$state$forage_biomass_kg_dm_ha
     forage_growth_kg_dm_ha <-
       turnover$fluxes$forage_growth_kg_dm_ha
     forage_background_loss_kg_dm_ha <-
       turnover$fluxes$forage_background_loss_kg_dm_ha
     herbivory_removal_kg_dm_ha <-
-      herbivory$fluxes$herbivory_removal_kg_dm_ha
+      step$fluxes$herbivory_removal_kg_dm_ha
     forage_balance_residual_kg_dm_ha <-
       (forage_end_kg_dm_ha - current_forage_biomass_kg_dm_ha) -
         (
@@ -416,8 +514,6 @@ run_nonspatial_coupled_energy_days <- function(
       stop("The hourly coupled forage balance does not close.", call. = FALSE)
     }
 
-    gut <- energy$gut
-    body <- energy$body
     hour_of_day <- schedules$hour_of_day[[row_index]]
     hour_rows[[row_index]] <- data.frame(
       simulation_day = as.integer(simulation_day),
@@ -435,76 +531,19 @@ run_nonspatial_coupled_energy_days <- function(
         forage_background_loss_kg_dm_ha,
       forage_biomass_before_herbivory_kg_dm_ha =
         forage_before_herbivory_kg_dm_ha,
-      herbivore_density_animals_ha =
-        fixed$herbivore_density_animals_ha,
-      residual_unavailable_forage_threshold_kg_dm_ha =
-        fixed$residual_threshold_kg_dm_ha,
-      accessible_forage_biomass_kg_dm_ha =
-        herbivory$fluxes$accessible_forage_biomass_kg_dm_ha,
-      accessible_forage_per_animal_kg_dm =
-        herbivory$fluxes$accessible_forage_per_animal_kg_dm,
-      control,
-      forage_acquisition_ceiling_kg_dm_h = external_ceiling_kg_dm_h,
-      forage_acquisition_ceiling_active =
-        appetite_target_kg_dm_h > external_ceiling_kg_dm_h,
-      rate_limited_dry_matter_intake_kg_dm_h =
-        rate_limited_intake_kg_dm_h,
-      rate_limited_dry_matter_intake_kg_dm =
-        rate_limited_intake_kg_dm,
-      forage_stock_ceiling_active =
-        herbivory$fluxes$forage_stock_ceiling_active,
-      realized_dry_matter_intake_kg_dm_h =
-        realized_intake_kg_dm_h,
-      realized_dry_matter_intake_kg_dm =
-        realized_intake_kg_dm,
-      herbivory_removal_kg_dm_ha = herbivory_removal_kg_dm_ha,
+      step$intake_ledger,
       forage_biomass_end_kg_dm_ha = forage_end_kg_dm_ha,
       forage_biomass_balance_residual_kg_dm_ha =
         forage_balance_residual_kg_dm_ha,
       herbivore_forage_coupling_residual_kg_dm_ha =
-        herbivory$fluxes$herbivore_forage_coupling_residual_kg_dm_ha,
-      realized_ingested_available_energy_kj_h =
-        realized_intake_energy_kj_h,
-      gut_available_energy_start_kj =
-        energy$system$gut_energy_start_kj,
-      gut_release_fraction_h = fixed$gut_release_fraction_h,
-      assimilated_energy_kj_h = gut$fluxes$assimilated_energy_kj_h,
-      realized_ingested_available_energy_kj =
-        gut$fluxes$prescribed_ingested_available_energy_kj,
-      assimilated_energy_kj = gut$fluxes$assimilated_energy_kj,
-      gut_energy_change_kj = gut$fluxes$gut_energy_change_kj,
-      gut_available_energy_end_kj = gut$state$gut_available_energy_kj,
-      gut_energy_balance_residual_kj =
-        gut$fluxes$gut_energy_balance_residual_kj,
-      body_energy_reserve_start_kj =
-        energy$system$body_energy_start_kj,
-      maintenance_expenditure_kj_h =
-        fixed$maintenance_expenditure_kj_h,
-      prescribed_routine_activity_expenditure_kj_h =
-        schedules$routine_activity_kj_h[[row_index]],
-      net_body_energy_rate_kj_h =
-        body$fluxes$net_body_energy_rate_kj_h,
-      maintenance_expenditure_kj =
-        body$fluxes$maintenance_expenditure_kj,
-      prescribed_routine_activity_expenditure_kj =
-        body$fluxes$prescribed_routine_activity_expenditure_kj,
-      body_energy_change_kj = body$fluxes$body_energy_change_kj,
-      body_energy_reserve_end_kj =
-        body$state$body_energy_reserve_kj,
-      body_energy_balance_residual_kj =
-        body$fluxes$energy_balance_residual_kj,
-      total_system_energy_start_kj =
-        energy$system$total_energy_start_kj,
-      total_system_energy_end_kj =
-        energy$system$total_energy_end_kj,
-      system_energy_balance_residual_kj =
-        energy$system$energy_balance_residual_kj,
+        step$fluxes$herbivore_forage_coupling_residual_kg_dm_ha,
+      step$energy_ledger,
       check.names = FALSE
     )
 
     current_forage_biomass_kg_dm_ha <- forage_end_kg_dm_ha
-    current_gut_energy_kj <- gut$state$gut_available_energy_kj
-    current_body_energy_kj <- body$state$body_energy_reserve_kj
+    current_gut_energy_kj <- step$state$gut_available_energy_kj
+    current_body_energy_kj <- step$state$body_energy_reserve_kj
   }
 
   hourly <- do.call(rbind, hour_rows)

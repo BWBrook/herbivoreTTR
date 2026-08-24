@@ -33,8 +33,8 @@ new_prescribed_patch_itinerary <- function(
 #' Carry explicit patch location through one prescribed 24-hour itinerary.
 #' A patch change uses the declared one-hour known route, closes feeding during
 #' that interval, and adds route expenditure to ordinary routine activity.
-#' Patch identity selects one static non-depleting forage-acquisition ceiling.
-#' Food quality remains common across patches.
+#' Patch identity selects one static non-depleting forage-acquisition ceiling
+#' and one metabolizable-energy density.
 #'
 #' @param initial_location_state A patch-location state created by
 #'   [new_patch_location_state()].
@@ -50,8 +50,6 @@ new_prescribed_patch_itinerary <- function(
 #'   [new_gut_energy_parameters()].
 #' @param body_parameters A body-energy parameter record created by
 #'   [new_body_energy_parameters()].
-#' @param food_parameters A food-energy parameter record created by
-#'   [new_food_energy_parameters()].
 #' @param appetite_parameters An appetite-control parameter record created by
 #'   [new_appetite_control_parameters()].
 #' @param appetite_reference_schedule A 24-row schedule created by
@@ -70,7 +68,6 @@ run_prescribed_spatial_energy_day <- function(
   initial_body_state,
   gut_parameters,
   body_parameters,
-  food_parameters,
   appetite_parameters,
   appetite_reference_schedule,
   routine_activity_schedule
@@ -82,7 +79,6 @@ run_prescribed_spatial_energy_day <- function(
   .validate_body_energy_state(initial_body_state)
   .validate_gut_energy_parameters(gut_parameters)
   .validate_body_energy_parameters(body_parameters)
-  .validate_food_energy_parameters(food_parameters)
   .validate_appetite_control_parameters(appetite_parameters)
   .validate_appetite_reference_schedule(appetite_reference_schedule)
   .validate_routine_activity_expenditure_schedule(
@@ -120,38 +116,38 @@ run_prescribed_spatial_energy_day <- function(
     appetite_reference_schedule$reference_dry_matter_intake_kg_dm_h
   )
   effective_reference_intake_kg_dm_h[moving] <- 0
-  effective_appetite_reference <- new_appetite_reference_schedule(
-    appetite_reference_schedule$hour_of_day,
-    baseline_feeding_open & !moving,
-    effective_reference_intake_kg_dm_h,
-    appetite_reference_schedule$reference_body_energy_reserve_kj,
-    appetite_reference_schedule$reference_gut_available_energy_kj
-  )
-
   effective_forage_ceiling_kg_dm_h <-
     spatial_hourly$opening_patch_forage_acquisition_ceiling_kg_dm_h
   effective_forage_ceiling_kg_dm_h[moving] <- 0
-  effective_forage_schedule <- new_forage_acquisition_ceiling_schedule(
-    itinerary$hour_of_day,
-    effective_forage_ceiling_kg_dm_h
-  )
-  effective_activity_schedule <- new_routine_activity_expenditure_schedule(
-    routine_activity_schedule$hour_of_day,
-    baseline_activity_kj_h +
-      spatial_hourly$incremental_movement_expenditure_kj_h
-  )
+  effective_activity_kj_h <- baseline_activity_kj_h +
+    spatial_hourly$incremental_movement_expenditure_kj_h
 
-  energy <- run_appetite_controlled_energy_days(
-    initial_gut_state,
-    initial_body_state,
-    gut_parameters,
-    body_parameters,
-    food_parameters,
-    appetite_parameters,
-    effective_appetite_reference,
-    effective_forage_schedule,
-    effective_activity_schedule,
-    number_of_days = 1L
+  energy <- .run_appetite_controlled_energy_day_prevalidated(
+    as.double(initial_gut_state$gut_available_energy_kj),
+    as.double(initial_body_state$body_energy_reserve_kj),
+    as.double(gut_parameters$gut_release_fraction_h),
+    as.double(body_parameters$maintenance_expenditure_kj_h),
+    spatial_hourly$opening_patch_metabolizable_energy_density_kj_kg_dm,
+    as.double(appetite_parameters$maximum_dry_matter_intake_kg_dm_h),
+    as.double(appetite_parameters$body_energy_feedback_fraction_h),
+    as.double(appetite_parameters$gut_energy_feedback_fraction_h),
+    as.integer(itinerary$hour_of_day),
+    baseline_feeding_open & !moving,
+    effective_reference_intake_kg_dm_h,
+    as.double(appetite_reference_schedule$reference_body_energy_reserve_kj),
+    as.double(appetite_reference_schedule$reference_gut_available_energy_kj),
+    effective_forage_ceiling_kg_dm_h,
+    effective_activity_kj_h
+  )
+  energy$hourly <- data.frame(
+    simulation_day = rep.int(1L, 24L),
+    energy$hourly,
+    check.names = FALSE
+  )
+  energy$daily <- data.frame(
+    simulation_day = 1L,
+    energy$daily,
+    check.names = FALSE
   )
 
   hourly <- data.frame(
@@ -225,6 +221,8 @@ run_prescribed_spatial_energy_day <- function(
     patch_index <- match(current_patch_id, landscape$patches$patch_id)
     opening_patch_acquisition_ceiling_kg_dm_h <-
       landscape$patches$forage_acquisition_ceiling_kg_dm_h[[patch_index]]
+    opening_patch_energy_density_kj_kg_dm <-
+      landscape$patches$metabolizable_energy_density_kj_kg_dm[[patch_index]]
 
     rows[[row_index]] <- data.frame(
       hour_of_day = itinerary$hour_of_day[[row_index]],
@@ -233,6 +231,8 @@ run_prescribed_spatial_energy_day <- function(
       closing_patch_id = closing_patch_id,
       opening_patch_forage_acquisition_ceiling_kg_dm_h =
         opening_patch_acquisition_ceiling_kg_dm_h,
+      opening_patch_metabolizable_energy_density_kj_kg_dm =
+        opening_patch_energy_density_kj_kg_dm,
       travel_duration_h = travel_duration_h,
       baseline_feeding_opportunity_open =
         baseline_feeding_open[[row_index]],

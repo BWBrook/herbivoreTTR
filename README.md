@@ -73,13 +73,80 @@ One representative physiology is scaled by a fixed animal density per hectare.
 This is an aggregate homogeneous load, not an explicit population model.
 
 The first explicit spatial layer adds named patches with fixed non-depleting
-acquisition capacities, one animal location, directed one-hour known routes,
-and a prescribed daily itinerary. A move changes the boundary location,
-suspends feeding during travel, and adds its incremental expenditure to the
-accepted appetite-energy system. The occupied patch supplies the acquisition
-ceiling during a stay. One transparent choice can rank staying against one
-known route over a declared remaining feeding bout. Repeated decisions and
-spatial vegetation remain absent.
+acquisition capacities and metabolizable-energy densities, one animal
+location, directed one-hour known routes, and a prescribed daily itinerary. A
+move changes the boundary location, suspends feeding during travel, and adds
+its incremental expenditure to the accepted appetite-energy system. The
+opening patch supplies both food properties during a stay. One transparent
+patch-quality choice can rank staying against one known route over a declared
+remaining feeding bout using fixed expected dry-matter demand.
+
+The first landscape-constraint diagnostic reuses that spatial core for a
+prescribed daily out-and-back trip to a named non-feeding water source. It
+compares travel outside and inside the feeding window, separating route
+expenditure from lost feeding opportunity. The water source currently has no
+drinking benefit, duration, or physiological state.
+
+The first dynamic spatial-forage layer carries one standing-biomass stock per
+patch, applies the accepted autonomous turnover to every patch, and removes
+forage only from the occupied opening patch during a stay. A fixed 61-day
+occupancy-release diagnostic depletes patch A, transfers the animal once, and
+then shows patch A renewing while patch B depletes. Patch production remains
+common and prescribed; the animal does not yet choose in response to biomass.
+
+One diagnostic-only resource-aware choice now evaluates full stay and move
+counterfactuals from the same opening state. This perfect-state, perfect-model
+oracle stays under the accepted mild depletion but moves under a severe
+stock-limited positive control. It establishes decision relevance without
+adding a behavioral rule or repeated choice to the package.
+
+A one-factor boundary diagnostic varies only occupied-patch opening biomass.
+Under the current synthetic reference, the oracle moves through
+`497.5 kg DM ha^-1` and stays from `498.0 kg DM ha^-1`. The switch occurs when
+the extra metabolizable intake gained by moving no longer repays the fixed
+`900 kJ` route expenditure; it remains a perfect-information benchmark.
+
+One minimally informed null replaces exact forecasting with a one-hour
+opening-state acquisition cue for the current patch and a prescribed expected
+rate for the known destination. It agrees with the oracle except from
+`498.0` through `500.0 kg DM ha^-1`, where it moves prematurely because it
+cannot anticipate same-day forage renewal. This remains a single diagnostic
+decision, not a repeated behavioral policy.
+
+The repeated-choice diagnostic applies that rule once daily. Its 120-day
+reference remains resident without energetic stress. The accepted
+`50 animals ha^-1` pressure treatment continues to six moves on days 59, 117,
+166, 213, 259, and 305. Intervals settle at 46 days as released forage and
+animal states approach an alternating recurrence. Two one-day-late choices
+cost `101 kJ` in total against the full-model oracle; both self-correct the next
+day without chattering. The pattern is closed-loop and attributable, not a
+generalized behavioral model.
+
+The first explicit food-quality comparison holds acquisition non-limiting and
+removes movement entirely. All-stay days at `10,000` and
+`8,000 kJ kg DM^-1` reduce exactly to their non-spatial physiology references.
+The adequate patch remains neutral; the lower-quality patch raises intake to
+`0.3485 kg DM` but closes `412 kJ` below reference. Patch quality is therefore
+transported correctly before it is allowed to affect movement or choice.
+
+A matched one-day oracle then asks when quality alone repays travel to a fixed
+`10,000 kJ kg DM^-1` destination. With equal non-limiting acquisition and the
+accepted one-hour, `900 kJ` route, it moves through a current-patch density of
+`7,300` and stays from `7,400 kJ kg DM^-1`. At the accepted `8,000` contrast,
+staying is still better by `137 kJ`. The minimal patch-quality helper moves
+through `6,500` and stays from `6,600`; it stays too early over the intervening
+oracle-move region, with at most `168 kJ` realized regret. This transparent
+fixed-demand rule is not a forecast of appetite or future body state.
+
+The first biomass-quality interaction then runs the existing daily rule for
+`305` matched days at `50 animals ha^-1`. Changing patch A alone from `10,000`
+to `8,000 kJ kg DM^-1` advances the first move from day 59 to day 40 and
+increases switching from six to eight events. Higher dry-matter demand depletes
+the lower-quality patch faster and lowers the minimum body reserve from
+`38,860` to `36,948 kJ`. Seven local daily oracle disagreements sum to
+`2,919 kJ`: the simple rule both leaves the poor patch late and returns to it
+early. This is an exposed limit of the operational null, not a fitted behavior
+or a long-run oracle-policy comparison.
 
 The current synthetic reference uses:
 
@@ -119,6 +186,14 @@ Rscript --vanilla experiments/explicit-known-route-movement.R
 Rscript --vanilla experiments/explicit-prescribed-itinerary.R
 Rscript --vanilla experiments/explicit-static-patch-acquisition.R
 Rscript --vanilla experiments/explicit-known-patch-choice.R
+Rscript --vanilla experiments/prescribed-water-source-excursion.R
+Rscript --vanilla experiments/spatial-patch-depletion-renewal.R
+Rscript --vanilla experiments/spatial-resource-aware-choice.R
+Rscript --vanilla experiments/spatial-resource-aware-switch-boundary.R
+Rscript --vanilla experiments/spatial-myopic-resource-choice.R
+Rscript --vanilla experiments/spatial-daily-myopic-choice.R
+Rscript --vanilla experiments/explicit-patch-food-quality.R
+Rscript --vanilla experiments/spatial-food-quality-choice-boundary.R
 ```
 
 Run the focused test suite with:
@@ -144,9 +219,9 @@ The package exposes eight related groups:
   runner, and a pure standing-to-accessible biomass transformation; and
 - a density-scaled herbivory step and repeated-day non-spatial coupled runner;
   and
-- explicit patch-landscape, location, and itinerary records plus known-route
-  movement, one-day prescribed spatial composition, and one feeding-bout
-  choice.
+- explicit patch-landscape, location, food-property, and itinerary records
+  plus known-route movement, one-day prescribed spatial composition, and one
+  patch-quality feeding-bout choice.
 
 See [`docs/model-specification.md`](docs/model-specification.md) for equations
 and transition order, and [`docs/variable-dictionary.md`](docs/variable-dictionary.md)
@@ -164,17 +239,34 @@ without adding population state. The non-spatial coupling still has no
 environmental forcing, seasonality, explicit multiple animals, protein, water,
 thermoregulation, or mass-dependent feedback.
 
-The non-spatial and explicit-patch arcs are closed. The spatial core now
-supports static patch-specific acquisition capacity and one validated
-stay-versus-move decision without dynamic resources. The next stage follows the
-landscape-constraints plan. The staged programme is indexed in
+The non-spatial and explicit-patch arcs are closed. The landscape-constraints
+stage now has one prescribed water-source excursion and one conserved dynamic
+forage stock per patch under a fixed itinerary. A single perfect-information
+counterfactual benchmark shows when that resource state can change the preferred
+action, and a one-factor sweep locates its current synthetic stay-move boundary.
+One myopic intake-rate cue then exposes a narrow cost of incomplete dynamic
+information. Repeating that cue once daily produces stable residency at
+reference density and an approach to a 46-day reciprocal recurrence under
+established pressure. Two small, one-day-late oracle disagreements expose the
+rule's inability to anticipate same-day renewal without destabilizing the
+loop. Travel, timing, depletion, renewal, and decision relevance remain
+separately attributable. Patch-specific metabolizable-energy density now
+reproduces the accepted physiology under all-stay conditions. A matched oracle
+also shows that quality alone changes the preferred action only below the
+current synthetic `7,300` to `7,400 kJ kg DM^-1` bracket; the accepted `8,000`
+contrast does not repay travel. Combining that contrast with dynamic biomass
+advances and increases switching while exposing both late exits from poor
+forage and early returns to it. Water physiology and anticipatory,
+state-responsive, or package-level repeated behavioral mechanisms remain
+absent. The staged
+programme is indexed in
 [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Repository Map
 
 - `R/`: reusable model records, transitions, and runners.
 - `tests/testthat/`: focused protection of scientific invariants.
-- `experiments/`: twelve current no-write diagnostics and one fixture helper.
+- `experiments/`: twenty current no-write diagnostics and one fixture helper.
 - `docs/model-charter.md`: governing scientific and architectural contract.
 - `docs/model-specification.md`: equations, transition order, and outputs.
 - `docs/variable-dictionary.md`: current quantities and units.

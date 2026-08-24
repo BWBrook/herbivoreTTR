@@ -15,7 +15,8 @@ landscape <- herbivoreTTR::new_known_route_landscape(
     unname(patch_acquisition_rate_kg_dm_h),
   route_origin_patch_id = c("limited_patch", "adequate_patch"),
   route_destination_patch_id = c("adequate_patch", "limited_patch"),
-  incremental_movement_expenditure_kj = c(100, 100)
+  incremental_movement_expenditure_kj = c(100, 100),
+  metabolizable_energy_density_kj_kg_dm = c(10000, 10000)
 )
 
 run_explicit_move <- function(origin_patch_id, destination_patch_id) {

@@ -9,7 +9,8 @@ new_known_route_landscape(
   forage_acquisition_ceiling_kg_dm_h,
   route_origin_patch_id,
   route_destination_patch_id,
-  incremental_movement_expenditure_kj
+  incremental_movement_expenditure_kj,
+  metabolizable_energy_density_kj_kg_dm
 )
 }
 \arguments{
@@ -29,13 +30,17 @@ patch for each directed route.}
 \item{incremental_movement_expenditure_kj}{Finite, non-negative numeric
 vector giving the energy expenditure added by each one-hour route, in
 kilojoules.}
+
+\item{metabolizable_energy_density_kj_kg_dm}{Finite, strictly positive
+numeric vector giving one metabolizable-energy density per patch, in
+kilojoules per kilogram dry matter.}
 }
 \value{
 A plain named list containing `patches` and `routes` data frames.
 }
 \description{
 Create a minimal fixed landscape containing named patches, one static
-non-depleting forage-acquisition capacity per patch, and directed one-hour
-routes known to the focal animal. Route choice and multi-hour transit are
-outside this record.
+non-depleting forage-acquisition capacity and metabolizable-energy density
+per patch, and directed one-hour routes known to the focal animal. Route
+choice and multi-hour transit are outside this record.
 }

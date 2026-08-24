@@ -6,7 +6,8 @@ landscape <- herbivoreTTR::new_known_route_landscape(
   forage_acquisition_ceiling_kg_dm_h = c(0.025, 0.025),
   route_origin_patch_id = c("patch_a", "patch_b"),
   route_destination_patch_id = c("patch_b", "patch_a"),
-  incremental_movement_expenditure_kj = c(100, 100)
+  incremental_movement_expenditure_kj = c(100, 100),
+  metabolizable_energy_density_kj_kg_dm = c(10000, 10000)
 )
 
 run_itinerary <- function(closing_patch_id) {
@@ -21,7 +22,6 @@ run_itinerary <- function(closing_patch_id) {
     initial_body_state = fixture$opening_body,
     gut_parameters = fixture$gut,
     body_parameters = fixture$body,
-    food_parameters = fixture$food,
     appetite_parameters = fixture$appetite,
     appetite_reference_schedule = fixture$appetite_reference,
     routine_activity_schedule = fixture$activity
