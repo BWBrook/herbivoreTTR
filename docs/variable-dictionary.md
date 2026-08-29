@@ -248,6 +248,15 @@ opportunity is the maximum return the animal previously experienced in the
 destination patch, not a current biomass observation. All are counterfactual
 experiment outputs rather than persistent behavioral state.
 
+The carried recovery-aware comparison adds, for each patch, last and
+historical-best return in `kJ` per feeding-opportunity hour and whole days since
+visit. An unvisited expected return is bounded by those two returns and relaxes
+toward the historical best using the declared forage-turnover fraction. The
+diagnostic records current and destination expected returns, the two-day
+stay-move score difference, local full-model two-day action and energy
+difference, local regret, switch timing, and carried gut, body, and forage
+states. These are rejected diagnostic policy variables, not package records.
+
 The food-quality choice-boundary diagnostic records current and destination
 metabolizable-energy densities, matched stay and move intake and energy, the
 minimal helper action and score difference, the full-model oracle action and

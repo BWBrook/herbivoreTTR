@@ -46,7 +46,10 @@ installed package:
   quality with one lower-quality patch for switching, oracle regret,
   physiological state, and animal-forage accounting. It then replaces the
   operational null with one last-experienced energy return per patch and checks
-  the resulting one-way residence and explicit body-reserve boundary.
+  the resulting one-way residence and explicit body-reserve boundary. It also
+  carries one recovery-aware two-day candidate for `305` days, comparing its
+  recurrent but physiologically poor trajectory with a local full-model
+  two-day evaluator.
 - `spatial-memory-horizon-decomposition.R` reconstructs the opening day-101
   last-experience state, crosses stale versus recovered experienced return with
   one- and two-day horizons, and verifies the score choices against matched

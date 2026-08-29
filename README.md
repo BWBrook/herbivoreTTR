@@ -167,6 +167,16 @@ route cost. Recovery information and a short consequence horizon are therefore
 jointly required at this checkpoint. This is a diagnostic result, not an
 implemented behavioral rule.
 
+Carrying those ingredients for `305` days exposes a further distinction. A
+candidate that relaxes each unvisited patch's experienced return toward its
+historical best at the forage-turnover rate restores recurrent use: seven
+switches occur without chattering or reserve-boundary failure. It is not an
+acceptable behavioral model, however. Minimum body reserve falls to
+`12,355 kJ`, and all `147` disagreements with a local full-model two-day
+evaluator are false stays. Experienced return does not recover on the same
+timescale as standing biomass in this flow-limited system. The candidate is
+retained as a rejected diagnostic, not package behavior.
+
 The current synthetic reference uses:
 
 | Quantity | Value |
@@ -280,7 +290,10 @@ forage and early returns to it. A diagnostic last-experience memory then fails
 because it cannot value unobserved forage renewal or consequences beyond one
 day. A bounded day-101 decomposition confirms that recovered opportunity and a
 two-day horizon are jointly sufficient to reverse that trapped choice, while
-neither change alone is sufficient. Water physiology and anticipatory,
+neither change alone is sufficient. A first carried implementation restores
+revisitation but systematically stays too long and causes deep reserve cycles,
+rejecting direct turnover-rate relaxation of experienced return. Water
+physiology and anticipatory,
 state-responsive, or package-level
 repeated behavioral mechanisms remain absent. The staged
 programme is indexed in

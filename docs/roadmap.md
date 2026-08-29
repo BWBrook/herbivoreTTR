@@ -135,6 +135,16 @@ both the transparent score and matched full-model policies. This closes the
 diagnostic question but leaves the carried recovery-learning mechanism as the
 next design decision.
 
+Goal 050 tests that carried design once without tuning. A familiar-territory
+memory stores last return, historical best, and days since visit; unvisited
+return relaxes toward the best at `0.001 h^-1`, and the animal uses the two-day
+score. The rule completes `305` days and revisits both patches seven times, but
+minimum body reserve drops to `12,355 kJ`. It disagrees with a local full-model
+two-day evaluator on `147` days, always by staying when movement is preferred.
+This rejects direct biomass-timescale recovery of experienced return. The next
+bounded comparison should distinguish flow-aware recovery hypotheses before
+any behavior is promoted or another ecological layer is added.
+
 ## Deferred Animal Layers
 
 Protein, water balance and drinking physiology, thermoregulation, explicit

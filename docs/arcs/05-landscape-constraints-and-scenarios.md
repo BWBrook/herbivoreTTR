@@ -151,6 +151,18 @@ move-to-A policies reproduce the same result because the two-day move gains
 are required at this checkpoint. The decomposition remains diagnostic-only and
 does not prescribe how an animal learns recovery.
 
+Goal 050 carries one explicit candidate through the full `305`-day treatment.
+Last and historical-best experienced returns are retained per patch, while an
+unvisited return relaxes toward its best at the forage-turnover rate; the
+animal applies the two-day score. Seven switches at `32`- to `60`-day intervals
+restore recurrent patch use without chattering or terminal reserve failure.
+The candidate is rejected nonetheless. Minimum body reserve falls to
+`12,355 kJ`, and every one of `147` local two-day evaluator disagreements is a
+false stay. Same-day production and forage accessibility make feeding return
+recover faster than standing biomass, so return cannot inherit the stock's
+turnover timescale. The next behavioral decision must be flow-aware and remains
+diagnostic-only.
+
 ## Decision Gates
 
 - Which water, composition, and thermal processes are essential for the next

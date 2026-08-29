@@ -130,6 +130,16 @@ match the score reversal exactly, with `1,411 kJ` greater two-day intake offset
 by the `900 kJ` route cost. The result identifies a joint information-horizon
 requirement without adding package behavior.
 
+The first carried candidate keeps last and historical-best returns plus days
+since visit, relaxes unvisited return toward the best at the established forage
+turnover rate, and applies the two-day score for `305` days. It completes the
+run and switches seven times at intervals of `32` to `60` days, eliminating
+the one-way trap without chattering. The result is nevertheless rejected:
+minimum body reserve falls to `12,355 kJ`, and all `147` local two-day oracle
+disagreements are false stays. Return opportunity recovers faster than
+standing biomass under the current production and accessibility rules, so
+experienced return must not inherit the biomass turnover timescale directly.
+
 ## Protected Invariants
 
 - Every modeled quantity has an explicit unit suffix.
@@ -240,5 +250,8 @@ A last-experience memory does not close that gap. The day-101 decomposition
 shows why: neither recovered opportunity information nor a two-day consequence
 horizon is sufficient alone, but together they reverse the trapped choice in
 both the transparent score and full model. The next decision is how to carry
-those two ingredients through time without granting perfect biomass knowledge;
-that precedes another ecological layer.
+those two ingredients through time without granting perfect biomass knowledge.
+Direct turnover-rate relaxation of experienced return has now been rejected;
+the next comparison should be between a few distinct flow-aware recovery
+representations, not tuned variants of that equation. This precedes another
+ecological layer.

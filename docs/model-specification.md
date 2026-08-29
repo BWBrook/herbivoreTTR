@@ -627,6 +627,44 @@ This identifies a joint information-horizon requirement at one checkpoint. It
 does not establish a general policy, grant perfect biomass knowledge, or
 specify how recovery expectations are learned and carried.
 
+### Carried Recovery-Aware Memory
+
+One diagnostic candidate carries the Goal 049 ingredients for `305` days. Each
+patch stores a last experienced return, a historical-best return, and whole
+days since visit. Familiar-territory priors are `160/200 kJ` per feeding-
+opportunity hour for last return and `200/250 kJ` for historical best in
+patches A/B. The best priors equal maxima actually observed in the accepted
+memory trajectory and the appetite ceiling times patch energy density.
+
+For an unvisited patch aged `a` days:
+
+```text
+expected return =
+  best return - (best return - last return) * (1 - 0.001)^(24 * a)
+```
+
+The occupied patch uses its last return. The action score remains:
+
+```text
+stay score = current expected return * 32 h
+move score = destination expected return * 31 h - 900 kJ
+```
+
+The rule moves on day 1 and then on days 60, 99, 155, 187, 247, and 280.
+Intervals are never shorter than `32` days, and both patches remain in use.
+The full horizon completes without a negative reserve, but minimum body reserve
+falls to `12,355 kJ` and closing reserve is `31,146 kJ`.
+
+A matched full-model two-day evaluator is recomputed from every carried state.
+It disagrees on `147` days, always preferring movement when the memory rule
+stays. Summed local regret is `79,142 kJ`; this is not a cumulative comparison
+against a separately carried oracle. All valid counterfactual accounts close.
+
+The mechanism is rejected. Experienced return is a flow response to production,
+accessibility, demand, and food quality, not a standing stock that should
+recover at the biomass turnover half-life. The candidate remains diagnostic-
+only and must not be tuned or promoted into package behavior.
+
 ## Reference Cycle
 
 `run_gut_body_energy_reference_cycle()` repeatedly applies one fixed 24-hour
@@ -767,7 +805,8 @@ Twenty-one no-write experiments protect the current scientific interpretation:
   low-load reference and matched equal- versus unequal-quality pressure runs,
   checking residence, recurrence, quality-by-biomass effects, local daily
   oracle regret, physiological state, and full accounting, then compares one
-  last-experienced-return memory through its explicit terminal boundary; and
+  last-experienced-return memory through its explicit terminal boundary and
+  one recovery-aware two-day candidate through its rejected carried result; and
 - the memory-horizon decomposition reconstructs the opening day-101 state and
   crosses stale versus recovered experienced return with one- and two-day
   horizons, checking score choices against full-model policies and decomposing
@@ -789,7 +828,8 @@ remains a diagnostic approximation to it. Its repeated application also
 remains diagnostic-only. The food-quality oracle is likewise diagnostic-only;
 the package helper remains fixed-demand and non-anticipatory. Last-experienced
 return memory and the recovery-horizon decomposition are also diagnostic-only
-and are not accepted package behavior.
+and are not accepted package behavior. The carried turnover-rate recovery
+candidate is likewise diagnostic-only and explicitly rejected.
 
 ## Exclusions
 
