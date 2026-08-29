@@ -116,8 +116,14 @@ increases from six to eight events, and minimum body reserve falls from
 `38,860` to `36,948 kJ`. The rule incurs seven local daily oracle disagreements
 totalling `2,919 kJ`, exposing both late departure from poor forage and early
 return to it. The next choice is therefore conceptual, not another automatic
-layer: retain this as the operational null or define a separate minimally
-realistic information rule before adding further composition or forcing.
+layer. A first minimally realistic candidate remembers only the last realized
+energy return in each patch. It leaves lower-quality A on day 41 but never
+returns because the stored depleted return cannot reflect unobserved renewal.
+The animal reaches the non-negative body-reserve boundary on day 147 while A
+has recovered to `960.77 kg DM ha^-1`. Before further composition or forcing,
+the next information rule must represent both recovered opportunity and
+consequences beyond the current day; neither learning-rate tuning nor local
+one-day regret resolves that decision.
 
 ## Deferred Animal Layers
 

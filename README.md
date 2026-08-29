@@ -148,6 +148,14 @@ the lower-quality patch faster and lowers the minimum body reserve from
 early. This is an exposed limit of the operational null, not a fitted behavior
 or a long-run oracle-policy comparison.
 
+A bounded follow-up replaces that null with one last-experienced energy return
+per patch. It moves from lower-quality A on day 41 but never returns: B's
+renewable return stabilizes above the travel-adjusted stale memory of A, even as
+A renews to `960.77 kg DM ha^-1`. Body reserve reaches `250 kJ` after day 146,
+and neither day-147 action can preserve a non-negative reserve. Memory alone is
+therefore insufficient. Its lower one-day regret (`1,333 kJ`) also confirms that
+local oracle agreement is not a long-run policy score.
+
 The current synthetic reference uses:
 
 | Quantity | Value |
@@ -256,9 +264,10 @@ also shows that quality alone changes the preferred action only below the
 current synthetic `7,300` to `7,400 kJ kg DM^-1` bracket; the accepted `8,000`
 contrast does not repay travel. Combining that contrast with dynamic biomass
 advances and increases switching while exposing both late exits from poor
-forage and early returns to it. Water physiology and anticipatory,
-state-responsive, or package-level repeated behavioral mechanisms remain
-absent. The staged
+forage and early returns to it. A diagnostic last-experience memory then fails
+because it cannot value unobserved forage renewal or consequences beyond one
+day. Water physiology and anticipatory, state-responsive, or package-level
+repeated behavioral mechanisms remain absent. The staged
 programme is indexed in
 [`docs/roadmap.md`](docs/roadmap.md).
 

@@ -111,6 +111,14 @@ body reserve falls from `38,860` to `36,948 kJ`. Seven local daily oracle
 disagreements expose late exits from poor forage and early returns to it. The
 rule remains an explicitly fallible operational null.
 
+One diagnostic alternative stores only the last realized energy return per
+feeding-opportunity hour for each patch. It leaves lower-quality A on day 41,
+then remains in B until body reserve reaches `250 kJ` after day 146, even while
+A renews unobserved to `960.77 kg DM ha^-1`. Neither day-147 action preserves a
+non-negative reserve. This is a failed sufficiency test for memory alone, not
+accepted behavior. Its lower local regret also demonstrates that the one-day
+oracle is not a long-run policy score.
+
 ## Protected Invariants
 
 - Every modeled quantity has an explicit unit suffix.
@@ -217,3 +225,7 @@ fixed route, and one minimal patch-quality score exposes its bounded
 information error. The first
 dynamic biomass-quality interaction is attributable, but it also shows that
 the operational choice rule is not yet a minimally realistic behavioral model.
+A last-experience memory does not close that gap: renewable unvisited forage
+requires an explicit information assumption, and chronic consequences require
+more than one-day action ranking. Those decisions precede another ecological
+layer.

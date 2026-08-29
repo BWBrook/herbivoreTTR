@@ -131,6 +131,15 @@ rule leaves lower-quality forage late and returns to it early. The interaction
 is attributable and accounting remains exact, but the information rule is now
 an explicit decision gate rather than an accepted realistic behavior.
 
+Goal 048 tests the smallest patch-memory hypothesis without changing the model
+core. One last-experienced metabolizable-energy return per feeding-opportunity
+hour replaces direct biomass and prescribed destination cues. It moves from A
+on day 41 but then remains in B until the non-negative body-reserve boundary is
+reached on day 147, despite A renewing to `960.77 kg DM ha^-1`. The test shows
+that memory without unvisited-patch recovery information or a consequence
+horizon is insufficient, and that summed one-day oracle regret is not a
+long-run policy score. The rule remains diagnostic-only.
+
 ## Decision Gates
 
 - Which water, composition, and thermal processes are essential for the next

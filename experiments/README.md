@@ -44,7 +44,9 @@ installed package:
 - `spatial-daily-myopic-choice.R` applies that cue once daily under a low-load
   reference and matched 305-day pressure treatments, comparing equal patch
   quality with one lower-quality patch for switching, oracle regret,
-  physiological state, and animal-forage accounting.
+  physiological state, and animal-forage accounting. It then replaces the
+  operational null with one last-experienced energy return per patch and checks
+  the resulting one-way residence and explicit body-reserve boundary.
 - `explicit-patch-food-quality.R` holds movement and acquisition limitation
   absent while checking that adequate and lower-quality all-stay patches reduce
   exactly to their accepted non-spatial physiological references.

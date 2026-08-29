@@ -232,6 +232,12 @@ patch trajectories. Regret compares one-day actions along the carried myopic
 path; it is not a separately carried oracle-policy contrast. These remain
 experiment outputs rather than supported behavioral state.
 
+The experienced-return comparison adds one remembered metabolizable-energy
+return per patch in `kJ` per feeding-opportunity hour, the current and
+destination opening memories, the day's realized return, valid-counterfactual
+count, and any terminal day. These are diagnostic policy state and outcomes,
+not package records. An unvisited patch's remembered value does not change.
+
 The food-quality choice-boundary diagnostic records current and destination
 metabolizable-energy densities, matched stay and move intake and energy, the
 minimal helper action and score difference, the full-model oracle action and

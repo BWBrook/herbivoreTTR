@@ -124,12 +124,65 @@ make_myopic_decision <- function(
   )
 }
 
+make_experienced_return_decision <- function(
+  opening_state,
+  destination_patch_id,
+  remembered_return_kj_feeding_opportunity_h,
+  landscape
+) {
+  current_patch_id <- opening_state$location$patch_id
+  route_index <- which(
+    landscape$routes$origin_patch_id == current_patch_id &
+      landscape$routes$destination_patch_id == destination_patch_id
+  )
+  travel_duration_h <- landscape$routes$travel_duration_h[[route_index]]
+  movement_expenditure_kj <- landscape$routes$
+    incremental_movement_expenditure_kj[[route_index]]
+  stay_score_kj <-
+    remembered_return_kj_feeding_opportunity_h[[current_patch_id]] *
+      remaining_feeding_opportunity_h
+  move_score_kj <-
+    remembered_return_kj_feeding_opportunity_h[[destination_patch_id]] *
+      (remaining_feeding_opportunity_h - travel_duration_h) -
+      movement_expenditure_kj
+  tolerance_kj <- 100 * .Machine$double.eps * max(
+    1,
+    abs(c(stay_score_kj, move_score_kj))
+  )
+
+  list(
+    selected_action = if (move_score_kj > stay_score_kj + tolerance_kj) {
+      "move"
+    } else {
+      "stay"
+    },
+    move_score_advantage_kj = move_score_kj - stay_score_kj
+  )
+}
+
+run_candidate_safely <- function(...) {
+  tryCatch(
+    run_candidate(...),
+    error = function(error) {
+      if (!identical(
+        conditionMessage(error),
+        "The proposed closing body-energy reserve is negative."
+      )) {
+        stop(error)
+      }
+      NULL
+    }
+  )
+}
+
 run_closed_loop <- function(
   treatment,
   density_animals_ha,
   maximum_days,
-  energy_densities_kj_kg_dm
+  energy_densities_kj_kg_dm,
+  decision_rule = c("operational_null", "experienced_return_memory")
 ) {
+  decision_rule <- match.arg(decision_rule)
   landscape <- new_landscape(
     rep(static_acquisition_capacity_kg_dm_h, 2L),
     energy_densities_kj_kg_dm
@@ -148,6 +201,12 @@ run_closed_loop <- function(
     )
   )
   daily_rows <- vector("list", maximum_days)
+  remembered_return_kj_feeding_opportunity_h <-
+    expected_demand_kg_dm_h * energy_densities_kj_kg_dm
+  names(remembered_return_kj_feeding_opportunity_h) <- patch_ids
+  completed_days <- 0L
+  terminal_day <- NA_integer_
+  terminal_reason <- NA_character_
 
   for (simulation_day in seq_len(maximum_days)) {
     opening_patch_id <- state$location$patch_id
@@ -160,21 +219,35 @@ run_closed_loop <- function(
       state$forage,
       destination_patch_id
     )
-    myopic <- make_myopic_decision(
-      state,
-      destination_patch_id,
-      coupling,
-      landscape
-    )
+    remembered_return_opening <-
+      remembered_return_kj_feeding_opportunity_h
+    myopic <- if (decision_rule == "operational_null") {
+      make_myopic_decision(
+        state,
+        destination_patch_id,
+        coupling,
+        landscape
+      )
+    } else {
+      list(
+        decision = make_experienced_return_decision(
+          state,
+          destination_patch_id,
+          remembered_return_opening,
+          landscape
+        ),
+        current_cue_rate_kg_dm_h = NA_real_
+      )
+    }
     counterfactuals <- list(
-      stay = run_candidate(
+      stay = run_candidate_safely(
         state,
         destination_patch_id,
         "stay",
         coupling,
         landscape
       ),
-      move = run_candidate(
+      move = run_candidate_safely(
         state,
         destination_patch_id,
         "move",
@@ -182,18 +255,32 @@ run_closed_loop <- function(
         landscape
       )
     )
-    full_scores_kj <- vapply(
+    valid_counterfactual <- !vapply(
       counterfactuals,
+      is.null,
+      logical(1L)
+    )
+    if (!any(valid_counterfactual)) {
+      terminal_day <- simulation_day
+      terminal_reason <- "no action preserves a non-negative body reserve"
+      break
+    }
+    full_scores_kj <- setNames(rep(-Inf, 2L), names(counterfactuals))
+    full_scores_kj[valid_counterfactual] <- vapply(
+      counterfactuals[valid_counterfactual],
       function(result) result$daily$total_system_energy_final_kj,
       numeric(1L)
     )
     tolerance_kj <- 100 * .Machine$double.eps * max(
       1,
-      abs(full_scores_kj)
+      abs(full_scores_kj[is.finite(full_scores_kj)])
     )
-    oracle_choice <- if (
-      full_scores_kj[["move"]] > full_scores_kj[["stay"]] +
-        tolerance_kj
+    oracle_choice <- if (!valid_counterfactual[["stay"]]) {
+      "move"
+    } else if (
+      valid_counterfactual[["move"]] &&
+        full_scores_kj[["move"]] > full_scores_kj[["stay"]] +
+          tolerance_kj
     ) {
       "move"
     } else {
@@ -201,19 +288,39 @@ run_closed_loop <- function(
     }
     myopic_choice <- myopic$decision$selected_action
     selected <- counterfactuals[[myopic_choice]]
+    if (is.null(selected)) {
+      terminal_day <- simulation_day
+      terminal_reason <- paste0(
+        "the selected ",
+        myopic_choice,
+        " action would make body reserve negative"
+      )
+      break
+    }
     realized_regret_kj <-
       full_scores_kj[[oracle_choice]] - full_scores_kj[[myopic_choice]]
     if (abs(realized_regret_kj) <= tolerance_kj) {
       realized_regret_kj <- 0
     }
     final_forage <- selected$final_state$forage
+    feeding_opportunity_h <- sum(selected$hourly$feeding_opportunity_open)
+    experienced_return_kj_feeding_opportunity_h <-
+      selected$daily$total_realized_ingested_available_energy_kj /
+        feeding_opportunity_h
+    if (decision_rule == "experienced_return_memory") {
+      foraging_patch_id <- selected$final_state$location$patch_id
+      remembered_return_kj_feeding_opportunity_h[[foraging_patch_id]] <-
+        experienced_return_kj_feeding_opportunity_h
+    }
 
     daily_rows[[simulation_day]] <- data.frame(
       treatment = treatment,
+      decision_rule = decision_rule,
       density_animals_ha = density_animals_ha,
       simulation_day = simulation_day,
       opening_patch_id = opening_patch_id,
       destination_patch_id = destination_patch_id,
+      closing_patch_id = selected$final_state$location$patch_id,
       opening_current_biomass_kg_dm_ha =
         opening_current_biomass_kg_dm_ha,
       opening_destination_biomass_kg_dm_ha =
@@ -231,6 +338,18 @@ run_closed_loop <- function(
       body_energy_reserve_opening_kj =
         state$body$body_energy_reserve_kj,
       current_cue_rate_kg_dm_h = myopic$current_cue_rate_kg_dm_h,
+      remembered_current_return_opening_kj_feeding_opportunity_h =
+        if (decision_rule == "experienced_return_memory") {
+          remembered_return_opening[[opening_patch_id]]
+        } else {
+          NA_real_
+        },
+      remembered_destination_return_opening_kj_feeding_opportunity_h =
+        if (decision_rule == "experienced_return_memory") {
+          remembered_return_opening[[destination_patch_id]]
+        } else {
+          NA_real_
+        },
       myopic_choice = myopic_choice,
       oracle_choice = oracle_choice,
       myopic_move_score_advantage_kj =
@@ -240,6 +359,23 @@ run_closed_loop <- function(
       realized_regret_kj = realized_regret_kj,
       realized_intake_kg_dm =
         selected$daily$realized_dry_matter_intake_kg_dm,
+      realized_ingested_energy_kj =
+        selected$daily$total_realized_ingested_available_energy_kj,
+      feeding_opportunity_h = feeding_opportunity_h,
+      experienced_return_kj_feeding_opportunity_h =
+        experienced_return_kj_feeding_opportunity_h,
+      patch_a_remembered_return_final_kj_feeding_opportunity_h =
+        if (decision_rule == "experienced_return_memory") {
+          remembered_return_kj_feeding_opportunity_h[["patch_a"]]
+        } else {
+          NA_real_
+        },
+      patch_b_remembered_return_final_kj_feeding_opportunity_h =
+        if (decision_rule == "experienced_return_memory") {
+          remembered_return_kj_feeding_opportunity_h[["patch_b"]]
+        } else {
+          NA_real_
+        },
       stock_limited_hours =
         selected$daily$forage_stock_ceiling_active_hours,
       movement_expenditure_kj =
@@ -256,8 +392,9 @@ run_closed_loop <- function(
         final_forage,
         "patch_b"
       ),
+      valid_counterfactuals = sum(valid_counterfactual),
       all_counterfactual_accounts_close = all(vapply(
-        counterfactuals,
+        counterfactuals[valid_counterfactual],
         accounts_close,
         logical(1L)
       )),
@@ -265,9 +402,15 @@ run_closed_loop <- function(
     )
 
     state <- selected$final_state
+    completed_days <- simulation_day
   }
 
-  do.call(rbind, daily_rows[seq_len(simulation_day)])
+  result <- do.call(rbind, daily_rows[seq_len(completed_days)])
+  attr(result, "requested_days") <- maximum_days
+  attr(result, "completed_days") <- completed_days
+  attr(result, "terminal_day") <- terminal_day
+  attr(result, "terminal_reason") <- terminal_reason
+  result
 }
 
 adequate_patch_quality <- rep(adequate_energy_density_kj_kg_dm, 2L)
@@ -293,6 +436,13 @@ runs <- list(
     50,
     interaction_days,
     quality_contrast
+  ),
+  experienced_return_memory = run_closed_loop(
+    "experienced_return_memory",
+    50,
+    interaction_days,
+    quality_contrast,
+    "experienced_return_memory"
   )
 )
 daily <- do.call(rbind, runs)
@@ -300,11 +450,14 @@ row.names(daily) <- NULL
 reference <- runs$reference
 control <- runs$equal_quality_control
 quality <- runs$lower_quality_patch_a
+memory <- runs$experienced_return_memory
 move_rows <- function(run) run[run$myopic_choice == "move", , drop = FALSE]
 control_moves <- move_rows(control)
 quality_moves <- move_rows(quality)
 control_switch_days <- control_moves$simulation_day
 quality_switch_days <- quality_moves$simulation_day
+memory_moves <- move_rows(memory)
+memory_switch_days <- memory_moves$simulation_day
 
 assert_that(
   all(reference$myopic_choice == "stay") &&
@@ -352,6 +505,9 @@ assert_that(
 quality_disagreement_days <- quality$simulation_day[
   quality$myopic_choice != quality$oracle_choice
 ]
+memory_disagreement_days <- memory$simulation_day[
+  memory$myopic_choice != memory$oracle_choice
+]
 assert_that(
   identical(
     quality_disagreement_days,
@@ -369,23 +525,59 @@ assert_that(
     all(daily$all_counterfactual_accounts_close),
   "switches remain depletion-linked and all counterfactual accounts close"
 )
+assert_that(
+  identical(memory_switch_days, 41L) &&
+    identical(memory_disagreement_days, c(39L, 40L)) &&
+    round(sum(memory$realized_regret_kj)) == 1333L,
+  "last-experience memory delays the first departure by one day"
+)
+assert_that(
+  attr(memory, "requested_days") == 305L &&
+    attr(memory, "completed_days") == 146L &&
+    attr(memory, "terminal_day") == 147L &&
+    identical(
+      attr(memory, "terminal_reason"),
+      "no action preserves a non-negative body reserve"
+    ) &&
+    memory$valid_counterfactuals[[146L]] == 1L &&
+    round(memory$body_energy_reserve_final_kj[[146L]]) == 250L,
+  "memory alone reaches the non-negative body-reserve boundary on day 147"
+)
+assert_that(
+  tail(memory$patch_a_biomass_final_kg_dm_ha, 1L) > 960 &&
+    near(tail(memory$patch_b_biomass_final_kg_dm_ha, 1L), 500) &&
+    tail(
+      memory$patch_a_remembered_return_final_kj_feeding_opportunity_h,
+      1L
+    ) < tail(
+      memory$patch_b_remembered_return_final_kj_feeding_opportunity_h,
+      1L
+    ),
+  "stale patch-A experience blocks return despite unobserved forage renewal"
+)
 
 summary_table <- do.call(rbind, lapply(runs, function(run) {
   moves <- move_rows(run)
   data.frame(
     treatment = run$treatment[[1L]],
+    decision_rule = run$decision_rule[[1L]],
     density_animals_ha = run$density_animals_ha[[1L]],
     patch_a_energy_density_kj_kg_dm =
       run$current_energy_density_kj_kg_dm[[1L]],
     patch_b_energy_density_kj_kg_dm =
       run$destination_energy_density_kj_kg_dm[[1L]],
-    number_of_days = nrow(run),
+    requested_days = attr(run, "requested_days"),
+    completed_days = attr(run, "completed_days"),
+    terminal_day = attr(run, "terminal_day"),
+    terminal_reason = attr(run, "terminal_reason"),
     number_of_switches = nrow(moves),
     switch_days = if (nrow(moves) == 0L) {
       "none"
     } else {
       paste(moves$simulation_day, collapse = ", ")
     },
+    foraging_days_patch_a = sum(run$closing_patch_id == "patch_a"),
+    foraging_days_patch_b = sum(run$closing_patch_id == "patch_b"),
     oracle_disagreements = sum(run$myopic_choice != run$oracle_choice),
     dry_matter_intake_first_39_days_kg_dm = sum(head(
       run$realized_intake_kg_dm,
@@ -401,6 +593,7 @@ summary_table <- do.call(rbind, lapply(runs, function(run) {
       run$body_energy_reserve_final_kj,
       1L
     )),
+    closing_patch_id = tail(run$closing_patch_id, 1L),
     closing_patch_a_biomass_kg_dm_ha = tail(
       run$patch_a_biomass_final_kg_dm_ha,
       1L
@@ -413,7 +606,11 @@ summary_table <- do.call(rbind, lapply(runs, function(run) {
   )
 }))
 
-interaction_runs <- runs[c("equal_quality_control", "lower_quality_patch_a")]
+interaction_runs <- runs[c(
+  "equal_quality_control",
+  "lower_quality_patch_a",
+  "experienced_return_memory"
+)]
 switch_table <- do.call(rbind, lapply(interaction_runs, function(run) {
   rows <- move_rows(run)
   rows$switch_number <- seq_len(nrow(rows))
@@ -423,11 +620,13 @@ switch_table <- do.call(rbind, lapply(interaction_runs, function(run) {
   )
   rows[, c(
     "treatment",
+    "decision_rule",
     "switch_number",
     "simulation_day",
     "interval_since_previous_move_days",
     "opening_patch_id",
     "destination_patch_id",
+    "closing_patch_id",
     "current_energy_density_kj_kg_dm",
     "destination_energy_density_kj_kg_dm",
     "opening_current_biomass_kg_dm_ha",
@@ -444,6 +643,7 @@ disagreement_table <- daily[
     daily$myopic_choice != daily$oracle_choice,
   c(
     "treatment",
+    "decision_rule",
     "simulation_day",
     "opening_patch_id",
     "destination_patch_id",
@@ -460,8 +660,12 @@ disagreement_table <- daily[
   drop = FALSE
 ]
 
-cat("Daily biomass-quality choice interaction diagnostic passed.\n")
-cat("Both pressure treatments ran for 305 days from identical states.\n\n")
+cat("Daily biomass-quality choice and memory diagnostic passed.\n")
+cat(
+  "The operational null completes 305 days; the memory rule reaches ",
+  "the body-reserve boundary before day 147.\n\n",
+  sep = ""
+)
 cat("Treatment summary:\n")
 print(transform(
   summary_table,

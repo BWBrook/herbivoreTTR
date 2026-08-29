@@ -565,6 +565,33 @@ performance difference from a separately carried oracle policy. The result
 exposes a limitation of the operational null without creating a general
 behavioral API or a viability result.
 
+### Last-Experienced Return Memory
+
+One diagnostic comparison replaces both biomass and prescribed destination
+cues with a single last-experienced return for each patch, measured in `kJ` per
+feeding-opportunity hour. Memories open at fixed expected demand times patch
+energy density (`160 kJ h^-1` for A and `200 kJ h^-1` for B). Only the occupied
+patch is updated, using realized ingested energy divided by actual feeding-
+opportunity hours. The unvisited patch retains its last value.
+
+The stay score multiplies current-patch memory by 16 hours. The move score
+multiplies destination memory by 15 hours and subtracts `900 kJ`. This rule has
+no biomass observation, renewal expectation, exploration, body-state trigger,
+or multi-day horizon.
+
+Under the matched lower-quality-patch-A treatment, it moves once on day 41 and
+remains in B. Patch A renews unobserved to `960.77 kg DM ha^-1`, while its stale
+remembered return remains `119.73 kJ h^-1`. B supplies `149.67 kJ h^-1` at its
+residual boundary, so the travel-adjusted memory score continues to favour B.
+Body reserve closes day 146 at `250 kJ`; neither day-147 action preserves a
+non-negative reserve. The run therefore terminates explicitly.
+
+The memory trajectory has only two local oracle disagreements and `1,333 kJ`
+of summed one-day regret, less than the operational null, despite its much worse
+physiological outcome. The local oracle is an action diagnostic, not a long-run
+policy objective. Last-experience memory is rejected as a sufficient realistic
+rule and remains outside the package API.
+
 ## Reference Cycle
 
 `run_gut_body_energy_reference_cycle()` repeatedly applies one fixed 24-hour
@@ -704,7 +731,8 @@ Twenty no-write experiments protect the current scientific interpretation:
 - the daily myopic-choice diagnostic carries animal and patch states under a
   low-load reference and matched equal- versus unequal-quality pressure runs,
   checking residence, recurrence, quality-by-biomass effects, local daily
-  oracle regret, physiological state, and full accounting; and
+  oracle regret, physiological state, and full accounting, then compares one
+  last-experienced-return memory through its explicit terminal boundary; and
 - the explicit patch food-quality diagnostic holds acquisition non-limiting
   and movement absent, checking exact reduction of adequate and lower-quality
   all-stay patches to their corresponding non-spatial physiology; and
@@ -720,7 +748,8 @@ feeding-bout choice is a patch-quality decision helper over that state. The
 resource-aware oracle remains a diagnostic benchmark only, and the myopic cue
 remains a diagnostic approximation to it. Its repeated application also
 remains diagnostic-only. The food-quality oracle is likewise diagnostic-only;
-the package helper remains fixed-demand and non-anticipatory.
+the package helper remains fixed-demand and non-anticipatory. Last-experienced
+return memory is also diagnostic-only and is not accepted package behavior.
 
 ## Exclusions
 
@@ -728,8 +757,8 @@ The current model excludes resource- or weather-dependent plant production,
 explicit senescence processes, acquisition functional responses beyond the
 accepted ceilings, multiple explicit or heterogeneous animals, protein, water
 balance or drinking benefit, thermoregulation, repeated or stochastic route
-choice as package behavior, dynamic anticipation, explicit perception or
-memory, endogenous decision timing, multi-hour transit, anticipatory
+choice as package behavior, dynamic anticipation, explicit package-level
+perception or memory, endogenous decision timing, multi-hour transit, anticipatory
 quality-aware choice, patch-specific production, search, mortality,
 reproduction, and population dynamics. These require separately approved
 layers.
