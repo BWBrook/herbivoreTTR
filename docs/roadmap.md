@@ -125,6 +125,16 @@ the next information rule must represent both recovered opportunity and
 consequences beyond the current day; neither learning-rate tuning nor local
 one-day regret resolves that decision.
 
+The day-101 Goal 049 decomposition then crosses those factors explicitly.
+Replacing stale patch-A memory (`119.73 kJ` per feeding-opportunity hour) with
+the animal's own previously experienced abundant return (`200 kJ` per feeding-
+opportunity hour) does not justify the route over one day: staying remains
+better by `295 kJ`. Extending stale information to two days also fails. Only
+recovered opportunity plus a two-day horizon favours moving, by `511 kJ` in
+both the transparent score and matched full-model policies. This closes the
+diagnostic question but leaves the carried recovery-learning mechanism as the
+next design decision.
+
 ## Deferred Animal Layers
 
 Protein, water balance and drinking physiology, thermoregulation, explicit

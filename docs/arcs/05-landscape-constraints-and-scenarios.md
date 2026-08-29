@@ -140,6 +140,17 @@ that memory without unvisited-patch recovery information or a consequence
 horizon is insufficient, and that summed one-day oracle regret is not a
 long-run policy score. The rule remains diagnostic-only.
 
+Goal 049 reconstructs the opening day-101 state and separates the two missing
+ingredients. It crosses stale last-experience versus the animal's own
+previously experienced abundant-patch return with one- versus two-day decision
+horizons. Stale information favours staying at both horizons. Recovered
+opportunity alone still favours staying by `295 kJ` over one day; recovered
+opportunity plus two days favours moving by `511 kJ`. Full-model stay-in-B and
+move-to-A policies reproduce the same result because the two-day move gains
+`1,411 kJ` of intake against the fixed `900 kJ` route cost. Both ingredients
+are required at this checkpoint. The decomposition remains diagnostic-only and
+does not prescribe how an animal learns recovery.
+
 ## Decision Gates
 
 - Which water, composition, and thermal processes are essential for the next

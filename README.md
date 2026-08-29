@@ -156,6 +156,17 @@ and neither day-147 action can preserve a non-negative reserve. Memory alone is
 therefore insufficient. Its lower one-day regret (`1,333 kJ`) also confirms that
 local oracle agreement is not a long-run policy score.
 
+A day-101 checkpoint decomposition crosses that stale destination return with
+the animal's own previously experienced abundant-patch return, and crosses a
+one-day with a two-day decision horizon. Stale information favours staying at
+both horizons. Recovered opportunity alone still favours staying by `295 kJ`
+over one day, but recovered opportunity plus two days favours moving by
+`511 kJ`. Matched full-model policies reproduce the same reversal: the
+two-day move gains `1,411 kJ` of intake and pays the established `900 kJ`
+route cost. Recovery information and a short consequence horizon are therefore
+jointly required at this checkpoint. This is a diagnostic result, not an
+implemented behavioral rule.
+
 The current synthetic reference uses:
 
 | Quantity | Value |
@@ -200,6 +211,7 @@ Rscript --vanilla experiments/spatial-resource-aware-choice.R
 Rscript --vanilla experiments/spatial-resource-aware-switch-boundary.R
 Rscript --vanilla experiments/spatial-myopic-resource-choice.R
 Rscript --vanilla experiments/spatial-daily-myopic-choice.R
+Rscript --vanilla experiments/spatial-memory-horizon-decomposition.R
 Rscript --vanilla experiments/explicit-patch-food-quality.R
 Rscript --vanilla experiments/spatial-food-quality-choice-boundary.R
 ```
@@ -266,7 +278,10 @@ contrast does not repay travel. Combining that contrast with dynamic biomass
 advances and increases switching while exposing both late exits from poor
 forage and early returns to it. A diagnostic last-experience memory then fails
 because it cannot value unobserved forage renewal or consequences beyond one
-day. Water physiology and anticipatory, state-responsive, or package-level
+day. A bounded day-101 decomposition confirms that recovered opportunity and a
+two-day horizon are jointly sufficient to reverse that trapped choice, while
+neither change alone is sufficient. Water physiology and anticipatory,
+state-responsive, or package-level
 repeated behavioral mechanisms remain absent. The staged
 programme is indexed in
 [`docs/roadmap.md`](docs/roadmap.md).
@@ -275,7 +290,7 @@ programme is indexed in
 
 - `R/`: reusable model records, transitions, and runners.
 - `tests/testthat/`: focused protection of scientific invariants.
-- `experiments/`: twenty current no-write diagnostics and one fixture helper.
+- `experiments/`: twenty-one current no-write diagnostics and one fixture helper.
 - `docs/model-charter.md`: governing scientific and architectural contract.
 - `docs/model-specification.md`: equations, transition order, and outputs.
 - `docs/variable-dictionary.md`: current quantities and units.

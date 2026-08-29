@@ -47,6 +47,10 @@ installed package:
   physiological state, and animal-forage accounting. It then replaces the
   operational null with one last-experienced energy return per patch and checks
   the resulting one-way residence and explicit body-reserve boundary.
+- `spatial-memory-horizon-decomposition.R` reconstructs the opening day-101
+  last-experience state, crosses stale versus recovered experienced return with
+  one- and two-day horizons, and verifies the score choices against matched
+  full-model stay and move policies.
 - `explicit-patch-food-quality.R` holds movement and acquisition limitation
   absent while checking that adequate and lower-quality all-stay patches reduce
   exactly to their accepted non-spatial physiological references.

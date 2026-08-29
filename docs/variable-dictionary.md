@@ -238,6 +238,16 @@ destination opening memories, the day's realized return, valid-counterfactual
 count, and any terminal day. These are diagnostic policy state and outcomes,
 not package records. An unvisited patch's remembered value does not change.
 
+The memory-horizon decomposition additionally records an information
+assumption (`stale_last_experience` or `recovered_opportunity`), a decision
+horizon in days, current and destination returns in `kJ` per feeding-
+opportunity hour, stay and move scores in `kJ`, selected action, full-model
+move-minus-stay energy in `kJ`, intake advantage in `kJ`, movement disadvantage
+in `kJ`, closing animal and patch stocks, and accounting residuals. Recovered
+opportunity is the maximum return the animal previously experienced in the
+destination patch, not a current biomass observation. All are counterfactual
+experiment outputs rather than persistent behavioral state.
+
 The food-quality choice-boundary diagnostic records current and destination
 metabolizable-energy densities, matched stay and move intake and energy, the
 minimal helper action and score difference, the full-model oracle action and

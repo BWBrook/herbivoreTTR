@@ -119,6 +119,17 @@ non-negative reserve. This is a failed sufficiency test for memory alone, not
 accepted behavior. Its lower local regret also demonstrates that the one-day
 oracle is not a long-run policy score.
 
+The accepted day-101 decomposition holds the animal, gut, and forage snapshot
+fixed and crosses stale versus recovered destination information with one- and
+two-day horizons. The recovered value is the animal's own maximum previously
+experienced return in patch A (`200 kJ` per feeding-opportunity hour), not
+current biomass or perfect-model knowledge. Stale information favours staying
+at both horizons; recovered information still favours staying by `295 kJ` over
+one day, but favours moving by `511 kJ` over two days. Full-model policies
+match the score reversal exactly, with `1,411 kJ` greater two-day intake offset
+by the `900 kJ` route cost. The result identifies a joint information-horizon
+requirement without adding package behavior.
+
 ## Protected Invariants
 
 - Every modeled quantity has an explicit unit suffix.
@@ -199,7 +210,7 @@ oracle is not a long-run policy score.
 
 For ordinary changes, parse retained R, run the tests affected by the change,
 and inspect the diff. When publishing a package boundary or completed model
-stage, run the full focused suite, all twenty diagnostics, an external build,
+stage, run the full focused suite, all twenty-one diagnostics, an external build,
 and `R CMD check --no-manual` once.
 
 Repeat a gate only for a distinct named risk. Additional polish or repeated
@@ -225,7 +236,9 @@ fixed route, and one minimal patch-quality score exposes its bounded
 information error. The first
 dynamic biomass-quality interaction is attributable, but it also shows that
 the operational choice rule is not yet a minimally realistic behavioral model.
-A last-experience memory does not close that gap: renewable unvisited forage
-requires an explicit information assumption, and chronic consequences require
-more than one-day action ranking. Those decisions precede another ecological
-layer.
+A last-experience memory does not close that gap. The day-101 decomposition
+shows why: neither recovered opportunity information nor a two-day consequence
+horizon is sufficient alone, but together they reverse the trapped choice in
+both the transparent score and full model. The next decision is how to carry
+those two ingredients through time without granting perfect biomass knowledge;
+that precedes another ecological layer.

@@ -2,7 +2,7 @@
 
 Date: 2026-08-29
 
-Status: implemented; discussion pending
+Status: accepted
 
 ## Question
 

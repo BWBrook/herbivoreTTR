@@ -592,6 +592,41 @@ physiological outcome. The local oracle is an action diagnostic, not a long-run
 policy objective. Last-experience memory is rejected as a sufficient realistic
 rule and remains outside the package API.
 
+### Recovery Information and Decision Horizon
+
+A bounded decomposition reconstructs the opening day-101 animal, gut, and
+forage state from the accepted last-experience trajectory. It compares two
+destination-information assumptions crossed with one- and two-day horizons:
+
+- stale last experience uses patch A's retained `119.73 kJ` per feeding-
+  opportunity hour;
+- recovered opportunity uses the animal's own maximum previously experienced
+  return in patch A, `200 kJ` per feeding-opportunity hour; and
+- neither assumption reads current destination biomass.
+
+For horizon `H`, the transparent scores are:
+
+```text
+stay score = current-patch return * (16 * H)
+move score = destination return * (16 * H - 1) - 900 kJ
+```
+
+The subtraction represents the established hour-0 route: one lost feeding
+opportunity and `900 kJ` incremental movement expenditure. Stale information
+selects stay at both horizons. Recovered opportunity selects stay over one day
+by `295 kJ`, then move over two days by `511 kJ`.
+
+Matched full-model policies start from the identical snapshot and either stay
+in B or move to A on the first hour and remain there. Over two days, moving
+gains `1,411 kJ` of intake and incurs `900 kJ` of route expenditure, reproducing
+the `511 kJ` reversal with exact gut, body, forage, and whole-system closure.
+The predeclared extension through day 7 is not invoked because the primary
+two-day comparison reverses.
+
+This identifies a joint information-horizon requirement at one checkpoint. It
+does not establish a general policy, grant perfect biomass knowledge, or
+specify how recovery expectations are learned and carried.
+
 ## Reference Cycle
 
 `run_gut_body_energy_reference_cycle()` repeatedly applies one fixed 24-hour
@@ -685,7 +720,7 @@ assertion that daily energetic balance alone establishes health or viability.
 
 ## Retained Diagnostics
 
-Twenty no-write experiments protect the current scientific interpretation:
+Twenty-one no-write experiments protect the current scientific interpretation:
 
 - the reference diagnostic checks neutrality, conservation, and gut order;
 - the appetite-forage diagnostic checks a binding ceiling, deficit recovery,
@@ -733,6 +768,10 @@ Twenty no-write experiments protect the current scientific interpretation:
   checking residence, recurrence, quality-by-biomass effects, local daily
   oracle regret, physiological state, and full accounting, then compares one
   last-experienced-return memory through its explicit terminal boundary; and
+- the memory-horizon decomposition reconstructs the opening day-101 state and
+  crosses stale versus recovered experienced return with one- and two-day
+  horizons, checking score choices against full-model policies and decomposing
+  the reversal into intake gained and route expenditure; and
 - the explicit patch food-quality diagnostic holds acquisition non-limiting
   and movement absent, checking exact reduction of adequate and lower-quality
   all-stay patches to their corresponding non-spatial physiology; and
@@ -749,7 +788,8 @@ resource-aware oracle remains a diagnostic benchmark only, and the myopic cue
 remains a diagnostic approximation to it. Its repeated application also
 remains diagnostic-only. The food-quality oracle is likewise diagnostic-only;
 the package helper remains fixed-demand and non-anticipatory. Last-experienced
-return memory is also diagnostic-only and is not accepted package behavior.
+return memory and the recovery-horizon decomposition are also diagnostic-only
+and are not accepted package behavior.
 
 ## Exclusions
 
