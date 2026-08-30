@@ -272,6 +272,13 @@ recovery fraction `min(days_since_visit / 2, 1)` and its expected return in
 two-day move-minus-stay energy, agreement, regret, and cumulative movement
 expenditure remain diagnostic outputs rather than package state.
 
+The consequence-horizon decomposition adds checkpoint day, prescribed horizon
+in whole days, opening and destination patch identities, move-minus-stay animal-
+system energy, intake-energy advantage, movement disadvantage, closing body-
+reserve advantage, and stay/move closing biomass for each patch. These are
+fixed-state counterfactual outputs unavailable to the animal, not persistent
+state or a multi-day behavioral forecast.
+
 The food-quality choice-boundary diagnostic records current and destination
 metabolizable-energy densities, matched stay and move intake and energy, the
 minimal helper action and score difference, the full-model oracle action and

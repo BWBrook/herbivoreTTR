@@ -158,6 +158,13 @@ minimum reserve falls to `9,386 kJ`. The rule is rejected: accurate local
 recovery knowledge plus a two-day objective is not sufficient for a good
 long-run trajectory.
 
+The fixed-state horizon map then shows that the failure is directional. Leaving
+depleted B for long-rested A remains favourable and strengthens through fourteen
+days. Returning to B after only two release days is favourable through four
+days, but reverses to staying by seven days and is `7,646 kJ` worse over
+fourteen. Immediate return has recovered; durable return has not. These longer
+horizons diagnose the missing information but are not available to the animal.
+
 ## Protected Invariants
 
 - Every modeled quantity has an explicit unit suffix.
@@ -273,6 +280,8 @@ Direct turnover-rate relaxation of experienced return has now been rejected;
 the absence map shows that realized opportunity recovers within one to two days
 despite weeks-long standing-biomass recovery. Carrying that fast expectation
 then produces a locally supported but physiologically poor 2/4-day rotation.
-The next diagnostic should hold a representative cycling state fixed and vary
-only consequence horizon, before any cooldown, behavioral parameter, or new
-ecological layer is considered.
+The fixed-state horizon comparison localizes the error to returning too soon to
+recently released B. The next behavioral question is whether expected return
+persistence can be learned from prior residence duration or declining
+experienced returns, before any cooldown, biomass knowledge, or new ecological
+layer is considered.

@@ -166,6 +166,15 @@ rejects the clock and exposes the next question: whether a longer consequence
 horizon values patch rest, or whether frequent rotation remains favoured by
 the current two-patch system.
 
+Goal 053 resolves that question at the first reciprocal checkpoints. Moving
+from depleted B into long-rested A strengthens from `511 kJ` over two days to
+`10,174 kJ` over fourteen. Returning to B after two days is favourable through
+a four-day horizon but reverses to `-2,009 kJ` over seven days and `-7,646 kJ`
+over fourteen. The short-horizon failure is therefore an early return to a
+high-quality but shallowly recovered patch. The next behavioral information
+axis is expected return persistence, not slower recovery or a generic movement
+penalty.
+
 ## Deferred Animal Layers
 
 Protein, water balance and drinking physiology, thermoregulation, explicit

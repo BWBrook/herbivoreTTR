@@ -186,6 +186,15 @@ rational, path-dependent consequence of the short objective and rapidly
 renewed accessible forage. The next gate is consequence horizon, not recovery-
 rate tuning or an arbitrary residence constraint.
 
+Goal 053 fixes the first B-to-A and A-to-B rotation states and varies only the
+evaluator horizon. Leaving depleted B for long-rested A is favoured from two
+through fourteen days, with move advantage increasing to `10,174 kJ`. Returning
+to B after two release days is favoured over two and four days but reverses by
+seven days (`-2,009 kJ`) and reaches `-7,646 kJ` over fourteen. Thus the clock
+correctly identifies recovered immediate return but not its persistence. The
+next behavioral design must represent expected resource depth or bout duration
+from the animal's own experience, without importing these perfect forecasts.
+
 ## Decision Gates
 
 - Which water, composition, and thermal processes are essential for the next

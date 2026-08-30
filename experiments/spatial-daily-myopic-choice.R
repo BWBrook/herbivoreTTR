@@ -8,6 +8,8 @@ expected_demand_kg_dm_h <- 0.020
 remaining_feeding_opportunity_h <- 16L
 recovery_planning_horizon_days <- 2L
 revisit_recovery_days <- 2L
+consequence_horizon_days <- c(1L, 2L, 4L, 7L, 14L)
+consequence_checkpoint_days <- c(60L, 62L)
 reference_days <- 120L
 interaction_days <- 305L
 adequate_energy_density_kj_kg_dm <- 10000
@@ -247,6 +249,37 @@ run_candidate_horizon_safely <- function(
       day_results,
       1L
     )[[1L]]$daily$total_system_energy_final_kj,
+    realized_intake_kg_dm = sum(vapply(
+      day_results,
+      function(result) result$daily$realized_dry_matter_intake_kg_dm,
+      numeric(1L)
+    )),
+    ingested_energy_kj = sum(vapply(
+      day_results,
+      function(result) {
+        result$daily$total_realized_ingested_available_energy_kj
+      },
+      numeric(1L)
+    )),
+    movement_expenditure_kj = sum(vapply(
+      day_results,
+      function(result) {
+        result$daily$total_incremental_movement_expenditure_kj
+      },
+      numeric(1L)
+    )),
+    final_body_energy_reserve_kj = tail(
+      day_results,
+      1L
+    )[[1L]]$daily$body_energy_reserve_final_kj,
+    final_patch_a_biomass_kg_dm_ha = patch_biomass(
+      policy_state$forage,
+      "patch_a"
+    ),
+    final_patch_b_biomass_kg_dm_ha = patch_biomass(
+      policy_state$forage,
+      "patch_b"
+    ),
     all_accounts_close = all(vapply(
       day_results,
       accounts_close,
@@ -265,7 +298,8 @@ run_closed_loop <- function(
     "experienced_return_memory",
     "recovery_aware_memory",
     "revisit_clock_memory"
-  )
+  ),
+  checkpoint_days = integer()
 ) {
   decision_rule <- match.arg(decision_rule)
   uses_recovery_memory <- decision_rule %in% c(
@@ -301,10 +335,17 @@ run_closed_loop <- function(
   completed_days <- 0L
   terminal_day <- NA_integer_
   terminal_reason <- NA_character_
+  checkpoint_states <- list()
 
   for (simulation_day in seq_len(maximum_days)) {
     opening_patch_id <- state$location$patch_id
     destination_patch_id <- setdiff(patch_ids, opening_patch_id)
+    if (simulation_day %in% checkpoint_days) {
+      checkpoint_states[[as.character(simulation_day)]] <- list(
+        opening_state = state,
+        destination_patch_id = destination_patch_id
+      )
+    }
     opening_current_biomass_kg_dm_ha <- patch_biomass(
       state$forage,
       opening_patch_id
@@ -683,6 +724,7 @@ run_closed_loop <- function(
   attr(result, "completed_days") <- completed_days
   attr(result, "terminal_day") <- terminal_day
   attr(result, "terminal_reason") <- terminal_reason
+  attr(result, "checkpoint_states") <- checkpoint_states
   result
 }
 
@@ -729,7 +771,8 @@ runs <- list(
     50,
     interaction_days,
     quality_contrast,
-    "revisit_clock_memory"
+    "revisit_clock_memory",
+    consequence_checkpoint_days
   )
 )
 daily <- do.call(rbind, runs)
@@ -751,6 +794,90 @@ recovery_moves <- move_rows(recovery)
 recovery_switch_days <- recovery_moves$simulation_day
 revisit_clock_moves <- move_rows(revisit_clock)
 revisit_clock_switch_days <- revisit_clock_moves$simulation_day
+
+evaluate_consequence_horizons <- function(
+  checkpoint_day,
+  checkpoint,
+  coupling_parameters,
+  landscape
+) {
+  do.call(rbind, lapply(consequence_horizon_days, function(horizon_days) {
+    policies <- list(
+      stay = run_candidate_horizon_safely(
+        checkpoint$opening_state,
+        checkpoint$destination_patch_id,
+        "stay",
+        coupling_parameters,
+        landscape,
+        horizon_days
+      ),
+      move = run_candidate_horizon_safely(
+        checkpoint$opening_state,
+        checkpoint$destination_patch_id,
+        "move",
+        coupling_parameters,
+        landscape,
+        horizon_days
+      )
+    )
+    if (any(vapply(policies, is.null, logical(1L)))) {
+      stop("A consequence-horizon policy crossed the body-reserve boundary.")
+    }
+    move_advantage_kj <- policies$move$final_total_system_energy_kj -
+      policies$stay$final_total_system_energy_kj
+
+    data.frame(
+      checkpoint_day = checkpoint_day,
+      opening_patch_id = checkpoint$opening_state$location$patch_id,
+      destination_patch_id = checkpoint$destination_patch_id,
+      horizon_days = horizon_days,
+      selected_action = if (move_advantage_kj > 0) "move" else "stay",
+      move_advantage_kj = move_advantage_kj,
+      intake_energy_advantage_kj =
+        policies$move$ingested_energy_kj - policies$stay$ingested_energy_kj,
+      movement_disadvantage_kj =
+        policies$move$movement_expenditure_kj -
+          policies$stay$movement_expenditure_kj,
+      closing_body_reserve_advantage_kj =
+        policies$move$final_body_energy_reserve_kj -
+          policies$stay$final_body_energy_reserve_kj,
+      stay_closing_body_reserve_kj =
+        policies$stay$final_body_energy_reserve_kj,
+      move_closing_body_reserve_kj =
+        policies$move$final_body_energy_reserve_kj,
+      stay_closing_patch_a_biomass_kg_dm_ha =
+        policies$stay$final_patch_a_biomass_kg_dm_ha,
+      stay_closing_patch_b_biomass_kg_dm_ha =
+        policies$stay$final_patch_b_biomass_kg_dm_ha,
+      move_closing_patch_a_biomass_kg_dm_ha =
+        policies$move$final_patch_a_biomass_kg_dm_ha,
+      move_closing_patch_b_biomass_kg_dm_ha =
+        policies$move$final_patch_b_biomass_kg_dm_ha,
+      all_accounts_close =
+        policies$stay$all_accounts_close && policies$move$all_accounts_close,
+      row.names = NULL
+    )
+  }))
+}
+
+pressure_coupling <- herbivoreTTR::new_nonspatial_coupling_parameters(50, 500)
+pressure_landscape <- new_landscape(
+  rep(static_acquisition_capacity_kg_dm_h, 2L),
+  quality_contrast
+)
+consequence_checkpoints <- attr(revisit_clock, "checkpoint_states")
+consequence_horizon_table <- do.call(rbind, lapply(
+  consequence_checkpoint_days,
+  function(checkpoint_day) {
+    evaluate_consequence_horizons(
+      checkpoint_day,
+      consequence_checkpoints[[as.character(checkpoint_day)]],
+      pressure_coupling,
+      pressure_landscape
+    )
+  }
+))
+row.names(consequence_horizon_table) <- NULL
 
 assert_that(
   all(reference$myopic_choice == "stay") &&
@@ -942,6 +1069,83 @@ assert_that(
     min(revisit_clock$body_energy_reserve_final_kj) <
       min(recovery$body_energy_reserve_final_kj),
   "rapid revisits raise travel cost and deepen reserve loss despite closure"
+)
+assert_that(
+  identical(names(consequence_checkpoints), as.character(
+    consequence_checkpoint_days
+  )) &&
+    identical(
+      vapply(
+        consequence_checkpoints,
+        function(checkpoint) checkpoint$opening_state$location$patch_id,
+        character(1L)
+      ),
+      c(`60` = "patch_b", `62` = "patch_a")
+    ) &&
+    identical(
+      vapply(
+        consequence_checkpoints,
+        function(checkpoint) checkpoint$destination_patch_id,
+        character(1L)
+      ),
+      c(`60` = "patch_a", `62` = "patch_b")
+    ),
+  "the horizon map uses the exact first two reciprocal rotation checkpoints"
+)
+assert_that(
+  identical(
+    consequence_horizon_table$horizon_days,
+    rep(consequence_horizon_days, length(consequence_checkpoint_days))
+  ) &&
+    all(consequence_horizon_table$all_accounts_close) &&
+    all(is.finite(unlist(
+      consequence_horizon_table[vapply(
+        consequence_horizon_table,
+        is.numeric,
+        logical(1L)
+      )]
+    ))) &&
+    near(
+      consequence_horizon_table$movement_disadvantage_kj,
+      rep(900, nrow(consequence_horizon_table))
+    ) &&
+    near(
+      consequence_horizon_table$move_advantage_kj,
+      consequence_horizon_table$intake_energy_advantage_kj -
+        consequence_horizon_table$movement_disadvantage_kj
+    ),
+  "the prespecified horizon comparisons are finite and decompose exactly"
+)
+day_60_horizons <- consequence_horizon_table[
+  consequence_horizon_table$checkpoint_day == 60L,
+  ,
+  drop = FALSE
+]
+day_62_horizons <- consequence_horizon_table[
+  consequence_horizon_table$checkpoint_day == 62L,
+  ,
+  drop = FALSE
+]
+assert_that(
+  identical(
+    day_60_horizons$selected_action,
+    c("stay", "move", "move", "move", "move")
+  ) &&
+    all(diff(day_60_horizons$move_advantage_kj) > 0),
+  "moving from depleted B into rested A strengthens beyond one day"
+)
+assert_that(
+  identical(
+    day_62_horizons$selected_action,
+    c("stay", "move", "move", "stay", "stay")
+  ) &&
+    day_62_horizons$move_advantage_kj[
+      day_62_horizons$horizon_days == 4L
+    ] > 0 &&
+    day_62_horizons$move_advantage_kj[
+      day_62_horizons$horizon_days == 7L
+    ] < 0,
+  "returning to newly released B reverses between four and seven days"
 )
 
 summary_table <- do.call(rbind, lapply(runs, function(run) {
@@ -1227,6 +1431,46 @@ print(transform(
 ), row.names = FALSE)
 cat("\nRevisit-clock cycle summary:\n")
 print(revisit_clock_cycle_summary, row.names = FALSE)
+cat("\nFixed-state consequence-horizon decomposition:\n")
+print(transform(
+  consequence_horizon_table[, c(
+    "checkpoint_day",
+    "opening_patch_id",
+    "destination_patch_id",
+    "horizon_days",
+    "selected_action",
+    "move_advantage_kj",
+    "intake_energy_advantage_kj",
+    "movement_disadvantage_kj",
+    "closing_body_reserve_advantage_kj",
+    "stay_closing_patch_a_biomass_kg_dm_ha",
+    "stay_closing_patch_b_biomass_kg_dm_ha",
+    "move_closing_patch_a_biomass_kg_dm_ha",
+    "move_closing_patch_b_biomass_kg_dm_ha"
+  )],
+  move_advantage_kj = round(move_advantage_kj),
+  intake_energy_advantage_kj = round(intake_energy_advantage_kj),
+  movement_disadvantage_kj = round(movement_disadvantage_kj),
+  closing_body_reserve_advantage_kj = round(
+    closing_body_reserve_advantage_kj
+  ),
+  stay_closing_patch_a_biomass_kg_dm_ha = round(
+    stay_closing_patch_a_biomass_kg_dm_ha,
+    2
+  ),
+  stay_closing_patch_b_biomass_kg_dm_ha = round(
+    stay_closing_patch_b_biomass_kg_dm_ha,
+    2
+  ),
+  move_closing_patch_a_biomass_kg_dm_ha = round(
+    move_closing_patch_a_biomass_kg_dm_ha,
+    2
+  ),
+  move_closing_patch_b_biomass_kg_dm_ha = round(
+    move_closing_patch_b_biomass_kg_dm_ha,
+    2
+  )
+), row.names = FALSE)
 cat("\nDaily oracle disagreements:\n")
 print(transform(
   disagreement_table,

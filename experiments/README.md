@@ -51,6 +51,8 @@ installed package:
   recurrent but physiologically poor trajectory with a local full-model
   two-day evaluator, then contrasts that rejected slow recovery with a
   two-day familiar-territory revisit clock and its rapid rotational outcome.
+  Fixed day-60 and day-62 states then separate move-now from stay-now policies
+  over one- to fourteen-day horizons, localizing the early-return failure.
 - `spatial-memory-horizon-decomposition.R` reconstructs the opening day-101
   last-experience state, crosses stale versus recovered experienced return with
   one- and two-day horizons, and verifies the score choices against matched

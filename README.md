@@ -196,6 +196,14 @@ falls to `9,386 kJ`. This rejects the clock and shows that locally correct
 two-day choices can create a poor long-run path by repeatedly harvesting newly
 accessible forage before either patch receives a long rest.
 
+A fixed-state horizon decomposition localizes that failure. At day 60, leaving
+depleted B for long-rested A becomes increasingly favourable from two through
+fourteen days. At day 62, returning to B remains favourable through four days
+but reverses by seven days (`-2,009 kJ`) and is strongly unfavourable by fourteen
+(`-7,646 kJ`). The missing behavioral information is therefore not immediate
+patch recovery but persistence: a scalar expected return does not say how long
+the renewed feeding opportunity can support intake.
+
 The current synthetic reference uses:
 
 | Quantity | Value |
@@ -316,7 +324,10 @@ rejecting direct turnover-rate relaxation of experienced return. A faster
 experience-and-time-only clock instead produces a locally supported 2/4-day
 rotation, but its travel cost drives a still deeper reserve decline. This
 shifts the next diagnostic boundary from recovery timing to consequence
-horizon. Water
+horizon. A fixed-state comparison then shows that leaving depleted B is robust,
+but returning after two days becomes unfavourable between four and seven days.
+Expected return duration, rather than a perfect longer forecast, is the next
+behavioral information question. Water
 physiology and anticipatory,
 state-responsive, or package-level
 repeated behavioral mechanisms remain absent. The staged
