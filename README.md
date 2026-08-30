@@ -187,6 +187,15 @@ weeks. The result rejects biomass-timescale return recovery and points instead
 to accumulated accessible forage plus continued production as the relevant
 short-horizon opportunity, without yet promoting a behavioral rule.
 
+A carried familiar-territory clock then lets expected return recover linearly
+from last experience to historical best over two absent days, without exposing
+unvisited biomass. It reduces two-day evaluator disagreements from `147` to
+`43`, but produces `83` switches and `74,700 kJ` of movement expenditure.
+Every selected move agrees with the full two-day evaluator, yet body reserve
+falls to `9,386 kJ`. This rejects the clock and shows that locally correct
+two-day choices can create a poor long-run path by repeatedly harvesting newly
+accessible forage before either patch receives a long rest.
+
 The current synthetic reference uses:
 
 | Quantity | Value |
@@ -303,7 +312,11 @@ day. A bounded day-101 decomposition confirms that recovered opportunity and a
 two-day horizon are jointly sufficient to reverse that trapped choice, while
 neither change alone is sufficient. A first carried implementation restores
 revisitation but systematically stays too long and causes deep reserve cycles,
-rejecting direct turnover-rate relaxation of experienced return. Water
+rejecting direct turnover-rate relaxation of experienced return. A faster
+experience-and-time-only clock instead produces a locally supported 2/4-day
+rotation, but its travel cost drives a still deeper reserve decline. This
+shifts the next diagnostic boundary from recovery timing to consequence
+horizon. Water
 physiology and anticipatory,
 state-responsive, or package-level
 repeated behavioral mechanisms remain absent. The staged

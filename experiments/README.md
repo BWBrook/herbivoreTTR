@@ -49,7 +49,8 @@ installed package:
   the resulting one-way residence and explicit body-reserve boundary. It also
   carries one recovery-aware two-day candidate for `305` days, comparing its
   recurrent but physiologically poor trajectory with a local full-model
-  two-day evaluator.
+  two-day evaluator, then contrasts that rejected slow recovery with a
+  two-day familiar-territory revisit clock and its rapid rotational outcome.
 - `spatial-memory-horizon-decomposition.R` reconstructs the opening day-101
   last-experience state, crosses stale versus recovered experienced return with
   one- and two-day horizons, and verifies the score choices against matched

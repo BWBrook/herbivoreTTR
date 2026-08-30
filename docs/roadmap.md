@@ -156,6 +156,16 @@ contributions were not separately manipulated. A learned absence-to-return
 relationship is therefore the next candidate; direct biomass-timescale return
 relaxation remains rejected.
 
+Goal 052 carries one such candidate without granting biomass knowledge. An
+unvisited patch's expected return advances linearly from last experience to
+historical best over two absent days. This reduces two-day evaluator
+disagreements from `147` to `43`, all remaining errors being false stays, but
+induces `83` switches and `74,700 kJ` of travel. Every selected move agrees with
+the two-day evaluator while minimum reserve falls to `9,386 kJ`. The result
+rejects the clock and exposes the next question: whether a longer consequence
+horizon values patch rest, or whether frequent rotation remains favoured by
+the current two-patch system.
+
 ## Deferred Animal Layers
 
 Protein, water balance and drinking physiology, thermoregulation, explicit

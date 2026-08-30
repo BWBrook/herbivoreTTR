@@ -7,6 +7,7 @@ destination_expected_acquisition_rate_kg_dm_h <- 0.025
 expected_demand_kg_dm_h <- 0.020
 remaining_feeding_opportunity_h <- 16L
 recovery_planning_horizon_days <- 2L
+revisit_recovery_days <- 2L
 reference_days <- 120L
 interaction_days <- 305L
 adequate_energy_density_kj_kg_dm <- 10000
@@ -178,6 +179,22 @@ recover_expected_return <- function(
     ) * hourly_retention^(24 * days_since_visit)
 }
 
+recover_expected_return_by_revisit_clock <- function(
+  last_return_kj_feeding_opportunity_h,
+  best_return_kj_feeding_opportunity_h,
+  days_since_visit
+) {
+  recovery_fraction <- min(
+    days_since_visit / revisit_recovery_days,
+    1
+  )
+  last_return_kj_feeding_opportunity_h +
+    (
+      best_return_kj_feeding_opportunity_h -
+        last_return_kj_feeding_opportunity_h
+    ) * recovery_fraction
+}
+
 run_candidate_safely <- function(...) {
   tryCatch(
     run_candidate(...),
@@ -246,10 +263,15 @@ run_closed_loop <- function(
   decision_rule = c(
     "operational_null",
     "experienced_return_memory",
-    "recovery_aware_memory"
+    "recovery_aware_memory",
+    "revisit_clock_memory"
   )
 ) {
   decision_rule <- match.arg(decision_rule)
+  uses_recovery_memory <- decision_rule %in% c(
+    "recovery_aware_memory",
+    "revisit_clock_memory"
+  )
   landscape <- new_landscape(
     rep(static_acquisition_capacity_kg_dm_h, 2L),
     energy_densities_kj_kg_dm
@@ -303,6 +325,13 @@ run_closed_loop <- function(
           best_return_opening[[destination_patch_id]],
           days_since_visit_opening[[destination_patch_id]]
         )
+    } else if (decision_rule == "revisit_clock_memory") {
+      expected_return_opening[[destination_patch_id]] <-
+        recover_expected_return_by_revisit_clock(
+          remembered_return_opening[[destination_patch_id]],
+          best_return_opening[[destination_patch_id]],
+          days_since_visit_opening[[destination_patch_id]]
+        )
     }
     myopic <- if (decision_rule == "operational_null") {
       make_myopic_decision(
@@ -316,14 +345,14 @@ run_closed_loop <- function(
         decision = make_experienced_return_decision(
           state,
           destination_patch_id,
-          if (decision_rule == "recovery_aware_memory") {
+          if (uses_recovery_memory) {
             expected_return_opening
           } else {
             remembered_return_opening
           },
           landscape,
           planning_horizon_days = if (
-            decision_rule == "recovery_aware_memory"
+            uses_recovery_memory
           ) {
             recovery_planning_horizon_days
           } else {
@@ -400,7 +429,7 @@ run_closed_loop <- function(
     two_day_oracle_move_score_advantage_kj <- NA_real_
     two_day_oracle_regret_kj <- NA_real_
     all_two_day_counterfactual_accounts_close <- NA
-    if (decision_rule == "recovery_aware_memory") {
+    if (uses_recovery_memory) {
       two_day_counterfactuals <- list(
         stay = run_candidate_horizon_safely(
           state,
@@ -521,28 +550,28 @@ run_closed_loop <- function(
           NA_real_
         },
       best_destination_return_opening_kj_feeding_opportunity_h = if (
-        decision_rule == "recovery_aware_memory"
+        uses_recovery_memory
       ) {
         best_return_opening[[destination_patch_id]]
       } else {
         NA_real_
       },
       destination_days_since_visit_opening = if (
-        decision_rule == "recovery_aware_memory"
+        uses_recovery_memory
       ) {
         days_since_visit_opening[[destination_patch_id]]
       } else {
         NA_integer_
       },
       expected_current_return_opening_kj_feeding_opportunity_h = if (
-        decision_rule == "recovery_aware_memory"
+        uses_recovery_memory
       ) {
         expected_return_opening[[opening_patch_id]]
       } else {
         NA_real_
       },
       expected_destination_return_opening_kj_feeding_opportunity_h = if (
-        decision_rule == "recovery_aware_memory"
+        uses_recovery_memory
       ) {
         expected_return_opening[[destination_patch_id]]
       } else {
@@ -579,40 +608,40 @@ run_closed_loop <- function(
           NA_real_
         },
       patch_a_best_return_final_kj_feeding_opportunity_h =
-        if (decision_rule == "recovery_aware_memory") {
+        if (uses_recovery_memory) {
           best_return_kj_feeding_opportunity_h[["patch_a"]]
         } else {
           NA_real_
         },
       patch_b_best_return_final_kj_feeding_opportunity_h =
-        if (decision_rule == "recovery_aware_memory") {
+        if (uses_recovery_memory) {
           best_return_kj_feeding_opportunity_h[["patch_b"]]
         } else {
           NA_real_
         },
       patch_a_days_since_visit_final = if (
-        decision_rule == "recovery_aware_memory"
+        uses_recovery_memory
       ) {
         days_since_visit[["patch_a"]]
       } else {
         NA_integer_
       },
       patch_b_days_since_visit_final = if (
-        decision_rule == "recovery_aware_memory"
+        uses_recovery_memory
       ) {
         days_since_visit[["patch_b"]]
       } else {
         NA_integer_
       },
       patch_a_expected_return_opening_kj_feeding_opportunity_h = if (
-        decision_rule == "recovery_aware_memory"
+        uses_recovery_memory
       ) {
         expected_return_opening[["patch_a"]]
       } else {
         NA_real_
       },
       patch_b_expected_return_opening_kj_feeding_opportunity_h = if (
-        decision_rule == "recovery_aware_memory"
+        uses_recovery_memory
       ) {
         expected_return_opening[["patch_b"]]
       } else {
@@ -694,6 +723,13 @@ runs <- list(
     interaction_days,
     quality_contrast,
     "recovery_aware_memory"
+  ),
+  revisit_clock_memory = run_closed_loop(
+    "revisit_clock_memory",
+    50,
+    interaction_days,
+    quality_contrast,
+    "revisit_clock_memory"
   )
 )
 daily <- do.call(rbind, runs)
@@ -703,6 +739,7 @@ control <- runs$equal_quality_control
 quality <- runs$lower_quality_patch_a
 memory <- runs$experienced_return_memory
 recovery <- runs$recovery_aware_memory
+revisit_clock <- runs$revisit_clock_memory
 move_rows <- function(run) run[run$myopic_choice == "move", , drop = FALSE]
 control_moves <- move_rows(control)
 quality_moves <- move_rows(quality)
@@ -712,6 +749,8 @@ memory_moves <- move_rows(memory)
 memory_switch_days <- memory_moves$simulation_day
 recovery_moves <- move_rows(recovery)
 recovery_switch_days <- recovery_moves$simulation_day
+revisit_clock_moves <- move_rows(revisit_clock)
+revisit_clock_switch_days <- revisit_clock_moves$simulation_day
 
 assert_that(
   all(reference$myopic_choice == "stay") &&
@@ -853,6 +892,57 @@ assert_that(
     min(recovery$body_energy_reserve_final_kj) > 0,
   "two-day comparisons close and the carried animal remains non-negative"
 )
+assert_that(
+  attr(revisit_clock, "requested_days") == interaction_days &&
+    attr(revisit_clock, "completed_days") == interaction_days &&
+    is.na(attr(revisit_clock, "terminal_day")) &&
+    length(revisit_clock_switch_days) == 83L &&
+    min(diff(revisit_clock_switch_days)) == 2L &&
+    all(c("patch_a", "patch_b") %in% revisit_clock$closing_patch_id),
+  "the revisit clock completes but produces frequent reciprocal switching"
+)
+assert_that(
+  near(
+    revisit_clock$expected_current_return_opening_kj_feeding_opportunity_h,
+    revisit_clock$remembered_current_return_opening_kj_feeding_opportunity_h
+  ) &&
+    near(
+      revisit_clock$
+        expected_destination_return_opening_kj_feeding_opportunity_h,
+      mapply(
+        recover_expected_return_by_revisit_clock,
+        revisit_clock$
+          remembered_destination_return_opening_kj_feeding_opportunity_h,
+        revisit_clock$
+          best_destination_return_opening_kj_feeding_opportunity_h,
+        revisit_clock$destination_days_since_visit_opening
+      )
+    ) &&
+    all(
+      revisit_clock$
+        expected_destination_return_opening_kj_feeding_opportunity_h >=
+        revisit_clock$
+          remembered_destination_return_opening_kj_feeding_opportunity_h -
+          1e-10
+    ) &&
+    all(
+      revisit_clock$
+        expected_destination_return_opening_kj_feeding_opportunity_h <=
+        revisit_clock$
+          best_destination_return_opening_kj_feeding_opportunity_h + 1e-10
+    ),
+  "the revisit-clock belief is bounded and follows its prespecified equation"
+)
+assert_that(
+  all(revisit_clock$all_two_day_counterfactual_accounts_close) &&
+    all(revisit_clock$two_day_oracle_regret_kj >= 0) &&
+    min(revisit_clock$body_energy_reserve_final_kj) > 0 &&
+    sum(revisit_clock$movement_expenditure_kj) >
+      sum(recovery$movement_expenditure_kj) &&
+    min(revisit_clock$body_energy_reserve_final_kj) <
+      min(recovery$body_energy_reserve_final_kj),
+  "rapid revisits raise travel cost and deepen reserve loss despite closure"
+)
 
 summary_table <- do.call(rbind, lapply(runs, function(run) {
   moves <- move_rows(run)
@@ -871,8 +961,17 @@ summary_table <- do.call(rbind, lapply(runs, function(run) {
     number_of_switches = nrow(moves),
     switch_days = if (nrow(moves) == 0L) {
       "none"
-    } else {
+    } else if (nrow(moves) <= 12L) {
       paste(moves$simulation_day, collapse = ", ")
+    } else {
+      paste(
+        c(
+          head(moves$simulation_day, 6L),
+          "...",
+          tail(moves$simulation_day, 6L)
+        ),
+        collapse = ", "
+      )
     },
     foraging_days_patch_a = sum(run$closing_patch_id == "patch_a"),
     foraging_days_patch_b = sum(run$closing_patch_id == "patch_b"),
@@ -952,6 +1051,22 @@ switch_table <- do.call(rbind, lapply(interaction_runs, function(run) {
   ), drop = FALSE]
 }))
 row.names(switch_table) <- NULL
+revisit_clock_post_return_intervals <- diff(
+  revisit_clock_switch_days[revisit_clock_switch_days >= 60L]
+)
+revisit_clock_cycle_summary <- data.frame(
+  first_move_day = revisit_clock_switch_days[[1L]],
+  first_return_day = revisit_clock_switch_days[[2L]],
+  total_switches = length(revisit_clock_switch_days),
+  shortest_interval_days = min(diff(revisit_clock_switch_days)),
+  longest_interval_days = max(diff(revisit_clock_switch_days)),
+  post_return_interval_days = paste(
+    sort(unique(revisit_clock_post_return_intervals)),
+    collapse = ", "
+  ),
+  final_switch_day = tail(revisit_clock_switch_days, 1L),
+  row.names = NULL
+)
 
 two_day_disagreement_table <- recovery[
   recovery$myopic_choice != recovery$two_day_oracle_choice,
@@ -994,6 +1109,32 @@ two_day_disagreement_summary <- data.frame(
   ],
   row.names = NULL
 )
+revisit_two_day_disagreement_table <- revisit_clock[
+  revisit_clock$myopic_choice != revisit_clock$two_day_oracle_choice,
+  ,
+  drop = FALSE
+]
+revisit_two_day_disagreement_summary <- data.frame(
+  disagreement_days = nrow(revisit_two_day_disagreement_table),
+  false_stays = sum(
+    revisit_two_day_disagreement_table$myopic_choice == "stay" &
+      revisit_two_day_disagreement_table$two_day_oracle_choice == "move"
+  ),
+  false_moves = sum(
+    revisit_two_day_disagreement_table$myopic_choice == "move" &
+      revisit_two_day_disagreement_table$two_day_oracle_choice == "stay"
+  ),
+  cumulative_local_regret_kj = round(sum(
+    revisit_two_day_disagreement_table$two_day_oracle_regret_kj
+  )),
+  maximum_daily_regret_kj = round(max(
+    revisit_two_day_disagreement_table$two_day_oracle_regret_kj
+  )),
+  maximum_regret_day = revisit_two_day_disagreement_table$simulation_day[
+    which.max(revisit_two_day_disagreement_table$two_day_oracle_regret_kj)
+  ],
+  row.names = NULL
+)
 disagreement_run_id <- cumsum(c(
   TRUE,
   diff(two_day_disagreement_table$simulation_day) != 1L
@@ -1016,6 +1157,7 @@ row.names(two_day_disagreement_runs) <- NULL
 
 disagreement_table <- daily[
   daily$treatment != "reference" &
+    daily$decision_rule != "revisit_clock_memory" &
     daily$myopic_choice != daily$oracle_choice,
   c(
     "treatment",
@@ -1040,7 +1182,7 @@ cat("Daily biomass-quality choice and memory diagnostic passed.\n")
 cat(
   "The operational null completes 305 days; the memory rule reaches ",
   "the body-reserve boundary before day 147; recovery-aware memory ",
-  "completes 305 days.\n\n",
+  "completes 305 days; the revisit clock completes but switches 83 times.\n\n",
   sep = ""
 )
 cat("Treatment summary:\n")
@@ -1065,7 +1207,9 @@ print(transform(
 ), row.names = FALSE)
 cat("\nRecovery-aware two-day oracle disagreements:\n")
 print(two_day_disagreement_summary, row.names = FALSE)
-cat("\nContiguous two-day disagreement intervals:\n")
+cat("\nRevisit-clock two-day oracle disagreements:\n")
+print(revisit_two_day_disagreement_summary, row.names = FALSE)
+cat("\nGoal 050 contiguous two-day disagreement intervals:\n")
 print(two_day_disagreement_runs, row.names = FALSE)
 cat("\nInteraction switch events:\n")
 print(transform(
@@ -1081,6 +1225,8 @@ print(transform(
   body_energy_reserve_opening_kj = round(body_energy_reserve_opening_kj),
   realized_regret_kj = round(realized_regret_kj)
 ), row.names = FALSE)
+cat("\nRevisit-clock cycle summary:\n")
+print(revisit_clock_cycle_summary, row.names = FALSE)
 cat("\nDaily oracle disagreements:\n")
 print(transform(
   disagreement_table,

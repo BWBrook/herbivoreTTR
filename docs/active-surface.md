@@ -149,6 +149,15 @@ weeks. Accumulated accessible forage plus continuing production is the leading
 mechanistic explanation, but the map does not yet separate those contributions
 or add behavior.
 
+The first carried fast-recovery candidate uses only last and historical-best
+experienced returns plus elapsed absence, reaching the best after two days.
+It reduces local two-day evaluator disagreements from `147` to `43` but settles
+into two days in A and four days in B, producing `83` switches and `74,700 kJ`
+of movement expenditure. Every selected move agrees with the evaluator, yet
+minimum reserve falls to `9,386 kJ`. The rule is rejected: accurate local
+recovery knowledge plus a two-day objective is not sufficient for a good
+long-run trajectory.
+
 ## Protected Invariants
 
 - Every modeled quantity has an explicit unit suffix.
@@ -262,7 +271,8 @@ both the transparent score and full model. The next decision is how to carry
 those two ingredients through time without granting perfect biomass knowledge.
 Direct turnover-rate relaxation of experienced return has now been rejected;
 the absence map shows that realized opportunity recovers within one to two days
-despite weeks-long standing-biomass recovery. The next candidate should carry a
-small learned absence-to-return relationship through the established treatment,
-not tune variants of the rejected equation. This precedes another ecological
-layer.
+despite weeks-long standing-biomass recovery. Carrying that fast expectation
+then produces a locally supported but physiologically poor 2/4-day rotation.
+The next diagnostic should hold a representative cycling state fixed and vary
+only consequence horizon, before any cooldown, behavioral parameter, or new
+ecological layer is considered.

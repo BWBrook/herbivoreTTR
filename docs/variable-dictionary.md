@@ -265,6 +265,13 @@ opportunity hour, two-day stay and move energy in `kJ`, and the first sampled
 age at which movement repays its route. These are counterfactual diagnostic
 outputs, not observed animal information or persistent package state.
 
+The learned revisit-clock comparison retains the same diagnostic last and
+historical-best returns and whole days since visit. It adds a dimensionless
+recovery fraction `min(days_since_visit / 2, 1)` and its expected return in
+`kJ` per feeding-opportunity hour. The animal's two-day move score, full-model
+two-day move-minus-stay energy, agreement, regret, and cumulative movement
+expenditure remain diagnostic outputs rather than package state.
+
 The food-quality choice-boundary diagnostic records current and destination
 metabolizable-energy densities, matched stay and move intake and energy, the
 minimal helper action and score difference, the full-model oracle action and

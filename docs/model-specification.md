@@ -676,6 +676,28 @@ instantaneous net production. The Goal 050 return equation is retained only as
 a rejected comparator. No recovery-map quantity is package state or information
 available to the animal.
 
+### Learned Revisit Clock
+
+One carried diagnostic replaces the rejected turnover-timescale equation with
+a prespecified familiar-territory clock. For an unvisited patch aged `a` whole
+days:
+
+```text
+recovery fraction = min(a / 2, 1)
+
+expected return =
+  last return + (historical-best return - last return) * recovery fraction
+```
+
+The occupied patch uses its last experienced return, and the action score keeps
+the accepted two-day horizon. The rule receives no biomass or production
+information. It completes `305` days but switches `83` times, spends
+`74,700 kJ` on movement, and reaches a minimum reserve of `9,386 kJ`. All
+selected moves agree with the full-model two-day evaluator; the `43`
+disagreements are false stays. The clock is rejected as carried behavior. Its
+failure identifies consequence horizon rather than recovery timing as the next
+diagnostic boundary.
+
 ## Reference Cycle
 
 `run_gut_body_energy_reference_cycle()` repeatedly applies one fixed 24-hour
@@ -817,7 +839,10 @@ Twenty-two no-write experiments protect the current scientific interpretation:
   checking residence, recurrence, quality-by-biomass effects, local daily
   oracle regret, physiological state, and full accounting, then compares one
   last-experienced-return memory through its explicit terminal boundary and
-  one recovery-aware two-day candidate through its rejected carried result; and
+  one recovery-aware two-day candidate through its rejected carried result;
+  the same diagnostic also carries a two-day revisit clock, checking its
+  bounded equation, rapid reciprocal switching, evaluator agreement, movement
+  cost, physiological trajectory, and full accounting; and
 - the memory-horizon decomposition reconstructs the opening day-101 state and
   crosses stale versus recovered experienced return with one- and two-day
   horizons, checking score choices against full-model policies and decomposing
@@ -846,7 +871,8 @@ return memory and the recovery-horizon decomposition are also diagnostic-only
 and are not accepted package behavior. The carried turnover-rate recovery
 candidate is likewise diagnostic-only and explicitly rejected. The
 absence-to-return recovery map is a diagnostic mechanism check, not a carried
-behavioral rule.
+behavioral rule. The learned revisit clock is likewise diagnostic-only and
+rejected.
 
 ## Exclusions
 

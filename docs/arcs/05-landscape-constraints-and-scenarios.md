@@ -1,6 +1,6 @@
 # Arc 05: Landscape Constraints And Scenarios
 
-Status: in progress; absence-to-return recovery is mapped before the next behavioral candidate
+Status: in progress; fast recovery plus a short horizon exposes rapid rotational switching
 
 ## Purpose
 
@@ -174,6 +174,17 @@ same interval. The rejected Goal 050 belief is therefore neither timely nor a
 valid direct proxy for feeding return. Accumulated accessible forage plus
 continued production is the leading flow-aware explanation, pending a carried
 learned representation.
+
+Goal 052 carries a prespecified two-day revisit clock using only last and best
+experienced return plus time since visit. It cuts local two-day disagreements
+from `147` to `43`, all false stays, but produces `83` switches after settling
+into two days in lower-quality A and four days in higher-quality B. Movement
+costs `74,700 kJ`, minimum body reserve falls to `9,386 kJ`, and the candidate
+is rejected. Crucially, every selected move agrees with the full-model two-day
+evaluator. Fast rotation is therefore not a clairvoyance error: it is a locally
+rational, path-dependent consequence of the short objective and rapidly
+renewed accessible forage. The next gate is consequence horizon, not recovery-
+rate tuning or an arbitrary residence constraint.
 
 ## Decision Gates
 
