@@ -177,6 +177,16 @@ evaluator are false stays. Experienced return does not recover on the same
 timescale as standing biomass in this flow-limited system. The candidate is
 retained as a rejected diagnostic, not package behavior.
 
+The bounded absence-to-return map then starts either destination at the
+`500 kg DM ha^-1` residual boundary and lets it recover without herbivory for
+prespecified absences from 0 to 60 days. Matched two-day full-model comparisons
+show that lower-quality A first repays the route after one day and reaches its
+return plateau after two, while higher-quality B repays the route immediately
+and plateaus after one day. Standing biomass continues recovering for many
+weeks. The result rejects biomass-timescale return recovery and points instead
+to accumulated accessible forage plus continued production as the relevant
+short-horizon opportunity, without yet promoting a behavioral rule.
+
 The current synthetic reference uses:
 
 | Quantity | Value |
@@ -222,6 +232,7 @@ Rscript --vanilla experiments/spatial-resource-aware-switch-boundary.R
 Rscript --vanilla experiments/spatial-myopic-resource-choice.R
 Rscript --vanilla experiments/spatial-daily-myopic-choice.R
 Rscript --vanilla experiments/spatial-memory-horizon-decomposition.R
+Rscript --vanilla experiments/spatial-absence-return-recovery.R
 Rscript --vanilla experiments/explicit-patch-food-quality.R
 Rscript --vanilla experiments/spatial-food-quality-choice-boundary.R
 ```
@@ -303,7 +314,7 @@ programme is indexed in
 
 - `R/`: reusable model records, transitions, and runners.
 - `tests/testthat/`: focused protection of scientific invariants.
-- `experiments/`: twenty-one current no-write diagnostics and one fixture helper.
+- `experiments/`: twenty-two current no-write diagnostics and one fixture helper.
 - `docs/model-charter.md`: governing scientific and architectural contract.
 - `docs/model-specification.md`: equations, transition order, and outputs.
 - `docs/variable-dictionary.md`: current quantities and units.

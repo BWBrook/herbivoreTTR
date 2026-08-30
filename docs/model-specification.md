@@ -665,6 +665,17 @@ accessibility, demand, and food quality, not a standing stock that should
 recover at the biomass turnover half-life. The candidate remains diagnostic-
 only and must not be tuned or promoted into package behavior.
 
+### Absence-To-Return Recovery Map
+
+The bounded recovery map starts an unvisited patch at the residual boundary,
+advances the accepted turnover equation for a prespecified whole-day absence,
+and introduces the identical reference animal state only after that absence.
+Matched two-day stay and move policies expose realized feeding return and route
+repayment alongside standing biomass, accessible forage per animal, and
+instantaneous net production. The Goal 050 return equation is retained only as
+a rejected comparator. No recovery-map quantity is package state or information
+available to the animal.
+
 ## Reference Cycle
 
 `run_gut_body_energy_reference_cycle()` repeatedly applies one fixed 24-hour
@@ -758,7 +769,7 @@ assertion that daily energetic balance alone establishes health or viability.
 
 ## Retained Diagnostics
 
-Twenty-one no-write experiments protect the current scientific interpretation:
+Twenty-two no-write experiments protect the current scientific interpretation:
 
 - the reference diagnostic checks neutrality, conservation, and gut order;
 - the appetite-forage diagnostic checks a binding ceiling, deficit recovery,
@@ -811,6 +822,10 @@ Twenty-one no-write experiments protect the current scientific interpretation:
   crosses stale versus recovered experienced return with one- and two-day
   horizons, checking score choices against full-model policies and decomposing
   the reversal into intake gained and route expenditure; and
+- the absence-to-return recovery diagnostic advances an unvisited residual
+  patch across prespecified ages, compares realized two-day return and route
+  repayment with resource stocks and flow, and exposes the rejected belief's
+  timescale error; and
 - the explicit patch food-quality diagnostic holds acquisition non-limiting
   and movement absent, checking exact reduction of adequate and lower-quality
   all-stay patches to their corresponding non-spatial physiology; and
@@ -829,7 +844,9 @@ remains diagnostic-only. The food-quality oracle is likewise diagnostic-only;
 the package helper remains fixed-demand and non-anticipatory. Last-experienced
 return memory and the recovery-horizon decomposition are also diagnostic-only
 and are not accepted package behavior. The carried turnover-rate recovery
-candidate is likewise diagnostic-only and explicitly rejected.
+candidate is likewise diagnostic-only and explicitly rejected. The
+absence-to-return recovery map is a diagnostic mechanism check, not a carried
+behavioral rule.
 
 ## Exclusions
 

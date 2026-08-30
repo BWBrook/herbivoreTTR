@@ -140,6 +140,15 @@ disagreements are false stays. Return opportunity recovers faster than
 standing biomass under the current production and accessibility rules, so
 experienced return must not inherit the biomass turnover timescale directly.
 
+The absence-to-return diagnostic maps that mismatch directly. Starting either
+destination at the residual boundary, realized two-day return recovers over
+one to two days: lower-quality A first repays the route after one day and
+reaches its return plateau after two, while higher-quality B repays it
+immediately and plateaus after one. Standing biomass continues recovering for
+weeks. Accumulated accessible forage plus continuing production is the leading
+mechanistic explanation, but the map does not yet separate those contributions
+or add behavior.
+
 ## Protected Invariants
 
 - Every modeled quantity has an explicit unit suffix.
@@ -208,7 +217,7 @@ experienced return must not inherit the biomass turnover timescale directly.
 | --- | --- |
 | Functional package core | Retain and extend by approved layers |
 | Explicit records, units, and balance residuals | Retain |
-| Twenty current diagnostics | Retain |
+| Twenty-two current diagnostics | Retain |
 | Focused invariant tests | Retain |
 | Scientific decision notes | Retain as the research notebook |
 | Goal-by-goal experiment ancestry | Removed from the active tree; Git retains it |
@@ -220,7 +229,7 @@ experienced return must not inherit the biomass turnover timescale directly.
 
 For ordinary changes, parse retained R, run the tests affected by the change,
 and inspect the diff. When publishing a package boundary or completed model
-stage, run the full focused suite, all twenty-one diagnostics, an external build,
+stage, run the full focused suite, all twenty-two diagnostics, an external build,
 and `R CMD check --no-manual` once.
 
 Repeat a gate only for a distinct named risk. Additional polish or repeated
@@ -252,6 +261,8 @@ horizon is sufficient alone, but together they reverse the trapped choice in
 both the transparent score and full model. The next decision is how to carry
 those two ingredients through time without granting perfect biomass knowledge.
 Direct turnover-rate relaxation of experienced return has now been rejected;
-the next comparison should be between a few distinct flow-aware recovery
-representations, not tuned variants of that equation. This precedes another
-ecological layer.
+the absence map shows that realized opportunity recovers within one to two days
+despite weeks-long standing-biomass recovery. The next candidate should carry a
+small learned absence-to-return relationship through the established treatment,
+not tune variants of the rejected equation. This precedes another ecological
+layer.

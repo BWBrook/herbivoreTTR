@@ -145,6 +145,17 @@ This rejects direct biomass-timescale recovery of experienced return. The next
 bounded comparison should distinguish flow-aware recovery hypotheses before
 any behavior is promoted or another ecological layer is added.
 
+Goal 051 performs that first bounded comparison without carrying a policy.
+Starting either destination at the residual boundary, realized two-day feeding
+return recovers over one to two days, while standing biomass continues its
+weeks-long approach to equilibrium. Lower-quality A first repays the route at
+age 1 day and reaches its return plateau at age 2; higher-quality B repays the
+route at age 0 and plateaus at age 1. Accessible forage accumulated during
+absence plus continued production is the leading explanation, although their
+contributions were not separately manipulated. A learned absence-to-return
+relationship is therefore the next candidate; direct biomass-timescale return
+relaxation remains rejected.
+
 ## Deferred Animal Layers
 
 Protein, water balance and drinking physiology, thermoregulation, explicit

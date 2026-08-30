@@ -1,6 +1,6 @@
 # Arc 05: Landscape Constraints And Scenarios
 
-Status: in progress; one controlled biomass-quality interaction exposes the next behavioral decision gate
+Status: in progress; absence-to-return recovery is mapped before the next behavioral candidate
 
 ## Purpose
 
@@ -162,6 +162,18 @@ false stay. Same-day production and forage accessibility make feeding return
 recover faster than standing biomass, so return cannot inherit the stock's
 turnover timescale. The next behavioral decision must be flow-aware and remains
 diagnostic-only.
+
+Goal 051 maps that missing timescale directly before another carried policy is
+attempted. Either destination starts at the `500 kg DM ha^-1` residual boundary,
+recovers without herbivory for a prespecified absence, and is evaluated with
+matched two-day stay and move policies. Lower-quality A first repays the
+`900 kJ` route at age 1 day and reaches its realized-return plateau at age 2;
+higher-quality B repays it at age 0 and plateaus at age 1. Standing biomass
+continues recovering for weeks, and instantaneous production declines over the
+same interval. The rejected Goal 050 belief is therefore neither timely nor a
+valid direct proxy for feeding return. Accumulated accessible forage plus
+continued production is the leading flow-aware explanation, pending a carried
+learned representation.
 
 ## Decision Gates
 

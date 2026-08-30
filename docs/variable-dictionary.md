@@ -257,6 +257,14 @@ stay-move score difference, local full-model two-day action and energy
 difference, local regret, switch timing, and carried gut, body, and forage
 states. These are rejected diagnostic policy variables, not package records.
 
+The absence-to-return recovery map adds prespecified absence age in whole days,
+destination standing and accessible biomass in `kg DM ha^-1`, accessible
+biomass in `kg DM` per represented animal, instantaneous net production in
+`kg DM ha^-1 h^-1`, realized and rejected-belief return in `kJ` per feeding-
+opportunity hour, two-day stay and move energy in `kJ`, and the first sampled
+age at which movement repays its route. These are counterfactual diagnostic
+outputs, not observed animal information or persistent package state.
+
 The food-quality choice-boundary diagnostic records current and destination
 metabolizable-energy densities, matched stay and move intake and energy, the
 minimal helper action and score difference, the full-model oracle action and

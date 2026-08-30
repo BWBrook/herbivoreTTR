@@ -54,6 +54,10 @@ installed package:
   last-experience state, crosses stale versus recovered experienced return with
   one- and two-day horizons, and verifies the score choices against matched
   full-model stay and move policies.
+- `spatial-absence-return-recovery.R` starts either destination at the residual
+  boundary, maps prespecified unvisited recovery ages through matched two-day
+  stay and move policies, and compares realized return with standing biomass,
+  accessible forage, net production, and the rejected turnover-rate belief.
 - `explicit-patch-food-quality.R` holds movement and acquisition limitation
   absent while checking that adequate and lower-quality all-stay patches reduce
   exactly to their accepted non-spatial physiological references.
