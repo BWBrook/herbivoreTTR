@@ -175,6 +175,17 @@ high-quality but shallowly recovered patch. The next behavioral information
 axis is expected return persistence, not slower recovery or a generic movement
 penalty.
 
+Goal 054 closes that information problem without adding a destination-depth
+forecast. The animal retains its experience-and-time recovery memory, stays
+while the current patch supplies its `200 kJ` per feeding-opportunity-hour
+requirement, and accumulates energetic shortfall during inadequate bouts. A
+small chronic deficit can therefore repay travel, while adequate current forage
+is not abandoned for a briefly attractive destination. The baseline completes
+305 days with nine switches no closer than 27 days, a minimum reserve of
+`36,221 kJ`, and closed accounts. Seven viable one-factor comparisons remain
+stable; an additional low-turnover case identifies an explicit supply boundary.
+The synthetic experience-based patch-choice tranche is closed.
+
 ## Deferred Animal Layers
 
 Protein, water balance and drinking physiology, thermoregulation, explicit

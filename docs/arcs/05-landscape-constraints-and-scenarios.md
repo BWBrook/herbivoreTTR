@@ -195,6 +195,22 @@ correctly identifies recovered immediate return but not its persistence. The
 next behavioral design must represent expected resource depth or bout duration
 from the animal's own experience, without importing these perfect forecasts.
 
+Goal 054 tests that premise and accepts a leaner equivalent. The animal does
+not predict destination depth. It retains learned immediate return, stays while
+the current patch demonstrably supplies its `200 kJ` per feeding-opportunity-
+hour requirement, and accumulates experienced energetic shortfall once return
+is inadequate. The shortfall adjusts the existing two-day travel comparison,
+so chronic inadequacy eventually earns movement without a reserve trigger.
+
+This rule preserves the day-60 B-to-A departure, rejects the day-62 early
+return, and completes 305 baseline days with nine switches, a 27-day minimum
+return interval, `8,100 kJ` of movement, and a `36,221 kJ` minimum reserve. It
+also completes the seven viable movement, quality, and turnover comparisons.
+The `0.00075 h^-1` turnover stress fails explicitly because its residual-
+boundary supply leaves only `40 kJ animal^-1 d^-1` above maintenance before
+travel. The present synthetic experience-based choice problem is therefore
+closed, while resource-supply failure remains visible rather than tuned away.
+
 ## Decision Gates
 
 - Which water, composition, and thermal processes are essential for the next

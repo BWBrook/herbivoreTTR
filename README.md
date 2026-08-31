@@ -204,6 +204,16 @@ but reverses by seven days (`-2,009 kJ`) and is strongly unfavourable by fourtee
 patch recovery but persistence: a scalar expected return does not say how long
 the renewed feeding opportunity can support intake.
 
+The accepted closure rule avoids inventing that forecast. It retains the
+two-day return clock, stays whenever the current patch's experienced return
+meets the `200 kJ` per feeding-opportunity-hour requirement, and accumulates
+the energetic shortfall during an inadequate bout. The animal moves only when
+the shortfall-adjusted two-day advantage repays travel. At the exact day-60 and
+day-62 states it keeps the departure from depleted B and rejects the premature
+return from adequate A. Across 305 days, switches fall from `83` to `9`, the
+shortest return interval rises from 2 to 27 days, movement falls from `74,700`
+to `8,100 kJ`, and minimum reserve rises from `9,386` to `36,221 kJ`.
+
 The current synthetic reference uses:
 
 | Quantity | Value |
@@ -247,9 +257,7 @@ Rscript --vanilla experiments/spatial-patch-depletion-renewal.R
 Rscript --vanilla experiments/spatial-resource-aware-choice.R
 Rscript --vanilla experiments/spatial-resource-aware-switch-boundary.R
 Rscript --vanilla experiments/spatial-myopic-resource-choice.R
-Rscript --vanilla experiments/spatial-daily-myopic-choice.R
-Rscript --vanilla experiments/spatial-memory-horizon-decomposition.R
-Rscript --vanilla experiments/spatial-absence-return-recovery.R
+Rscript --vanilla experiments/spatial-experienced-adequacy-choice.R
 Rscript --vanilla experiments/explicit-patch-food-quality.R
 Rscript --vanilla experiments/spatial-food-quality-choice-boundary.R
 ```
@@ -326,11 +334,15 @@ rotation, but its travel cost drives a still deeper reserve decline. This
 shifts the next diagnostic boundary from recovery timing to consequence
 horizon. A fixed-state comparison then shows that leaving depleted B is robust,
 but returning after two days becomes unfavourable between four and seven days.
-Expected return duration, rather than a perfect longer forecast, is the next
-behavioral information question. Water
-physiology and anticipatory,
-state-responsive, or package-level
-repeated behavioral mechanisms remain absent. The staged
+The accepted experience-based closure retains the two-day recovery memory but
+refuses to leave a patch while realized return remains energetically adequate;
+once inadequate, cumulative shortfall lets a small chronic deficit eventually
+repay travel. It resolves both fixed checkpoints, produces nine switches no
+closer than 27 days in the baseline, and remains stable across the bounded
+movement, food-quality, and viable forage-recovery comparisons. This is
+accepted experiment-level behavior, not package API or a viability claim.
+Water physiology and package-level repeated behavioral mechanisms remain
+absent. The staged
 programme is indexed in
 [`docs/roadmap.md`](docs/roadmap.md).
 
@@ -338,7 +350,7 @@ programme is indexed in
 
 - `R/`: reusable model records, transitions, and runners.
 - `tests/testthat/`: focused protection of scientific invariants.
-- `experiments/`: twenty-two current no-write diagnostics and one fixture helper.
+- `experiments/`: twenty current no-write diagnostics and one fixture helper.
 - `docs/model-charter.md`: governing scientific and architectural contract.
 - `docs/model-specification.md`: equations, transition order, and outputs.
 - `docs/variable-dictionary.md`: current quantities and units.

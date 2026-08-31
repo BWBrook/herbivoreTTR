@@ -279,6 +279,15 @@ reserve advantage, and stay/move closing biomass for each patch. These are
 fixed-state counterfactual outputs unavailable to the animal, not persistent
 state or a multi-day behavioral forecast.
 
+The accepted experienced-adequacy diagnostic retains last, best, and expected
+patch return in `kJ` per feeding-opportunity hour plus whole days since visit.
+It adds the known adequacy requirement in `kJ` per feeding-opportunity hour,
+current-return adequacy as a logical value, accumulated energetic shortfall in
+`kJ`, the unadjusted two-day move advantage in `kJ`, and the deficit-adjusted
+move advantage in `kJ`. These are experiment-level behavioral variables, not
+package records. The full current or unvisited forage state and counterfactual
+results are not animal inputs.
+
 The food-quality choice-boundary diagnostic records current and destination
 metabolizable-energy densities, matched stay and move intake and energy, the
 minimal helper action and score difference, the full-model oracle action and

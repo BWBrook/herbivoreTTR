@@ -714,6 +714,36 @@ comparison closes and decomposes into intake-energy difference minus the fixed
 `900 kJ` movement disadvantage. The result identifies persistence of renewed
 return as the missing behavioral information, without implementing a forecast.
 
+### Experienced-Adequacy Memory
+
+The accepted experiment-level behavior keeps the learned two-day return clock
+but adds no destination-depth forecast. The current patch is adequate when its
+last realized return is at least `200 kJ` per feeding-opportunity hour, the
+synthetic animal's `3,200 kJ d^-1` requirement divided across 16 opportunity
+hours. An adequate current patch is retained even when the two-day comparison
+favours a higher-return destination.
+
+During an inadequate bout, the animal accumulates:
+
+```text
+daily energetic shortfall =
+  max(200 - realized return, 0) * feeding-opportunity hours
+```
+
+That experienced shortfall is added to the ordinary two-day move-score
+advantage. Movement occurs only when the adjusted advantage is positive. The
+shortfall resets following an adequate day or movement. This lets a small
+chronic deficit eventually repay travel without using body reserve as a trigger.
+
+At the Goal 053 states the rule moves from B to A on day 60 but stays in A on
+day 62. In the full baseline it switches nine times, never returns within 27
+days, spends `8,100 kJ` on movement, retains at least `36,221 kJ` of body
+reserve, and closes at `39,962 kJ`. Seven viable one-factor scenarios spanning
+movement cost, patch quality, and forage turnover complete 305 days with closed
+accounts. A separate `0.00075 h^-1` turnover case is an explicit low-supply
+stress: its residual-boundary energy margin is only `40 kJ animal^-1 d^-1`
+before travel, and it crosses the reserve boundary on day 304.
+
 ## Reference Cycle
 
 `run_gut_body_energy_reference_cycle()` repeatedly applies one fixed 24-hour
@@ -807,7 +837,7 @@ assertion that daily energetic balance alone establishes health or viability.
 
 ## Retained Diagnostics
 
-Twenty-two no-write experiments protect the current scientific interpretation:
+Twenty no-write experiments protect the current scientific interpretation:
 
 - the reference diagnostic checks neutrality, conservation, and gut order;
 - the appetite-forage diagnostic checks a binding ceiling, deficit recovery,
@@ -850,24 +880,10 @@ Twenty-two no-write experiments protect the current scientific interpretation:
   difference into intake gained and route expenditure; and
 - the myopic resource-choice diagnostic compares one opening-state acquisition
   cue with the full-model oracle and localizes its disagreement and regret; and
-- the daily myopic-choice diagnostic carries animal and patch states under a
-  low-load reference and matched equal- versus unequal-quality pressure runs,
-  checking residence, recurrence, quality-by-biomass effects, local daily
-  oracle regret, physiological state, and full accounting, then compares one
-  last-experienced-return memory through its explicit terminal boundary and
-  one recovery-aware two-day candidate through its rejected carried result;
-  the same diagnostic also carries a two-day revisit clock, checking its
-  bounded equation, rapid reciprocal switching, evaluator agreement, movement
-  cost, physiological trajectory, and full accounting, then fixes the first
-  reciprocal states to decompose one- through fourteen-day consequences; and
-- the memory-horizon decomposition reconstructs the opening day-101 state and
-  crosses stale versus recovered experienced return with one- and two-day
-  horizons, checking score choices against full-model policies and decomposing
-  the reversal into intake gained and route expenditure; and
-- the absence-to-return recovery diagnostic advances an unvisited residual
-  patch across prespecified ages, compares realized two-day return and route
-  repayment with resource stocks and flow, and exposes the rejected belief's
-  timescale error; and
+- the experienced-adequacy diagnostic reproduces the rejected rapid revisit
+  clock, checks the exact day-60 and day-62 choices, and carries the accepted
+  current-adequacy plus accumulated-shortfall rule through one 305-day baseline,
+  seven one-factor acceptance cases, and one explicit low-supply stress; and
 - the explicit patch food-quality diagnostic holds acquisition non-limiting
   and movement absent, checking exact reduction of adequate and lower-quality
   all-stay patches to their corresponding non-spatial physiology; and
@@ -884,12 +900,11 @@ resource-aware oracle remains a diagnostic benchmark only, and the myopic cue
 remains a diagnostic approximation to it. Its repeated application also
 remains diagnostic-only. The food-quality oracle is likewise diagnostic-only;
 the package helper remains fixed-demand and non-anticipatory. Last-experienced
-return memory and the recovery-horizon decomposition are also diagnostic-only
-and are not accepted package behavior. The carried turnover-rate recovery
-candidate is likewise diagnostic-only and explicitly rejected. The
-absence-to-return recovery map is a diagnostic mechanism check, not a carried
-behavioral rule. The learned revisit clock is likewise diagnostic-only and
-rejected. The consequence-horizon map is an evaluator, not animal foresight.
+return memory, the recovery-horizon decomposition, turnover-rate recovery, the
+absence-to-return map, the revisit clock, and the consequence-horizon map are
+retained as conclusions in the decision record rather than active executable
+ancestry. Experienced-adequacy memory is accepted experiment-level behavior,
+not package API or a claim of optimal foraging.
 
 ## Exclusions
 

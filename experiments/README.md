@@ -41,26 +41,12 @@ installed package:
   biomass alone to locate and decompose the oracle's single stay-move boundary.
 - `spatial-myopic-resource-choice.R` compares one opening-state intake-rate cue
   with that oracle, localizing premature movement and its realized energy cost.
-- `spatial-daily-myopic-choice.R` applies that cue once daily under a low-load
-  reference and matched 305-day pressure treatments, comparing equal patch
-  quality with one lower-quality patch for switching, oracle regret,
-  physiological state, and animal-forage accounting. It then replaces the
-  operational null with one last-experienced energy return per patch and checks
-  the resulting one-way residence and explicit body-reserve boundary. It also
-  carries one recovery-aware two-day candidate for `305` days, comparing its
-  recurrent but physiologically poor trajectory with a local full-model
-  two-day evaluator, then contrasts that rejected slow recovery with a
-  two-day familiar-territory revisit clock and its rapid rotational outcome.
-  Fixed day-60 and day-62 states then separate move-now from stay-now policies
-  over one- to fourteen-day horizons, localizing the early-return failure.
-- `spatial-memory-horizon-decomposition.R` reconstructs the opening day-101
-  last-experience state, crosses stale versus recovered experienced return with
-  one- and two-day horizons, and verifies the score choices against matched
-  full-model stay and move policies.
-- `spatial-absence-return-recovery.R` starts either destination at the residual
-  boundary, maps prespecified unvisited recovery ages through matched two-day
-  stay and move policies, and compares realized return with standing biomass,
-  accessible forage, net production, and the rejected turnover-rate belief.
+- `spatial-experienced-adequacy-choice.R` compares the rejected two-day revisit
+  clock with one accepted experience-based rule. Last and best patch returns
+  recover over elapsed absence, while current adequacy and accumulated energetic
+  shortfall prevent premature return and resolve small chronic deficits. Exact
+  day-60/day-62 checkpoints, a 305-day baseline, a seven-case one-factor
+  acceptance set, and one explicit low-supply stress protect the conclusion.
 - `explicit-patch-food-quality.R` holds movement and acquisition limitation
   absent while checking that adequate and lower-quality all-stay patches reduce
   exactly to their accepted non-spatial physiological references.

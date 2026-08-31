@@ -165,6 +165,16 @@ days, but reverses to staying by seven days and is `7,646 kJ` worse over
 fourteen. Immediate return has recovered; durable return has not. These longer
 horizons diagnose the missing information but are not available to the animal.
 
+The accepted experience-based closure uses no longer forecast. Expected
+unvisited return still recovers from last to historical best over two absent
+days, but the animal stays while current experienced return meets its
+`200 kJ` per feeding-opportunity-hour requirement. Once current return is
+inadequate, cumulative energetic shortfall augments the two-day move advantage.
+This keeps the day-60 departure, rejects the day-62 early return, reduces the
+baseline to nine switches no closer than 27 days, and lifts minimum reserve to
+`36,221 kJ`. Seven viable one-factor cases complete 305 days with closed
+accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
+
 ## Protected Invariants
 
 - Every modeled quantity has an explicit unit suffix.
@@ -225,6 +235,9 @@ horizons diagnose the missing information but are not available to the animal.
 - The biomass-quality comparison changes one patch energy density only, holds
   both pressure runs to 305 days, and keeps local daily oracle regret distinct
   from a separately carried policy comparison.
+- The accepted experience-based rule observes only last and best realized
+  return, elapsed absence, current adequacy, and accumulated energetic
+  shortfall. It receives no current unvisited forage state or oracle result.
 - Synthetic balance is not interpreted as viability or empirical calibration.
 
 ## Retained Surface
@@ -233,7 +246,7 @@ horizons diagnose the missing information but are not available to the animal.
 | --- | --- |
 | Functional package core | Retain and extend by approved layers |
 | Explicit records, units, and balance residuals | Retain |
-| Twenty-two current diagnostics | Retain |
+| Twenty current diagnostics | Retain |
 | Focused invariant tests | Retain |
 | Scientific decision notes | Retain as the research notebook |
 | Goal-by-goal experiment ancestry | Removed from the active tree; Git retains it |
@@ -245,7 +258,7 @@ horizons diagnose the missing information but are not available to the animal.
 
 For ordinary changes, parse retained R, run the tests affected by the change,
 and inspect the diff. When publishing a package boundary or completed model
-stage, run the full focused suite, all twenty-two diagnostics, an external build,
+stage, run the full focused suite, all twenty diagnostics, an external build,
 and `R CMD check --no-manual` once.
 
 Repeat a gate only for a distinct named risk. Additional polish or repeated
@@ -271,17 +284,13 @@ fixed route, and one minimal patch-quality score exposes its bounded
 information error. The first
 dynamic biomass-quality interaction is attributable, but it also shows that
 the operational choice rule is not yet a minimally realistic behavioral model.
-A last-experience memory does not close that gap. The day-101 decomposition
-shows why: neither recovered opportunity information nor a two-day consequence
-horizon is sufficient alone, but together they reverse the trapped choice in
-both the transparent score and full model. The next decision is how to carry
-those two ingredients through time without granting perfect biomass knowledge.
-Direct turnover-rate relaxation of experienced return has now been rejected;
-the absence map shows that realized opportunity recovers within one to two days
-despite weeks-long standing-biomass recovery. Carrying that fast expectation
-then produces a locally supported but physiologically poor 2/4-day rotation.
-The fixed-state horizon comparison localizes the error to returning too soon to
-recently released B. The next behavioral question is whether expected return
-persistence can be learned from prior residence duration or declining
-experienced returns, before any cooldown, biomass knowledge, or new ecological
-layer is considered.
+Rejected memory candidates establish why: stale return traps the animal,
+biomass-timescale recovery delays movement, and a two-day return clock causes
+rapid rotation. The fixed-state horizon comparison localizes the latter error
+to leaving an adequate current patch for a high-quality but shallowly renewed
+destination. The accepted adequacy memory now closes that behavioral problem.
+It retains experience-and-time recovery, stays while current return meets the
+animal's known energetic requirement, and lets accumulated shortfall repay
+travel when inadequacy persists. The next ecological layer should build on
+this experiment-level behavior; perfect forecasts, explicit destination depth,
+reserve triggers, and package-level behavioral API remain deferred.
