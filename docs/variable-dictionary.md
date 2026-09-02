@@ -13,6 +13,7 @@ their numerical values match on the current hourly clock.
 | --- | --- | --- |
 | `gut_available_energy_kj` | kJ | Energy available for later gut release |
 | `body_energy_reserve_kj` | kJ | Labile physical body-energy reserve |
+| `body_water_kg` | kg water | Physical water stock carried by the focal animal |
 | `forage_biomass_kg_dm_ha` | kg DM ha^-1 | Standing edible forage biomass density, homogeneous or keyed by patch |
 | `patch_id` | identifier | Patch occupied by the focal animal at an hourly boundary |
 
@@ -36,6 +37,9 @@ The forage ledger uses the corresponding `_start_kg_dm_ha`, `_end_kg_dm_ha`,
 | `forage_turnover_fraction_h` | h^-1 | Fraction controlling hourly reference production and current-biomass loss |
 | `residual_unavailable_forage_threshold_kg_dm_ha` | kg DM ha^-1 | Fixed standing-biomass threshold unavailable for acquisition |
 | `herbivore_density_animals_ha` | animals ha^-1 | Aggregate homogeneous load scaling per-animal intake to forage removal |
+| `normal_body_water_kg` | kg water | Upper normal stock and cap for the current body-water model |
+| `critical_body_water_kg` | kg water | Lower interpretation boundary; crossing is reported but does not alter a transition |
+| `ordinary_water_loss_kg_h` | kg water h^-1 | Fixed hourly water loss independent of weather and physiological state |
 
 ## Prescribed Schedules
 
@@ -55,6 +59,8 @@ Every schedule has 24 rows and `hour_of_day = 0:23`.
 | `prescribed_forage_growth_kg_dm_ha_h` | kg DM ha^-1 h^-1 | External forage growth input |
 | `prescribed_forage_background_loss_kg_dm_ha_h` | kg DM ha^-1 h^-1 | External non-herbivore forage loss |
 | `prescribed_closing_patch_id` | identifier | Patch prescribed at each closing hourly boundary |
+| `prescribed_food_derived_water_kg_h` | kg water h^-1 | External food-water input in an isolated body-water schedule |
+| `available_drinking_water_kg_h` | kg water h^-1 | Water available to drink before the animal's deficit limits realized drinking |
 
 ## Forage-Biomass Fluxes
 
@@ -125,6 +131,8 @@ Every schedule has 24 rows and `hour_of_day = 0:23`.
 | `selected_patch_id` | identifier | Current or destination patch implied by the selected action |
 | `occupied_at_opening` | logical | Whether a patch contains the representative load at the opening boundary |
 | `occupied_stay` | logical | Whether the load remains in that opening patch for the interval, permitting local herbivory |
+| `food_derived_water_yield_kg_water_kg_dm` | kg water kg^-1 DM | Effective water obtained per realized dry-matter intake in a patch |
+| `drinking_water_availability_kg_h` | kg water h^-1 | Water available during a stationary hour in a patch; a positive value identifies a drinking source |
 
 ## Appetite Quantities
 
@@ -158,6 +166,20 @@ Energy-rate counterparts use `_ingested_available_energy_kj_h`.
 `system_energy_balance_residual_kj` are numerical accounting diagnostics. They
 are not ecological states.
 
+## Body-Water Fluxes
+
+| Variable | Unit | Meaning |
+| --- | --- | --- |
+| `food_derived_water_kg` | kg water | Effective water added from realized forage intake during one hour |
+| `available_drinking_water_kg` | kg water | Drinking water physically available during one stationary hour |
+| `realized_drinking_water_kg` | kg water | Available drinking water taken up to the normal-stock requirement |
+| `ordinary_water_loss_kg` | kg water | Fixed ordinary loss during one hour |
+| `excess_water_elimination_kg` | kg water | Water above the normal stock removed during one hour |
+| `net_body_water_rate_kg_h` | kg water h^-1 | Food water plus drinking minus ordinary loss and excess elimination |
+| `body_water_change_kg` | kg water | Observed one-hour stock change |
+| `body_water_balance_residual_kg` | kg water | Observed change minus expected net water flow |
+| `body_water_below_critical` | logical | Whether closing body water is below the declared critical boundary |
+
 ## Time And History
 
 | Variable | Unit | Meaning |
@@ -188,6 +210,12 @@ Coupled daily summaries report animal density; opening and closing forage;
 growth, background loss, and herbivory removal; forage and coupling residuals;
 stock-limited hours; minimum accessible forage; and the complete animal-energy
 summary.
+
+Body-water daily summaries report opening, closing, and minimum body water;
+food-derived, available drinking, realized drinking, ordinary-loss, and
+excess-elimination totals; expected and observed change; balance residual; and
+whether the critical boundary was crossed. The spatial adapter additionally
+reports the number of hours with positive realized drinking.
 
 Spatial coupled summaries retain those forage flows separately for each patch.
 Per-hectare stocks are never summed into a landscape mass because patch areas
@@ -287,6 +315,13 @@ current-return adequacy as a logical value, accumulated energetic shortfall in
 move advantage in `kJ`. These are experiment-level behavioral variables, not
 package records. The full current or unvisited forage state and counterfactual
 results are not animal inputs.
+
+The hydration-controlled diagnostics add a daily-opening thirst trigger,
+source-availability treatment, visit indicator, visit interval, and cumulative
+water-visit count. These are experiment-level controller variables, not package
+state. The integrated diagnostic retains the accepted food-patch memory and
+choice state unchanged while water visits use only body-water state and a
+known source.
 
 The food-quality choice-boundary diagnostic records current and destination
 metabolizable-energy densities, matched stay and move intake and energy, the

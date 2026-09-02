@@ -31,6 +31,17 @@ installed package:
 - `prescribed-water-source-excursion.R` compares the same two-leg water-source
   trip outside and inside feeding hours, separating route expenditure from
   lost feeding opportunity without adding water physiology.
+- `body-water-reference.R` checks isolated deficit, neutral, and surplus
+  body-water accounting under fixed ordinary loss.
+- `spatial-water-source-benefit.R` adds one stationary drinking hour to the
+  accepted two-leg trip while retaining its energy and feeding-time contrasts.
+- `hydration-controlled-water-visits.R` applies one daily-opening thirst
+  trigger to a familiar source and compares forage water, ordinary loss, route
+  cost, and a no-source critical-water positive control.
+- `water-constrained-patch-choice.R` composes that trigger with the accepted
+  experience-based two-forage-patch system, checks exact water-disabled
+  reduction, and exposes water-access stress through separate water, movement,
+  forage, and energy accounts.
 - `spatial-patch-depletion-renewal.R` applies common turnover to two dynamic
   patch stocks and checks local depletion, release, renewal, one fixed transfer,
   and conserved animal-forage accounting.

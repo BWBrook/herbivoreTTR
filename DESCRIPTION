@@ -15,6 +15,11 @@ Description: Provides transparent functional models of herbivore energetics
     coupled system over fixed identical days with exact state carry-over.
     Body-energy reserve can also be interpreted as labile reserve tissue and
     total body mass without feeding that derived quantity back into the model.
+    An independent body-water ledger carries one physical water stock under
+    effective forage-water input, stationary drinking at a known source, fixed
+    ordinary loss, and explicit excess elimination. A spatial adapter derives
+    the two water inputs from an existing hourly energy-and-location ledger
+    without altering it.
     A separate isolated forage ledger carries homogeneous standing biomass
     under prescribed growth and background loss with exact stock-flow
     accounting. A linear turnover reference adds constant production and

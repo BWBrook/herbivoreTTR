@@ -8,7 +8,9 @@ prescribed explicit-patch day built from known-route transitions. The spatial
 null also includes patch-specific metabolizable-energy density, one bounded
 patch-quality stay-versus-known-route choice over a declared remaining feeding
 bout, and one fixed-itinerary runner with dynamic forage biomass in every
-patch. The animal model tracks energy entering
+patch. An independent body-water stock can receive effective water from
+realized forage intake and stationary access to a known drinking source. The
+animal model tracks energy entering
 through dry-matter intake, delayed in one gut stock, and transferred to a
 body-energy reserve after maintenance and routine activity. An appetite
 controller can set intake demand, while an external rate schedule can constrain
@@ -27,7 +29,8 @@ Each day contains intervals `hour_of_day = 0:23`. Interval `h` represents
 contains:
 
 - `gut_available_energy_kj`: energy available for later release from the gut;
-- `body_energy_reserve_kj`: labile body-energy reserve; and
+- `body_energy_reserve_kj`: labile body-energy reserve;
+- `body_water_kg`: physical body-water stock;
 - `forage_biomass_kg_dm_ha`: one homogeneous standing biomass density or one
   density keyed to every landscape patch; and
 - `patch_id`: the named patch occupied by the focal animal at an hourly
@@ -45,6 +48,9 @@ interval's opening stocks without implicit reset or clamping.
 - `maximum_dry_matter_intake_kg_dm_h` is strictly positive.
 - `residual_unavailable_forage_threshold_kg_dm_ha` is non-negative.
 - `herbivore_density_animals_ha` is strictly positive.
+- `normal_body_water_kg` is strictly positive.
+- `critical_body_water_kg` is non-negative and below normal body water.
+- `ordinary_water_loss_kg_h` is non-negative.
 
 Metabolizable-energy density is already an available-energy quantity. The
 current model does not separately represent gross energy, digestibility,
@@ -404,6 +410,63 @@ above reference, offsetting `400 kJ` of route expenditure. In the within-window
 treatment, the same extra acquisition replaces the `0.04 kg DM` missed during
 travel, so daily intake only returns to reference and none of the route cost is
 offset. Route cost and trip timing are therefore separately attributable.
+
+## Body-Water Stock And Known-Source Drinking
+
+The current water layer is an independent physical stock-flow model. For each
+one-hour interval:
+
+```text
+water_after_food_and_loss_kg =
+  body_water_start_kg
+  + food_derived_water_kg
+  - ordinary_water_loss_kg
+
+realized_drinking_water_kg = min(
+  available_drinking_water_kg,
+  max(normal_body_water_kg - water_after_food_and_loss_kg, 0)
+)
+
+body_water_end_kg = min(
+  water_after_food_and_loss_kg + realized_drinking_water_kg,
+  normal_body_water_kg
+)
+```
+
+Any amount above normal is reported as `excess_water_elimination_kg`, making the
+full balance explicit. A closing stock below `critical_body_water_kg` is flagged
+but does not change behavior or physiology. Negative closing stock fails.
+
+`new_patch_water_properties()` declares an effective food-water yield in
+`kg water kg^-1 DM` and stationary drinking availability in `kg h^-1` for each
+patch. `run_spatial_body_water_day()` reads realized dry-matter intake and the
+opening patch from an already completed spatial energy ledger. Food water is:
+
+```text
+food_derived_water_kg =
+  realized_dry_matter_intake_kg_dm
+  * patch_food_water_yield_kg_water_kg_dm
+```
+
+Drinking availability is zero during movement, even when the opening patch is
+a source. The adapter does not modify the energy, movement, or forage ledger.
+This preserves separate accounting rather than creating a combined transition.
+
+The retained synthetic reference uses `28 kg` normal body water, a `26 kg`
+daily-opening thirst trigger, a `24 kg` critical interpretation boundary, and
+`1.56 kg d^-1` ordinary loss. When triggered, the animal takes two one-hour
+routes to its single familiar source and remains there for one drinking hour.
+The controller is retained in experiments rather than the package API.
+
+In the 60-day single-forage-patch reference, baseline food water produces ten
+visits no closer than six days apart; wetter forage reduces visits to four and
+drier forage increases them to twenty. In the accepted 305-day dynamic-patch
+system, disabling water reproduces the Goal 054 trajectory exactly. Baseline
+water produces 40 visits and retains `25,850 kJ` at its minimum energy state;
+wetter forage reduces visits to 11 and retains `35,533 kJ`. Drier forage and
+greater ordinary loss terminate at the non-negative energy boundary before
+crossing the declared critical-water boundary. This is a synthetic coupled
+stress result, not a calibrated viability claim.
 
 ## Dynamic Spatial Forage Coupling
 
@@ -837,7 +900,7 @@ assertion that daily energetic balance alone establishes health or viability.
 
 ## Retained Diagnostics
 
-Twenty no-write experiments protect the current scientific interpretation:
+Twenty-four no-write experiments protect the current scientific interpretation:
 
 - the reference diagnostic checks neutrality, conservation, and gut order;
 - the appetite-forage diagnostic checks a binding ceiling, deficit recovery,
@@ -869,6 +932,16 @@ Twenty no-write experiments protect the current scientific interpretation:
 - the prescribed water-source diagnostic gives matched two-leg excursions
   different timing, checking route expenditure, lost feeding opportunity,
   appetite compensation, return location, and energy closure; and
+- the body-water reference checks deficit, neutral, and surplus stock-flow
+  arithmetic independently of energy or spatial state; and
+- the spatial water-source benefit diagnostic adds one stationary drinking
+  hour while preserving the accepted trip's energy and timing contrasts; and
+- the hydration-controlled visit diagnostic checks a daily-opening thirst
+  trigger, monotonic forage-water and loss contrasts, route-cost attribution,
+  and a no-source critical-water positive control; and
+- the water-constrained patch-choice diagnostic checks exact reduction to the
+  Goal 054 anchor, repeated familiar-source visits, one-factor water contrasts,
+  and separate forage, energy, and water accounting; and
 - the spatial patch depletion-and-renewal diagnostic checks common turnover,
   occupied-patch removal, movement-hour closure, release, renewal, and full
   patch-animal conservation; and
@@ -911,9 +984,10 @@ not package API or a claim of optimal foraging.
 The current model excludes resource- or weather-dependent plant production,
 explicit senescence processes, acquisition functional responses beyond the
 accepted ceilings, multiple explicit or heterogeneous animals, protein, water
-balance or drinking benefit, thermoregulation, repeated or stochastic route
-choice as package behavior, dynamic anticipation, explicit package-level
-perception or memory, endogenous decision timing, multi-hour transit, anticipatory
-quality-aware choice, patch-specific production, search, mortality,
-reproduction, and population dynamics. These require separately approved
-layers.
+loss responsive to temperature or physiology, dynamic plant moisture,
+thermoregulation, multiple or uncertain drinking sources, repeated or
+stochastic route choice as package behavior, dynamic anticipation, explicit
+package-level perception or memory, endogenous decision timing, multi-hour
+transit, anticipatory quality-aware choice, patch-specific production, search,
+mortality, reproduction, and population dynamics. These require separately
+approved layers.

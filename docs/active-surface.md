@@ -3,13 +3,13 @@
 ## Product Promise
 
 `herbivoreTTR` provides inspectable hourly stock-flow models for herbivore
-energy, forage biomass, their minimum non-spatial coupling, and one prescribed
-explicit-patch day with static acquisition and food-energy heterogeneity plus a
-bounded patch-quality choice.
-One retained scenario imposes a prescribed trip to a named water source without
-water physiology. A second prescribed spatial path carries and locally removes
-dynamic forage biomass by patch. Its current user is Barry Brook. Its purpose
-is scientific understanding, not a general-purpose simulation platform.
+energy and body water, forage biomass, their minimum non-spatial coupling, and
+one prescribed explicit-patch day with static acquisition and food-energy
+heterogeneity plus a bounded patch-quality choice. A prescribed spatial path
+carries and locally removes dynamic forage biomass by patch. One independent
+water adapter derives forage and drinking inputs from that path without
+modifying its energy ledger. Its current user is Barry Brook. Its purpose is
+scientific understanding, not a general-purpose simulation platform.
 
 ## Canonical Paths
 
@@ -29,6 +29,12 @@ dry-matter intake x metabolizable-energy density
 state. `run_appetite_controlled_energy_days()` is the canonical repeated-day
 path when intake responds to body and gut state and is capped by an external
 forage-acquisition schedule.
+
+`run_body_water_day()` is the canonical isolated water-stock day.
+`run_spatial_body_water_day()` derives effective forage water and stationary
+drinking availability from an existing spatial energy ledger. The two ledgers
+remain separately conserved. The daily-opening thirst trigger and familiar-
+source itinerary are experiment-level behavior, not package API.
 
 `derive_body_mass_from_energy_reserve()` is a downstream interpretation. Its
 result is never stored in or fed back to a transition.
@@ -181,6 +187,8 @@ accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
 - The clock is 24 one-hour intervals labelled `0:23`.
 - Dynamic stocks and prescribed inputs are finite and non-negative.
 - A negative closing body reserve or forage stock fails explicitly.
+- A negative closing body-water stock fails explicitly, and hourly and daily
+  water balances close independently of energy and forage balances.
 - Gut release uses opening stock; current intake enters after release.
 - Assimilation transfers energy between modeled stocks and cancels from the
   whole-system balance.
@@ -215,6 +223,11 @@ accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
   against both full-model counterfactuals.
 - The prescribed water trip makes exactly two matched route transitions and
   separates movement expenditure from feeding time lost through trip timing.
+- Food-derived water is proportional to realized dry-matter intake in the
+  opening patch; drinking is available only during stationary source hours and
+  cannot raise body water above its declared normal stock.
+- Disabling the water layer reproduces the accepted Goal 054 patch-choice
+  trajectory exactly.
 - Every dynamic patch closes as opening biomass plus autonomous growth minus
   background loss and local herbivory; unoccupied and movement-hour patches
   have zero herbivory.
@@ -246,7 +259,7 @@ accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
 | --- | --- |
 | Functional package core | Retain and extend by approved layers |
 | Explicit records, units, and balance residuals | Retain |
-| Twenty current diagnostics | Retain |
+| Twenty-four current diagnostics | Retain |
 | Focused invariant tests | Retain |
 | Scientific decision notes | Retain as the research notebook |
 | Goal-by-goal experiment ancestry | Removed from the active tree; Git retains it |
@@ -258,7 +271,7 @@ accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
 
 For ordinary changes, parse retained R, run the tests affected by the change,
 and inspect the diff. When publishing a package boundary or completed model
-stage, run the full focused suite, all twenty diagnostics, an external build,
+stage, run the full focused suite, all twenty-four diagnostics, an external build,
 and `R CMD check --no-manual` once.
 
 Repeat a gate only for a distinct named risk. Additional polish or repeated
@@ -266,31 +279,18 @@ confirmation is not a release criterion.
 
 ## Current Stop
 
-The herbivore, isolated forage, and non-spatial coupling arcs are closed. The
-coupled system has a stable period-24 reference and one controlled animal-load
-pulse with attributable depletion, intake limitation, and recovery. The first
-explicit spatial arc is also closed: location, known-route travel, static patch
-capacity, a prescribed day, and one validated choice are separated cleanly.
-Arc 05 now separates one prescribed water-source trip from one fixed-itinerary
-dynamic-forage comparison. One diagnostic perfect-information choice shows
-that the accepted mild depletion does not justify movement, whereas severe
-stock limitation does. Travel, timing, depletion, renewal, and decision
-relevance remain inspectable. Protein, water balance, thermoregulation,
-environmental forcing, anticipatory or state-responsive behavioral choice, and
-explicit population dynamics remain deferred. Patch-specific
-metabolizable-energy density reproduces its accepted all-stay physiological
-response exactly. One diagnostic oracle locates where quality alone repays the
-fixed route, and one minimal patch-quality score exposes its bounded
-information error. The first
-dynamic biomass-quality interaction is attributable, but it also shows that
-the operational choice rule is not yet a minimally realistic behavioral model.
-Rejected memory candidates establish why: stale return traps the animal,
-biomass-timescale recovery delays movement, and a two-day return clock causes
-rapid rotation. The fixed-state horizon comparison localizes the latter error
-to leaving an adequate current patch for a high-quality but shallowly renewed
-destination. The accepted adequacy memory now closes that behavioral problem.
-It retains experience-and-time recovery, stays while current return meets the
-animal's known energetic requirement, and lets accumulated shortfall repay
-travel when inadequacy persists. The next ecological layer should build on
-this experiment-level behavior; perfect forecasts, explicit destination depth,
-reserve triggers, and package-level behavioral API remain deferred.
+The herbivore, isolated forage, non-spatial coupling, and first explicit-patch
+arcs are closed. Arc 05 now has an accepted experience-based food-patch rule and
+one minimum water constraint. The water-disabled treatment exactly preserves
+the Goal 054 trajectory. Baseline hydration produces bounded familiar-source
+visits; wetter forage reduces them and protects body energy. Drier forage and
+greater ordinary loss terminate at the energy boundary before the declared
+critical-water boundary because repeated source trips become energetically
+costly. That amber result is retained as a synthetic coupled stress signal.
+
+The current water layer is intentionally small: one stock, effective forage
+water, fixed ordinary loss, stationary drinking, one known source, and one
+daily-opening trigger. Thermal forcing, dynamic plant moisture, renal response,
+multiple sources, search, mortality, and species calibration remain deferred.
+The next ecological layer should be chosen for the scientific question it can
+answer, not merely because it adds realism.

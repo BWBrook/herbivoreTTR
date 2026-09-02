@@ -1,9 +1,9 @@
 # herbivoreTTR
 
 `herbivoreTTR` is a small functional R package for transparent hourly models
-of herbivore energetics and forage biomass. It is a clean scientific rebuild:
-ecological logic, explicit units, and inspectable stock-flow accounting take
-precedence over the historical implementation.
+of herbivore energetics, body water, and forage biomass. It is a clean
+scientific rebuild: ecological logic, explicit units, and inspectable stock-
+flow accounting take precedence over the historical implementation.
 
 ## Current Model
 
@@ -84,8 +84,17 @@ remaining feeding bout using fixed expected dry-matter demand.
 The first landscape-constraint diagnostic reuses that spatial core for a
 prescribed daily out-and-back trip to a named non-feeding water source. It
 compares travel outside and inside the feeding window, separating route
-expenditure from lost feeding opportunity. The water source currently has no
-drinking benefit, duration, or physiological state.
+expenditure from lost feeding opportunity. This travel-only null remains the
+anchor for the separately implemented water physiology.
+
+The minimum water layer carries one physical body-water stock. Effective water
+from realized forage intake and drinking while stationary at a known source add
+to the stock; one fixed ordinary loss and any excess above normal remove water.
+A critical boundary is reported but does not alter the transition. A retained
+experiment-level controller visits the familiar source when opening daily body
+water reaches a declared thirst threshold. It composes with the accepted
+food-patch system without changing its choice rule or combining the energy and
+water ledgers.
 
 The first dynamic spatial-forage layer carries one standing-biomass stock per
 patch, applies the accepted autonomous turnover to every patch, and removes
@@ -230,6 +239,10 @@ The current synthetic reference uses:
 | Forage turnover fraction | 0.001 h^-1 |
 | Residual unavailable forage | 500 kg DM ha^-1 |
 | Coupled-reference animal density | 10 animals ha^-1 |
+| Normal body water | 28 kg |
+| Daily-opening thirst trigger | 26 kg |
+| Critical body-water boundary | 24 kg |
+| Ordinary water loss | 1.56 kg d^-1 |
 
 These are deliberately synthetic reference values, not an empirical kangaroo
 parameterization.
@@ -253,6 +266,10 @@ Rscript --vanilla experiments/explicit-prescribed-itinerary.R
 Rscript --vanilla experiments/explicit-static-patch-acquisition.R
 Rscript --vanilla experiments/explicit-known-patch-choice.R
 Rscript --vanilla experiments/prescribed-water-source-excursion.R
+Rscript --vanilla experiments/body-water-reference.R
+Rscript --vanilla experiments/spatial-water-source-benefit.R
+Rscript --vanilla experiments/hydration-controlled-water-visits.R
+Rscript --vanilla experiments/water-constrained-patch-choice.R
 Rscript --vanilla experiments/spatial-patch-depletion-renewal.R
 Rscript --vanilla experiments/spatial-resource-aware-choice.R
 Rscript --vanilla experiments/spatial-resource-aware-switch-boundary.R
@@ -274,17 +291,18 @@ execution path.
 
 ## Public Surface
 
-The package exposes eight related groups:
+The package exposes nine related groups:
 
 - plain state, parameter, and 24-hour schedule constructors;
 - one-hour gut and body transitions;
 - one-day body-only and coupled gut-body runners;
 - a repeated-day reference-cycle and appetite-controlled runner;
 - pure food-energy and body-mass conversions;
+- an independent body-water stock-flow day plus a spatial adapter from realized
+  forage intake and stationary drinking access;
 - isolated forage accounting, a constant-turnover reference and repeated-day
-  runner, and a pure standing-to-accessible biomass transformation; and
+  runner, and a pure standing-to-accessible biomass transformation;
 - a density-scaled herbivory step and repeated-day non-spatial coupled runner;
-  and
 - explicit patch-landscape, location, food-property, and itinerary records
   plus known-route movement, one-day prescribed spatial composition, and one
   patch-quality feeding-bout choice.
@@ -302,7 +320,7 @@ per-animal intake is scaled by a fixed density and removed from forage, while
 accessible biomass can cap intake. A diagnostic animal-load pulse demonstrates
 depletion, stock-limited intake, animal-energy loss, and recovery after release
 without adding population state. The non-spatial coupling still has no
-environmental forcing, seasonality, explicit multiple animals, protein, water,
+environmental forcing, seasonality, explicit multiple animals, protein,
 thermoregulation, or mass-dependent feedback.
 
 The non-spatial and explicit-patch arcs are closed. The landscape-constraints
@@ -341,8 +359,14 @@ repay travel. It resolves both fixed checkpoints, produces nine switches no
 closer than 27 days in the baseline, and remains stable across the bounded
 movement, food-quality, and viable forage-recovery comparisons. This is
 accepted experiment-level behavior, not package API or a viability claim.
-Water physiology and package-level repeated behavioral mechanisms remain
-absent. The staged
+The minimum body-water layer now separates forage water, drinking, ordinary
+loss, source access, and route energy. Disabling it reproduces the accepted
+forage-choice anchor exactly. Wetter forage reduces visits and protects energy;
+under drier forage or greater ordinary loss, frequent water excursions reach
+the energy boundary before the declared critical-water boundary. These are
+synthetic mechanism results, not calibrated viability claims. Temperature-
+dependent loss, dynamic plant moisture, renal response, multiple water sources,
+and package-level repeated behavioral mechanisms remain absent. The staged
 programme is indexed in
 [`docs/roadmap.md`](docs/roadmap.md).
 
@@ -350,7 +374,7 @@ programme is indexed in
 
 - `R/`: reusable model records, transitions, and runners.
 - `tests/testthat/`: focused protection of scientific invariants.
-- `experiments/`: twenty current no-write diagnostics and one fixture helper.
+- `experiments/`: twenty-four current no-write diagnostics and one fixture helper.
 - `docs/model-charter.md`: governing scientific and architectural contract.
 - `docs/model-specification.md`: equations, transition order, and outputs.
 - `docs/variable-dictionary.md`: current quantities and units.

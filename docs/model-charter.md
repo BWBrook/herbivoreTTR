@@ -65,7 +65,14 @@ and dynamic vegetation require separate contracts.
 A prescribed scenario may designate one patch as a non-feeding water source
 and impose a daily visit using the same route and itinerary records. This adds
 only travel time, lost feeding opportunity, and incremental expenditure. It
-does not imply drinking, hydration state, or water balance.
+is retained as the travel-only null for the separate water layer.
+
+The minimum water layer carries one physical body-water stock independently of
+the energy ledger. Effective water from realized dry-matter intake and drinking
+while stationary at a known source add to it; fixed ordinary loss and explicit
+excess elimination remove water. A critical boundary is reported without
+implying mortality or changing a transition. The familiar-source thirst rule
+remains experiment-level behavior rather than package API.
 
 The first dynamic spatial-forage layer keeps one biomass-density stock per
 patch, separate from static patch acquisition capacity. Common autonomous
@@ -121,7 +128,8 @@ The current package does not include resource-dependent plant production,
 weather or seasonal forcing, explicit senescence mechanisms, forage
 functional responses beyond the accepted ceilings, explicit or heterogeneous
 multiple animals, repeated or stochastic route choice as package behavior,
-search, water balance, drinking physiology, protein, thermoregulation, disease,
-reproduction, mortality, anticipatory quality-aware choice, patch-specific
-turnover, or population dynamics. These are candidate future layers, not
-placeholders in the current code.
+search, temperature- or state-dependent water loss, dynamic plant moisture,
+renal physiology, multiple or uncertain drinking sources, protein,
+thermoregulation, disease, reproduction, mortality, anticipatory quality-aware
+choice, patch-specific turnover, or population dynamics. These are candidate
+future layers, not placeholders in the current code.

@@ -8,7 +8,7 @@
 | 2. Isolated plant-forage | Can a simple forage biomass stock remain stable under growth, loss, and later seasonal forcing without herbivory? | Closed; controlled forcing deferred until required |
 | 3. Non-spatial coupling | How do herbivore intake and forage depletion alter one another in a homogeneous system? | Closed |
 | 4. Explicit patches and movement | How do location, patch choice, travel time, and travel energy change intake and state? | Closed |
-| 5. Landscape constraints and scenarios | How do water, depletion, heterogeneity, climate, and disturbance produce chronic stress? | In progress; one deterministic repeated depletion-renewal choice loop established |
+| 5. Landscape constraints and scenarios | How do water, depletion, heterogeneity, climate, and disturbance produce chronic stress? | In progress; experienced forage choice and one synthetic body-water constraint established |
 
 The detailed contracts are stored under `docs/arcs/`.
 
@@ -73,7 +73,8 @@ The first constraint is a mandatory prescribed daily trip from an adequate
 forage patch to a named non-feeding water source and back. Matched two-leg trips
 outside and inside the feeding window isolate route expenditure from feeding
 opportunity lost. The route cost is a ratio-informed synthetic value rather
-than species calibration. Water balance and drinking benefits remain absent.
+than species calibration. This historical travel-only null now anchors the
+separate body-water layer described below.
 
 The one-choice static-heterogeneity null originally listed in this stage was
 already completed at the close of the explicit spatial arc. The first dynamic
@@ -186,10 +187,21 @@ is not abandoned for a briefly attractive destination. The baseline completes
 stable; an additional low-turnover case identifies an explicit supply boundary.
 The synthetic experience-based patch-choice tranche is closed.
 
+Goal 055 adds one physical body-water stock without changing the accepted food-
+patch rule. Effective forage water and stationary drinking add water; fixed
+ordinary loss removes it; a daily-opening thirst trigger sends the animal to
+one familiar source. Isolated deficit, neutral, and surplus cases close exactly,
+and disabling water reproduces the Goal 054 trajectory. Wetter forage lowers
+visit frequency and protects energy reserve. Under drier forage or greater
+ordinary loss, repeated water trips make energy limiting before the declared
+critical-water boundary is crossed. The result is an attributable synthetic
+stress boundary, not species calibration. Thermal forcing, dynamic plant
+moisture, and multiple water sources remain later decisions.
+
 ## Deferred Animal Layers
 
-Protein, water balance and drinking physiology, thermoregulation, explicit
-mass feedback, gut composition, reproductive allocation, and survival
-thresholds remain scientifically important. They should be added one at a time
-after the forage and basic coupling stages reveal which physiological detail
-can change a decision.
+Protein, thermoregulation, water loss responsive to weather or physiology,
+dynamic plant moisture, explicit mass feedback, gut composition, reproductive
+allocation, and survival thresholds remain scientifically important. They
+should be added one at a time when a new ecological question can distinguish
+their contribution.

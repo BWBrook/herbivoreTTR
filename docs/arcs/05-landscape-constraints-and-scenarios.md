@@ -1,6 +1,6 @@
 # Arc 05: Landscape Constraints And Scenarios
 
-Status: in progress; fast recovery plus a short horizon exposes rapid rotational switching
+Status: in progress; experienced forage choice and a synthetic water constraint are established
 
 ## Purpose
 
@@ -18,8 +18,8 @@ anchors. Do not add several stressors in one goal.
 ## Proposed Progression
 
 1. **Water itinerary:** add a known water source and prescribed daily visit,
-   initially as travel time and energy only. Add water balance later as a
-   separate physiological decision.
+   first as travel time and energy, then as a separately conserved body-water
+   stock with forage and drinking inputs. Both minimum layers are complete.
 2. **Choice under static heterogeneity:** test how animals select among known
    patches differing in acquisition and quality without depletion.
 3. **Patch depletion and renewal:** activate local forage removal and regrowth,
@@ -210,6 +210,27 @@ The `0.00075 h^-1` turnover stress fails explicitly because its residual-
 boundary supply leaves only `40 kJ animal^-1 d^-1` above maintenance before
 travel. The present synthetic experience-based choice problem is therefore
 closed, while resource-supply failure remains visible rather than tuned away.
+
+Goal 055 returns to step 1 and completes its deferred minimum physiology. One
+physical body-water stock receives effective forage water and drinking while
+stationary at a familiar source, loses a fixed ordinary amount, and reports a
+critical boundary without turning it into mortality or behavior. A daily-
+opening `26 kg` thirst trigger schedules one off-window out-and-back visit with
+a stationary drinking hour. The `28 kg` normal stock, `24 kg` critical boundary,
+forage-water yields, and trigger are transparent synthetic values; the
+`1.56 kg d^-1` ordinary-loss scale is informed by published macropod allometry
+but does not calibrate the animal.
+
+The isolated stock, prescribed excursion, and 60-day single-patch comparisons
+all close and behave monotonically. When the layer is composed with the Goal
+054 system, disabling it exactly preserves the accepted nine food-patch switch
+days and energy trajectory. Baseline water completes 305 days with 40 drinking
+visits; wetter forage reduces that to 11. Drier forage and greater ordinary
+loss terminate at the non-negative body-energy boundary before crossing the
+declared critical-water boundary because repeated `1,800 kJ` excursions become
+energetically unaffordable. This is the first coupled water-access stress
+signal, not a viability estimate. Dynamic plant moisture, thermal forcing,
+renal response, multiple sources, and search remain deferred.
 
 ## Decision Gates
 

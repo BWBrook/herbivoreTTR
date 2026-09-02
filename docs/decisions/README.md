@@ -1,7 +1,7 @@
 # Scientific Decision Record
 
-These notes preserve the ecological reasoning and accepted conclusions from the
-herbivore-core development arc. They are a research notebook, not the active
+These notes preserve the ecological reasoning and accepted conclusions from
+the staged model-development arcs. They are a research notebook, not the active
 model specification.
 
 The former goal-by-goal `rebuild-*` clients were removed from the active tree
