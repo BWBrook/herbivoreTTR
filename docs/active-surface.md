@@ -35,7 +35,7 @@ forage-acquisition schedule.
 `run_spatial_body_water_day()` derives effective forage water and stationary
 drinking availability from an existing spatial energy ledger and accepts one
 separate prescribed incremental evaporative-loss schedule. The two ledgers
-remain separately conserved. The daily-opening thirst trigger, familiar-source
+remain separately conserved. The causal hourly thirst trigger, familiar-source
 itinerary, and forcing calendars are experiment-level behavior, not package API.
 
 `derive_body_mass_from_energy_reserve()` is a downstream interpretation. Its
@@ -230,6 +230,10 @@ accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
   cannot raise body water above its declared normal stock.
 - Prescribed incremental evaporative loss is non-negative, separately reported,
   and reduces exactly to the Goal 055 water model when zero.
+- The causal drinking null begins no source trip before an observed thirst
+  boundary, allows at most one complete trip per day, and defers a late crossing.
+- Experienced food-patch return uses only stationary open opportunities in a
+  food patch; source travel and drinking cannot be learned as poor forage.
 - Disabling the water layer reproduces the accepted Goal 054 patch-choice
   trajectory exactly.
 - Every dynamic patch closes as opening biomass plus autonomous growth minus
@@ -263,7 +267,7 @@ accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
 | --- | --- |
 | Functional package core | Retain and extend by approved layers |
 | Explicit records, units, and balance residuals | Retain |
-| Twenty-five current diagnostics | Retain |
+| Twenty-six current diagnostics | Retain |
 | Focused invariant tests | Retain |
 | Scientific decision notes | Retain as the research notebook |
 | Goal-by-goal experiment ancestry | Removed from the active tree; Git retains it |
@@ -275,7 +279,7 @@ accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
 
 For ordinary changes, parse retained R, run the tests affected by the change,
 and inspect the diff. When publishing a package boundary or completed model
-stage, run the full focused suite, all twenty-five diagnostics, an external build,
+stage, run the full focused suite, all twenty-six diagnostics, an external build,
 and `R CMD check --no-manual` once.
 
 Repeat a gate only for a distinct named risk. Additional polish or repeated
@@ -285,18 +289,17 @@ confirmation is not a release criterion.
 
 The herbivore, isolated forage, non-spatial coupling, and first explicit-patch
 arcs are closed. Arc 05 now has an accepted experience-based food-patch rule,
-one minimum water constraint, and one prescribed evaporative-loss interface.
-The water-disabled and zero-forcing treatments exactly preserve their accepted
-anchors. Equal `6.16 kg` clustered, repeated, and diffuse losses produce unequal
-visit timing and coupled recovery debt. The prediction that repeated events
-would impede recovery more than one cluster is not supported.
+one minimum water constraint, prescribed evaporative-loss forcing, and one
+causal familiar-source response. The physical zero-forcing and water-disabled
+reductions retain their accepted anchors; the superseded daily-opening behavior
+remains an explicit comparator.
 
-Sustained forcing lowers minimum coupled reserve to `851 kJ` while minimum body
-water remains `25.32 kg`, retaining the amber result that costly water access
-can make energy limiting before declared critical dehydration. The current
-water layer is still intentionally small: one stock, effective forage water,
-ordinary and prescribed incremental loss, stationary drinking, one known
-source, and one daily-opening trigger. Temperature response, heat balance,
-dynamic plant moisture, renal response, multiple sources, search, mortality,
-and species calibration remain deferred. The next layer must answer a distinct
-scientific question rather than merely add realism.
+Hourly response protects minimum water by roughly `0.5 kg` in the coupled
+forcing contrasts but can displace feeding. The sustained causal branch reaches
+the non-negative energy boundary after 76 treatment days with minimum water at
+`25.74 kg`, above the `24 kg` critical boundary. The current controller is an
+immediate-response operational null, not optimized behavior. Temperature
+response, heat balance, anticipatory activity scheduling, dynamic plant
+moisture, renal response, multiple sources, search, mortality, and species
+calibration remain deferred. The next layer must answer a distinct scientific
+question rather than merely add realism.

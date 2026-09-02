@@ -46,6 +46,10 @@ installed package:
   after one common baseline into zero, clustered, repeated, diffuse dose-
   matched, and sustained forcing, then compares source travel, hydration,
   energy debt, and recovery without imposing predicted outcome directions.
+- `causal-hydration-response.R` compares the frozen daily-opening controller
+  with one hourly causal familiar-source response across the same five forcing
+  regimes, including prefix identity, late deferral, feeding displacement, and
+  an explicit sustained energy boundary.
 - `spatial-patch-depletion-renewal.R` applies common turnover to two dynamic
   patch stocks and checks local depletion, release, renewal, one fixed transfer,
   and conserved animal-forage accounting.
@@ -71,7 +75,9 @@ installed package:
   regret.
 - `herbivore-core-fixtures.R` supplies the shared physiological reference.
 - `water-constrained-fixtures.R` supplies the accepted experiment-level patch,
-  memory, thirst, and continuation driver to the two water-constrained clients.
+  memory, thirst, and continuation driver.
+- `isolated-hydration-fixtures.R` supplies the matched non-depleting forage
+  client, and `reactive-water-visit-fixtures.R` supplies the causal trip planner.
 
 The herbivore and coupled diagnostics source only shared fixture helpers; the
 isolated forage diagnostics are independent. No diagnostic sources another

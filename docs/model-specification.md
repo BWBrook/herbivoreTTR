@@ -455,10 +455,14 @@ a source. The adapter does not modify the energy, movement, or forage ledger.
 This preserves separate accounting rather than creating a combined transition.
 
 The retained synthetic reference uses `28 kg` normal body water, a `26 kg`
-daily-opening thirst trigger, a `24 kg` critical interpretation boundary, and
+thirst trigger, a `24 kg` critical interpretation boundary, and
 `1.56 kg d^-1` ordinary loss. When triggered, the animal takes two one-hour
 routes to its single familiar source and remains there for one drinking hour.
-The controller is retained in experiments rather than the package API.
+The superseded daily-opening controller remains a frozen experiment comparator.
+The current causal controller detects thirst at opening or at an hourly closing
+boundary, allows at most one complete trip per day, and never departs before
+detection. A crossing too late for the three-hour itinerary is deferred. Both
+controllers remain outside the package API.
 
 The body-water schedule may also prescribe a non-negative incremental
 evaporative-loss rate for each hour. This flux is accounted separately from
@@ -485,6 +489,26 @@ treatment. Sustained forcing adds `36.96 kg`, lowers the coupled minimum reserve
 to `851 kJ`, and still leaves minimum water at `25.32 kg`, above the declared
 critical boundary. These are synthetic path-dependent consequences of the
 daily thirst trigger and travel, not thermoregulatory or viability estimates.
+
+The causal-controller comparison uses the same branches and detects the first
+threshold crossing along a no-source day. It then inserts the complete visit
+after that boundary and reruns the accepted daily engines. Because the revised
+and provisional paths are identical through detection, the construction uses
+no future state. A direct probe protects this prefix identity and confirms that
+a last-hour crossing is deferred.
+
+In the coupled system, causal response raises minimum water from roughly
+`25.2-25.3 kg` to `25.7-25.9 kg`. Unlike the daily-opening comparator, however,
+some trips overlap feeding. The control and three finite pulse regimes complete
+126 branch days with closed accounts. Sustained forcing reaches the
+non-negative energy boundary after 76 days, at `722 kJ` recorded minimum energy
+and `25.74 kg` minimum water. This accepts immediate response as an operational
+null while leaving anticipatory or schedule-aware behavior unresolved.
+
+Experienced food-patch return excludes movement, source stays, and all other
+hours that are not stationary open opportunities in a food patch. Water travel
+therefore retains its intake and energetic costs without being learned as poor
+forage return.
 
 ## Dynamic Spatial Forage Coupling
 
@@ -918,7 +942,7 @@ assertion that daily energetic balance alone establishes health or viability.
 
 ## Retained Diagnostics
 
-Twenty-five no-write experiments protect the current scientific interpretation:
+Twenty-six no-write experiments protect the current scientific interpretation:
 
 - the reference diagnostic checks neutrality, conservation, and gut order;
 - the appetite-forage diagnostic checks a binding ceiling, deficit recovery,
@@ -964,6 +988,9 @@ Twenty-five no-write experiments protect the current scientific interpretation:
   clustered, repeated, diffuse dose-matched, sustained, and zero schedules in
   both isolated and coupled systems, reporting visit, hydration, energy, and
   recovery consequences without treating predicted directions as tests; and
+- the causal hydration-response diagnostic checks pre-decision prefix identity,
+  late deferral, hourly detection, the frozen daily-opening comparator, and all
+  five forcing regimes in isolated and coupled systems; and
 - the spatial patch depletion-and-renewal diagnostic checks common turnover,
   occupied-patch removal, movement-hour closure, release, renewal, and full
   patch-animal conservation; and

@@ -91,10 +91,10 @@ The minimum water layer carries one physical body-water stock. Effective water
 from realized forage intake and drinking while stationary at a known source add
 to the stock; fixed ordinary loss, prescribed incremental evaporative loss, and
 any excess above normal remove water as separate fluxes. A critical boundary is
-reported but does not alter the transition. A retained experiment-level
-controller visits the familiar source when opening daily body water reaches a
-declared thirst threshold. It composes with the accepted food-patch system
-without changing its choice rule or combining the energy and water ledgers.
+reported but does not alter the transition. The current experiment-level
+controller visits the familiar source after body water reaches a declared
+thirst threshold on the hourly clock. It composes with the accepted food-patch
+system without combining the energy and water ledgers.
 
 The first dynamic spatial-forage layer carries one standing-biomass stock per
 patch, applies the accepted autonomous turnover to every patch, and removes
@@ -240,7 +240,7 @@ The current synthetic reference uses:
 | Residual unavailable forage | 500 kg DM ha^-1 |
 | Coupled-reference animal density | 10 animals ha^-1 |
 | Normal body water | 28 kg |
-| Daily-opening thirst trigger | 26 kg |
+| Thirst trigger | 26 kg |
 | Critical body-water boundary | 24 kg |
 | Ordinary water loss | 1.56 kg d^-1 |
 
@@ -271,6 +271,7 @@ Rscript --vanilla experiments/spatial-water-source-benefit.R
 Rscript --vanilla experiments/hydration-controlled-water-visits.R
 Rscript --vanilla experiments/water-constrained-patch-choice.R
 Rscript --vanilla experiments/prescribed-evaporative-loss-regimes.R
+Rscript --vanilla experiments/causal-hydration-response.R
 Rscript --vanilla experiments/spatial-patch-depletion-renewal.R
 Rscript --vanilla experiments/spatial-resource-aware-choice.R
 Rscript --vanilla experiments/spatial-resource-aware-switch-boundary.R
@@ -367,19 +368,21 @@ forage reduces visits and protects energy; under drier forage or greater
 ordinary loss, frequent water excursions reach the energy boundary before the
 declared critical-water boundary. Prescribed clustered, repeated, diffuse, and
 sustained loss regimes now show that equal cumulative loss can produce unequal
-visit timing and recovery. Sustained forcing approaches the energy boundary
-without crossing the synthetic critical-water boundary. These are mechanism
-results, not calibrated viability claims. Temperature-response physiology,
-dynamic plant moisture, renal response, multiple water sources, and package-
-level repeated behavioral mechanisms remain absent. The staged programme is
-indexed in
+visit timing and recovery. A causal hourly controller protects the water stock
+but can move source travel into feeding hours. Under sustained forcing, that
+controller reaches the energy boundary after 76 treatment days while remaining
+above the synthetic critical-water boundary. These are mechanism results, not
+calibrated viability claims. Temperature-response physiology, anticipatory
+scheduling, dynamic plant moisture, renal response, multiple water sources, and
+package-level repeated behavioral mechanisms remain absent. The staged
+programme is indexed in
 [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Repository Map
 
 - `R/`: reusable model records, transitions, and runners.
 - `tests/testthat/`: focused protection of scientific invariants.
-- `experiments/`: twenty-five current no-write diagnostics and two shared
+- `experiments/`: twenty-six current no-write diagnostics and four shared
   fixture helpers.
 - `docs/model-charter.md`: governing scientific and architectural contract.
 - `docs/model-specification.md`: equations, transition order, and outputs.

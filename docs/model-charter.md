@@ -72,9 +72,11 @@ the energy ledger. Effective water from realized dry-matter intake and drinking
 while stationary at a known source add to it; fixed ordinary loss, one explicit
 prescribed incremental evaporative-loss schedule, and excess elimination remove
 water separately. A critical boundary is reported without implying mortality
-or changing a transition. The familiar-source thirst rule and temporal forcing
-regimes remain experiment-level behavior rather than package API. Prescribed
-loss is not a temperature-response or thermoregulation model.
+or changing a transition. The current familiar-source null detects thirst on
+the hourly clock, begins at most one complete trip only after detection, and
+defers a late crossing. The thirst rule and temporal forcing regimes remain
+experiment-level behavior rather than package API. Prescribed loss is not a
+temperature-response or thermoregulation model.
 
 The first dynamic spatial-forage layer keeps one biomass-density stock per
 patch, separate from static patch acquisition capacity. Common autonomous

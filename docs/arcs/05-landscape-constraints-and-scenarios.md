@@ -29,9 +29,10 @@ anchors. Do not add several stressors in one goal.
    protein and water prioritized alongside metabolizable energy; introduce
    physical gut or digestive constraints only when needed to interpret intake.
 5. **Weather and thermoregulation:** first establish a prescribed incremental
-   evaporative-loss interface, then add environmental drivers and thermal
-   responses separately from food limitation. The forcing interface is
-   complete; mechanistic thermoregulation remains deferred.
+   evaporative-loss interface and a causal drinking response, then add
+   environmental drivers and thermal responses separately from food
+   limitation. The forcing and response interfaces are complete; mechanistic
+   thermoregulation remains deferred.
 6. **Landscape heterogeneity:** introduce structured variation in vegetation,
    water distance, patch renewal, and accessibility.
 7. **Scenarios:** compare seasonal drought, altered fire or vegetation regimes,
@@ -246,6 +247,17 @@ lowers minimum coupled reserve to `851 kJ` while body water remains above the
 `24 kg` critical boundary. This strengthens the energetic-access signal while
 leaving temperature, heat balance, thermoregulatory behavior, and viability
 unmodeled.
+
+Goal 057 closes the first causal response boundary. The daily-opening rule is
+retained as a comparator, while one immediate hourly rule detects thirst before
+departing for the familiar source, makes at most one complete trip, and defers
+late crossings. The provisional no-source and revised visit paths are identical
+through detection. Causal response raises coupled minimum water by about
+`0.5 kg`, but some visits now displace feeding. The sustained branch reaches
+the non-negative energy boundary after 76 treatment days at `25.74 kg` minimum
+water. This is accepted as an operational response null, not optimized
+scheduling or thermoregulation. Water excursions are excluded from experienced
+food-patch return so travel costs do not masquerade as poor forage experience.
 
 ## Decision Gates
 

@@ -23,7 +23,8 @@ scenarios <- data.frame(
 runs <- lapply(seq_len(nrow(scenarios)), function(index) {
   run_water_constrained_closed_loop(
     scenarios[index, , drop = FALSE],
-    interaction_days
+    interaction_days,
+    water_visit_policy = "daily_opening"
   )
 })
 names(runs) <- scenarios$scenario

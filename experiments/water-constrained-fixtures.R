@@ -1,4 +1,5 @@
 source("experiments/herbivore-core-fixtures.R")
+source("experiments/reactive-water-visit-fixtures.R")
 
 water_constrained_fixture <- new_herbivore_core_fixture()
 water_constrained_food_patch_ids <- c("patch_a", "patch_b")
@@ -240,8 +241,10 @@ run_water_constrained_closed_loop <- function(
   prescribed_incremental_evaporative_water_loss_kg_day = rep(
     0,
     number_of_days
-  )
+  ),
+  water_visit_policy = c("hourly_reactive", "daily_opening")
 ) {
+  water_visit_policy <- match.arg(water_visit_policy)
   if (
     length(number_of_days) != 1L ||
       !is.numeric(number_of_days) ||
@@ -325,15 +328,14 @@ run_water_constrained_closed_loop <- function(
       landscape,
       accumulated_inadequacy_kj
     )
-    thirst_triggered <-
+    opening_thirst_triggered <-
       state$water$body_water_kg <=
         water_constrained_thirst_trigger_body_water_kg
-    water_visit <- scenario$water_layer_active && thirst_triggered
-    itinerary <- new_water_constrained_itinerary(
+    base_itinerary <- new_water_constrained_itinerary(
       opening_food_patch_id,
       destination_food_patch_id,
       food_decision$selected_action,
-      water_visit
+      FALSE
     )
     incremental_loss_hourly <- new_daily_evaporative_loss_schedule(
       prescribed_incremental_evaporative_water_loss_kg_day[[local_day]]
@@ -341,22 +343,75 @@ run_water_constrained_closed_loop <- function(
 
     day_error <- NULL
     day <- tryCatch({
-      energy <- herbivoreTTR::run_prescribed_spatial_coupled_energy_day(
-        initial_location_state = state$location,
-        landscape = landscape,
-        itinerary = itinerary,
-        initial_gut_state = state$gut,
-        initial_body_state = state$body,
-        initial_spatial_forage_state = state$forage,
-        gut_parameters = water_constrained_fixture$gut,
-        body_parameters = water_constrained_fixture$body,
-        appetite_parameters = water_constrained_fixture$appetite,
-        forage_turnover_parameters = turnover,
-        coupling_parameters = coupling,
-        appetite_reference_schedule =
-          water_constrained_fixture$appetite_reference,
-        routine_activity_schedule = water_constrained_fixture$activity
-      )
+      run_energy <- function(itinerary) {
+        herbivoreTTR::run_prescribed_spatial_coupled_energy_day(
+          initial_location_state = state$location,
+          landscape = landscape,
+          itinerary = itinerary,
+          initial_gut_state = state$gut,
+          initial_body_state = state$body,
+          initial_spatial_forage_state = state$forage,
+          gut_parameters = water_constrained_fixture$gut,
+          body_parameters = water_constrained_fixture$body,
+          appetite_parameters = water_constrained_fixture$appetite,
+          forage_turnover_parameters = turnover,
+          coupling_parameters = coupling,
+          appetite_reference_schedule =
+            water_constrained_fixture$appetite_reference,
+          routine_activity_schedule = water_constrained_fixture$activity
+        )
+      }
+      if (!scenario$water_layer_active) {
+        visit_plan <- list(
+          itinerary = base_itinerary,
+          thirst_detected = FALSE,
+          thirst_detected_at_opening = FALSE,
+          detection_time_h = NA_integer_,
+          water_visit = FALSE,
+          visit_deferred = FALSE,
+          departure_hour = NA_integer_,
+          drinking_hour = NA_integer_,
+          response_delay_h = NA_integer_
+        )
+        energy <- run_energy(base_itinerary)
+      } else if (water_visit_policy == "daily_opening") {
+        water_visit <- opening_thirst_triggered
+        itinerary <- new_water_constrained_itinerary(
+          opening_food_patch_id,
+          destination_food_patch_id,
+          food_decision$selected_action,
+          water_visit
+        )
+        visit_plan <- list(
+          itinerary = itinerary,
+          thirst_detected = opening_thirst_triggered,
+          thirst_detected_at_opening = opening_thirst_triggered,
+          detection_time_h = if (opening_thirst_triggered) 0L else NA_integer_,
+          water_visit = water_visit,
+          visit_deferred = FALSE,
+          departure_hour = if (water_visit) 8L else NA_integer_,
+          drinking_hour = if (water_visit) 9L else NA_integer_,
+          response_delay_h = if (water_visit) 9L else NA_integer_
+        )
+        energy <- run_energy(itinerary)
+      } else {
+        base_energy <- run_energy(base_itinerary)
+        visit_plan <- new_reactive_water_visit_plan(
+          state$water,
+          water_parameters,
+          water_properties,
+          landscape,
+          base_energy$hourly,
+          incremental_loss_hourly,
+          water_constrained_source_patch_id,
+          water_constrained_thirst_trigger_body_water_kg
+        )
+        energy <- if (visit_plan$water_visit) {
+          run_energy(visit_plan$itinerary)
+        } else {
+          base_energy
+        }
+      }
       water <- herbivoreTTR::run_spatial_body_water_day(
         state$water,
         water_parameters,
@@ -364,7 +419,7 @@ run_water_constrained_closed_loop <- function(
         energy$hourly,
         incremental_loss_hourly
       )
-      list(energy = energy, water = water)
+      list(energy = energy, water = water, visit_plan = visit_plan)
     }, error = function(error) {
       day_error <<- conditionMessage(error)
       NULL
@@ -375,9 +430,15 @@ run_water_constrained_closed_loop <- function(
       break
     }
 
-    feeding_opportunity_hours <- sum(
-      day$energy$hourly$feeding_opportunity_open
-    )
+    food_patch_feeding_opportunity <-
+      day$energy$hourly$feeding_opportunity_open &
+        day$energy$hourly$spatial_action == "stay" &
+        day$energy$hourly$opening_patch_id %in%
+          water_constrained_food_patch_ids
+    feeding_opportunity_hours <- sum(food_patch_feeding_opportunity)
+    if (feeding_opportunity_hours < 1L) {
+      stop("No stationary food-patch feeding opportunity remained in the day.")
+    }
     experienced_return_kj_feeding_opportunity_h <-
       day$energy$daily$total_realized_ingested_available_energy_kj /
         feeding_opportunity_hours
@@ -416,10 +477,19 @@ run_water_constrained_closed_loop <- function(
         food_decision$current_return_is_adequate,
       experienced_return_kj_feeding_opportunity_h =
         experienced_return_kj_feeding_opportunity_h,
-      thirst_triggered = thirst_triggered,
-      water_visit = water_visit,
+      water_visit_policy = water_visit_policy,
+      thirst_triggered = day$visit_plan$thirst_detected,
+      thirst_triggered_at_opening =
+        day$visit_plan$thirst_detected_at_opening,
+      thirst_detection_time_h = day$visit_plan$detection_time_h,
+      water_visit = day$visit_plan$water_visit,
+      water_visit_deferred = day$visit_plan$visit_deferred,
+      water_departure_hour = day$visit_plan$departure_hour,
+      drinking_hour = day$visit_plan$drinking_hour,
+      water_response_delay_h = day$visit_plan$response_delay_h,
       opening_body_water_kg = state$water$body_water_kg,
       closing_body_water_kg = day$water$daily$body_water_final_kg,
+      minimum_body_water_kg = day$water$daily$minimum_body_water_kg,
       body_water_below_critical = day$water$daily$body_water_below_critical,
       food_derived_water_kg =
         day$water$daily$total_food_derived_water_kg,
@@ -431,6 +501,16 @@ run_water_constrained_closed_loop <- function(
         day$water$daily$total_incremental_evaporative_water_loss_kg,
       realized_intake_kg_dm =
         day$energy$daily$realized_dry_matter_intake_kg_dm,
+      feeding_time_lost_h = day$energy$daily$feeding_time_lost_h,
+      water_excursion_feeding_opportunity_h = if (
+        day$visit_plan$water_visit
+      ) {
+        sum(water_constrained_fixture$feeding_open[
+          day$visit_plan$departure_hour + seq_len(3L)
+        ])
+      } else {
+        0L
+      },
       movement_expenditure_kj =
         day$energy$daily$total_incremental_movement_expenditure_kj,
       closing_body_energy_reserve_kj =

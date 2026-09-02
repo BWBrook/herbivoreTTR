@@ -332,6 +332,13 @@ patch switches, minimum water and energy, and energy debt relative to the zero
 control at treatment and recovery endpoints. These remain experiment outputs;
 the forcing calendar and thirst controller are not package state.
 
+The causal hydration diagnostic records visit policy, whether thirst was
+detected at opening or within day, detection time, departure and drinking hour,
+detection-to-drinking delay, late deferral, source-excursion overlap with open
+feeding opportunity, and any causal-order violation. It compares energy at the
+last common completed day when a stress run reaches a model boundary. These are
+experiment-level decision and audit quantities, not new state variables.
+
 The food-quality choice-boundary diagnostic records current and destination
 metabolizable-energy densities, matched stay and move intake and energy, the
 minimal helper action and score difference, the full-model oracle action and

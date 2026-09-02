@@ -8,7 +8,7 @@
 | 2. Isolated plant-forage | Can a simple forage biomass stock remain stable under growth, loss, and later seasonal forcing without herbivory? | Closed; controlled forcing deferred until required |
 | 3. Non-spatial coupling | How do herbivore intake and forage depletion alter one another in a homogeneous system? | Closed |
 | 4. Explicit patches and movement | How do location, patch choice, travel time, and travel energy change intake and state? | Closed |
-| 5. Landscape constraints and scenarios | How do water, depletion, heterogeneity, climate, and disturbance produce chronic stress? | In progress; experienced forage choice, body water, and prescribed evaporative-loss forcing established |
+| 5. Landscape constraints and scenarios | How do water, depletion, heterogeneity, climate, and disturbance produce chronic stress? | In progress; experienced forage choice, body water, prescribed evaporative loss, and causal drinking response established |
 
 The detailed contracts are stored under `docs/arcs/`.
 
@@ -208,6 +208,16 @@ prespecified prediction. Sustained forcing drives coupled energy close to its
 non-negative boundary before critical dehydration. Temperature response,
 heat balance, thermoregulatory behavior, plant moisture, and species
 calibration remain deliberately unimplemented.
+
+Goal 057 replaces delayed daily observation with one causal hourly drinking
+null. A visit never begins before the `26 kg` threshold is observed, at most one
+complete known-source trip occurs per day, and late detections are deferred.
+Across the Goal 056 regimes, faster response consistently protects minimum
+water. In the coupled system it also displaces feeding opportunity: the
+sustained branch reaches the non-negative energy boundary after 76 treatment
+days while remaining above critical water. One integration repair prevents
+water excursions from being misremembered as poor food-patch return. The rule
+is accepted as an operational null, not optimized or calibrated behavior.
 
 ## Deferred Animal Layers
 
