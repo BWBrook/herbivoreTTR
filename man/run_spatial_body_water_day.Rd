@@ -8,7 +8,8 @@ run_spatial_body_water_day(
   initial_state,
   parameters,
   patch_water_properties,
-  spatial_energy_hourly
+  spatial_energy_hourly,
+  prescribed_incremental_evaporative_water_loss_kg_h
 )
 }
 \arguments{
@@ -24,6 +25,10 @@ run_spatial_body_water_day(
 \item{spatial_energy_hourly}{A 24-row hourly ledger from a spatial energy
 runner containing `hour_of_day`, `opening_patch_id`, `spatial_action`, and
 `realized_dry_matter_intake_kg_dm_h`.}
+
+\item{prescribed_incremental_evaporative_water_loss_kg_h}{Finite,
+non-negative numeric vector of 24 incremental evaporative-loss rates in
+kilograms per hour.}
 }
 \value{
 A plain list containing hourly and daily water ledgers plus the

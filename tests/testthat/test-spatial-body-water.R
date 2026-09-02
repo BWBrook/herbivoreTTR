@@ -34,7 +34,8 @@ test_that("spatial intake and stationary source access drive body water", {
       c(3.28, 0),
       c(0, 10)
     ),
-    spatial_energy_hourly = energy$hourly
+    spatial_energy_hourly = energy$hourly,
+    prescribed_incremental_evaporative_water_loss_kg_h = rep(0, 24L)
   )
 
   drinking_rows <- which(water$hourly$realized_drinking_water_kg > 0)
@@ -60,7 +61,8 @@ test_that("movement cannot collect water and patch properties are complete", {
     new_body_water_state(27),
     new_body_water_parameters(28, 24, 0),
     new_patch_water_properties("water", 0, 1),
-    hourly
+    hourly,
+    rep(0, 24L)
   )
   expect_equal(result$hourly$realized_drinking_water_kg[[1L]], 0)
   expect_equal(result$hourly$realized_drinking_water_kg[[2L]], 1)
@@ -71,7 +73,8 @@ test_that("movement cannot collect water and patch properties are complete", {
       new_body_water_state(27),
       new_body_water_parameters(28, 24, 0),
       new_patch_water_properties("water", 0, 1),
-      hourly
+      hourly,
+      rep(0, 24L)
     ),
     "declared water properties"
   )

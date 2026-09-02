@@ -111,7 +111,8 @@ run_scenario <- function(scenario) {
       initial_state = state$water,
       parameters = water_parameters,
       patch_water_properties = water_properties,
-      spatial_energy_hourly = energy$hourly
+      spatial_energy_hourly = energy$hourly,
+      prescribed_incremental_evaporative_water_loss_kg_h = rep(0, 24L)
     )
     accounts_close <-
       max(abs(energy$hourly$system_energy_balance_residual_kj)) < 1e-8 &&

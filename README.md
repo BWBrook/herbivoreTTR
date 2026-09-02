@@ -89,12 +89,12 @@ anchor for the separately implemented water physiology.
 
 The minimum water layer carries one physical body-water stock. Effective water
 from realized forage intake and drinking while stationary at a known source add
-to the stock; one fixed ordinary loss and any excess above normal remove water.
-A critical boundary is reported but does not alter the transition. A retained
-experiment-level controller visits the familiar source when opening daily body
-water reaches a declared thirst threshold. It composes with the accepted
-food-patch system without changing its choice rule or combining the energy and
-water ledgers.
+to the stock; fixed ordinary loss, prescribed incremental evaporative loss, and
+any excess above normal remove water as separate fluxes. A critical boundary is
+reported but does not alter the transition. A retained experiment-level
+controller visits the familiar source when opening daily body water reaches a
+declared thirst threshold. It composes with the accepted food-patch system
+without changing its choice rule or combining the energy and water ledgers.
 
 The first dynamic spatial-forage layer carries one standing-biomass stock per
 patch, applies the accepted autonomous turnover to every patch, and removes
@@ -270,6 +270,7 @@ Rscript --vanilla experiments/body-water-reference.R
 Rscript --vanilla experiments/spatial-water-source-benefit.R
 Rscript --vanilla experiments/hydration-controlled-water-visits.R
 Rscript --vanilla experiments/water-constrained-patch-choice.R
+Rscript --vanilla experiments/prescribed-evaporative-loss-regimes.R
 Rscript --vanilla experiments/spatial-patch-depletion-renewal.R
 Rscript --vanilla experiments/spatial-resource-aware-choice.R
 Rscript --vanilla experiments/spatial-resource-aware-switch-boundary.R
@@ -360,21 +361,26 @@ closer than 27 days in the baseline, and remains stable across the bounded
 movement, food-quality, and viable forage-recovery comparisons. This is
 accepted experiment-level behavior, not package API or a viability claim.
 The minimum body-water layer now separates forage water, drinking, ordinary
-loss, source access, and route energy. Disabling it reproduces the accepted
-forage-choice anchor exactly. Wetter forage reduces visits and protects energy;
-under drier forage or greater ordinary loss, frequent water excursions reach
-the energy boundary before the declared critical-water boundary. These are
-synthetic mechanism results, not calibrated viability claims. Temperature-
-dependent loss, dynamic plant moisture, renal response, multiple water sources,
-and package-level repeated behavioral mechanisms remain absent. The staged
-programme is indexed in
+loss, prescribed incremental evaporative loss, source access, and route energy.
+Disabling it reproduces the accepted forage-choice anchor exactly. Wetter
+forage reduces visits and protects energy; under drier forage or greater
+ordinary loss, frequent water excursions reach the energy boundary before the
+declared critical-water boundary. Prescribed clustered, repeated, diffuse, and
+sustained loss regimes now show that equal cumulative loss can produce unequal
+visit timing and recovery. Sustained forcing approaches the energy boundary
+without crossing the synthetic critical-water boundary. These are mechanism
+results, not calibrated viability claims. Temperature-response physiology,
+dynamic plant moisture, renal response, multiple water sources, and package-
+level repeated behavioral mechanisms remain absent. The staged programme is
+indexed in
 [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Repository Map
 
 - `R/`: reusable model records, transitions, and runners.
 - `tests/testthat/`: focused protection of scientific invariants.
-- `experiments/`: twenty-four current no-write diagnostics and one fixture helper.
+- `experiments/`: twenty-five current no-write diagnostics and two shared
+  fixture helpers.
 - `docs/model-charter.md`: governing scientific and architectural contract.
 - `docs/model-specification.md`: equations, transition order, and outputs.
 - `docs/variable-dictionary.md`: current quantities and units.

@@ -56,6 +56,9 @@ new_patch_water_properties <- function(
 #' @param spatial_energy_hourly A 24-row hourly ledger from a spatial energy
 #'   runner containing `hour_of_day`, `opening_patch_id`, `spatial_action`, and
 #'   `realized_dry_matter_intake_kg_dm_h`.
+#' @param prescribed_incremental_evaporative_water_loss_kg_h Finite,
+#'   non-negative numeric vector of 24 incremental evaporative-loss rates in
+#'   kilograms per hour.
 #'
 #' @return A plain list containing hourly and daily water ledgers plus the
 #'   final state.
@@ -64,12 +67,17 @@ run_spatial_body_water_day <- function(
   initial_state,
   parameters,
   patch_water_properties,
-  spatial_energy_hourly
+  spatial_energy_hourly,
+  prescribed_incremental_evaporative_water_loss_kg_h
 ) {
   .validate_body_water_state(initial_state)
   .validate_body_water_parameters(parameters)
   .validate_patch_water_properties(patch_water_properties)
   .validate_spatial_energy_water_surface(spatial_energy_hourly)
+  .validate_body_water_schedule_vector(
+    prescribed_incremental_evaporative_water_loss_kg_h,
+    "prescribed_incremental_evaporative_water_loss_kg_h"
+  )
   if (
     as.double(initial_state$body_water_kg) >
       as.double(parameters$normal_body_water_kg)
@@ -103,7 +111,8 @@ run_spatial_body_water_day <- function(
   schedule <- new_body_water_schedule(
     spatial_energy_hourly$hour_of_day,
     food_derived_water_kg_h,
-    drinking_water_availability_kg_h
+    drinking_water_availability_kg_h,
+    prescribed_incremental_evaporative_water_loss_kg_h
   )
   result <- run_body_water_day(initial_state, parameters, schedule)
 

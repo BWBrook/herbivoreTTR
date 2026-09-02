@@ -61,26 +61,32 @@ new_body_water_parameters <- function(
 
 #' Create a prescribed body-water input schedule
 #'
-#' Create food-derived water and water available for drinking over one fixed
-#' 24-hour day. Both fields are hourly rates; each transition lasts one hour.
+#' Create food-derived water, water available for drinking, and incremental
+#' evaporative loss over one fixed 24-hour day. All fields are hourly rates;
+#' each transition lasts one hour.
 #'
 #' @param hour_of_day Numeric vector equal to `0:23`, in order.
 #' @param prescribed_food_derived_water_kg_h Finite, non-negative numeric
 #'   vector of 24 food-derived water rates in kilograms per hour.
 #' @param available_drinking_water_kg_h Finite, non-negative numeric vector of
 #'   24 water-availability rates in kilograms per hour.
+#' @param prescribed_incremental_evaporative_water_loss_kg_h Finite,
+#'   non-negative numeric vector of 24 incremental evaporative-loss rates in
+#'   kilograms per hour.
 #'
 #' @return A canonical 24-row base data frame.
 #' @export
 new_body_water_schedule <- function(
   hour_of_day,
   prescribed_food_derived_water_kg_h,
-  available_drinking_water_kg_h
+  available_drinking_water_kg_h,
+  prescribed_incremental_evaporative_water_loss_kg_h
 ) {
   .validate_body_water_schedule_fields(
     hour_of_day,
     prescribed_food_derived_water_kg_h,
-    available_drinking_water_kg_h
+    available_drinking_water_kg_h,
+    prescribed_incremental_evaporative_water_loss_kg_h
   )
 
   data.frame(
@@ -90,6 +96,9 @@ new_body_water_schedule <- function(
     ),
     available_drinking_water_kg_h = as.double(
       available_drinking_water_kg_h
+    ),
+    prescribed_incremental_evaporative_water_loss_kg_h = as.double(
+      prescribed_incremental_evaporative_water_loss_kg_h
     )
   )
 }
@@ -169,7 +178,8 @@ new_body_water_schedule <- function(
 .validate_body_water_schedule_fields <- function(
   hour_of_day,
   prescribed_food_derived_water_kg_h,
-  available_drinking_water_kg_h
+  available_drinking_water_kg_h,
+  prescribed_incremental_evaporative_water_loss_kg_h
 ) {
   if (!.is_hour_of_day_schedule(hour_of_day)) {
     stop("`hour_of_day` must equal integer `0:23`, in order.", call. = FALSE)
@@ -181,6 +191,10 @@ new_body_water_schedule <- function(
   .validate_body_water_schedule_vector(
     available_drinking_water_kg_h,
     "available_drinking_water_kg_h"
+  )
+  .validate_body_water_schedule_vector(
+    prescribed_incremental_evaporative_water_loss_kg_h,
+    "prescribed_incremental_evaporative_water_loss_kg_h"
   )
 
   invisible(NULL)
@@ -209,7 +223,8 @@ new_body_water_schedule <- function(
   expected_names <- c(
     "hour_of_day",
     "prescribed_food_derived_water_kg_h",
-    "available_drinking_water_kg_h"
+    "available_drinking_water_kg_h",
+    "prescribed_incremental_evaporative_water_loss_kg_h"
   )
   if (
     !is.data.frame(schedule) ||
@@ -218,8 +233,9 @@ new_body_water_schedule <- function(
     stop(
       paste0(
         "`schedule` must contain only `hour_of_day`, ",
-        "`prescribed_food_derived_water_kg_h`, and ",
-        "`available_drinking_water_kg_h`."
+        "`prescribed_food_derived_water_kg_h`, ",
+        "`available_drinking_water_kg_h`, and ",
+        "`prescribed_incremental_evaporative_water_loss_kg_h`."
       ),
       call. = FALSE
     )
@@ -227,7 +243,8 @@ new_body_water_schedule <- function(
   .validate_body_water_schedule_fields(
     schedule$hour_of_day,
     schedule$prescribed_food_derived_water_kg_h,
-    schedule$available_drinking_water_kg_h
+    schedule$available_drinking_water_kg_h,
+    schedule$prescribed_incremental_evaporative_water_loss_kg_h
   )
 
   invisible(NULL)
@@ -237,7 +254,8 @@ new_body_water_schedule <- function(
   expected_names <- c(
     "hour_of_day",
     "prescribed_food_derived_water_kg_h",
-    "available_drinking_water_kg_h"
+    "available_drinking_water_kg_h",
+    "prescribed_incremental_evaporative_water_loss_kg_h"
   )
   if (
     !is.data.frame(input_row) ||
@@ -262,6 +280,10 @@ new_body_water_schedule <- function(
   .validate_nonnegative_numeric_scalar(
     input_row$available_drinking_water_kg_h,
     "input_row$available_drinking_water_kg_h"
+  )
+  .validate_nonnegative_numeric_scalar(
+    input_row$prescribed_incremental_evaporative_water_loss_kg_h,
+    "input_row$prescribed_incremental_evaporative_water_loss_kg_h"
   )
 
   invisible(NULL)

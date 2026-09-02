@@ -14,6 +14,7 @@ test_that("body-water records retain physical units and boundaries", {
   schedule <- new_body_water_schedule(
     0:23,
     rep(0.065, 24L),
+    rep(0, 24L),
     rep(0, 24L)
   )
   expect_equal(nrow(schedule), 24L)
@@ -22,8 +23,22 @@ test_that("body-water records retain physical units and boundaries", {
   expect_error(new_body_water_state(-1), "non-negative")
   expect_error(new_body_water_parameters(28, 28, 0.065), "below")
   expect_error(
-    new_body_water_schedule(1:24, rep(0, 24L), rep(0, 24L)),
+    new_body_water_schedule(
+      1:24,
+      rep(0, 24L),
+      rep(0, 24L),
+      rep(0, 24L)
+    ),
     "0:23"
+  )
+  expect_error(
+    new_body_water_schedule(
+      0:23,
+      rep(0, 24L),
+      rep(0, 24L),
+      c(-0.1, rep(0, 23L))
+    ),
+    "non-negative"
   )
 })
 
@@ -35,7 +50,8 @@ test_that("hourly water arithmetic fills, spills, and closes", {
     data.frame(
       hour_of_day = 0L,
       prescribed_food_derived_water_kg_h = 0.1,
-      available_drinking_water_kg_h = 2
+      available_drinking_water_kg_h = 2,
+      prescribed_incremental_evaporative_water_loss_kg_h = 0
     )
   )
   expect_equal(fill$fluxes$realized_drinking_water_kg, 0.95)
@@ -48,7 +64,8 @@ test_that("hourly water arithmetic fills, spills, and closes", {
     data.frame(
       hour_of_day = 1L,
       prescribed_food_derived_water_kg_h = 0.2,
-      available_drinking_water_kg_h = 0
+      available_drinking_water_kg_h = 0,
+      prescribed_incremental_evaporative_water_loss_kg_h = 0
     )
   )
   expect_equal(spill$fluxes$excess_water_elimination_kg, 0.15)
@@ -60,7 +77,8 @@ test_that("hourly water arithmetic fills, spills, and closes", {
     data.frame(
       hour_of_day = 2L,
       prescribed_food_derived_water_kg_h = 0,
-      available_drinking_water_kg_h = 0
+      available_drinking_water_kg_h = 0,
+      prescribed_incremental_evaporative_water_loss_kg_h = 0
     )
   )
   expect_true(critical$fluxes$body_water_below_critical)
@@ -71,7 +89,8 @@ test_that("hourly water arithmetic fills, spills, and closes", {
       data.frame(
         hour_of_day = 2L,
         prescribed_food_derived_water_kg_h = 0,
-        available_drinking_water_kg_h = 0
+        available_drinking_water_kg_h = 0,
+        prescribed_incremental_evaporative_water_loss_kg_h = 0
       )
     ),
     "negative"
@@ -86,13 +105,19 @@ test_that("the isolated daily water reference is exactly repeatable", {
     new_body_water_schedule(
       0:23,
       rep(1.56 / 24, 24L),
+      rep(0, 24L),
       rep(0, 24L)
     )
   )
   deficit <- run_body_water_day(
     new_body_water_state(28),
     parameters,
-    new_body_water_schedule(0:23, rep(0, 24L), rep(0, 24L))
+    new_body_water_schedule(
+      0:23,
+      rep(0, 24L),
+      rep(0, 24L),
+      rep(0, 24L)
+    )
   )
 
   expect_equal(neutral$daily$body_water_final_kg, 28)
@@ -108,4 +133,40 @@ test_that("the isolated daily water reference is exactly repeatable", {
     deficit$daily$expected_body_water_change_kg,
     deficit$daily$observed_body_water_change_kg
   )
+})
+
+test_that("prescribed incremental evaporation is a separate exact loss", {
+  parameters <- new_body_water_parameters(28, 24, 0)
+  zero <- run_body_water_day(
+    new_body_water_state(28),
+    parameters,
+    new_body_water_schedule(
+      0:23,
+      rep(0, 24L),
+      rep(0, 24L),
+      rep(0, 24L)
+    )
+  )
+  forced <- run_body_water_day(
+    new_body_water_state(28),
+    parameters,
+    new_body_water_schedule(
+      0:23,
+      rep(0, 24L),
+      rep(0, 24L),
+      c(0.2, rep(0, 23L))
+    )
+  )
+
+  expect_equal(zero$daily$body_water_final_kg, 28)
+  expect_equal(
+    forced$daily$total_incremental_evaporative_water_loss_kg,
+    0.2
+  )
+  expect_equal(forced$daily$body_water_final_kg, 27.8)
+  expect_equal(
+    zero$daily$body_water_final_kg - forced$daily$body_water_final_kg,
+    0.2
+  )
+  expect_true(abs(forced$daily$body_water_balance_residual_kg) < 1e-12)
 })

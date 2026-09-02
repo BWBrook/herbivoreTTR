@@ -69,10 +69,12 @@ is retained as the travel-only null for the separate water layer.
 
 The minimum water layer carries one physical body-water stock independently of
 the energy ledger. Effective water from realized dry-matter intake and drinking
-while stationary at a known source add to it; fixed ordinary loss and explicit
-excess elimination remove water. A critical boundary is reported without
-implying mortality or changing a transition. The familiar-source thirst rule
-remains experiment-level behavior rather than package API.
+while stationary at a known source add to it; fixed ordinary loss, one explicit
+prescribed incremental evaporative-loss schedule, and excess elimination remove
+water separately. A critical boundary is reported without implying mortality
+or changing a transition. The familiar-source thirst rule and temporal forcing
+regimes remain experiment-level behavior rather than package API. Prescribed
+loss is not a temperature-response or thermoregulation model.
 
 The first dynamic spatial-forage layer keeps one biomass-density stock per
 patch, separate from static patch acquisition capacity. Common autonomous

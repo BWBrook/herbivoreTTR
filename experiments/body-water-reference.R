@@ -16,6 +16,7 @@ run_case <- function(case, daily_food_derived_water_kg) {
     herbivoreTTR::new_body_water_schedule(
       0:23,
       rep(daily_food_derived_water_kg / 24, 24L),
+      rep(0, 24L),
       rep(0, 24L)
     )
   )

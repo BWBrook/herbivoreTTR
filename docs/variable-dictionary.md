@@ -61,6 +61,7 @@ Every schedule has 24 rows and `hour_of_day = 0:23`.
 | `prescribed_closing_patch_id` | identifier | Patch prescribed at each closing hourly boundary |
 | `prescribed_food_derived_water_kg_h` | kg water h^-1 | External food-water input in an isolated body-water schedule |
 | `available_drinking_water_kg_h` | kg water h^-1 | Water available to drink before the animal's deficit limits realized drinking |
+| `prescribed_incremental_evaporative_water_loss_kg_h` | kg water h^-1 | External incremental evaporative-loss forcing, separate from ordinary loss |
 
 ## Forage-Biomass Fluxes
 
@@ -174,8 +175,9 @@ are not ecological states.
 | `available_drinking_water_kg` | kg water | Drinking water physically available during one stationary hour |
 | `realized_drinking_water_kg` | kg water | Available drinking water taken up to the normal-stock requirement |
 | `ordinary_water_loss_kg` | kg water | Fixed ordinary loss during one hour |
+| `incremental_evaporative_water_loss_kg` | kg water | Prescribed incremental evaporative loss during one hour |
 | `excess_water_elimination_kg` | kg water | Water above the normal stock removed during one hour |
-| `net_body_water_rate_kg_h` | kg water h^-1 | Food water plus drinking minus ordinary loss and excess elimination |
+| `net_body_water_rate_kg_h` | kg water h^-1 | Food water plus drinking minus ordinary, incremental evaporative, and excess losses |
 | `body_water_change_kg` | kg water | Observed one-hour stock change |
 | `body_water_balance_residual_kg` | kg water | Observed change minus expected net water flow |
 | `body_water_below_critical` | logical | Whether closing body water is below the declared critical boundary |
@@ -213,9 +215,10 @@ summary.
 
 Body-water daily summaries report opening, closing, and minimum body water;
 food-derived, available drinking, realized drinking, ordinary-loss, and
-excess-elimination totals; expected and observed change; balance residual; and
-whether the critical boundary was crossed. The spatial adapter additionally
-reports the number of hours with positive realized drinking.
+incremental-evaporative-loss and excess-elimination totals; expected and
+observed change; balance residual; and whether the critical boundary was
+crossed. The spatial adapter additionally reports the number of hours with
+positive realized drinking.
 
 Spatial coupled summaries retain those forage flows separately for each patch.
 Per-hectare stocks are never summed into a landscape mass because patch areas
@@ -322,6 +325,12 @@ water-visit count. These are experiment-level controller variables, not package
 state. The integrated diagnostic retains the accepted food-patch memory and
 choice state unchanged while water visits use only body-water state and a
 known source.
+
+The prescribed-loss diagnostic additionally records forcing regime and day,
+cumulative prescribed loss, source visits, source-travel expenditure, food-
+patch switches, minimum water and energy, and energy debt relative to the zero
+control at treatment and recovery endpoints. These remain experiment outputs;
+the forcing calendar and thirst controller are not package state.
 
 The food-quality choice-boundary diagnostic records current and destination
 metabolizable-energy densities, matched stay and move intake and energy, the

@@ -42,6 +42,10 @@ installed package:
   experience-based two-forage-patch system, checks exact water-disabled
   reduction, and exposes water-access stress through separate water, movement,
   forage, and energy accounts.
+- `prescribed-evaporative-loss-regimes.R` branches isolated and coupled systems
+  after one common baseline into zero, clustered, repeated, diffuse dose-
+  matched, and sustained forcing, then compares source travel, hydration,
+  energy debt, and recovery without imposing predicted outcome directions.
 - `spatial-patch-depletion-renewal.R` applies common turnover to two dynamic
   patch stocks and checks local depletion, release, renewal, one fixed transfer,
   and conserved animal-forage accounting.
@@ -65,9 +69,11 @@ installed package:
   alone and compares the minimal patch-quality score with matched full-day stay
   and move counterfactuals, reporting both switch boundaries and realized
   regret.
-- `herbivore-core-fixtures.R` supplies their shared synthetic reference.
+- `herbivore-core-fixtures.R` supplies the shared physiological reference.
+- `water-constrained-fixtures.R` supplies the accepted experiment-level patch,
+  memory, thirst, and continuation driver to the two water-constrained clients.
 
-The herbivore and coupled diagnostics source only the fixture helper; the
+The herbivore and coupled diagnostics source only shared fixture helpers; the
 isolated forage diagnostics are independent. No diagnostic sources another
 diagnostic, writes output files, or replays the chronological development arc.
 Install the package before running them; commands are given in the repository

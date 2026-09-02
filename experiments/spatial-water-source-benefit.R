@@ -56,7 +56,8 @@ run_itinerary <- function(closing_patch_id) {
     herbivoreTTR::new_body_water_state(initial_body_water_kg),
     water_parameters,
     water_properties,
-    energy$hourly
+    energy$hourly,
+    rep(0, 24L)
   )
   list(energy = energy, water = water)
 }

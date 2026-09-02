@@ -1,6 +1,7 @@
 # Arc 05: Landscape Constraints And Scenarios
 
-Status: in progress; experienced forage choice and a synthetic water constraint are established
+Status: in progress; experienced forage choice, body water, and prescribed
+evaporative-loss forcing are established
 
 ## Purpose
 
@@ -27,8 +28,10 @@ anchors. Do not add several stressors in one goal.
 4. **Richer forage composition:** add one composition axis at a time, with
    protein and water prioritized alongside metabolizable energy; introduce
    physical gut or digestive constraints only when needed to interpret intake.
-5. **Weather and thermoregulation:** add thermal and water costs through
-   explicit environmental forcing, separately from food limitation.
+5. **Weather and thermoregulation:** first establish a prescribed incremental
+   evaporative-loss interface, then add environmental drivers and thermal
+   responses separately from food limitation. The forcing interface is
+   complete; mechanistic thermoregulation remains deferred.
 6. **Landscape heterogeneity:** introduce structured variation in vegetation,
    water distance, patch renewal, and accessibility.
 7. **Scenarios:** compare seasonal drought, altered fire or vegetation regimes,
@@ -231,6 +234,18 @@ declared critical-water boundary because repeated `1,800 kJ` excursions become
 energetically unaffordable. This is the first coupled water-access stress
 signal, not a viability estimate. Dynamic plant moisture, thermal forcing,
 renal response, multiple sources, and search remain deferred.
+
+Goal 056 begins step 5 without claiming a heat-balance model. One separately
+accounted hourly flux prescribes incremental evaporative water loss. After 60
+common baseline days, isolated and coupled systems branch into 84 treatment and
+42 recovery days under zero, clustered, repeated, diffuse dose-matched, and
+sustained schedules. Equal `6.16 kg` treatments produce different source-visit
+timing and coupled recovery debt. Repeated forcing recovers better than the
+clustered pulse, contrary to its prespecified prediction. Sustained forcing
+lowers minimum coupled reserve to `851 kJ` while body water remains above the
+`24 kg` critical boundary. This strengthens the energetic-access signal while
+leaving temperature, heat balance, thermoregulatory behavior, and viability
+unmodeled.
 
 ## Decision Gates
 

@@ -7,7 +7,8 @@
 new_body_water_schedule(
   hour_of_day,
   prescribed_food_derived_water_kg_h,
-  available_drinking_water_kg_h
+  available_drinking_water_kg_h,
+  prescribed_incremental_evaporative_water_loss_kg_h
 )
 }
 \arguments{
@@ -18,11 +19,16 @@ vector of 24 food-derived water rates in kilograms per hour.}
 
 \item{available_drinking_water_kg_h}{Finite, non-negative numeric vector of
 24 water-availability rates in kilograms per hour.}
+
+\item{prescribed_incremental_evaporative_water_loss_kg_h}{Finite,
+non-negative numeric vector of 24 incremental evaporative-loss rates in
+kilograms per hour.}
 }
 \value{
 A canonical 24-row base data frame.
 }
 \description{
-Create food-derived water and water available for drinking over one fixed
-24-hour day. Both fields are hourly rates; each transition lasts one hour.
+Create food-derived water, water available for drinking, and incremental
+evaporative loss over one fixed 24-hour day. All fields are hourly rates;
+each transition lasts one hour.
 }

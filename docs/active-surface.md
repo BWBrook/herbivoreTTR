@@ -8,8 +8,9 @@ one prescribed explicit-patch day with static acquisition and food-energy
 heterogeneity plus a bounded patch-quality choice. A prescribed spatial path
 carries and locally removes dynamic forage biomass by patch. One independent
 water adapter derives forage and drinking inputs from that path without
-modifying its energy ledger. Its current user is Barry Brook. Its purpose is
-scientific understanding, not a general-purpose simulation platform.
+modifying its energy ledger, while a separate schedule can impose incremental
+evaporative loss. Its current user is Barry Brook. Its purpose is scientific
+understanding, not a general-purpose simulation platform.
 
 ## Canonical Paths
 
@@ -32,9 +33,10 @@ forage-acquisition schedule.
 
 `run_body_water_day()` is the canonical isolated water-stock day.
 `run_spatial_body_water_day()` derives effective forage water and stationary
-drinking availability from an existing spatial energy ledger. The two ledgers
-remain separately conserved. The daily-opening thirst trigger and familiar-
-source itinerary are experiment-level behavior, not package API.
+drinking availability from an existing spatial energy ledger and accepts one
+separate prescribed incremental evaporative-loss schedule. The two ledgers
+remain separately conserved. The daily-opening thirst trigger, familiar-source
+itinerary, and forcing calendars are experiment-level behavior, not package API.
 
 `derive_body_mass_from_energy_reserve()` is a downstream interpretation. Its
 result is never stored in or fed back to a transition.
@@ -226,6 +228,8 @@ accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
 - Food-derived water is proportional to realized dry-matter intake in the
   opening patch; drinking is available only during stationary source hours and
   cannot raise body water above its declared normal stock.
+- Prescribed incremental evaporative loss is non-negative, separately reported,
+  and reduces exactly to the Goal 055 water model when zero.
 - Disabling the water layer reproduces the accepted Goal 054 patch-choice
   trajectory exactly.
 - Every dynamic patch closes as opening biomass plus autonomous growth minus
@@ -259,7 +263,7 @@ accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
 | --- | --- |
 | Functional package core | Retain and extend by approved layers |
 | Explicit records, units, and balance residuals | Retain |
-| Twenty-four current diagnostics | Retain |
+| Twenty-five current diagnostics | Retain |
 | Focused invariant tests | Retain |
 | Scientific decision notes | Retain as the research notebook |
 | Goal-by-goal experiment ancestry | Removed from the active tree; Git retains it |
@@ -271,7 +275,7 @@ accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
 
 For ordinary changes, parse retained R, run the tests affected by the change,
 and inspect the diff. When publishing a package boundary or completed model
-stage, run the full focused suite, all twenty-four diagnostics, an external build,
+stage, run the full focused suite, all twenty-five diagnostics, an external build,
 and `R CMD check --no-manual` once.
 
 Repeat a gate only for a distinct named risk. Additional polish or repeated
@@ -280,17 +284,19 @@ confirmation is not a release criterion.
 ## Current Stop
 
 The herbivore, isolated forage, non-spatial coupling, and first explicit-patch
-arcs are closed. Arc 05 now has an accepted experience-based food-patch rule and
-one minimum water constraint. The water-disabled treatment exactly preserves
-the Goal 054 trajectory. Baseline hydration produces bounded familiar-source
-visits; wetter forage reduces them and protects body energy. Drier forage and
-greater ordinary loss terminate at the energy boundary before the declared
-critical-water boundary because repeated source trips become energetically
-costly. That amber result is retained as a synthetic coupled stress signal.
+arcs are closed. Arc 05 now has an accepted experience-based food-patch rule,
+one minimum water constraint, and one prescribed evaporative-loss interface.
+The water-disabled and zero-forcing treatments exactly preserve their accepted
+anchors. Equal `6.16 kg` clustered, repeated, and diffuse losses produce unequal
+visit timing and coupled recovery debt. The prediction that repeated events
+would impede recovery more than one cluster is not supported.
 
-The current water layer is intentionally small: one stock, effective forage
-water, fixed ordinary loss, stationary drinking, one known source, and one
-daily-opening trigger. Thermal forcing, dynamic plant moisture, renal response,
-multiple sources, search, mortality, and species calibration remain deferred.
-The next ecological layer should be chosen for the scientific question it can
-answer, not merely because it adds realism.
+Sustained forcing lowers minimum coupled reserve to `851 kJ` while minimum body
+water remains `25.32 kg`, retaining the amber result that costly water access
+can make energy limiting before declared critical dehydration. The current
+water layer is still intentionally small: one stock, effective forage water,
+ordinary and prescribed incremental loss, stationary drinking, one known
+source, and one daily-opening trigger. Temperature response, heat balance,
+dynamic plant moisture, renal response, multiple sources, search, mortality,
+and species calibration remain deferred. The next layer must answer a distinct
+scientific question rather than merely add realism.

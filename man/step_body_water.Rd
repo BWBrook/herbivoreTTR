@@ -19,8 +19,8 @@ A plain list containing the closing `state` and hourly `fluxes`.
 }
 \description{
 Add food-derived water, realize only the drinking needed to approach the
-declared normal stock, subtract ordinary loss, and eliminate any remaining
-excess above normal. The transition preserves a directly inspectable water
-balance and reports whether the closing stock is below the critical
-interpretation boundary.
+declared normal stock, subtract ordinary and prescribed incremental
+evaporative loss, and eliminate any remaining excess above normal. The
+transition preserves a directly inspectable water balance and reports
+whether the closing stock is below the critical interpretation boundary.
 }

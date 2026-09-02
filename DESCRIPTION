@@ -17,9 +17,10 @@ Description: Provides transparent functional models of herbivore energetics
     total body mass without feeding that derived quantity back into the model.
     An independent body-water ledger carries one physical water stock under
     effective forage-water input, stationary drinking at a known source, fixed
-    ordinary loss, and explicit excess elimination. A spatial adapter derives
-    the two water inputs from an existing hourly energy-and-location ledger
-    without altering it.
+    ordinary loss, prescribed incremental evaporative loss, and explicit
+    excess elimination. A spatial adapter derives the two water inputs from an
+    existing hourly energy-and-location ledger and accepts the separate loss
+    schedule without altering the energy ledger.
     A separate isolated forage ledger carries homogeneous standing biomass
     under prescribed growth and background loss with exact stock-flow
     accounting. A linear turnover reference adds constant production and

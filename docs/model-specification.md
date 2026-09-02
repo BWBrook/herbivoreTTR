@@ -51,6 +51,7 @@ interval's opening stocks without implicit reset or clamping.
 - `normal_body_water_kg` is strictly positive.
 - `critical_body_water_kg` is non-negative and below normal body water.
 - `ordinary_water_loss_kg_h` is non-negative.
+- prescribed incremental evaporative-loss rates are non-negative.
 
 Metabolizable-energy density is already an available-energy quantity. The
 current model does not separately represent gross energy, digestibility,
@@ -417,18 +418,19 @@ The current water layer is an independent physical stock-flow model. For each
 one-hour interval:
 
 ```text
-water_after_food_and_loss_kg =
+water_after_food_and_losses_kg =
   body_water_start_kg
   + food_derived_water_kg
   - ordinary_water_loss_kg
+  - incremental_evaporative_water_loss_kg
 
 realized_drinking_water_kg = min(
   available_drinking_water_kg,
-  max(normal_body_water_kg - water_after_food_and_loss_kg, 0)
+  max(normal_body_water_kg - water_after_food_and_losses_kg, 0)
 )
 
 body_water_end_kg = min(
-  water_after_food_and_loss_kg + realized_drinking_water_kg,
+  water_after_food_and_losses_kg + realized_drinking_water_kg,
   normal_body_water_kg
 )
 ```
@@ -458,6 +460,11 @@ daily-opening thirst trigger, a `24 kg` critical interpretation boundary, and
 routes to its single familiar source and remains there for one drinking hour.
 The controller is retained in experiments rather than the package API.
 
+The body-water schedule may also prescribe a non-negative incremental
+evaporative-loss rate for each hour. This flux is accounted separately from
+ordinary loss. A zero vector is the exact preceding model; the field does not
+itself imply temperature, humidity, a heat balance, or a physiological response.
+
 In the 60-day single-forage-patch reference, baseline food water produces ten
 visits no closer than six days apart; wetter forage reduces visits to four and
 drier forage increases them to twenty. In the accepted 305-day dynamic-patch
@@ -467,6 +474,17 @@ wetter forage reduces visits to 11 and retains `35,533 kJ`. Drier forage and
 greater ordinary loss terminate at the non-negative energy boundary before
 crossing the declared critical-water boundary. This is a synthetic coupled
 stress result, not a calibrated viability claim.
+
+The first temporal-forcing diagnostic branches both the isolated and accepted
+coupled systems after 60 common days. It compares 84 treatment days followed by
+42 recovery days under zero, clustered, repeated, diffuse dose-matched, and
+sustained prescribed increments. Clustered, repeated, and diffuse regimes each
+add `6.16 kg`, yet coupled recovery-end energy debt ranges from `1,116` to
+`2,914 kJ`. The repeated treatment recovers more, not less, than the clustered
+treatment. Sustained forcing adds `36.96 kg`, lowers the coupled minimum reserve
+to `851 kJ`, and still leaves minimum water at `25.32 kg`, above the declared
+critical boundary. These are synthetic path-dependent consequences of the
+daily thirst trigger and travel, not thermoregulatory or viability estimates.
 
 ## Dynamic Spatial Forage Coupling
 
@@ -900,7 +918,7 @@ assertion that daily energetic balance alone establishes health or viability.
 
 ## Retained Diagnostics
 
-Twenty-four no-write experiments protect the current scientific interpretation:
+Twenty-five no-write experiments protect the current scientific interpretation:
 
 - the reference diagnostic checks neutrality, conservation, and gut order;
 - the appetite-forage diagnostic checks a binding ceiling, deficit recovery,
@@ -942,6 +960,10 @@ Twenty-four no-write experiments protect the current scientific interpretation:
 - the water-constrained patch-choice diagnostic checks exact reduction to the
   Goal 054 anchor, repeated familiar-source visits, one-factor water contrasts,
   and separate forage, energy, and water accounting; and
+- the prescribed evaporative-loss diagnostic branches one common state into
+  clustered, repeated, diffuse dose-matched, sustained, and zero schedules in
+  both isolated and coupled systems, reporting visit, hydration, energy, and
+  recovery consequences without treating predicted directions as tests; and
 - the spatial patch depletion-and-renewal diagnostic checks common turnover,
   occupied-patch removal, movement-hour closure, release, renewal, and full
   patch-animal conservation; and

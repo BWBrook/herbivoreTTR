@@ -8,7 +8,7 @@
 | 2. Isolated plant-forage | Can a simple forage biomass stock remain stable under growth, loss, and later seasonal forcing without herbivory? | Closed; controlled forcing deferred until required |
 | 3. Non-spatial coupling | How do herbivore intake and forage depletion alter one another in a homogeneous system? | Closed |
 | 4. Explicit patches and movement | How do location, patch choice, travel time, and travel energy change intake and state? | Closed |
-| 5. Landscape constraints and scenarios | How do water, depletion, heterogeneity, climate, and disturbance produce chronic stress? | In progress; experienced forage choice and one synthetic body-water constraint established |
+| 5. Landscape constraints and scenarios | How do water, depletion, heterogeneity, climate, and disturbance produce chronic stress? | In progress; experienced forage choice, body water, and prescribed evaporative-loss forcing established |
 
 The detailed contracts are stored under `docs/arcs/`.
 
@@ -197,6 +197,17 @@ ordinary loss, repeated water trips make energy limiting before the declared
 critical-water boundary is crossed. The result is an attributable synthetic
 stress boundary, not species calibration. Thermal forcing, dynamic plant
 moisture, and multiple water sources remain later decisions.
+
+Goal 056 adds the smallest temporal forcing boundary: one prescribed
+incremental evaporative-loss flux, independently conserved and exactly zero in
+the Goal 055 reduction. Isolated and coupled systems branch after 60 common
+days into clustered, repeated, diffuse dose-matched, sustained, and control
+schedules. Equal cumulative loss produces unequal visits and recovery debt;
+repeated events recover better than the clustered pulse, contrary to the
+prespecified prediction. Sustained forcing drives coupled energy close to its
+non-negative boundary before critical dehydration. Temperature response,
+heat balance, thermoregulatory behavior, plant moisture, and species
+calibration remain deliberately unimplemented.
 
 ## Deferred Animal Layers
 

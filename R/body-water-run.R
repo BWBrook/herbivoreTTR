@@ -40,6 +40,8 @@ run_body_water_day <- function(initial_state, parameters, schedule) {
       realized_drinking_water_kg =
         step$fluxes$realized_drinking_water_kg,
       ordinary_water_loss_kg = step$fluxes$ordinary_water_loss_kg,
+      incremental_evaporative_water_loss_kg =
+        step$fluxes$incremental_evaporative_water_loss_kg,
       excess_water_elimination_kg =
         step$fluxes$excess_water_elimination_kg,
       net_body_water_rate_kg_h = step$fluxes$net_body_water_rate_kg_h,
@@ -63,12 +65,16 @@ run_body_water_day <- function(initial_state, parameters, schedule) {
   total_realized_drinking_water_kg <-
     sum(hourly$realized_drinking_water_kg)
   total_ordinary_water_loss_kg <- sum(hourly$ordinary_water_loss_kg)
+  total_incremental_evaporative_water_loss_kg <- sum(
+    hourly$incremental_evaporative_water_loss_kg
+  )
   total_excess_water_elimination_kg <-
     sum(hourly$excess_water_elimination_kg)
   expected_body_water_change_kg <-
     total_food_derived_water_kg +
       total_realized_drinking_water_kg -
       total_ordinary_water_loss_kg -
+      total_incremental_evaporative_water_loss_kg -
       total_excess_water_elimination_kg
   observed_body_water_change_kg <-
     body_water_final_kg - body_water_initial_kg
@@ -81,6 +87,7 @@ run_body_water_day <- function(initial_state, parameters, schedule) {
     total_available_drinking_water_kg,
     total_realized_drinking_water_kg,
     total_ordinary_water_loss_kg,
+    total_incremental_evaporative_water_loss_kg,
     total_excess_water_elimination_kg,
     expected_body_water_change_kg,
     observed_body_water_change_kg,
@@ -103,6 +110,8 @@ run_body_water_day <- function(initial_state, parameters, schedule) {
       total_available_drinking_water_kg,
     total_realized_drinking_water_kg = total_realized_drinking_water_kg,
     total_ordinary_water_loss_kg = total_ordinary_water_loss_kg,
+    total_incremental_evaporative_water_loss_kg =
+      total_incremental_evaporative_water_loss_kg,
     total_excess_water_elimination_kg =
       total_excess_water_elimination_kg,
     expected_body_water_change_kg = expected_body_water_change_kg,
