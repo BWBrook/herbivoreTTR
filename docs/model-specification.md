@@ -490,12 +490,16 @@ to `851 kJ`, and still leaves minimum water at `25.32 kg`, above the declared
 critical boundary. These are synthetic path-dependent consequences of the
 daily thirst trigger and travel, not thermoregulatory or viability estimates.
 
-The causal-controller comparison uses the same branches and detects the first
+The historical Goal 057 comparison uses the same branches and detects the first
 threshold crossing along a no-source day. It then inserts the complete visit
 after that boundary and reruns the accepted daily engines. Because the revised
 and provisional paths are identical through detection, the construction uses
-no future state. A direct probe protects this prefix identity and confirms that
-a last-hour crossing is deferred.
+no future information in the selected action. This construction can nonetheless
+fail if the later provisional day is invalid. Goal 058 avoids that limitation
+by advancing actual state using the public hourly primitives. Matched prescribed
+paths and both 60-day reactive baselines reproduce the accepted daily runners;
+a probe confirms that a later impossible no-trip day cannot block an earlier
+feasible response.
 
 In the coupled system, causal response raises minimum water from roughly
 `25.2-25.3 kg` to `25.7-25.9 kg`. Unlike the daily-opening comparator, however,
@@ -509,6 +513,33 @@ Experienced food-patch return excludes movement, source stays, and all other
 hours that are not stationary open opportunities in a food patch. Water travel
 therefore retains its intake and energetic costs without being learned as poor
 forage return.
+
+### Temperature And Anticipatory Drinking Comparison
+
+The experiment-level environmental driver uses a synthetic `24-36 C` cosine
+cycle and positive-part extra water loss above `30 C`. Its slope is fixed once
+so the canonical day loses `0.44 kg` extra. Ordinary loss stays separate, and
+the new loss is action independent: cooler trip timing has no direct thermal
+benefit. There is no heat balance or species calibration.
+
+One candidate adds an 08:00 departure if current water minus 25 hours of mean
+recent physiological draw is below `26 kg`. Draw is ordinary plus extra loss
+minus food water over the last 24 completed hours, floored at zero only after
+averaging. Drinking and overflow are excluded. The horizon ends at next
+morning's 09:00 source arrival, not after drinking. The rule retains identical
+reactive fallback and trip constraints. Exact historical physiological draw
+is a declared synthetic information assumption; no future forcing or state is
+provided. This is an endpoint heuristic, not a trough prediction.
+
+Matched isolated/coupled branches compare zero loss, midday and evening peaks,
+and an unannounced halfway phase shift after common preconditioning, with
+bounded loss-slope and memory-window sensitivity. Anticipation can protect
+feeding but can also create more costly, smaller refills and change subsequent
+fallback timing. Its performance changes sign across conditions. It is retained
+as a fallible comparator, not a general improvement. Terminal comparisons use
+common completed hours, include valid partial days, and distinguish rejected
+negative-energy transitions from critical-water crossings or mortality.
+The exact contract and results are in Decision 0058.
 
 ## Dynamic Spatial Forage Coupling
 
@@ -991,6 +1022,10 @@ Twenty-six no-write experiments protect the current scientific interpretation:
 - the causal hydration-response diagnostic checks pre-decision prefix identity,
   late deferral, hourly detection, the frozen daily-opening comparator, and all
   five forcing regimes in isolated and coupled systems; and
+- the temperature/anticipation diagnostic checks prescribed hourly equivalence,
+  causal history-only decisions, equal-dose phase changes, common-horizon
+  accounting, and a bounded loss-slope/memory sensitivity without asserting
+  that the candidate policy must improve outcomes; and
 - the spatial patch depletion-and-renewal diagnostic checks common turnover,
   occupied-patch removal, movement-hour closure, release, renewal, and full
   patch-animal conservation; and
@@ -1032,10 +1067,10 @@ not package API or a claim of optimal foraging.
 
 The current model excludes resource- or weather-dependent plant production,
 explicit senescence processes, acquisition functional responses beyond the
-accepted ceilings, multiple explicit or heterogeneous animals, protein, water
-loss responsive to temperature or physiology, dynamic plant moisture,
-thermoregulation, multiple or uncertain drinking sources, repeated or
-stochastic route choice as package behavior, dynamic anticipation, explicit
+accepted ceilings, multiple explicit or heterogeneous animals, protein,
+state- or activity-dependent water loss, dynamic plant moisture,
+mechanistic thermoregulation, multiple or uncertain drinking sources, repeated or
+stochastic route choice as package behavior, general anticipatory scheduling, explicit
 package-level perception or memory, endogenous decision timing, multi-hour
 transit, anticipatory quality-aware choice, patch-specific production, search,
 mortality, reproduction, and population dynamics. These require separately

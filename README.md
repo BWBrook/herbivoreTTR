@@ -272,6 +272,7 @@ Rscript --vanilla experiments/hydration-controlled-water-visits.R
 Rscript --vanilla experiments/water-constrained-patch-choice.R
 Rscript --vanilla experiments/prescribed-evaporative-loss-regimes.R
 Rscript --vanilla experiments/causal-hydration-response.R
+Rscript --vanilla experiments/temperature-anticipatory-drinking.R
 Rscript --vanilla experiments/spatial-patch-depletion-renewal.R
 Rscript --vanilla experiments/spatial-resource-aware-choice.R
 Rscript --vanilla experiments/spatial-resource-aware-switch-boundary.R
@@ -372,9 +373,14 @@ visit timing and recovery. A causal hourly controller protects the water stock
 but can move source travel into feeding hours. Under sustained forcing, that
 controller reaches the energy boundary after 76 treatment days while remaining
 above the synthetic critical-water boundary. These are mechanism results, not
-calibrated viability claims. Temperature-response physiology, anticipatory
-scheduling, dynamic plant moisture, renal response, multiple water sources, and
-package-level repeated behavioral mechanisms remain absent. The staged
+calibrated viability claims. A synthetic temperature-driven loss function now
+supports matched diurnal and phase-shift comparisons. One experience-based
+08:00 anticipatory top-up rule helps some conditions but worsens others by
+buying smaller refills through extra costly trips. It remains a fallible
+comparator, not a promoted default; see
+[`Decision 0058`](docs/decisions/0058-temperature-anticipatory-drinking.md).
+Mechanistic thermoregulation, dynamic plant moisture, renal response, multiple
+water sources, and package-level repeated behavioral mechanisms remain absent. The staged
 programme is indexed in
 [`docs/roadmap.md`](docs/roadmap.md).
 
@@ -382,7 +388,7 @@ programme is indexed in
 
 - `R/`: reusable model records, transitions, and runners.
 - `tests/testthat/`: focused protection of scientific invariants.
-- `experiments/`: twenty-six current no-write diagnostics and four shared
+- `experiments/`: twenty-seven current no-write diagnostics and six shared
   fixture helpers.
 - `docs/model-charter.md`: governing scientific and architectural contract.
 - `docs/model-specification.md`: equations, transition order, and outputs.

@@ -50,6 +50,10 @@ installed package:
   with one hourly causal familiar-source response across the same five forcing
   regimes, including prefix identity, late deferral, feeding displacement, and
   an explicit sustained energy boundary.
+- `temperature-anticipatory-drinking.R` compares the reactive null with a
+  recent-experience 08:00 top-up rule under equal-dose temperature cycles and
+  an unannounced phase shift. It checks hourly execution equivalence and
+  causality, then reports common-hour costs and bounded slope/memory sensitivity.
 - `spatial-patch-depletion-renewal.R` applies common turnover to two dynamic
   patch stocks and checks local depletion, release, renewal, one fixed transfer,
   and conserved animal-forage accounting.
@@ -78,6 +82,9 @@ installed package:
   memory, thirst, and continuation driver.
 - `isolated-hydration-fixtures.R` supplies the matched non-depleting forage
   client, and `reactive-water-visit-fixtures.R` supplies the causal trip planner.
+- `hydration-hourly-transition.R` composes public hourly transitions on actual
+  state. `temperature-hydration-fixtures.R` supplies the environmental histories,
+  experience-based drinking comparison, and common-horizon summaries.
 
 The herbivore and coupled diagnostics source only shared fixture helpers; the
 isolated forage diagnostics are independent. No diagnostic sources another

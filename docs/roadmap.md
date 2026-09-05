@@ -8,7 +8,7 @@
 | 2. Isolated plant-forage | Can a simple forage biomass stock remain stable under growth, loss, and later seasonal forcing without herbivory? | Closed; controlled forcing deferred until required |
 | 3. Non-spatial coupling | How do herbivore intake and forage depletion alter one another in a homogeneous system? | Closed |
 | 4. Explicit patches and movement | How do location, patch choice, travel time, and travel energy change intake and state? | Closed |
-| 5. Landscape constraints and scenarios | How do water, depletion, heterogeneity, climate, and disturbance produce chronic stress? | In progress; experienced forage choice, body water, prescribed evaporative loss, and causal drinking response established |
+| 5. Landscape constraints and scenarios | How do water, depletion, heterogeneity, climate, and disturbance produce chronic stress? | In progress; experienced forage choice, body water, temperature-loss forcing, and a causal drinking-policy comparison established |
 
 The detailed contracts are stored under `docs/arcs/`.
 
@@ -219,9 +219,17 @@ days while remaining above critical water. One integration repair prevents
 water excursions from being misremembered as poor food-patch return. The rule
 is accepted as an operational null, not optimized or calibrated behavior.
 
+Goal 058 compares reactive drinking with one recent-experience anticipatory
+top-up under synthetic temperature cycles, equal-dose phase shifts, and bounded
+sensitivity. The candidate helps some conditions but worsens others because
+smaller refills can require more costly trips; it is not promoted as a default.
+This closes the environmental-forcing/first-anticipation comparison without
+rescue tuning. Cost-aware source-trip timing is the next proposed tranche;
+its endpoint and information/safety boundaries require a new approved contract.
+
 ## Deferred Animal Layers
 
-Protein, thermoregulation, water loss responsive to weather or physiology,
+Protein, mechanistic thermoregulation, state-dependent water loss,
 dynamic plant moisture, explicit mass feedback, gut composition, reproductive
 allocation, and survival thresholds remain scientifically important. They
 should be added one at a time when a new ecological question can distinguish

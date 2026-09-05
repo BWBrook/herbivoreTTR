@@ -75,8 +75,11 @@ water separately. A critical boundary is reported without implying mortality
 or changing a transition. The current familiar-source null detects thirst on
 the hourly clock, begins at most one complete trip only after detection, and
 defers a late crossing. The thirst rule and temporal forcing regimes remain
-experiment-level behavior rather than package API. Prescribed loss is not a
-temperature-response or thermoregulation model.
+experiment-level behavior rather than package API. One synthetic positive-part
+temperature response now supplies incremental loss for a matched experiment.
+A recent-experience anticipatory top-up rule remains a fallible comparator,
+not a general improvement over the reactive null. Neither is a calibrated
+thermoregulation or heat-balance model.
 
 The first dynamic spatial-forage layer keeps one biomass-density stock per
 patch, separate from static patch acquisition capacity. Common autonomous
@@ -132,7 +135,7 @@ The current package does not include resource-dependent plant production,
 weather or seasonal forcing, explicit senescence mechanisms, forage
 functional responses beyond the accepted ceilings, explicit or heterogeneous
 multiple animals, repeated or stochastic route choice as package behavior,
-search, temperature- or state-dependent water loss, dynamic plant moisture,
+search, state- or activity-dependent water loss, dynamic plant moisture,
 renal physiology, multiple or uncertain drinking sources, protein,
 thermoregulation, disease, reproduction, mortality, anticipatory quality-aware
 choice, patch-specific turnover, or population dynamics. These are candidate

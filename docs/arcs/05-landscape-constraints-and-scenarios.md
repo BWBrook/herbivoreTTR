@@ -31,8 +31,9 @@ anchors. Do not add several stressors in one goal.
 5. **Weather and thermoregulation:** first establish a prescribed incremental
    evaporative-loss interface and a causal drinking response, then add
    environmental drivers and thermal responses separately from food
-   limitation. The forcing and response interfaces are complete; mechanistic
-   thermoregulation remains deferred.
+   limitation. A synthetic temperature-loss driver and one causal anticipatory
+   comparison are complete; the candidate is not generally beneficial.
+   Mechanistic thermoregulation remains deferred.
 6. **Landscape heterogeneity:** introduce structured variation in vegetation,
    water distance, patch renewal, and accessibility.
 7. **Scenarios:** compare seasonal drought, altered fire or vegetation regimes,
@@ -258,6 +259,15 @@ the non-negative energy boundary after 76 treatment days at `25.74 kg` minimum
 water. This is accepted as an operational response null, not optimized
 scheduling or thermoregulation. Water excursions are excluded from experienced
 food-patch return so travel costs do not masquerade as poor forage experience.
+
+Goal 058 completes a bounded temperature-forcing and first-anticipation
+comparison. Equal-dose midday/evening cycles and an unannounced phase shift
+expose the fixed-cost trade-off in early top-ups: sometimes protecting feeding,
+sometimes buying smaller refills through additional trips. Loss-slope and
+memory sensitivity confirm conditional rather than universal benefit. The
+reactive null remains the baseline and the candidate remains a fallible
+comparator. Cost-aware trip timing is the next proposed question, before adding
+thermal physiology or plant-water feedbacks; see Decision 0058.
 
 ## Decision Gates
 

@@ -37,6 +37,9 @@ drinking availability from an existing spatial energy ledger and accepts one
 separate prescribed incremental evaporative-loss schedule. The two ledgers
 remain separately conserved. The causal hourly thirst trigger, familiar-source
 itinerary, and forcing calendars are experiment-level behavior, not package API.
+One synthetic temperature-loss driver and an experience-based anticipatory
+comparator now use an actual-state hourly composition of the existing public
+transitions; prescribed paths and reactive baselines reproduce the day runners.
 
 `derive_body_mass_from_energy_reserve()` is a downstream interpretation. Its
 result is never stored in or fed back to a transition.
@@ -234,6 +237,9 @@ accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
   boundary, allows at most one complete trip per day, and defers a late crossing.
 - Experienced food-patch return uses only stationary open opportunities in a
   food patch; source travel and drinking cannot be learned as poor forage.
+- The anticipatory comparator receives only current water and completed
+  physiological draw history. Temperature phase comparisons retain equal
+  imposed dose, and policy costs use common completed hourly horizons.
 - Disabling the water layer reproduces the accepted Goal 054 patch-choice
   trajectory exactly.
 - Every dynamic patch closes as opening biomass plus autonomous growth minus
@@ -267,7 +273,7 @@ accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
 | --- | --- |
 | Functional package core | Retain and extend by approved layers |
 | Explicit records, units, and balance residuals | Retain |
-| Twenty-six current diagnostics | Retain |
+| Twenty-seven current diagnostics | Retain |
 | Focused invariant tests | Retain |
 | Scientific decision notes | Retain as the research notebook |
 | Goal-by-goal experiment ancestry | Removed from the active tree; Git retains it |
@@ -279,7 +285,7 @@ accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
 
 For ordinary changes, parse retained R, run the tests affected by the change,
 and inspect the diff. When publishing a package boundary or completed model
-stage, run the full focused suite, all twenty-six diagnostics, an external build,
+stage, run the full focused suite, all twenty-seven diagnostics, an external build,
 and `R CMD check --no-manual` once.
 
 Repeat a gate only for a distinct named risk. Additional polish or repeated
@@ -298,8 +304,14 @@ Hourly response protects minimum water by roughly `0.5 kg` in the coupled
 forcing contrasts but can displace feeding. The sustained causal branch reaches
 the non-negative energy boundary after 76 treatment days with minimum water at
 `25.74 kg`, above the `24 kg` critical boundary. The current controller is an
-immediate-response operational null, not optimized behavior. Temperature
-response, heat balance, anticipatory activity scheduling, dynamic plant
-moisture, renal response, multiple sources, search, mortality, and species
-calibration remain deferred. The next layer must answer a distinct scientific
-question rather than merely add realism.
+immediate-response operational null, not optimized behavior. Goal 058 adds a
+synthetic temperature-response comparison and tests one recent-experience
+08:00 top-up rule. It helps the evening-peak case but worsens the midday and
+shifted primary coupled cases through costly small refills and path-dependent
+feeding effects. The candidate is retained as a fallible comparator, not a
+replacement default. All primary water minima exceed `25.6 kg`; the warm
+coupled branches reach an energy boundary before recovery.
+
+Cost-aware source-trip timing is the next proposed question. Heat balance,
+general activity scheduling, dynamic plant moisture, renal response, multiple
+sources, search, mortality, and species calibration remain deferred.
