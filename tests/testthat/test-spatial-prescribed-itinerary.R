@@ -133,6 +133,16 @@ test_that("an all-stay itinerary reduces exactly to the appetite reference", {
   )
 })
 
+test_that("spatial days reject a reference above the declared intake maximum", {
+  fixture <- core_test_fixture()
+  fixture$appetite$maximum_dry_matter_intake_kg_dm_h <- 0.015
+
+  expect_error(
+    test_spatial_day(fixture, rep("patch_a", 24L)),
+    "must not exceed the declared maximum intake rate"
+  )
+})
+
 test_that("a prescribed round trip separates travel from feeding time lost", {
   fixture <- core_test_fixture()
   closing_patch_id <- rep("patch_a", 24L)

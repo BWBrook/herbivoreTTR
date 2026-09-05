@@ -16,7 +16,10 @@ new_nonspatial_coupling_parameters <- function(
   herbivore_density_animals_ha,
   residual_unavailable_forage_threshold_kg_dm_ha
 ) {
-  .validate_positive_herbivore_density(herbivore_density_animals_ha)
+  .validate_positive_numeric_scalar(
+    herbivore_density_animals_ha,
+    "herbivore_density_animals_ha"
+  )
   .validate_nonnegative_numeric_scalar(
     residual_unavailable_forage_threshold_kg_dm_ha,
     "residual_unavailable_forage_threshold_kg_dm_ha"
@@ -652,30 +655,13 @@ run_nonspatial_coupled_energy_days <- function(
     )
   }
 
-  .validate_positive_herbivore_density(
-    parameters$herbivore_density_animals_ha
+  .validate_positive_numeric_scalar(
+    parameters$herbivore_density_animals_ha,
+    "herbivore_density_animals_ha"
   )
   .validate_nonnegative_numeric_scalar(
     parameters$residual_unavailable_forage_threshold_kg_dm_ha,
     "parameters$residual_unavailable_forage_threshold_kg_dm_ha"
   )
-  invisible(NULL)
-}
-
-.validate_positive_herbivore_density <- function(value) {
-  if (
-    !.is_numeric_vector(value) ||
-      length(value) != 1L ||
-      !is.finite(as.double(value)) ||
-      as.double(value) <= 0
-  ) {
-    stop(
-      paste0(
-        "`herbivore_density_animals_ha` must be one finite, strictly ",
-        "positive numeric value."
-      ),
-      call. = FALSE
-    )
-  }
   invisible(NULL)
 }

@@ -74,7 +74,7 @@ run_spatial_body_water_day <- function(
   .validate_body_water_parameters(parameters)
   .validate_patch_water_properties(patch_water_properties)
   .validate_spatial_energy_water_surface(spatial_energy_hourly)
-  .validate_body_water_schedule_vector(
+  .validate_nonnegative_daily_numeric_vector(
     prescribed_incremental_evaporative_water_loss_kg_h,
     "prescribed_incremental_evaporative_water_loss_kg_h"
   )
@@ -231,7 +231,7 @@ run_spatial_body_water_day <- function(
       call. = FALSE
     )
   }
-  .validate_body_water_schedule_vector(
+  .validate_nonnegative_daily_numeric_vector(
     hourly$realized_dry_matter_intake_kg_dm_h,
     "spatial_energy_hourly$realized_dry_matter_intake_kg_dm_h"
   )

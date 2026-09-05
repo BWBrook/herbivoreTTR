@@ -47,7 +47,7 @@ derive_ingested_available_energy_schedule <- function(
     )
   }
 
-  .validate_food_energy_density(
+  .validate_positive_numeric_scalar(
     parameters$metabolizable_energy_density_kj_kg_dm,
     "parameters$metabolizable_energy_density_kj_kg_dm"
   )

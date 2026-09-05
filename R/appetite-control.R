@@ -20,7 +20,7 @@ new_appetite_control_parameters <- function(
   body_energy_feedback_fraction_h,
   gut_energy_feedback_fraction_h
 ) {
-  .validate_food_energy_density(
+  .validate_positive_numeric_scalar(
     maximum_dry_matter_intake_kg_dm_h,
     "maximum_dry_matter_intake_kg_dm_h"
   )
@@ -274,7 +274,7 @@ calculate_appetite_target <- function(
     )
   }
 
-  .validate_food_energy_density(
+  .validate_positive_numeric_scalar(
     parameters$maximum_dry_matter_intake_kg_dm_h,
     "appetite_parameters$maximum_dry_matter_intake_kg_dm_h"
   )
@@ -286,25 +286,6 @@ calculate_appetite_target <- function(
     parameters$gut_energy_feedback_fraction_h,
     "appetite_parameters$gut_energy_feedback_fraction_h"
   )
-
-  invisible(NULL)
-}
-
-.validate_appetite_numeric_vector <- function(value, field_name) {
-  if (
-    !.is_numeric_vector(value) ||
-      length(value) != 24L ||
-      any(!is.finite(as.double(value))) ||
-      any(as.double(value) < 0)
-  ) {
-    stop(
-      sprintf(
-        "`%s` must contain 24 finite, non-negative numeric values.",
-        field_name
-      ),
-      call. = FALSE
-    )
-  }
 
   invisible(NULL)
 }
@@ -334,15 +315,15 @@ calculate_appetite_target <- function(
     )
   }
 
-  .validate_appetite_numeric_vector(
+  .validate_nonnegative_daily_numeric_vector(
     reference_dry_matter_intake_kg_dm_h,
     "reference_dry_matter_intake_kg_dm_h"
   )
-  .validate_appetite_numeric_vector(
+  .validate_nonnegative_daily_numeric_vector(
     reference_body_energy_reserve_kj,
     "reference_body_energy_reserve_kj"
   )
-  .validate_appetite_numeric_vector(
+  .validate_nonnegative_daily_numeric_vector(
     reference_gut_available_energy_kj,
     "reference_gut_available_energy_kj"
   )

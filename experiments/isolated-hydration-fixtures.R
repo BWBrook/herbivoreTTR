@@ -148,6 +148,10 @@ run_isolated_hydration_days <- function(
       )
       list(energy = energy, water = water, visit_plan = visit_plan)
     }, error = function(error) {
+      if (!conditionMessage(error) %in% c(
+        "The proposed closing body-energy reserve is negative.",
+        "The proposed closing body-water stock is negative."
+      )) stop(error)
       day_error <<- conditionMessage(error)
       NULL
     })

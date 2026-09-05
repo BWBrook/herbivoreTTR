@@ -38,20 +38,10 @@ new_forage_acquisition_ceiling_schedule <- function(
     )
   }
 
-  if (
-    !.is_numeric_vector(forage_acquisition_ceiling_kg_dm_h) ||
-      length(forage_acquisition_ceiling_kg_dm_h) != 24L ||
-      any(!is.finite(as.double(forage_acquisition_ceiling_kg_dm_h))) ||
-      any(as.double(forage_acquisition_ceiling_kg_dm_h) < 0)
-  ) {
-    stop(
-      paste0(
-        "`forage_acquisition_ceiling_kg_dm_h` must contain 24 finite, ",
-        "non-negative numeric values."
-      ),
-      call. = FALSE
-    )
-  }
+  .validate_nonnegative_daily_numeric_vector(
+    forage_acquisition_ceiling_kg_dm_h,
+    "forage_acquisition_ceiling_kg_dm_h"
+  )
 
   invisible(NULL)
 }

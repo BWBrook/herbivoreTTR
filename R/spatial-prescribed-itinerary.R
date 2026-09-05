@@ -84,6 +84,11 @@ run_prescribed_spatial_energy_day <- function(
   .validate_routine_activity_expenditure_schedule(
     routine_activity_schedule
   )
+  .validate_appetite_reference_maximum(
+    appetite_reference_schedule$reference_dry_matter_intake_kg_dm_h,
+    appetite_parameters$maximum_dry_matter_intake_kg_dm_h,
+    "appetite_reference_schedule$reference_dry_matter_intake_kg_dm_h"
+  )
 
   patch_ids <- landscape$patches$patch_id
   if (!(initial_location_state$patch_id %in% patch_ids)) {

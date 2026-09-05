@@ -92,22 +92,10 @@ new_ingested_available_energy_schedule <- function(
     )
   }
 
-  if (
-    !.is_numeric_vector(
-      prescribed_ingested_available_energy_kj_h
-    ) ||
-      length(prescribed_ingested_available_energy_kj_h) != 24L ||
-      any(!is.finite(as.double(prescribed_ingested_available_energy_kj_h))) ||
-      any(as.double(prescribed_ingested_available_energy_kj_h) < 0)
-  ) {
-    stop(
-      paste0(
-        "`prescribed_ingested_available_energy_kj_h` must contain 24 finite, ",
-        "non-negative numeric values."
-      ),
-      call. = FALSE
-    )
-  }
+  .validate_nonnegative_daily_numeric_vector(
+    prescribed_ingested_available_energy_kj_h,
+    "prescribed_ingested_available_energy_kj_h"
+  )
 
   invisible(NULL)
 }

@@ -33,7 +33,7 @@ new_body_water_parameters <- function(
   critical_body_water_kg,
   ordinary_water_loss_kg_h
 ) {
-  .validate_body_water_positive_scalar(
+  .validate_positive_numeric_scalar(
     normal_body_water_kg,
     "normal_body_water_kg"
   )
@@ -103,22 +103,6 @@ new_body_water_schedule <- function(
   )
 }
 
-.validate_body_water_positive_scalar <- function(value, field_name) {
-  if (
-    !.is_numeric_vector(value) ||
-      length(value) != 1L ||
-      !is.finite(as.double(value)) ||
-      as.double(value) <= 0
-  ) {
-    stop(
-      sprintf("`%s` must be one finite, strictly positive value.", field_name),
-      call. = FALSE
-    )
-  }
-
-  invisible(NULL)
-}
-
 .validate_body_water_state <- function(state) {
   if (!.has_exact_named_fields(state, "body_water_kg")) {
     stop("`state` must contain only `body_water_kg`.", call. = FALSE)
@@ -147,7 +131,7 @@ new_body_water_schedule <- function(
     )
   }
 
-  .validate_body_water_positive_scalar(
+  .validate_positive_numeric_scalar(
     parameters$normal_body_water_kg,
     "parameters$normal_body_water_kg"
   )
@@ -184,37 +168,18 @@ new_body_water_schedule <- function(
   if (!.is_hour_of_day_schedule(hour_of_day)) {
     stop("`hour_of_day` must equal integer `0:23`, in order.", call. = FALSE)
   }
-  .validate_body_water_schedule_vector(
+  .validate_nonnegative_daily_numeric_vector(
     prescribed_food_derived_water_kg_h,
     "prescribed_food_derived_water_kg_h"
   )
-  .validate_body_water_schedule_vector(
+  .validate_nonnegative_daily_numeric_vector(
     available_drinking_water_kg_h,
     "available_drinking_water_kg_h"
   )
-  .validate_body_water_schedule_vector(
+  .validate_nonnegative_daily_numeric_vector(
     prescribed_incremental_evaporative_water_loss_kg_h,
     "prescribed_incremental_evaporative_water_loss_kg_h"
   )
-
-  invisible(NULL)
-}
-
-.validate_body_water_schedule_vector <- function(value, field_name) {
-  if (
-    !.is_numeric_vector(value) ||
-      length(value) != 24L ||
-      any(!is.finite(as.double(value))) ||
-      any(as.double(value) < 0)
-  ) {
-    stop(
-      sprintf(
-        "`%s` must contain 24 finite, non-negative numeric values.",
-        field_name
-      ),
-      call. = FALSE
-    )
-  }
 
   invisible(NULL)
 }

@@ -13,7 +13,7 @@
 new_food_energy_parameters <- function(
   metabolizable_energy_density_kj_kg_dm
 ) {
-  .validate_food_energy_density(
+  .validate_positive_numeric_scalar(
     metabolizable_energy_density_kj_kg_dm,
     "metabolizable_energy_density_kj_kg_dm"
   )
@@ -53,25 +53,6 @@ new_dry_matter_intake_schedule <- function(
   )
 }
 
-.validate_food_energy_density <- function(value, field_name) {
-  if (
-    !.is_numeric_vector(value) ||
-      length(value) != 1L ||
-      !is.finite(as.double(value)) ||
-      as.double(value) <= 0
-  ) {
-    stop(
-      sprintf(
-        "`%s` must be one finite, strictly positive numeric value.",
-        field_name
-      ),
-      call. = FALSE
-    )
-  }
-
-  invisible(NULL)
-}
-
 .validate_dry_matter_intake_schedule_fields <- function(
   hour_of_day,
   prescribed_dry_matter_intake_kg_dm_h
@@ -83,22 +64,10 @@ new_dry_matter_intake_schedule <- function(
     )
   }
 
-  if (
-    !.is_numeric_vector(
-      prescribed_dry_matter_intake_kg_dm_h
-    ) ||
-      length(prescribed_dry_matter_intake_kg_dm_h) != 24L ||
-      any(!is.finite(as.double(prescribed_dry_matter_intake_kg_dm_h))) ||
-      any(as.double(prescribed_dry_matter_intake_kg_dm_h) < 0)
-  ) {
-    stop(
-      paste0(
-        "`prescribed_dry_matter_intake_kg_dm_h` must contain 24 finite, ",
-        "non-negative numeric values."
-      ),
-      call. = FALSE
-    )
-  }
+  .validate_nonnegative_daily_numeric_vector(
+    prescribed_dry_matter_intake_kg_dm_h,
+    "prescribed_dry_matter_intake_kg_dm_h"
+  )
 
   invisible(NULL)
 }

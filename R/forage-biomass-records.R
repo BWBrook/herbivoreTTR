@@ -76,33 +76,14 @@ new_forage_growth_loss_schedule <- function(
     )
   }
 
-  .validate_forage_rate_schedule(
+  .validate_nonnegative_daily_numeric_vector(
     prescribed_forage_growth_kg_dm_ha_h,
     "prescribed_forage_growth_kg_dm_ha_h"
   )
-  .validate_forage_rate_schedule(
+  .validate_nonnegative_daily_numeric_vector(
     prescribed_forage_background_loss_kg_dm_ha_h,
     "prescribed_forage_background_loss_kg_dm_ha_h"
   )
-
-  invisible(NULL)
-}
-
-.validate_forage_rate_schedule <- function(value, field_name) {
-  if (
-    !.is_numeric_vector(value) ||
-      length(value) != 24L ||
-      any(!is.finite(as.double(value))) ||
-      any(as.double(value) < 0)
-  ) {
-    stop(
-      sprintf(
-        "`%s` must contain 24 finite, non-negative numeric values.",
-        field_name
-      ),
-      call. = FALSE
-    )
-  }
 
   invisible(NULL)
 }

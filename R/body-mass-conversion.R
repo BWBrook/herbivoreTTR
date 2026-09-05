@@ -17,11 +17,11 @@ new_body_mass_parameters <- function(
   structural_body_mass_kg,
   reserve_tissue_energy_density_kj_kg
 ) {
-  .validate_body_mass_positive_scalar(
+  .validate_positive_numeric_scalar(
     structural_body_mass_kg,
     "structural_body_mass_kg"
   )
-  .validate_body_mass_positive_scalar(
+  .validate_positive_numeric_scalar(
     reserve_tissue_energy_density_kj_kg,
     "reserve_tissue_energy_density_kj_kg"
   )
@@ -73,25 +73,6 @@ derive_body_mass_from_energy_reserve <- function(
   )
 }
 
-.validate_body_mass_positive_scalar <- function(value, field_name) {
-  if (
-    !.is_numeric_vector(value) ||
-      length(value) != 1L ||
-      !is.finite(as.double(value)) ||
-      as.double(value) <= 0
-  ) {
-    stop(
-      sprintf(
-        "`%s` must be one finite, strictly positive numeric value.",
-        field_name
-      ),
-      call. = FALSE
-    )
-  }
-
-  invisible(NULL)
-}
-
 .validate_body_mass_parameters <- function(parameters) {
   expected_names <- c(
     "structural_body_mass_kg",
@@ -108,11 +89,11 @@ derive_body_mass_from_energy_reserve <- function(
     )
   }
 
-  .validate_body_mass_positive_scalar(
+  .validate_positive_numeric_scalar(
     parameters$structural_body_mass_kg,
     "parameters$structural_body_mass_kg"
   )
-  .validate_body_mass_positive_scalar(
+  .validate_positive_numeric_scalar(
     parameters$reserve_tissue_energy_density_kj_kg,
     "parameters$reserve_tissue_energy_density_kj_kg"
   )

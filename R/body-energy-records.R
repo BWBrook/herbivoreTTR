@@ -85,6 +85,44 @@ new_assimilated_energy_schedule <- function(
   invisible(NULL)
 }
 
+.validate_positive_numeric_scalar <- function(value, field_name) {
+  if (
+    !.is_numeric_vector(value) ||
+      length(value) != 1L ||
+      !is.finite(as.double(value)) ||
+      as.double(value) <= 0
+  ) {
+    stop(
+      sprintf(
+        "`%s` must be one finite, strictly positive numeric value.",
+        field_name
+      ),
+      call. = FALSE
+    )
+  }
+
+  invisible(NULL)
+}
+
+.validate_nonnegative_daily_numeric_vector <- function(value, field_name) {
+  if (
+    !.is_numeric_vector(value) ||
+      length(value) != 24L ||
+      any(!is.finite(as.double(value))) ||
+      any(as.double(value) < 0)
+  ) {
+    stop(
+      sprintf(
+        "`%s` must contain 24 finite, non-negative numeric values.",
+        field_name
+      ),
+      call. = FALSE
+    )
+  }
+
+  invisible(NULL)
+}
+
 .is_numeric_vector <- function(value) {
   typeof(value) %in% c("integer", "double") &&
     !is.object(value) &&
@@ -132,20 +170,10 @@ new_assimilated_energy_schedule <- function(
     )
   }
 
-  if (
-    !.is_numeric_vector(prescribed_assimilated_energy_kj_h) ||
-      length(prescribed_assimilated_energy_kj_h) != 24L ||
-      any(!is.finite(as.double(prescribed_assimilated_energy_kj_h))) ||
-      any(as.double(prescribed_assimilated_energy_kj_h) < 0)
-  ) {
-    stop(
-      paste0(
-        "`prescribed_assimilated_energy_kj_h` must contain 24 finite, ",
-        "non-negative numeric values."
-      ),
-      call. = FALSE
-    )
-  }
+  .validate_nonnegative_daily_numeric_vector(
+    prescribed_assimilated_energy_kj_h,
+    "prescribed_assimilated_energy_kj_h"
+  )
 
   invisible(NULL)
 }

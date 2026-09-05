@@ -193,6 +193,22 @@ integrated_baseline_scenario <- data.frame(
   water_movement_expenditure_per_leg_kj = 900,
   stringsAsFactors = FALSE
 )
+
+# Invalid state must raise an error, not masquerade as a scientific terminal.
+local({
+  isolated_bad <- new_isolated_hydration_context()
+  coupled_bad <- new_water_constrained_context()
+  isolated_bad$state$gut$gut_available_energy_kj <- NA_real_
+  coupled_bad$state$gut$gut_available_energy_kj <- NA_real_
+  errors <- list(
+    tryCatch(run_isolated_hydration_days("invalid", 1L,
+      initial_context = isolated_bad), error = identity),
+    tryCatch(run_water_constrained_closed_loop(integrated_baseline_scenario,
+      1L, initial_context = coupled_bad), error = identity)
+  )
+  assert_that(all(vapply(errors, inherits, logical(1L), "error")),
+    "both hydration runners propagate invalid-state errors")
+})
 integrated_precondition <- run_water_constrained_closed_loop(
   integrated_baseline_scenario,
   precondition_days,

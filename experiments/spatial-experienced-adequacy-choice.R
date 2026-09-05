@@ -328,6 +328,8 @@ run_closed_loop <- function(
         turnover
       ),
       error = function(error) {
+        if (conditionMessage(error) !=
+          "The proposed closing body-energy reserve is negative.") stop(error)
         selected_error <<- conditionMessage(error)
         NULL
       }
@@ -464,10 +466,6 @@ revisit_clock <- run_closed_loop(
   "revisit_clock",
   checkpoint_days = c(60L, 62L)
 )
-baseline_adequacy_memory <- run_closed_loop(
-  baseline_scenario,
-  "experienced_adequacy_memory"
-)
 robustness_runs <- lapply(seq_len(nrow(scenarios)), function(index) {
   run_closed_loop(
     scenarios[index, , drop = FALSE],
@@ -475,6 +473,7 @@ robustness_runs <- lapply(seq_len(nrow(scenarios)), function(index) {
   )
 })
 names(robustness_runs) <- scenarios$scenario
+baseline_adequacy_memory <- robustness_runs$baseline
 
 baseline_summary <- rbind(
   summarize_run(revisit_clock),

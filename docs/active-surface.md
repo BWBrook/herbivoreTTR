@@ -1,317 +1,134 @@
 # Active Surface
 
-## Product Promise
+`herbivoreTTR` provides inspectable hourly models of herbivore energy, body
+water, and forage biomass for scientific investigation. This page indexes
+the executable contract. Equations and diagnostic details belong in the
+[model specification](model-specification.md); the development history and
+accepted reasoning belong in [decisions](decisions/README.md).
 
-`herbivoreTTR` provides inspectable hourly stock-flow models for herbivore
-energy and body water, forage biomass, their minimum non-spatial coupling, and
-one prescribed explicit-patch day with static acquisition and food-energy
-heterogeneity plus a bounded patch-quality choice. A prescribed spatial path
-carries and locally removes dynamic forage biomass by patch. One independent
-water adapter derives forage and drinking inputs from that path without
-modifying its energy ledger, while a separate schedule can impose incremental
-evaporative loss. Its current user is Barry Brook. Its purpose is scientific
-understanding, not a general-purpose simulation platform.
+## Package Entry Points
 
-## Canonical Paths
+| Path | Entry points and responsibility |
+| --- | --- |
+| Prescribed energy | `run_body_energy_day()` isolates the body ledger; `run_gut_body_energy_day()` composes opening-stock gut release with body input, maintenance, and activity. |
+| Appetite | `run_gut_body_energy_reference_cycle()` establishes periodic gut state; `run_appetite_controlled_energy_days()` carries body and gut state under bounded intake. |
+| Body-mass interpretation | `derive_body_mass_from_energy_reserve()` reports derived mass without changing or feeding back into state. |
+| Isolated forage | `run_forage_biomass_day()` accounts for prescribed growth and loss; `run_forage_turnover_days()` applies constant production and proportional loss. |
+| Accessibility and removal | `derive_accessible_forage_biomass()` applies the residual threshold; `step_forage_herbivory()` scales realized per-animal intake into forage removal. |
+| Homogeneous coupling | `run_nonspatial_coupled_energy_days()` composes turnover, accessibility, appetite, removal, and animal energy at fixed density. |
+| Spatial records and movement | `new_known_route_landscape()`, `new_patch_location_state()`, and `step_known_route_movement()` represent patch food properties and directed one-hour routes. |
+| Prescribed spatial days | `new_prescribed_patch_itinerary()` declares hourly closing locations; `run_prescribed_spatial_energy_day()` composes them with animal energy. `new_spatial_forage_biomass_state()` and `run_prescribed_spatial_coupled_energy_day()` add locally depleted, independently renewing forage stocks. |
+| One feeding-bout choice | `choose_known_patch_for_feeding_bout()` scores stay versus one known route using fixed expected demand, opportunity remaining, patch food properties, and travel cost. |
+| Water | `run_body_water_day()` carries an isolated water stock; `run_spatial_body_water_day()` derives food and stationary drinking inputs from an existing spatial energy ledger and accepts separate prescribed evaporative loss. |
 
-The one-day physiological path is:
+Constructors return plain validated records. Public transitions are pure;
+closing states can be carried into subsequent calls. The water adapter leaves
+the energy ledger unchanged.
 
-```text
-dry-matter intake x metabolizable-energy density
-  -> gut input
-  -> release from opening gut stock
-  -> body input
-  -> maintenance and routine activity
-  -> closing gut and body stocks
-```
+## Experiment-Level Behavior
 
-`run_gut_body_energy_day()` is the canonical prescribed-input day.
-`run_gut_body_energy_reference_cycle()` establishes a periodic gut opening
-state. `run_appetite_controlled_energy_days()` is the canonical repeated-day
-path when intake responds to body and gut state and is capped by an external
-forage-acquisition schedule.
+The [diagnostic index](../experiments/README.md) identifies current executable
+comparisons. Repeated choice and forcing policies are compositions of the
+package functions, outside the package API.
 
-`run_body_water_day()` is the canonical isolated water-stock day.
-`run_spatial_body_water_day()` derives effective forage water and stationary
-drinking availability from an existing spatial energy ledger and accepts one
-separate prescribed incremental evaporative-loss schedule. The two ledgers
-remain separately conserved. The causal hourly thirst trigger, familiar-source
-itinerary, and forcing calendars are experiment-level behavior, not package API.
-One synthetic temperature-loss driver and an experience-based anticipatory
-comparator now use an actual-state hourly composition of the existing public
-transitions; prescribed paths and reactive baselines reproduce the day runners.
+The accepted food-patch rule uses last and best experienced return, elapsed
+absence, current energetic adequacy, and accumulated shortfall. Expected
+unvisited return recovers over two absent days. The animal stays while its
+current patch is adequate; after inadequacy develops, shortfall augments the
+travel comparison. The information boundary and accepted contrasts are in
+[Decision 0054](decisions/0054-experienced-adequacy-memory.md).
 
-`derive_body_mass_from_energy_reserve()` is a downstream interpretation. Its
-result is never stored in or fed back to a transition.
+Causal drinking detects the thirst threshold on the hourly clock and makes
+at most one complete familiar-source excursion per day, deferring late
+crossings. The current hourly composition advances actual state through each
+completed interval. The earlier daily-opening policy and Goal 057 provisional
+day construction remain explicit comparison paths. The temperature-loss
+driver and recent-experience anticipatory comparator are also experimental.
 
-The isolated forage path is:
-
-```text
-opening standing biomass + prescribed growth - prescribed background loss
-  -> closing standing biomass
-```
-
-`run_forage_biomass_day()` is the canonical plant-side accounting day. It has
-no endogenous growth equation and no connection to herbivore intake.
-
-`run_forage_turnover_days()` is the canonical constant-reference trajectory.
-It combines constant production with proportional background loss around a
-declared equilibrium, still without herbivore intake or environmental forcing.
-
-`derive_accessible_forage_biomass()` is a pure animal-facing interpretation of
-standing biomass. It subtracts a fixed residual threshold and floors the result
-at zero; it does not change forage state or define an acquisition rate.
-
-`step_forage_herbivory()` is the pure scaling and removal bridge.
-`run_nonspatial_coupled_energy_days()` applies autonomous turnover, availability,
-appetite, removal, and the accepted gut-body transition on the shared clock.
-
-`new_known_route_landscape()` and `new_patch_location_state()` define the first
-explicit spatial records, including one fixed acquisition capacity and
-metabolizable-energy density per patch.
-`step_known_route_movement()` moves the focal animal over one known one-hour
-route, suspends feeding, and exposes incremental movement expenditure for
-composition with the energy model.
-`new_prescribed_patch_itinerary()` declares the closing patch at every hourly
-boundary. `run_prescribed_spatial_energy_day()` infers stay versus move and
-composes that itinerary with the accepted appetite-energy day, using the
-opening patch's energy density during each interval.
-`new_spatial_forage_biomass_state()` adds one ordered dynamic biomass stock per
-landscape patch. `run_prescribed_spatial_coupled_energy_day()` applies common
-turnover to all patches, local herbivory during occupied stays, movement, and
-animal energetics, then returns composable location, gut, body, and forage
-states.
-`choose_known_patch_for_feeding_bout()` ranks staying against one known route
-using a declared fixed demand, remaining feeding opportunity, and the two
-patches' acquisition capacities and metabolizable-energy densities. It is a
-choice heuristic, not a forecast of the ensuing appetite-energy trajectory.
-
-The retained resource-aware choice is deliberately diagnostic-only. It runs
-the accepted stay and move counterfactuals once from the same complete opening
-state and uses closing combined energy as a perfect-model benchmark. It does
-not add a behavioral API. A one-factor sweep locates the current synthetic
-stay-move transition between `497.5` and `498.0 kg DM ha^-1` and attributes it
-to intake energy gained relative to the `900 kJ` route cost.
-
-The first minimally informed comparison converts current opening accessible
-forage into a one-hour attainable acquisition-rate cue and gives the known
-destination a prescribed expected rate. It agrees with the oracle outside a
-narrow `498.0` to `500.0 kg DM ha^-1` interval, where omitted within-day renewal
-causes premature movement. It remains diagnostic-only.
-
-One closed-loop diagnostic applies that cue daily while carrying location,
-forage, gut, and body state. The reference load produces stable residence. The
-accepted pressure load reaches six alternating moves by day 305, with the last
-two intervals both 46 days and converging same-direction forage and animal
-states. Two small, one-day-late oracle disagreements self-correct without
-chattering. Repeated choice remains outside the package API.
-
-One independent food-quality oracle holds acquisition non-limiting, removes
-biomass dynamics, fixes the destination at `10,000 kJ kg DM^-1`, and varies
-only current-patch energy density. Under the accepted `900 kJ` hour-0 route,
-the oracle moves through `7,300` and stays from `7,400 kJ kg DM^-1`. The
-accepted `8,000` contrast favours staying by `137 kJ`. This remains a
-perfect-model diagnostic. The minimal patch-quality helper moves through
-`6,500` and stays from `6,600 kJ kg DM^-1`; it stays too early through `7,300`,
-with at most `168 kJ` realized regret.
-
-The matched 305-day biomass-quality interaction changes patch A alone from
-`10,000` to `8,000 kJ kg DM^-1` under the accepted pressure load. The first
-move advances from day 59 to day 40, six switches become eight, and minimum
-body reserve falls from `38,860` to `36,948 kJ`. Seven local daily oracle
-disagreements expose late exits from poor forage and early returns to it. The
-rule remains an explicitly fallible operational null.
-
-One diagnostic alternative stores only the last realized energy return per
-feeding-opportunity hour for each patch. It leaves lower-quality A on day 41,
-then remains in B until body reserve reaches `250 kJ` after day 146, even while
-A renews unobserved to `960.77 kg DM ha^-1`. Neither day-147 action preserves a
-non-negative reserve. This is a failed sufficiency test for memory alone, not
-accepted behavior. Its lower local regret also demonstrates that the one-day
-oracle is not a long-run policy score.
-
-The accepted day-101 decomposition holds the animal, gut, and forage snapshot
-fixed and crosses stale versus recovered destination information with one- and
-two-day horizons. The recovered value is the animal's own maximum previously
-experienced return in patch A (`200 kJ` per feeding-opportunity hour), not
-current biomass or perfect-model knowledge. Stale information favours staying
-at both horizons; recovered information still favours staying by `295 kJ` over
-one day, but favours moving by `511 kJ` over two days. Full-model policies
-match the score reversal exactly, with `1,411 kJ` greater two-day intake offset
-by the `900 kJ` route cost. The result identifies a joint information-horizon
-requirement without adding package behavior.
-
-The first carried candidate keeps last and historical-best returns plus days
-since visit, relaxes unvisited return toward the best at the established forage
-turnover rate, and applies the two-day score for `305` days. It completes the
-run and switches seven times at intervals of `32` to `60` days, eliminating
-the one-way trap without chattering. The result is nevertheless rejected:
-minimum body reserve falls to `12,355 kJ`, and all `147` local two-day oracle
-disagreements are false stays. Return opportunity recovers faster than
-standing biomass under the current production and accessibility rules, so
-experienced return must not inherit the biomass turnover timescale directly.
-
-The absence-to-return diagnostic maps that mismatch directly. Starting either
-destination at the residual boundary, realized two-day return recovers over
-one to two days: lower-quality A first repays the route after one day and
-reaches its return plateau after two, while higher-quality B repays it
-immediately and plateaus after one. Standing biomass continues recovering for
-weeks. Accumulated accessible forage plus continuing production is the leading
-mechanistic explanation, but the map does not yet separate those contributions
-or add behavior.
-
-The first carried fast-recovery candidate uses only last and historical-best
-experienced returns plus elapsed absence, reaching the best after two days.
-It reduces local two-day evaluator disagreements from `147` to `43` but settles
-into two days in A and four days in B, producing `83` switches and `74,700 kJ`
-of movement expenditure. Every selected move agrees with the evaluator, yet
-minimum reserve falls to `9,386 kJ`. The rule is rejected: accurate local
-recovery knowledge plus a two-day objective is not sufficient for a good
-long-run trajectory.
-
-The fixed-state horizon map then shows that the failure is directional. Leaving
-depleted B for long-rested A remains favourable and strengthens through fourteen
-days. Returning to B after only two release days is favourable through four
-days, but reverses to staying by seven days and is `7,646 kJ` worse over
-fourteen. Immediate return has recovered; durable return has not. These longer
-horizons diagnose the missing information but are not available to the animal.
-
-The accepted experience-based closure uses no longer forecast. Expected
-unvisited return still recovers from last to historical best over two absent
-days, but the animal stays while current experienced return meets its
-`200 kJ` per feeding-opportunity-hour requirement. Once current return is
-inadequate, cumulative energetic shortfall augments the two-day move advantage.
-This keeps the day-60 departure, rejects the day-62 early return, reduces the
-baseline to nine switches no closer than 27 days, and lifts minimum reserve to
-`36,221 kJ`. Seven viable one-factor cases complete 305 days with closed
-accounts; a separate `0.00075 h^-1` turnover stress exposes a supply boundary.
+Perfect-state oracles, myopic comparisons, and rejected memory rules retain
+their diagnostic role. An oracle's local action agreement or regret does not
+score a separately carried long-run policy. Their numerical boundaries and
+historical outcomes are recorded in the specification and decision notes.
 
 ## Protected Invariants
 
-- Every modeled quantity has an explicit unit suffix.
-- The clock is 24 one-hour intervals labelled `0:23`.
-- Dynamic stocks and prescribed inputs are finite and non-negative.
-- A negative closing body reserve or forage stock fails explicitly.
-- A negative closing body-water stock fails explicitly, and hourly and daily
-  water balances close independently of energy and forage balances.
-- Gut release uses opening stock; current intake enters after release.
-- Assimilation transfers energy between modeled stocks and cancels from the
-  whole-system balance.
-- Hourly and daily gut, body, and whole-system identities close numerically.
-- Closing stocks carry exactly into the next interval and day.
-- Appetite equals its reference on the reference trajectory, is zero when
-  feeding opportunity is closed, and remains within declared bounds.
-- Realized intake is the smallest of appetite target, external acquisition-rate
-  ceiling, and accessible forage per represented animal.
-- Hourly and daily forage stock-flow identities close numerically.
-- The turnover reference is neutral at equilibrium and approaches it
-  monotonically from positive low or high biomass.
-- Accessible forage is non-negative, no greater than standing forage, and
-  increases one-for-one only above the declared residual threshold.
-- Herbivory removal equals realized per-animal intake times animal density.
-- Herbivory cannot remove forage below the residual threshold.
-- The constant coupled reference repeats over 24 hours with neutral daily
-  animal-energy balance.
-- Patch and route identifiers are unique and every route endpoint is valid.
-- A known-route move starts at its declared origin, suspends feeding during
-  travel, and closes at its destination with route expenditure reported
-  exactly. The hour-16 anchor loses one otherwise open feeding hour.
-- An all-stay itinerary reduces exactly to the non-spatial reference. Travel
-  time and actual feeding time lost remain separately observable.
-- During a stay, the opening patch supplies the applied non-depleting
-  acquisition ceiling and metabolizable-energy density; during travel,
-  acquisition is zero.
-- At either accepted patch density, an all-stay day reduces exactly to the
-  corresponding scalar-food non-spatial physiology.
-- The one-choice null applies each candidate patch's energy density, subtracts
-  travel time and route expenditure, selects stay on ties, and is checked
-  against both full-model counterfactuals.
-- The prescribed water trip makes exactly two matched route transitions and
-  separates movement expenditure from feeding time lost through trip timing.
-- Food-derived water is proportional to realized dry-matter intake in the
-  opening patch; drinking is available only during stationary source hours and
-  cannot raise body water above its declared normal stock.
-- Prescribed incremental evaporative loss is non-negative, separately reported,
-  and reduces exactly to the Goal 055 water model when zero.
-- The causal drinking null begins no source trip before an observed thirst
-  boundary, allows at most one complete trip per day, and defers a late crossing.
-- Experienced food-patch return uses only stationary open opportunities in a
-  food patch; source travel and drinking cannot be learned as poor forage.
-- The anticipatory comparator receives only current water and completed
-  physiological draw history. Temperature phase comparisons retain equal
-  imposed dose, and policy costs use common completed hourly horizons.
-- Disabling the water layer reproduces the accepted Goal 054 patch-choice
-  trajectory exactly.
-- Every dynamic patch closes as opening biomass plus autonomous growth minus
-  background loss and local herbivory; unoccupied and movement-hour patches
-  have zero herbivory.
-- An all-stay dynamic patch reduces exactly to the non-spatial coupling, while
-  an unoccupied patch reduces exactly to isolated turnover.
-- The resource-aware oracle compares matched full-model counterfactuals, stays
-  on a tie, and is labelled as perfect information rather than behavior.
-- Across the retained biomass sweep, movement advantage is non-increasing and
-  equals extra metabolizable intake minus route expenditure.
-- Across the retained food-quality sweep, movement advantage is non-increasing,
-  the helper and oracle each have one transition, realized regret is
-  non-negative, and full-model advantage equals the difference in ingested
-  energy minus route expenditure.
-- The myopic resource cue is derived from opening accessible forage, has one
-  decision transition, and reports non-negative regret against the oracle.
-- In the retained repeated-choice comparison, every daily action is checked
-  against both full counterfactuals before only the myopic result is carried.
-- The biomass-quality comparison changes one patch energy density only, holds
-  both pressure runs to 305 days, and keeps local daily oracle regret distinct
-  from a separately carried policy comparison.
-- The accepted experience-based rule observes only last and best realized
-  return, elapsed absence, current adequacy, and accumulated energetic
-  shortfall. It receives no current unvisited forage state or oracle result.
-- Synthetic balance is not interpreted as viability or empirical calibration.
+- Physical quantities have explicit units. The clock is 24 one-hour intervals
+  labelled `0:23`; closing stocks carry exactly between intervals and days.
+- Stocks and prescribed inputs are finite and non-negative. Negative closing
+  body energy, body water, or forage stocks fail explicitly.
+- Gut release uses opening stock before current ingestion. Assimilation is
+  an internal energy transfer that cancels from the whole-system balance.
+- Hourly and daily energy, forage, and water identities close independently.
+  The constant coupled reference repeats with neutral daily energy balance.
+- Appetite matches its reference on the reference trajectory, vanishes when
+  feeding is closed, and stays within its bounds. Realized intake is capped by
+  appetite, acquisition rate, and accessible forage per represented animal.
+- Forage turnover is neutral at equilibrium and approaches it monotonically
+  from above or below. Accessibility increases one-for-one only above the
+  residual threshold. Herbivory equals intake times animal density and cannot
+  remove the residual stock.
+- Patch and route identifiers are unique and endpoints are valid. A move
+  begins at its declared origin, suspends feeding, and closes at its
+  destination. Travel duration, feeding time lost, and route expenditure
+  remain separately observable.
+- Stationary feeding uses the opening patch's acquisition capacity and food
+  energy density. Dynamic turnover acts everywhere; unoccupied and transit
+  patches have zero herbivory.
+- All-stay spatial paths reduce exactly to their corresponding non-spatial
+  energy and forage references, including patch-specific food quality. An
+  unoccupied patch reduces exactly to isolated turnover.
+- The fixed-demand choice applies each patch's food-energy density, subtracts
+  travel time and expenditure, and stays on ties. Full-model comparisons use
+  matched opening states and attribute advantage to intake energy and cost.
+- Food water follows realized intake in the opening patch. Drinking occurs
+  only while stationary at a source and cannot raise water above normal.
+  Incremental evaporation is a separate non-negative flux; zero forcing
+  reproduces the preceding water model.
+- Disabling water reproduces the accepted food-patch trajectory. Food-return
+  memory uses only stationary open opportunities in food patches, excluding
+  water travel and source stays.
+- Behavioral comparisons retain their declared information limits: the
+  accepted food rule sees no unvisited biomass or oracle result; reactive
+  drinking waits for observed thirst; anticipation uses current water and
+  completed physiological draw history.
+- Temperature phase comparisons preserve imposed dose. Policy costs are
+  compared over common completed hourly horizons. Synthetic balance and
+  energy-boundary termination do not establish viability or mortality.
 
-## Retained Surface
-
-| Surface | Disposition |
-| --- | --- |
-| Functional package core | Retain and extend by approved layers |
-| Explicit records, units, and balance residuals | Retain |
-| Twenty-seven current diagnostics | Retain |
-| Focused invariant tests | Retain |
-| Scientific decision notes | Retain as the research notebook |
-| Goal-by-goal experiment ancestry | Removed from the active tree; Git retains it |
-| Exotic numeric-class compatibility | Removed |
-| Generated outputs and review machinery | Keep ignored or disposable |
-| Compatibility adapters and dormant flags | Decline |
+The detailed comparison-specific assertions remain in the
+[model specification](model-specification.md), tests, and retained diagnostic
+scripts. Historical experiment ancestry is recoverable from Git; generated
+outputs remain ignored. Compatibility adapters, dormant flags, and retired
+review machinery have no role in the active surface.
 
 ## Validation
 
-For ordinary changes, parse retained R, run the tests affected by the change,
-and inspect the diff. When publishing a package boundary or completed model
-stage, run the full focused suite, all twenty-seven diagnostics, an external build,
-and `R CMD check --no-manual` once.
+For ordinary changes, parse retained R, run tests affected by the change,
+and run `git diff --check`. The full test command is:
 
-Repeat a gate only for a distinct named risk. Additional polish or repeated
-confirmation is not a release criterion.
+```sh
+Rscript --vanilla -e 'testthat::test_local()'
+```
+
+When publishing a package boundary or completed model stage, run the full
+suite, current diagnostics, an external `R CMD build`, and
+`R CMD check --no-manual` once. Repeat a gate only for a distinct named risk.
 
 ## Current Stop
 
-The herbivore, isolated forage, non-spatial coupling, and first explicit-patch
-arcs are closed. Arc 05 now has an accepted experience-based food-patch rule,
-one minimum water constraint, prescribed evaporative-loss forcing, and one
-causal familiar-source response. The physical zero-forcing and water-disabled
-reductions retain their accepted anchors; the superseded daily-opening behavior
-remains an explicit comparator.
+Arcs 01–04 are closed. Arc 05 has accepted experience-based food choice,
+one minimum water constraint, prescribed evaporative loss, and a causal
+familiar-source response. Goal 058 tested an 08:00 anticipatory top-up using
+synthetic temperature-driven loss. It delayed the evening energy boundary,
+worsened the midday case, and did not improve the shifted case. Costly small
+refills and changes in feeding history make its benefit conditional. The
+candidate remains a comparator to reactive drinking, not the replacement
+default. See [Decision 0058](decisions/0058-temperature-anticipatory-drinking.md)
+and the [handover](../HANDOVER.md) for the retained evidence.
 
-Hourly response protects minimum water by roughly `0.5 kg` in the coupled
-forcing contrasts but can displace feeding. The sustained causal branch reaches
-the non-negative energy boundary after 76 treatment days with minimum water at
-`25.74 kg`, above the `24 kg` critical boundary. The current controller is an
-immediate-response operational null, not optimized behavior. Goal 058 adds a
-synthetic temperature-response comparison and tests one recent-experience
-08:00 top-up rule. It helps the evening-peak case but worsens the midday and
-shifted primary coupled cases through costly small refills and path-dependent
-feeding effects. The candidate is retained as a fallible comparator, not a
-replacement default. All primary water minima exceed `25.6 kg`; the warm
-coupled branches reach an energy boundary before recovery.
-
-Cost-aware source-trip timing is the next proposed question. Heat balance,
-general activity scheduling, dynamic plant moisture, renal response, multiple
-sources, search, mortality, and species calibration remain deferred.
+Cost-aware source-trip timing is the next proposed question and awaits
+approval. Heat balance, general activity scheduling, dynamic plant moisture,
+renal response, multiple sources, search, mortality, and species calibration
+remain deferred. The [roadmap](roadmap.md) and
+[Arc 05](arcs/05-landscape-constraints-and-scenarios.md) retain the progression
+and scientific decision gates.
