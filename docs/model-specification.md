@@ -541,6 +541,50 @@ common completed hours, include valid partial days, and distinguish rejected
 negative-energy transitions from critical-water crossings or mortality.
 The exact contract and results are in Decision 0058.
 
+A second, cost-aware candidate retains that precautionary trigger and observed-
+thirst priority. At 08:00 it estimates average food energy per stationary open
+food opportunity over the same completed 24 h window. It predicts the first
+reactive crossing from current water and constant mean draw, applies the known
+late/midnight deferral convention, and estimates refill through the end of each
+drinking interval. Optional departure requires strictly lower estimated
+energetic cost per kilogram refilled now than at that later trip. The cost
+combines the known 1,800 kJ route with recent food return times feeding hours
+overlapped; ties retain reactive fallback. Only floating-point roundoff is
+removed before discretizing crossing time or comparing costs.
+
+Both draw and food-return history are seeded from common preconditioning and
+then updated from the candidate's own completed hours. The rule sees no future
+forcing, unvisited biomass, or full-model counterfactual. Constant draw ignores
+within-day variation and food-water lost on the trip; average food return does
+not estimate later appetite compensation. These are declared structural
+approximations. Memory and opportunity-value sensitivity expose conditional
+benefit and sign reversals, so reactive drinking remains the default. Exact
+equations, overnight timing, information limits, attribution controls, and the
+44-branch comparison are recorded in
+[Decision 0059](decisions/0059-cost-aware-drinking.md).
+
+### Water-Route Expenditure Intervention
+
+The energetic-accessibility diagnostic changes only the expenditure of routes
+to and from the familiar water source. Five multipliers (0, 0.5, 1, 1.5, 2)
+produce round-trip costs of 0, 900, 1,800, 2,700, and 3,600 kJ. Each leg remains
+one hour, the source stay one hour, and coupled food-patch routes remain at
+900 kJ. The cost-aware rule reads its known round-trip cost from those same
+route records, retaining the origin of a trip already underway when necessary.
+Zero expenditure does not remove travel, feeding interruption, or water demand.
+
+All branches share 60 days of reactive preconditioning at the original route
+cost. The cost intervention begins with the branch and persists through the
+84-day temperature treatment and 42 days after heat removal. Consequently,
+this tests a change in energetic accessibility from a common history, not
+long-term adaptation to different source distances. The three drinking rules,
+primary temperature slope, 24 h memory, and unit opportunity valuation stay
+fixed. Terminal comparisons use common completed hours within each cost;
+cross-cost comparisons additionally use a common horizon across all 15 runs
+in each system/history. Unreached endpoints remain missing. The frozen design
+and interpretation are in
+[Decision 0060](decisions/0060-water-route-expenditure.md).
+
 ## Dynamic Spatial Forage Coupling
 
 `new_spatial_forage_biomass_state()` records one standing-biomass density for

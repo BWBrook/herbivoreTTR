@@ -224,8 +224,23 @@ top-up under synthetic temperature cycles, equal-dose phase shifts, and bounded
 sensitivity. The candidate helps some conditions but worsens others because
 smaller refills can require more costly trips; it is not promoted as a default.
 This closes the environmental-forcing/first-anticipation comparison without
-rescue tuning. Cost-aware source-trip timing is the next proposed tranche;
-its endpoint and information/safety boundaries require a new approved contract.
+rescue tuning.
+
+Goal 059 gates optional top-ups by estimated energetic cost per kilogram of
+refill. It restores most of the original midday penalty and benefits the
+primary shifted case, but the advantage over reactive drinking reverses under
+longer memory or weaker evaporation. The comparison is accepted and both
+anticipatory policies remain diagnostic comparators; reactive drinking stays
+the default; see Decision 0059.
+
+Goal 060 establishes energetic-accessibility dependence by varying source-route
+expenditure alone. All heated coupled branches complete at half the inherited
+cost but stop before heat removal at unit cost or above; doubled cost also
+ends the no-added-heat coupled branches around day 85. Isolated forage tolerates
+more expenditure, and policy ranking remains conditional. The five-point grid
+brackets sampled completion transitions without estimating exact thresholds.
+A complementary trip-duration comparison at fixed round-trip expenditure is
+proposed next, pending approval of its timing contract; see Decision 0060.
 
 ## Deferred Animal Layers
 

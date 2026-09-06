@@ -47,14 +47,15 @@ experienced return, elapsed absence, current adequacy, and accumulated
 shortfall. It has no access to unvisited biomass or oracle results.
 
 The herbivore, isolated-forage, non-spatial, and first explicit-patch arcs are
-closed. Arc 05, landscape constraints, is active. The latest comparison found
-that an anticipatory 08:00 top-up could delay the evening energy boundary but
-worsened the midday case and did not improve the shifted case. It remains a
-comparator to causal thirst-triggered drinking; see
-[`Decision 0058`](docs/decisions/0058-temperature-anticipatory-drinking.md).
-Cost-aware trip timing is proposed and awaits approval. These are synthetic
-mechanism results; energy-boundary termination does not establish mortality
-or species viability.
+closed. Arc 05, landscape constraints, is active. Water-route expenditure
+strongly controls the energy boundary: halving its inherited value lets all
+heated coupled branches complete the 126-day horizon, while doubling it makes
+even no-added-heat coupled branches stop around day 85. Drinking-policy ranking
+remains conditional; reactive drinking stays the default and both anticipatory
+rules remain comparators. See
+[`Decision 0060`](docs/decisions/0060-water-route-expenditure.md). A trip-duration
+comparison at fixed round-trip expenditure is proposed next. These are synthetic
+mechanism results; completion does not establish biological recovery or viability.
 
 The current synthetic reference uses:
 
@@ -111,6 +112,8 @@ Rscript --vanilla experiments/water-constrained-patch-choice.R
 Rscript --vanilla experiments/prescribed-evaporative-loss-regimes.R
 Rscript --vanilla experiments/causal-hydration-response.R
 Rscript --vanilla experiments/temperature-anticipatory-drinking.R
+Rscript --vanilla experiments/cost-aware-drinking.R
+Rscript --vanilla experiments/water-route-expenditure.R
 Rscript --vanilla experiments/spatial-patch-depletion-renewal.R
 Rscript --vanilla experiments/spatial-resource-aware-choice.R
 Rscript --vanilla experiments/spatial-resource-aware-switch-boundary.R
@@ -150,6 +153,6 @@ invariants, and proportionate validation gates.
 - [`docs/roadmap.md`](docs/roadmap.md): stage status and development plans.
 - [`docs/arcs/`](docs/arcs/05-landscape-constraints-and-scenarios.md):
   arc contracts and scientific decision boundaries.
-- [`HANDOVER.md`](HANDOVER.md): successor entry point and Goal 058 evidence.
+- [`HANDOVER.md`](HANDOVER.md): successor entry point and Goal 060 evidence.
 
 The project is licensed under the MIT License.

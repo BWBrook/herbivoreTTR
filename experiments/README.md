@@ -54,6 +54,16 @@ installed package:
   recent-experience 08:00 top-up rule under equal-dose temperature cycles and
   an unannounced phase shift. It checks hourly execution equivalence and
   causality, then reports common-hour costs and bounded slope/memory sensitivity.
+- `cost-aware-drinking.R` compares both existing drinking policies with one
+  cost-per-refill gate. Prescribed timing/cost controls separate expenditure
+  from feeding overlap; 44 branches expose benefit and failure across the same
+  temperature histories and bounded slope, memory, and opportunity valuation.
+  It checks causal information, thirst priority, and independent stock balances.
+- `water-route-expenditure.R` varies source-route expenditure alone across
+  five levels, two forage systems, four temperature histories, and three
+  drinking policies. Common preconditioning isolates the access intervention;
+  per-cost and across-cost common horizons separate policy contrasts from
+  termination. Zero-cost trips retain their duration and feeding interruption.
 - `spatial-patch-depletion-renewal.R` applies common turnover to two dynamic
   patch stocks and checks local depletion, release, renewal, one fixed transfer,
   and conserved animal-forage accounting.
@@ -84,7 +94,8 @@ installed package:
   client, and `reactive-water-visit-fixtures.R` supplies the causal trip planner.
 - `hydration-hourly-transition.R` composes public hourly transitions on actual
   state. `temperature-hydration-fixtures.R` supplies the environmental histories,
-  experience-based drinking comparison, and common-horizon summaries.
+  experience-based drinking comparisons, independent account checks, and
+  common-horizon summaries.
 
 The herbivore and coupled diagnostics source only shared fixture helpers; the
 isolated forage diagnostics are independent. No diagnostic sources another

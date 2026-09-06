@@ -43,7 +43,10 @@ at most one complete familiar-source excursion per day, deferring late
 crossings. The current hourly composition advances actual state through each
 completed interval. The earlier daily-opening policy and Goal 057 provisional
 day construction remain explicit comparison paths. The temperature-loss
-driver and recent-experience anticipatory comparator are also experimental.
+driver and two recent-experience anticipatory comparators are also experimental.
+The cost-aware variant gates optional 08:00 top-ups by estimated trip cost per
+kilogram of refill, using completed water draw and food return plus known trip
+cost and feeding hours. It cannot defer an already triggered reactive trip.
 
 Perfect-state oracles, myopic comparisons, and rejected memory rules retain
 their diagnostic role. An oracle's local action agreement or regret does not
@@ -117,18 +120,20 @@ suite, current diagnostics, an external `R CMD build`, and
 ## Current Stop
 
 Arcs 01–04 are closed. Arc 05 has accepted experience-based food choice,
-one minimum water constraint, prescribed evaporative loss, and a causal
-familiar-source response. Goal 058 tested an 08:00 anticipatory top-up using
-synthetic temperature-driven loss. It delayed the evening energy boundary,
-worsened the midday case, and did not improve the shifted case. Costly small
-refills and changes in feeding history make its benefit conditional. The
-candidate remains a comparator to reactive drinking, not the replacement
-default. See [Decision 0058](decisions/0058-temperature-anticipatory-drinking.md)
-and the [handover](../HANDOVER.md) for the retained evidence.
+body-water accounting, prescribed evaporative loss, and causal familiar-source
+drinking. Goal 060 varied water-route expenditure with trip duration fixed.
+Halving cost allows all heated coupled branches to complete 126 d; at the
+inherited cost they all stop before heat removal. Doubling cost also stops the
+no-added-heat coupled branches around day 85. Lower expenditure need not raise
+energy at every checkpoint because appetite and forage feedback alter intake.
+Reactive drinking remains the default, with both fallible anticipatory rules
+retained. See [Decision 0060](decisions/0060-water-route-expenditure.md) and the
+[handover](../HANDOVER.md).
 
-Cost-aware source-trip timing is the next proposed question and awaits
-approval. Heat balance, general activity scheduling, dynamic plant moisture,
-renal response, multiple sources, search, mortality, and species calibration
-remain deferred. The [roadmap](roadmap.md) and
-[Arc 05](arcs/05-landscape-constraints-and-scenarios.md) retain the progression
-and scientific decision gates.
+A water-trip duration comparison at fixed round-trip expenditure is proposed
+next and awaits approval. Its late-departure, forecast, and day-boundary
+conventions need an explicit contract before implementation. Heat balance,
+general activity scheduling, dynamic plant moisture, renal response, multiple
+sources, search, mortality, and species calibration remain deferred. The
+[roadmap](roadmap.md) and [Arc 05](arcs/05-landscape-constraints-and-scenarios.md)
+retain the progression and scientific decision gates.

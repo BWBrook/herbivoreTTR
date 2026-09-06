@@ -1,17 +1,17 @@
 # Successor Brief: Herbivore TTR
 
-Prepared 2026-09-05 after Goal 058. This is a compact entry point, not a new
+Prepared 2026-09-06 after Goal 060. This is a compact entry point, not a new
 scientific contract. Check live files and Git state before acting; you do not
 need the predecessor's conversation or its full chronological history.
 
 ## Start Here
 
-Work directly in `/Users/bwbrook/git/herbivoreTTR`. The scientific baseline is
-published commit `b93278d`; this handover is recorded in a subsequent
-documentation commit. Redundant linked worktrees and merged branches were
-removed, leaving the canonical checkout and `main` as the only local and remote
-branch. Preserve any subsequent changes. Goal 058 is closed; Goal 059 is
-proposed, not approved.
+Work directly in `/Users/bwbrook/git/herbivoreTTR`. Goals 059 and 060 are
+accepted on top of cleanup commit `dcc5d1b`. Barry authorized committing and
+pushing their source and conclusions on 2026-09-06. Check live Git state and
+preserve subsequent changes. Further implementation is paused for a broader
+scientific discussion; the duration experiment below is an option, not an
+approved next tranche.
 
 Read in this order, stopping when you have enough context:
 
@@ -19,7 +19,7 @@ Read in this order, stopping when you have enough context:
 2. [Model charter](docs/model-charter.md) and the current-model section of
    [README](README.md).
 3. The stage-map table in [Roadmap](docs/roadmap.md), then
-   [Decision 0058](docs/decisions/0058-temperature-anticipatory-drinking.md).
+   [Decision 0060](docs/decisions/0060-water-route-expenditure.md).
 4. Consult [Model specification](docs/model-specification.md) by topic and
    [Experiments](experiments/README.md) when planning the next implementation.
    Do not load every historical decision or rerun experiments just to orient.
@@ -69,47 +69,47 @@ and calibrated viability claims remain deferred, not abandoned.
 
 ## Latest Scientific Decision
 
-Goal 058 tested reactive drinking against an additional 08:00 anticipatory
-top-up. Anticipation uses current water plus the previous 24 completed hours'
-physiological net water draw, excluding drinking and overflow. It projects
-25 hours to next morning's source arrival, with no future forcing knowledge.
-The familiar reactive fallback and one three-hour trip per day remain shared.
+Goal 060 crossed five water-route expenditure multipliers (0, 0.5, 1, 1.5, 2)
+with isolated/coupled forage, four existing temperature histories, and the
+reactive, original anticipatory, and cost-aware policies: 120 runs. All branches
+share 60 days of reactive history at 900 kJ per water leg. Cost changes at
+branching and persists through 84 treatment days and 42 days after heat removal.
+Thus this is changed energetic accessibility, not lifetime habitat adaptation
+or literal distance. Every trip still requires two one-hour legs and a drinking
+hour. The candidate knows the cost of the actual routes; food routes stay fixed.
 
-After common preconditioning, 28 isolated/coupled branches tested midday,
-evening, shifted and zero-extra-loss histories plus bounded slope/memory
-sensitivity. In the primary coupled comparison, anticipation reached the
-energy boundary earlier under midday warmth (day 61 versus 73), later under
-evening warmth (79 versus 76), and did not improve the shifted case. All
-primary water minima exceeded 25.6 kg; these were energy limits, not mortality.
+Every heated coupled run completes at zero or half cost, but stops before heat
+removal at unit cost or above. Doubled cost also stops the no-added-heat coupled
+runs around day 85. Isolated forage tolerates greater expenditure: all runs
+complete through 1.5 cost, with eight heated failures at double cost. Original
+anticipation alone completes the isolated evening case at double cost, where
+reactive and cost-aware drinking stop on day 78. Neither candidate dominates.
+Reactive remains the default; stop policy tuning.
 
-The explanation is conditional: early top-ups can buy smaller refills at the
-same fixed travel cost and alter later reactive trips and feeding opportunities.
-Accept the experiment, not a claim that anticipation always helps. Keep the
-reactive null and the fallible candidate; do not tune failures away.
+Lower cost prevents or delays energy boundaries across this sampled grid, but
+need not raise combined energy at every checkpoint because intake responds.
+All water minima exceed 25.6 kg. Completion is a finite model horizon, not
+biological recovery or viability. High-cost coupled shifted runs stop before
+the phase shift and cannot inform its consequences.
 
-For this layer, start with `experiments/temperature-anticipatory-drinking.R`,
-`temperature-hydration-fixtures.R`, and `hydration-hourly-transition.R` (all
-under `experiments/`). The last composes existing public hourly transitions;
-it avoids the older planner's full hypothetical no-trip day, whose later
-invalidity could prevent an earlier feasible intervention. Package physiology
-was unchanged. Compare terminal runs over common completed hours, keep valid
-partial days, and distinguish completed refills from trips still in progress.
+For this layer, start with `experiments/water-route-expenditure.R` and
+`temperature-hydration-fixtures.R`. The shared fixture now contains the account
+and summary helpers previously local to Goal 059; their bodies are unchanged.
+The hourly transition and package physiology are unchanged. Per-cost contrasts
+use three-policy common hours; across-cost contrasts use one common 15-run
+horizon per system/history. Coupled shifted across-cost energy ends at 514 h,
+before the shift. Keep valid partial days and charge only realized movement;
+endpoint stocks are missing for runs that did not reach that endpoint.
 
-## Next Proposal: Goal 059
+## Candidate Next Question: Trip Duration
 
-**Cost-aware drinking decisions**, not yet authorized. First distinguish trip
-frequency costs from feeding displacement, then evaluate one lean rule that
-considers refill size and feeding opportunity using current state and past
-experience only. Retain both existing comparators and hold physiology and
-environmental contrasts fixed. Freeze the information and safety boundaries
-before generating decisive results. The completed tranche should deliver the
-comparison, bounded sensitivity, interpretable figures, and independent review.
-A defensible benefit/failure boundary or clear rejection is the endpoint;
-guaranteed energetic rescue is not. No Goal 059 packet or implementation exists.
-
-Recover this proposal with Barry rather than restarting a long parameter-by-
-parameter approval conversation. Do not assume Goal 058's publication authority
-automatically authorizes new science or publication in Goal 059.
+**Water-trip duration at fixed total route expenditure**, not yet authorized.
+This would isolate time unavailable for feeding and delayed drinking from the
+direct expenditure effect established in Goal 060. Retain the three policy
+forms and explicit ledgers. Forecasts must use actual durations; freeze late-
+departure, precautionary-horizon, and day-boundary conventions before decisive
+runs because longer trips change within-day feasibility. Do not add new
+sources, feeding rescheduling, physiology, or another policy search at once.
 
 ## How To Collaborate
 
@@ -139,25 +139,29 @@ they do not enlarge its authority or create extra approval gates.
 
 ## Evidence And Practical Notes
 
-Goal 058 passed all 27 retained diagnostics, full tests, independent review, and
-external package build/check with no errors, warnings or notes. This is a
-dated verification, not a reason to rerun the whole suite during bootstrap.
-Use targeted checks for changes and the repo's explicit release gate when due.
-Use `Rscript --vanilla` with the intended installed package/library; repository
-startup previously hid a temporary test installation. Follow current runtime
-instructions rather than depending on old `/tmp` paths.
+Goal 060 completed 120 branches with three local R workers in about 168 seconds.
+All 24 unit-cost primary run objects and both preconditions exactly reproduce
+Goal 059. Independent review rebuilt balances, summaries, and comparison
+horizons. Every complete zero-cost trip still has two moves and three unavailable
+hours. All 332 package-test expectations pass, 79 retained R files parse, and
+whitespace checks pass. A blank EOF line was removed after execution without
+changing any expression; original digests and the amendment remain in the cache.
 
-Generated evidence is ignored, not committed. Retained figures and results from
-the retired worktrees were consolidated into this checkout's `outputs/`, with
-file contents verified unchanged. The Goal 058 result cache, figures, rendering
-script and validation logs are now at:
+The publication gate for Goals 059–060 passed on 2026-09-06: full package
+tests and external `R CMD build` / `R CMD check --no-manual`, with Status OK
+and no errors, warnings, or notes. These goals change experiments and
+documentation, not `R/` or the public API. Do not rerun the whole suite merely
+to orient. Use `Rscript --vanilla` with the intended installed
+package/library, and verify live runtime state instead of relying on old `/tmp`
+paths. Generated evidence is ignored, not committed.
 
-`/Users/bwbrook/git/herbivoreTTR/outputs/goal-058/`
+Current cache, compact tables, frozen design, renderer, and figures are at:
 
-Useful figures are `energy-trajectories.png` and `hydration-mechanisms.png`.
-Do not delete retained evidence as part of orientation. The old worktree paths
-no longer exist, and disposable Goal 058 build/library directories were removed.
+`/Users/bwbrook/git/herbivoreTTR/outputs/goal-060/`
+
+Useful figures are `completed-duration.png`, `policy-ranking.png`, and
+`energy-attribution.png`. Goals 058 and 059 remain in their corresponding
+`outputs/goal-*` directories. Do not delete retained evidence during orientation.
 Scientific decisions belong in `docs/decisions/`; current contracts belong in
 model docs. Use proportionate planning, not a mandatory four-file goal template
-or the retired management workflow. Git preserves development history; this
-note is your short route back to the live scientific question.
+or retired management workflow.

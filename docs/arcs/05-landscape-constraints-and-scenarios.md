@@ -266,8 +266,24 @@ expose the fixed-cost trade-off in early top-ups: sometimes protecting feeding,
 sometimes buying smaller refills through additional trips. Loss-slope and
 memory sensitivity confirm conditional rather than universal benefit. The
 reactive null remains the baseline and the candidate remains a fallible
-comparator. Cost-aware trip timing is the next proposed question, before adding
-thermal physiology or plant-water feedbacks; see Decision 0058.
+comparator; see Decision 0058.
+
+Goal 059 adds one cost-aware gate using estimated refill, known travel cost,
+and recent food return. It removes most of the original midday top-up penalty
+but yields no robust improvement over reactive drinking: longer memory and
+weaker evaporation reverse the primary shifted benefit. Isolated trip controls
+show why missed feeding hours are not equivalent to realized lost intake.
+The comparison closes without further tuning or baseline promotion; see
+Decision 0059.
+
+Goal 060 varies water-route expenditure while preserving duration. It reveals
+a strong access-cost contribution to energetic stress: half cost allows every
+heated coupled branch to complete 126 d, whereas doubled cost stops even
+no-added-heat coupled branches around day 85. Isolated forage tolerates greater
+cost, and neither anticipatory policy dominates. Temporal access remains a
+separate constraint even at zero expenditure. A duration comparison at fixed
+round-trip expenditure is proposed next, with timing conventions to be approved
+before implementation; see Decision 0060.
 
 ## Decision Gates
 

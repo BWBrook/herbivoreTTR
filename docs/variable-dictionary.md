@@ -344,3 +344,25 @@ metabolizable-energy densities, matched stay and move intake and energy, the
 minimal helper action and score difference, the full-model oracle action and
 move-minus-stay energy, agreement, and realized regret. These are
 counterfactual experiment outputs, not persistent behavioral state.
+
+The cost-aware drinking diagnostic records current and projected body water in
+`kg`, recent physiological draw in `kg h^-1`, and recent food return in `kJ`
+per stationary open food-opportunity hour. Predicted threshold-crossing and
+departure delays are in `h`, predicted refills in `kg`, feeding-window overlap
+in `h`, and current/later trip scores and their margin in `kJ kg^-1` refilled.
+The opportunity-value multiplier and its break-even boundary are dimensionless.
+The decision table distinguishes a favourable forecast from eligibility and
+actual optional departure; observed thirst always takes priority. The policy's
+completed histories and these forecasts are experiment-level quantities, not
+package physiology or knowledge of future forcing. Common-hour summaries
+separate trip starts, completed refills, in-progress trips, body energy, and
+body-plus-gut energy. See Decision 0059 for the equations and limits.
+
+The water-route expenditure diagnostic adds a dimensionless source-route cost
+multiplier and a comparison-horizon scope (`within_cost` for three policies;
+`across_cost` for all 15 policy/cost runs per system/history). Route costs are
+in `kJ`; durations remain `h`. Completed hours and actual terminal day/hour
+are separate from common comparison hours. End-treatment and end-recovery
+body energy in `kJ` are missing when the corresponding hour was not completed.
+Here recovery refers to heat removal while altered access expenditure persists.
+These are intervention and reporting quantities, not new physiological state.
