@@ -5,7 +5,8 @@ run_feeding_access_recovery_followup <- function(main_result) {
   system <- main_result$systems$continuous_1_bounded
   baseline <- main_result$baselines$continuous_1_bounded
   runs <- setNames(lapply(c("near","far"),function(w) run_feeding_access(system,
-    profile="short_pulse",water=w,baseline=baseline)),c("near","far"))
+    profile="short_pulse",water=w,baseline=baseline,
+    return_forecast=feeding_two_day_expected_return)),c("near","far"))
   for(r in runs) {
     stopifnot(identical(r$initial_branch_state,baseline$final_state))
     assert_that(max(abs(r$hourly$plant_balance_kg_dm))<1e-9 &&

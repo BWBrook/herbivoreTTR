@@ -72,6 +72,15 @@ have a renewal ceiling of 0.24 kg DM/day and therefore cannot maintain the
 exit: finite opening stock and energy reserve still matter, and the set of
 visited blocks can change with encounter rate and policy.
 
+As an integer support bound, baseline reference demand requires at least
+`ceiling(5.333) = 6` such blocks. This is necessary, not sufficient for a
+sustainable rotation: it assumes the pointwise production maximum throughout,
+and omits encounter, travel, residence and rest constraints. Five blocks do
+not suffice. During reduced growth, all eight blocks supply at most 9.6% of
+reference demand through renewal. A finite successful trajectory can still
+draw on opening forage and animal reserves; it does not establish a sustained
+rotation. The 60-day initialization is likewise not a grazed-equilibrium test.
+
 ### Encounter access
 
 Let \(q\) be search area in m2/h. In a homogeneous footprint, the raw

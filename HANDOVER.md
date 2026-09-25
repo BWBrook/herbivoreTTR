@@ -1,23 +1,23 @@
 # Successor Brief: Herbivore TTR
 
-Updated 2026-09-25 after assessment of Rebecca's archive and empirical cases.
-The latest model study remains encounter and policy sensitivity (063).
+Updated 2026-09-25 after the plant-matched recovery repair (064), Fable's
+review and the empirical-anchor source audit.
 This is a compact entry point, not a new
 scientific contract. Check live files and Git state before acting; you do not
 need the predecessor's conversation or its full chronological history.
 
 ## Start Here
 
-Work directly in `/Users/bwbrook/git/herbivoreTTR`. Programmes 061–063 are
-implemented and locally validated. The earlier Goals 059/060 closeout was
-committed and pushed as `b2f2c97`. On 25 September Barry authorised committing
+Work directly in `/Users/bwbrook/git/herbivoreTTR`. Programmes 061–063 and the
+archive assessment are preserved in `d610ae9`; 064 is the completed bounded
+recovery repair described below. On 25 September Barry authorised committing
 and pushing the accumulated work, repairing the inherited two-day recovery
 expectation, and using red kangaroos and cattle as complementary empirical
 anchors. The authorised 063 diagnostic is closed; its original trajectories
-must remain identifiable during that repair. Barry's
+remain explicit historical controls. Barry's
 recovered archive and four empirical cases have now been assessed; see the
 [assessment](docs/rebecca-archive-assessment.md) before proposing another
-scientific layer. The bounded recovery repair is now authorised; species
+scientific layer. The recovery repair and source assessment are complete; species
 calibration, new plant structure and manuscript publication remain separate
 decisions. Fable's review is in correspondence thread 56, messages 540–545;
 Astra recorded Barry's authorisation in message 549.
@@ -28,10 +28,10 @@ Read in this order, stopping when you have enough context:
 2. [Model charter](docs/model-charter.md) and the current-model section of
    [README](README.md).
 3. The stage-map table in [Roadmap](docs/roadmap.md), then
-   [Decision 0063](docs/decisions/0063-encounter-and-policy-sensitivity.md), with
-   Decision 0062 for the underlying physical representation.
-4. Read the [archive and empirical assessment](docs/rebecca-archive-assessment.md)
-   for what the recovered sources can constrain and the proposed next tranche.
+   [Decision 0064](docs/decisions/0064-plant-matched-return-expectation.md), with
+   Decision 0062 for physical representation and 0063 for the frozen old rule.
+4. Read the [anchor evidence](docs/empirical-anchor-evidence.md), then the
+   [archive assessment](docs/rebecca-archive-assessment.md) when history matters.
 5. Consult [Model specification](docs/model-specification.md) by topic and
    [Experiments](experiments/README.md) when planning the next implementation.
    Do not load every historical decision or rerun experiments just to orient.
@@ -65,8 +65,11 @@ The current spatial experiment composes:
 - Exact biomass-dependent production/senescence, residual protection and focal
   intake removed conservatively from intersecting physical feeding areas.
 - Daily food-departure decisions with last/best experienced returns and elapsed
-  absence. Strict expected improvement limits deficit-driven movement; this
-  does not validate the remembered estimates. Informed/cyclic rules are controls.
+  absence. The current forecast propagates a return-equivalent proxy under
+  known baseline plant dynamics, capped by historical best. It receives no
+  actual unvisited biomass or forcing. Strict expected improvement limits
+  deficit-driven movement; the prior remains synthetic. Informed/cyclic rules
+  are controls, and the frozen 062/063 runners explicitly use the old clock.
 - Fractional and multihour travel, reactive off-domain water excursions, food
   water, ordinary water loss and separate movement expenditure. The 062 study
   adds no thermal physiology and uses fixed food moisture/energy.
@@ -79,6 +82,36 @@ plant moisture, mechanistic thermoregulation, demographics,
 and calibrated viability claims remain deferred, not abandoned.
 
 ## Latest Scientific Decision
+
+All five predeclared repaired trajectories complete day 228, removing the four
+selected historical failures: undisturbed clustered/fragmented at q=.6 and
+continuous near-water sustained disturbance at q=3/5. The original continuous
+undisturbed control still completes. Reference clustered/fragmented feeding
+expands from four stations to eight, with median complete absence rising from
+3 days to about 20 and improved first-day returns. This supports Fable's
+diagnosis in these cases, not every failure in the old 90-case grid.
+
+Repaired day-228 reserves are 39,853/39,914 kJ in those undisturbed layouts and
+39,525/39,727 kJ in the high-search disturbed cases. The last case still has a
+negative final 28-day trend (−47.23 kJ/day). Completion and a near-baseline
+endpoint are not stable recovery or empirical validation. All five old-rule
+replays are bit-identical; the 14 reported paths pass accounts and bounds.
+No clock tuning or further trajectory search followed the results.
+
+A universal fixed replacement clock was rejected: exact baseline recovery
+from 200 to 250 kJ/h takes 14.246 days at q=.6, while 250 is unreachable at
+q=.3. The current prior respects that baseline geometry, but may remain wrong
+during unobserved drought. See the [064 contract](docs/feeding-access-recovery-specification.md).
+
+Red kangaroos and cattle are the agreed complementary empirical systems.
+Munn's 2011 corrigendum replaces the original 994 g/day kangaroo intake with
+518 ± 39 g/day; this is energy-derived, not directly observed intake. Field
+metabolic rate already includes movement. Short's reported residual below
+20 kg/ha challenges an empirical interpretation of R=200. No source directly
+identifies this model's instantaneous q or memory. Ash's prediction is recorded
+on paper; no seasonal comparison or new plant compartment was implemented.
+
+## Frozen Encounter and Policy Study (063)
 
 The frozen 063 study tests five encounter coefficients (.3, .6, 1.5, 3 and
 5 m²/h) from day 1, with shared experienced day-60 baselines followed by
@@ -171,23 +204,25 @@ verified checksum, primary references, inspection limits and reproducible R
 data inventory. No legacy model was executed and no model code or parameter
 was changed during this assessment.
 
-A compact synthesis and focused sequencing question were posted to Fable in
-correspondence thread 28, message 539 (25 September). No reply was awaited or
-assumed. The last strict catch-up returned global retrieval checkpoint 537;
-use it with `read_updates` for subsequent catch-up, not as a `mark_read` ID.
+The archive synthesis is correspondence thread 28, message 539. Fable's reply
+is thread 56, messages 540–545; the 064 result is returned there. Barry's three
+authorisations are recorded in message 549. Read that thread for subsequent
+critique; the earlier review was marked read through message 545. Do not treat
+reviewer agreement as model validation or a broader implementation mandate.
+The last strict catch-up checkpoint was 553; pass it as `after` to
+`read_updates`, not as a `mark_read` message ID.
 
 ## Next Scientific Discussion
 
-The fixed-footprint numerical ambiguity is resolved at the declared scope.
-The proposed empirical bridge should recover matched animal intake, edible
-sward, feeding-time and physiological evidence for one coherent extant-animal
-reference, alongside a bounded Ash-based plant-response comparison. The four
-recovered field studies cannot calibrate the encounter coefficient directly.
-The present two-day memory can confine feeding to part of a food-rich
-landscape, and cannot yet be interpreted
-as calibrated behaviour. A mechanistic TTR plant model, more animal physiology
-and population demography remain separate decisions. No new implementation or
-publication is implied by this recommendation.
+The next step is Fable's review of 064 and the corrected source mapping, then
+two coherent animal/plant observation contracts. Specify edible-biomass support,
+feeding time, total expenditure, residual/search relationship and a grazed
+reference trajectory for each. The current day-60 transient was intentionally
+retained for causal attribution; future disturbance studies need an explicit
+stability or periodicity check where a grazed attractor exists. Roots/crowns,
+live/dead tissue, TTR coupling, additional physiology and demography remain
+scientific choices, not automatic extensions. The anchor selection does not
+authorise an empirical fit or publication.
 
 ## How To Collaborate
 
@@ -210,12 +245,24 @@ Chief of Staff and Goal Composer are not required reading for this project.
 - Lead closeouts with the ecological result and a few discussion sentences.
   Propose the next coherent tranche inline. Display energy quantities as
   integer kJ, except when precision is warranted for a specified rate.
+- End closing messages to Barry with the date and time in Australia/Hobart;
+  he uses this to track whose turn it is in the Fable/Astra exchange.
 
 The governing principle is **rigour at the scientific decision boundary;
 proportional engineering everywhere else**. Skills support the requested work;
 they do not enlarge its authority or create extra approval gates.
 
 ## Evidence And Practical Notes
+
+Current evidence is in ignored `outputs/recovery-clock-064/`: `repair.rds`,
+summary, revisit and common-horizon CSVs, source/input checksums, audit notes
+and `recovery-expectation.pdf`. The no-write runner is
+`run_feeding_access_recovery_repair(cores=3)` after sourcing its matching
+experiment file; it reads the original 062/063 caches. A separate plotting
+function writes only to an explicit path. The 25 September release gate passed
+441 package tests and external build/check with Status OK; 064 affects only
+experimental composition and docs, with targeted policy/integration/refinement
+and analytical checks. The installed exported function definitions match source.
 
 The 063 numerical evidence is in `outputs/feeding-access-063/`: `sensitivity.rds`,
 summary and baseline CSVs, `analytic.csv`, execution/provenance logs and the

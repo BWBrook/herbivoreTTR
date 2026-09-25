@@ -397,3 +397,12 @@ The spatial experiment converts density fluxes to landscape kg DM by area;
 | `last_observed_day`, `inadequacy_kj` | memory clock and accumulated local energetic shortfall |
 | `harvest_upper_kg_dm`, `intake_upper_kg_dm` | conservative cumulative plant and intake upper bounds |
 | `combined_energy_upper_kj` | optimistic gut-plus-body bound after nontravel expenditure |
+
+The 064 forecast uses a return-equivalent density proxy (`kg DM/ha`) computed
+from last observed return and fixed search rate. It is a transient belief
+calculation, not an additional plant state or inferred true biomass. Its age
+is the number of complete absent days, multiplied by 24 for baseline plant
+propagation; the forecast is in kJ per actual feeding-opportunity hour.
+Historical best is an upper cap. Actual forcing is absent from the forecast.
+Revisit summaries count first return day minus previous last feeding day minus
+one; return on the next day therefore has zero complete absent days.

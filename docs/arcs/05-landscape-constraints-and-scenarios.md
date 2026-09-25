@@ -349,3 +349,18 @@ separate outcomes. The one-block analytical benchmark establishes a support-
 area deficit, not a universal chronic-decline criterion.
 [Decision 0063](../decisions/0063-encounter-and-policy-sensitivity.md) closes the
 diagnostic and directs the next discussion toward empirical case constraints.
+
+## Return Expectation and Empirical Anchors (064)
+
+The inherited two-day recovery prior was not transferable to the responsive
+plant/100-m² support. Exact baseline propagation of a return-equivalent proxy
+removes the four historical exits in five predeclared matched cases. This
+supports a causal role for the prior in those examples, without establishing
+indefinite recovery or explaining every old-grid outcome. The animal receives
+no actual unvisited stock or forcing; its baseline belief remains synthetic.
+[Decision 0064](../decisions/0064-plant-matched-return-expectation.md) records
+the controls, outcome limits and evidence. Red kangaroos and cattle are the
+approved complementary anchors. The next review concerns coherent joint
+animal/plant observation contracts, with an Ash prediction recorded before
+implementation and the original day-60 transient distinguished from a grazed
+reference trajectory.

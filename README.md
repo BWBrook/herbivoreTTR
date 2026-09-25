@@ -7,6 +7,20 @@ inspectable stock-flow accounting.
 
 ## Current Model
 
+The [return-expectation repair](docs/decisions/0064-plant-matched-return-expectation.md)
+removes all four selected historical failures in a five-case matched comparison.
+The current experienced rule propagates remembered return using baseline plant
+dynamics, with historical best as a cap, instead of assuming full recovery
+after two days. All five repaired paths reach day 228, but finite completion
+does not establish stable recovery or calibrated behaviour. The original
+062/063 runners retain their explicit historical comparator.
+
+Red kangaroos in arid rangeland and cattle in northern tall grass are the agreed
+complementary [empirical anchors](docs/empirical-anchor-evidence.md). The source
+audit records the corrected Munn intake estimates, expenditure accounting,
+biomass support and residual/search uncertainties. Species calibration and new
+plant structure have not been implemented.
+
 The [Rebecca archive assessment](docs/rebecca-archive-assessment.md) recovers
 four field-study candidates and separates the C++/R history from the current
 rebuild. The cases chiefly constrain vegetation responses; none directly
@@ -14,7 +28,7 @@ calibrates individual search, memory or physiological decline. The supplied
 Borer tables match the publisher's files but need a treatment key before
 factorial contrasts can be reconstructed.
 
-The latest [encounter/policy sensitivity study](docs/decisions/0063-encounter-and-policy-sensitivity.md)
+The frozen [encounter/policy sensitivity study](docs/decisions/0063-encounter-and-policy-sensitivity.md)
 shows that alternative policies prevent the tested undisturbed exits, and
 higher encounter rates permit the informed policy to complete disturbed
 scenarios while experienced animals still exit. These finite-horizon results

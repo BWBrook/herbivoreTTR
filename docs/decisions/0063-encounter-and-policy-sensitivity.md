@@ -127,5 +127,8 @@ encounter coefficient. Preserve the existing equations until the empirical
 cases can constrain feeding access, knowledge of renewal and coherent animal
 scales. Assess those cases as incomplete pattern-oriented templates, separating
 reported facts, estimates and unknowns. No further sweep, new memory rule,
-body-size axis, plant coupling or paper format is chosen here. Source remains
-uncommitted; no commit, push or publication was performed.
+body-size axis, plant coupling or paper format is chosen here. At this original
+closeout the source was uncommitted; no commit, push or publication was performed.
+The source was preserved in `d610ae9` on 25 September. Decision 0064 records the
+subsequently authorised recovery repair and commit/push, with the original
+trajectories retained as historical controls.

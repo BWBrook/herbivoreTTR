@@ -1,4 +1,4 @@
-# Experiment-level experienced feeding access policy (062).
+# Experiment-level experienced feeding access; original 062 and repaired 064.
 
 feeding_memory_fields <- c(
   "last_return_kj_h",
@@ -52,7 +52,8 @@ new_feeding_memory <- function(n) {
   )
 }
 
-feeding_expected_return <- function(memory, day) {
+# Explicit historical control for the frozen 062/063 studies.
+feeding_two_day_expected_return <- function(memory, day, ...) {
   validate_feeding_memory(memory)
   stopifnot(
     length(day) == 1L,
@@ -69,6 +70,47 @@ feeding_expected_return <- function(memory, day) {
   memory$last_return_kj_h +
     (memory$best_return_kj_h - memory$last_return_kj_h) *
       recovery_fraction
+}
+
+feeding_expected_return <- function(memory, day, search_area_m2_h,
+  growth_rate_h = .002, senescence_rate_h = .001,
+  production_saturation_biomass_kg_dm_ha = 2000,
+  residual_kg_dm_ha = 200) {
+  validate_feeding_memory(memory)
+  stopifnot(length(day) == 1L, is.numeric(day), is.finite(day),
+    day >= 1, day == as.integer(day))
+  parameters <- list(search_area_m2_h, growth_rate_h, senescence_rate_h,
+    production_saturation_biomass_kg_dm_ha, residual_kg_dm_ha)
+  stopifnot(all(vapply(parameters, function(x)
+    is.numeric(x) && length(x) == 1L && is.finite(x), logical(1))),
+    search_area_m2_h > 0, growth_rate_h >= 0, growth_rate_h <= 1,
+    senescence_rate_h >= 0, senescence_rate_h <= 1,
+    production_saturation_biomass_kg_dm_ha > residual_kg_dm_ha,
+    residual_kg_dm_ha >= 0)
+  age_h <- 24 * pmax(0, day - 1 - memory$last_observed_day)
+  # A return-equivalent belief, not inferred or simulator-supplied biomass.
+  proxy <- residual_kg_dm_ha + memory$last_return_kj_h / search_area_m2_h
+  stopifnot(all(is.finite(proxy)),
+    all(proxy <= production_saturation_biomass_kg_dm_ha))
+  a <- growth_rate_h - senescence_rate_h
+  b <- growth_rate_h / production_saturation_biomass_kg_dm_ha
+  if (a > 0) {
+    # Scaled exact logistic solution avoids overflow for very old memories.
+    decay <- exp(-a * age_h)
+    recovered <- proxy / (decay + b * proxy * (-expm1(-a * age_h) / a))
+  } else if (a < 0) {
+    recovered <- proxy * exp(a * age_h) /
+      (1 + b * proxy * expm1(a * age_h) / a)
+  } else {
+    recovered <- proxy / (1 + b * proxy * age_h)
+  }
+  recovered[proxy == 0] <- 0
+  expected <- pmin(memory$best_return_kj_h,
+    search_area_m2_h * pmax(recovered - residual_kg_dm_ha, 0))
+  # Preserve the observed value exactly at the opening-day boundary.
+  expected[age_h == 0] <- memory$last_return_kj_h[age_h == 0]
+  stopifnot(all(is.finite(expected)), all(expected >= 0))
+  expected
 }
 
 choose_feeding_station <- function(

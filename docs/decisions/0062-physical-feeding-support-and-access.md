@@ -131,7 +131,9 @@ Generated ledgers, summaries and figures are in ignored
 figure make the design distinction visible. The full package test suite and
 external `R CMD build` / `R CMD check --no-manual` passed on 2026-09-08 with
 Status OK and no errors, warnings or notes. Retained R parses and whitespace
-checks pass. The scientific source remains uncommitted.
+checks pass. At this original closeout the scientific source was uncommitted.
+It was preserved in `d610ae9` on 25 September; the later recovery-expectation
+repair and commit/push authority are recorded in Decision 0064.
 
 ## Stopping point
 

@@ -85,8 +85,8 @@ validate_feeding_access_policy <- function() {
   )
   stopifnot(
     identical(unchanged, observed),
-    identical(feeding_expected_return(unchanged, 2L), c(200, 225, 225)),
-    identical(feeding_expected_return(unchanged, 3L), c(225, 250, 250))
+    identical(feeding_two_day_expected_return(unchanged, 2L), c(200, 225, 225)),
+    identical(feeding_two_day_expected_return(unchanged, 3L), c(225, 250, 250))
   )
 
   # Zero feeding opportunity is excluded from the observed return update.
@@ -106,7 +106,7 @@ validate_feeding_access_policy <- function() {
 
   # Policy functions return new values without mutating their input record.
   before <- observed
-  invisible(feeding_expected_return(observed, 5L))
+  invisible(feeding_two_day_expected_return(observed, 5L))
   invisible(choose_feeding_station(1L, c(150, 250), c(0, 4), c(0, 100)))
   invisible(update_feeding_memory(
     observed,

@@ -232,7 +232,7 @@ run_feeding_access_sensitivity <- function(cores = 1L, progress = interactive(),
   baselines <- setNames(lapply(names(systems), function(key) {
     if (progress) message("Baseline ", key)
     run_feeding_access(systems[[key]], policy = "experienced", access = "physical",
-      final_day = 60L)
+      final_day = 60L, return_forecast = feeding_two_day_expected_return)
   }), names(systems))
 
   run_one <- function(i) {
@@ -245,7 +245,8 @@ run_feeding_access_sensitivity <- function(cores = 1L, progress = interactive(),
     if (progress) message("Branch ", d$id, " ", d$configuration, " ", d$profile,
       " ", d$water, " ", d$policy, " c=", d$coefficient_m2_h)
     run <- run_feeding_access(system, profile = d$profile, water = d$water,
-      policy = d$policy, access = d$access, final_day = 228L, baseline = baseline)
+      policy = d$policy, access = d$access, final_day = 228L, baseline = baseline,
+      return_forecast = feeding_two_day_expected_return)
     stopifnot(identical(run$initial_branch_state, baseline$final_state),
       identical(run$hourly[run$hourly$day <= 60L,,drop = FALSE], baseline$hourly))
     list(run = run, summary = feeding_access_sensitivity_summary(run, system, d$profile))

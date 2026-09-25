@@ -29,8 +29,16 @@ the energy ledger unchanged.
 
 ## Experiment-Level Behavior
 
-The current physical-support comparison uses `feeding-access-fixtures.R` and
-`feeding-access-policy.R`, with the frozen matrix in `feeding-access-study.R`.
+The current physical-support model uses `feeding-access-fixtures.R` and
+`feeding-access-policy.R`. Its default forecast propagates a return-equivalent
+proxy under known baseline plant dynamics, with historical best as a cap;
+it does not receive current biomass or forcing. The matched intervention is
+in `feeding-access-recovery-repair.R`, with focused checks in
+`feeding-access-recovery-validation.R`. See the
+[064 contract](feeding-access-recovery-specification.md).
+
+The frozen 062 matrix remains in `feeding-access-study.R` and explicitly uses
+the original two-day forecast as an experimental control.
 Separate validation files cover memory and integration. The explicitly adaptive
 seven-day dose is in `feeding-access-recovery-followup.R`; figures are rendered
 only by explicit calls in `feeding-access-figures.R`. See Decision 0062 for
@@ -53,7 +61,7 @@ The [diagnostic index](../experiments/README.md) identifies current executable
 comparisons. Repeated choice and forcing policies are compositions of the
 package functions, outside the package API.
 
-The accepted food-patch rule uses last and best experienced return, elapsed
+The earlier linear-turnover food-patch rule uses last and best experienced return, elapsed
 absence, current energetic adequacy, and accumulated shortfall. Expected
 unvisited return recovers over two absent days. The animal stays while its
 current patch is adequate; after inadequacy develops, shortfall augments the
@@ -150,8 +158,10 @@ The encounter/policy sensitivity study is closed under
 All four missing undisturbed policy controls complete; sustained completion
 depends jointly on policy and the sampled encounter coefficient. The
 [recovered empirical-case assessment](rebecca-archive-assessment.md) is complete;
-its proposed animal-grounding and plant-response tranche remains a scientific
-discussion, with no new model implementation authorised by the assessment.
+the [064 repair](decisions/0064-plant-matched-return-expectation.md) now removes
+the four selected historical exits. Red kangaroos and cattle are agreed anchors,
+with an [audited source mapping](empirical-anchor-evidence.md). Further animal/
+plant structure and empirical calibration remain a scientific discussion.
 
 Reactive drinking remains the default. Heat balance, general activity
 scheduling, dynamic plant moisture, renal response, multiple water sources,

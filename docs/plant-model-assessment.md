@@ -52,3 +52,38 @@ Barry's historical motivation and unresolved empirical cases are recorded in
 the spatial programme record. A later TTR comparison should be driven by those
 cases, with explicit tissue removal, area scaling, time-step convergence and
 an independently supported forage-quality bridge.
+
+## Empirical follow-up agreed 25 September 2026
+
+Barry selected red kangaroos in arid rangeland and cattle in northern tall
+grass as complementary anchors. The [source assessment](empirical-anchor-evidence.md)
+separates daily animal energy/intake evidence from Ash and McIvor's seasonal
+plant response. Their biology and observation scales must remain explicit
+when animal and plant structure are selected together. No Ash simulation or
+new plant compartment has been implemented.
+
+The pre-implementation structural prediction is conditional: for two plots
+with the same complete standing-biomass state, parameters, future forcing and
+removal schedule, this deterministic one-stock model predicts identical future
+production regardless of past grazing season. It cannot retain an additional
+effect of damage to roots, crowns or tillers once those inputs match. This is
+a property of the model; Ash's plots were not an experimental matched-biomass
+test, so that study alone does not prove which hidden state is required.
+
+Under a specified near-zero dry-season growth rate, the current stock still
+senesces exponentially; after 150–180 days at s=.001/h, about 2.7–1.3% of an
+ungrazed opening stock remains. Wet-season recovery near the baseline
+equilibrium has a 41.7-day local relaxation time, not a finite erasure time.
+These mechanisms motivate concern about the seasonal pattern, but they do not
+prove that *every* seasonal forcing or observation scheme reverses the Ash
+ranking. The actual forcing, live/dead observation mapping, achieved grazing
+exposure and follow-up window must be specified before a stronger ordinal
+prediction can be tested. Ash is a cattle/tall-grass challenge, not a universal
+acceptance gate for every arid kangaroo plant model.
+
+Future disturbance comparisons should branch from a declared grazed reference
+trajectory, after checking its stability or periodicity where it exists. If
+the proposed baseline cannot sustain a grazed attractor, report that fact
+rather than silently treating 60 days from an ungrazed stock as equilibrium.
+The 064 repair deliberately retains the original day-60 transient to isolate
+the forecast intervention.

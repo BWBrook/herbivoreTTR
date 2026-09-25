@@ -188,3 +188,29 @@ are not pure component subtractions or upper access bounds. See
 `Rscript --vanilla` bypasses project renv activation; it requires an explicit
 path to the intended installed library. The retained runners themselves do not
 change library paths or install packages.
+
+## Plant-matched return expectation (064)
+
+`Rscript experiments/feeding-access-recovery-validation.R` checks the exact
+return-equivalent forecast and its boundaries. Source
+`experiments/feeding-access-recovery-repair.R` and call
+`run_feeding_access_recovery_repair(cores=3)` for the five matched scenarios.
+The runner reads the original ignored 062/063 caches, replays the old rule,
+checks conservation and bounds, and returns results without writing files.
+The [specification](../docs/feeding-access-recovery-specification.md) fixes the
+comparisons and interpretation. Explicit saving of returned results belongs
+in ignored `outputs/recovery-clock-064/`.
+
+The original cache paths are `outputs/feeding-access-062/study.rds` and
+`outputs/feeding-access-063/sensitivity.rds`. On a fresh checkout, recreate
+them by explicitly saving the return values of `run_feeding_access_study()`
+and `run_feeding_access_sensitivity()` to those paths, in that order; generated
+directories and evidence are not distributed in Git. For an optional one-page
+comparison figure, source `feeding-access-recovery-figures.R` and call
+`plot_feeding_access_recovery(result, "outputs/recovery-clock-064/recovery-expectation.pdf")`.
+
+Direct `run_feeding_access()` now defaults to the plant-matched forecast.
+The frozen 062, short-pulse follow-up and 063 runners explicitly select
+`feeding_two_day_expected_return()` so their declared experimental definitions
+remain reproducible. This named function is the active historical comparator;
+it is not an alternative repaired-policy setting or a tunable recovery clock.

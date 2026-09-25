@@ -1160,6 +1160,27 @@ absence. A strict expected-improvement condition prevents accumulated shortfall
 from forcing movement to an inferior expected destination. Priors and recovery
 assumptions are synthetic. Informed and cyclic variants are diagnostics.
 
+The current physical-support forecast replaces the inherited two-day linear
+clock with the [064 expectation contract](feeding-access-recovery-specification.md).
+For complete absent days a, it maps last return y to the return-equivalent
+proxy Z=R+y/q, advances Z for 24a hours under baseline ungrazed plant dynamics,
+and forecasts min(historical best, q max(Z-R,0)). The exact formula uses
+a_h=r-s, b_h=r/K and
+`Z(t)=Z(0) exp(a_h t)/(1+b_h Z(0) expm1(a_h t)/a_h)`, with its a_h=0 limit.
+Code uses the algebraically equivalent scaled form for positive a_h. No
+recovery is added at zero complete absent days. Historical best caps the
+forecast but need not be attainable. Nominal K is the area-weighted mean of
+fixed system K; heterogeneous regrowth is not inferred by this scalar belief.
+
+This is a prior model of return recovery, not an estimate of true biomass:
+realized returns are appetite-censored and averaged across daily depletion.
+The animal receives fixed acquisition and baseline plant parameters, not actual
+unvisited biomass or current/future forcing. Expectations can therefore still
+be wrong during drought. The 062/063 runners explicitly retain the original
+`feeding_two_day_expected_return()` comparator, while direct
+`run_feeding_access()` uses the repaired forecast. Earlier linear-turnover
+experiments retain their separately stated historical contracts.
+
 The pooled-search and zero-transit controls change realized trajectories and
 are not monotone upper access bounds. Pooled-stock success demonstrates a
 feasible trajectory with that relaxation; failure of another heuristic cannot

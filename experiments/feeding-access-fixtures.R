@@ -61,7 +61,8 @@ feeding_access_capacity <- function(biomass, system) {
   mass * system$search_area_m2_h / colSums(system$overlap_m2)
 }
 
-feeding_access_choice <- function(state, system, day, policy, access) {
+feeding_access_choice <- function(state, system, day, policy, access,
+  return_forecast = feeding_expected_return) {
   here <- match(state$patch_id, system$stations$patch_id)
   if (access %in% c("pooled_search", "pooled_stock")) return(here)
   duration <- system$distances_m[here,] / system$speed_m_h
@@ -73,14 +74,21 @@ feeding_access_choice <- function(state, system, day, policy, access) {
   }
   expected <- if (policy == "informed") {
     pmin(.025, feeding_access_capacity(state$biomass_kg_dm_ha, system)) * 10000
-  } else feeding_expected_return(state$memory, day)
+  } else return_forecast(state$memory, day,
+    search_area_m2_h = system$search_area_m2_h,
+    growth_rate_h = system$growth_rate_h,
+    senescence_rate_h = system$senescence_rate_h,
+    production_saturation_biomass_kg_dm_ha =
+      sum(system$K * system$cell_area_ha) / sum(system$cell_area_ha),
+    residual_kg_dm_ha = 200)
   choose_feeding_station(here, expected, duration, cost,
     state$memory$inadequacy_kj)
 }
 
 step_feeding_access_hour <- function(state, system, hour, day,
   growth_multiplier = 1, water_duration_h = .5, water_cost_kj = 0,
-  policy = "experienced", access = "physical", stationary = FALSE) {
+  policy = "experienced", access = "physical", stationary = FALSE,
+  return_forecast = feeding_expected_return) {
   stopifnot(policy %in% c("experienced","informed","cyclic"),
     access %in% c("physical","zero_transit","pooled_search","pooled_stock"))
   opening <- state
@@ -102,7 +110,7 @@ step_feeding_access_hour <- function(state, system, hour, day,
       water_departure <- TRUE
     } else if (hour == 0) {
       here <- match(state$patch_id,system$stations$patch_id)
-      dest <- feeding_access_choice(state,system,day,policy,access)
+      dest <- feeding_access_choice(state,system,day,policy,access,return_forecast)
       if (dest != here) {
         state$moved_today <- forage_departure <- TRUE
         state$memory$inadequacy_kj <- 0
@@ -198,7 +206,7 @@ feeding_access_daily <- function(hourly) {
 
 run_feeding_access <- function(system, profile="none", water="near",
   policy="experienced", access="physical", final_day=228L, baseline=NULL,
-  stationary=FALSE) {
+  stationary=FALSE, return_forecast=feeding_expected_return) {
   stopifnot(profile %in% c("none","short_pulse","pulse","sustained"),water %in% c("near","far"))
   if (is.null(baseline)) {
     state <- new_feeding_access_state(system)
@@ -223,7 +231,7 @@ run_feeding_access <- function(system, profile="none", water="near",
       step <- step_feeding_access_hour(state,system,hour,day,
         if (forced) .6 else 1,if (far) 3 else .5,if (far) 900 else 0,
         if (day<=60) "experienced" else policy,
-        if (day<=60) "physical" else access,stationary)
+        if (day<=60) "physical" else access,stationary,return_forecast)
       if (step$stopped) { stop_day <- day; stop_hour <- hour; break }
       state <- step$state
       k <- k+1L

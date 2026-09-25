@@ -112,7 +112,8 @@ run_feeding_access_study <- function(cores=1L,progress=interactive()) {
     i <- match(key,keys)
     systems[[key]] <- new_feeding_access_system(design$configuration[i],design$subdivisions[i],
       design$boundary[i])
-    baselines[[key]] <- run_feeding_access(systems[[key]],final_day=60)
+    baselines[[key]] <- run_feeding_access(systems[[key]],final_day=60,
+      return_forecast=feeding_two_day_expected_return)
     stopifnot(is.na(baselines[[key]]$stop_day))
   }
   run_one <- function(i) {
@@ -120,7 +121,8 @@ run_feeding_access_study <- function(cores=1L,progress=interactive()) {
     if (progress) message("Running ",d$id," ",d$configuration," ",d$profile," ",d$water," ",d$policy," ",d$access)
     system <- systems[[keys[i]]]
     baseline <- baselines[[keys[i]]]
-    r <- run_feeding_access(system,d$profile,d$water,d$policy,d$access,baseline=baseline)
+    r <- run_feeding_access(system,d$profile,d$water,d$policy,d$access,baseline=baseline,
+      return_forecast=feeding_two_day_expected_return)
     stopifnot(identical(r$initial_branch_state,baseline$final_state),
       identical(r$hourly[r$hourly$day<=60,],baseline$hourly))
     list(run=r,summary=feeding_access_summary(r,system,d$profile))
