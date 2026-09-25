@@ -1119,3 +1119,49 @@ package-level perception or memory, endogenous decision timing, multi-hour
 transit, anticipatory quality-aware choice, patch-specific production, search,
 mortality, reproduction, and population dynamics. These require separately
 approved layers.
+
+## Area-supported spatial grazing
+
+The current area-based spatial contract is detailed in
+[the spatial specification](spatial-grazing-specification.md). It adds metric
+coordinates, fixed ecological forage-support area, periodic/bounded Euclidean
+distance, and exactly one focal animal. Total forage is sum(B_p A_p), in kg DM.
+After autonomous growth, intake I removes I/A_p from the occupied patch only,
+limited by A_p max(B_p-R_p,0). The original density-scaled null remains a
+separate diagnostic, with no automatic conversion between representations.
+
+Responsive plants follow dB/dt=(rf-s)B-(rf/K)B², with an exact autonomous
+transition and integrated production/senescence accounts. K is production
+saturation, not the equilibrium when senescence is positive. Environmental
+forcing f changes gross growth only. Zero is absorbing; residual biomass limits
+grazing, not senescence. Food energy and effective water content stay fixed.
+
+Animal physiology remains hourly. Journey duration is metric distance divided
+by speed for grazing moves; off-domain water has separately prescribed total
+time and expenditure. Remaining travel persists in the dynamic state, drinking
+is available at the water journey midpoint, and unused hourly time permits
+feeding after arrival. This is a fractional activity budget with the existing
+hourly gut/water convention, not a subhour physiological integrator.
+
+## Physical feeding support and access
+
+[The feeding-access specification](feeding-access-specification.md) separates
+fixed feeding blocks/stations from numerical vegetation cells. Encounter mass
+is footprint-accessible mass times the sampled fraction of its represented
+area. Actual intake is bounded by appetite and allocated in proportion to
+accessible mass across intersecting cells. The effective .6 m²/h coefficient
+preserves the earlier acquisition slope. Current study footprints are wholly
+vegetated and fully resolved; this is mixing within a fixed feeding support,
+not an explicit bite path or matrix-search model.
+
+All policies use daily departure opportunities, with hourly water priority and
+continuing fractional journeys. Experience carries last/best return and elapsed
+absence. A strict expected-improvement condition prevents accumulated shortfall
+from forcing movement to an inferior expected destination. Priors and recovery
+assumptions are synthetic. Informed and cyclic variants are diagnostics.
+
+The pooled-search and zero-transit controls change realized trajectories and
+are not monotone upper access bounds. Pooled-stock success demonstrates a
+feasible trajectory with that relaxation; failure of another heuristic cannot
+prove physical-access impossibility. Analytical supply bounds provide only a
+one-sided impossibility screen, with separate prefix intake checks.

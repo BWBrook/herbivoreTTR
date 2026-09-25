@@ -36,6 +36,11 @@ Description: Provides transparent functional models of herbivore energetics
     A prescribed spatial coupling can also carry one dynamic standing-forage
     stock per patch, applying common autonomous turnover everywhere and local
     herbivory only in the occupied patch.
+    Area-supported landscapes add metric geometry and conservative focal-animal
+    removal. An exact biomass-dependent production and senescence transition
+    supports responsive edible forage without individual-plant physiology.
+    Fixed feeding footprints add area-based encounter limits and conservative
+    removal independently of numerical vegetation subdivision.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Suggests:

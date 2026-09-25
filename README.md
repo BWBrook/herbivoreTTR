@@ -7,6 +7,31 @@ inspectable stock-flow accounting.
 
 ## Current Model
 
+The [Rebecca archive assessment](docs/rebecca-archive-assessment.md) recovers
+four field-study candidates and separates the C++/R history from the current
+rebuild. The cases chiefly constrain vegetation responses; none directly
+calibrates individual search, memory or physiological decline. The supplied
+Borer tables match the publisher's files but need a treatment key before
+factorial contrasts can be reconstructed.
+
+The latest [encounter/policy sensitivity study](docs/decisions/0063-encounter-and-policy-sensitivity.md)
+shows that alternative policies prevent the tested undisturbed exits, and
+higher encounter rates permit the informed policy to complete disturbed
+scenarios while experienced animals still exit. These finite-horizon results
+remain conditional on synthetic scales and prior history. See the
+[dimensionless diagnostics](docs/feeding-access-ratios.md).
+
+The physical feeding-support programme now separates fixed biological search
+areas from numerical cells and compares habitat layouts, information and access
+controls through disturbance and recovery. See
+[Decision 0062](docs/decisions/0062-physical-feeding-support-and-access.md).
+
+The current spatial study uses one focal animal, explicit forage-support areas
+and XY coordinates, distance-based fractional travel, and biomass-dependent
+plant production with senescence. See [Decision 0061](docs/decisions/0061-area-supported-spatial-grazing.md)
+and the [plant-model assessment](docs/plant-model-assessment.md). The earlier
+linear-turnover and fixed-route systems below remain diagnostic references.
+
 One animal's gut, body-energy reserve, location, and body water share a
 24-hour clock. Intake responds to body and gut energy and is bounded by feeding
 opportunity, acquisition capacity, and available forage:
@@ -22,16 +47,17 @@ forage turnover and opening patch properties
 ```
 
 Current intake enters the gut after opening-stock release. State carries
-exactly between hours and days. Forage uses constant production and
-proportional background loss around a fixed equilibrium, with a residual
-threshold below which biomass is unavailable. In the coupled system,
-per-animal intake scales by a fixed animal density to remove forage. This is
-an aggregate homogeneous load applied to one representative physiology.
+exactly between hours and days. In the current spatial model, plant production
+depends on standing biomass, with proportional senescence and a protected
+residual. One animal's intake removes actual dry matter from its fixed feeding
+footprint. Eight 100-m² feeding blocks occupy .08 ha of a 100 × 100 m domain;
+numerical subdivisions preserve those physical areas.
 
-Explicit patches carry acquisition capacities, food-energy densities, and
-optionally dynamic forage stocks. Directed known routes take one hour,
-suspend feeding, and add movement expenditure. Autonomous turnover acts on
-every patch; herbivory occurs only in the occupied patch during a stay.
+Forage travel time and incremental expenditure depend on distance. Travel can
+occupy part of an hour or span several hours; feeding uses the remaining open
+time. Plants grow and senesce throughout the landscape. The earlier constant-
+production, density-scaled and one-hour-route systems remain diagnostic
+references with their own contracts.
 
 The independent water ledger adds effective water from realized intake and
 drinking while stationary at a known source, then accounts for ordinary loss,
@@ -47,15 +73,12 @@ experienced return, elapsed absence, current adequacy, and accumulated
 shortfall. It has no access to unvisited biomass or oracle results.
 
 The herbivore, isolated-forage, non-spatial, and first explicit-patch arcs are
-closed. Arc 05, landscape constraints, is active. Water-route expenditure
-strongly controls the energy boundary: halving its inherited value lets all
-heated coupled branches complete the 126-day horizon, while doubling it makes
-even no-added-heat coupled branches stop around day 85. Drinking-policy ranking
-remains conditional; reactive drinking stays the default and both anticipatory
-rules remain comparators. See
-[`Decision 0060`](docs/decisions/0060-water-route-expenditure.md). A trip-duration
-comparison at fixed round-trip expenditure is proposed next. These are synthetic
-mechanism results; completion does not establish biological recovery or viability.
+closed. Arc 05, landscape constraints, is active. Decision 0062 establishes
+grid-independent feeding support and conditional access/policy effects;
+pooled-stock trajectories complete where the tested physical-access policies
+exit. These controls also change removal and renewal, so their effects cannot
+be added into a unique mechanism decomposition. Reactive drinking remains the
+default. Completion does not establish biological recovery or viability.
 
 The current synthetic reference uses:
 
@@ -69,64 +92,71 @@ The current synthetic reference uses:
 | Reference intake while feeding | 0.020 kg DM h^-1 |
 | Routine activity while feeding | 50 kJ h^-1 |
 | Maximum intake | 0.025 kg DM h^-1 |
-| Forage equilibrium | 1,000 kg DM ha^-1 |
-| Forage turnover fraction | 0.001 h^-1 |
-| Residual unavailable forage | 500 kg DM ha^-1 |
-| Coupled-reference animal density | 10 animals ha^-1 |
+| Baseline ungrazed forage equilibrium | 1,000 kg DM ha^-1 |
+| Production saturation scale | 2,000 kg DM ha^-1 |
+| Intrinsic growth / senescence rates | 0.002 / 0.001 h^-1 |
+| Residual unavailable forage | 200 kg DM ha^-1 |
+| Focal animals / total vegetated area | 1 / 0.08 ha |
+| Effective search area, 062 reference | 0.6 m² h^-1 |
+| Forage travel speed / incremental cost | 40 m h^-1 / 1 kJ m^-1 |
 | Normal body water | 28 kg |
 | Thirst trigger | 26 kg |
 | Critical body-water boundary | 24 kg |
 | Ordinary water loss | 1.56 kg d^-1 |
 
-These are deliberately synthetic reference values, not an empirical kangaroo
-parameterization.
+These are deliberately synthetic reference values, not a jointly calibrated
+organism. In particular, the energetic and water quantities do not establish
+one coherent body size. Encounter and movement coefficients have no empirical
+anchor. Historical reference systems use different forage contracts; their
+parameters should not be substituted into the current spatial model.
 
 Mechanistic thermoregulation, dynamic plant moisture, renal response,
-multiple sources, search, population dynamics, reproduction, and mortality
-remain deferred. Body mass is a derived energy interpretation without feedback
+multiple water sources, calibrated search behaviour, population dynamics,
+reproduction, and mortality remain deferred. Body mass is a derived energy interpretation without feedback
 into transitions.
 
 ## Install And Run
 
-From the repository root:
+From the repository root, with the project library selected by `renv`:
 
 ```sh
 R CMD INSTALL .
-Rscript --vanilla experiments/herbivore-core-reference.R
-Rscript --vanilla experiments/herbivore-core-appetite-forage.R
-Rscript --vanilla experiments/herbivore-core-implicit-patches.R
-Rscript --vanilla experiments/forage-stock-conservation.R
-Rscript --vanilla experiments/forage-turnover-reference.R
-Rscript --vanilla experiments/forage-availability-boundary.R
-Rscript --vanilla experiments/nonspatial-coupled-reference.R
-Rscript --vanilla experiments/nonspatial-animal-load-pulse.R
-Rscript --vanilla experiments/explicit-known-route-movement.R
-Rscript --vanilla experiments/explicit-prescribed-itinerary.R
-Rscript --vanilla experiments/explicit-static-patch-acquisition.R
-Rscript --vanilla experiments/explicit-known-patch-choice.R
-Rscript --vanilla experiments/prescribed-water-source-excursion.R
-Rscript --vanilla experiments/body-water-reference.R
-Rscript --vanilla experiments/spatial-water-source-benefit.R
-Rscript --vanilla experiments/hydration-controlled-water-visits.R
-Rscript --vanilla experiments/water-constrained-patch-choice.R
-Rscript --vanilla experiments/prescribed-evaporative-loss-regimes.R
-Rscript --vanilla experiments/causal-hydration-response.R
-Rscript --vanilla experiments/temperature-anticipatory-drinking.R
-Rscript --vanilla experiments/cost-aware-drinking.R
-Rscript --vanilla experiments/water-route-expenditure.R
-Rscript --vanilla experiments/spatial-patch-depletion-renewal.R
-Rscript --vanilla experiments/spatial-resource-aware-choice.R
-Rscript --vanilla experiments/spatial-resource-aware-switch-boundary.R
-Rscript --vanilla experiments/spatial-myopic-resource-choice.R
-Rscript --vanilla experiments/spatial-experienced-adequacy-choice.R
-Rscript --vanilla experiments/explicit-patch-food-quality.R
-Rscript --vanilla experiments/spatial-food-quality-choice-boundary.R
+Rscript experiments/feeding-access-study.R
+Rscript experiments/herbivore-core-reference.R
+Rscript experiments/herbivore-core-appetite-forage.R
+Rscript experiments/herbivore-core-implicit-patches.R
+Rscript experiments/forage-stock-conservation.R
+Rscript experiments/forage-turnover-reference.R
+Rscript experiments/forage-availability-boundary.R
+Rscript experiments/nonspatial-coupled-reference.R
+Rscript experiments/nonspatial-animal-load-pulse.R
+Rscript experiments/explicit-known-route-movement.R
+Rscript experiments/explicit-prescribed-itinerary.R
+Rscript experiments/explicit-static-patch-acquisition.R
+Rscript experiments/explicit-known-patch-choice.R
+Rscript experiments/prescribed-water-source-excursion.R
+Rscript experiments/body-water-reference.R
+Rscript experiments/spatial-water-source-benefit.R
+Rscript experiments/hydration-controlled-water-visits.R
+Rscript experiments/water-constrained-patch-choice.R
+Rscript experiments/prescribed-evaporative-loss-regimes.R
+Rscript experiments/causal-hydration-response.R
+Rscript experiments/temperature-anticipatory-drinking.R
+Rscript experiments/cost-aware-drinking.R
+Rscript experiments/water-route-expenditure.R
+Rscript experiments/spatial-patch-depletion-renewal.R
+Rscript experiments/spatial-resource-aware-choice.R
+Rscript experiments/spatial-resource-aware-switch-boundary.R
+Rscript experiments/spatial-myopic-resource-choice.R
+Rscript experiments/spatial-experienced-adequacy-choice.R
+Rscript experiments/explicit-patch-food-quality.R
+Rscript experiments/spatial-food-quality-choice-boundary.R
 ```
 
 Run the focused test suite with:
 
 ```sh
-Rscript --vanilla -e 'testthat::test_local()'
+Rscript -e 'testthat::test_local()'
 ```
 
 The experiment scripts print compact summaries and create no files. Historical
@@ -153,6 +183,6 @@ invariants, and proportionate validation gates.
 - [`docs/roadmap.md`](docs/roadmap.md): stage status and development plans.
 - [`docs/arcs/`](docs/arcs/05-landscape-constraints-and-scenarios.md):
   arc contracts and scientific decision boundaries.
-- [`HANDOVER.md`](HANDOVER.md): successor entry point and Goal 060 evidence.
+- [`HANDOVER.md`](HANDOVER.md): current successor entry point and evidence.
 
 The project is licensed under the MIT License.

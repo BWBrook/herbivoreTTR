@@ -366,3 +366,34 @@ are separate from common comparison hours. End-treatment and end-recovery
 body energy in `kJ` are missing when the corresponding hour was not completed.
 Here recovery refers to heat removal while altered access expenditure persists.
 These are intervention and reporting quantities, not new physiological state.
+
+## Area-supported spatial additions
+
+| Quantity | Unit / interpretation |
+| --- | --- |
+| `x_m`, `y_m`, domain dimensions | metres; metric geometry |
+| `area_ha` | hectares of ecological feeding support, fixed per run |
+| `biomass_kg_dm_ha` | kg edible standing DM per hectare, dynamic |
+| `production_saturation_biomass_kg_dm_ha` | K, kg DM/ha; not the senescing equilibrium |
+| `growth_rate_h`, `senescence_rate_h` | per hour |
+| `growth_multiplier` | dimensionless prescribed gross-production multiplier |
+| `growth_kg_dm_ha`, `senescence_kg_dm_ha` | integrated interval fluxes, kg DM/ha |
+| `requested_intake_kg_dm`, `realized_intake_kg_dm` | focal-animal kg DM per interval |
+| journey `remaining_h`, `total_h`, `total_cost_kj` | persistent travel time and incremental expenditure |
+
+The spatial experiment converts density fluxes to landscape kg DM by area;
+`feeding_h` is the available fraction of the current hour.
+
+## Physical feeding support additions
+
+| Quantity | Unit / interpretation |
+| --- | --- |
+| `xmin_m`, `xmax_m`, `ymin_m`, `ymax_m` | fixed rectangle bounds in metres |
+| `cell_area_ha`, `overlap_area_m2` | numerical support area and physical footprint intersection |
+| `search_area_m2_h` | effective represented-area encounter rate; not cumulative virgin area |
+| `feeding_duration_h` | actual available feeding fraction of an hour |
+| `encounter_ceiling_kg_dm` | maximum encountered dry matter in that interval |
+| `last_return_kj_h`, `best_return_kj_h` | realized intake energy per actual feeding-opportunity hour |
+| `last_observed_day`, `inadequacy_kj` | memory clock and accumulated local energetic shortfall |
+| `harvest_upper_kg_dm`, `intake_upper_kg_dm` | conservative cumulative plant and intake upper bounds |
+| `combined_energy_upper_kj` | optimistic gut-plus-body bound after nontravel expenditure |

@@ -13,6 +13,8 @@ accepted reasoning belong in [decisions](decisions/README.md).
 | Prescribed energy | `run_body_energy_day()` isolates the body ledger; `run_gut_body_energy_day()` composes opening-stock gut release with body input, maintenance, and activity. |
 | Appetite | `run_gut_body_energy_reference_cycle()` establishes periodic gut state; `run_appetite_controlled_energy_days()` carries body and gut state under bounded intake. |
 | Body-mass interpretation | `derive_body_mass_from_energy_reserve()` reports derived mass without changing or feeding back into state. |
+| Fixed feeding footprints | `rectangle_overlap_m2()` measures physical intersections; `step_footprint_grazing()` limits encounters by searched area and removes realized intake conservatively. Numerical cells may subdivide the same fixed footprint. |
+| Responsive area-supported forage | `step_responsive_forage()` integrates biomass-dependent production and senescence exactly; `new_area_landscape()`, `landscape_distance_m()`, and `remove_area_forage()` provide metric geometry and focal-animal mass removal. |
 | Isolated forage | `run_forage_biomass_day()` accounts for prescribed growth and loss; `run_forage_turnover_days()` applies constant production and proportional loss. |
 | Accessibility and removal | `derive_accessible_forage_biomass()` applies the residual threshold; `step_forage_herbivory()` scales realized per-animal intake into forage removal. |
 | Homogeneous coupling | `run_nonspatial_coupled_energy_days()` composes turnover, accessibility, appetite, removal, and animal energy at fixed density. |
@@ -26,6 +28,26 @@ closing states can be carried into subsequent calls. The water adapter leaves
 the energy ledger unchanged.
 
 ## Experiment-Level Behavior
+
+The current physical-support comparison uses `feeding-access-fixtures.R` and
+`feeding-access-policy.R`, with the frozen matrix in `feeding-access-study.R`.
+Separate validation files cover memory and integration. The explicitly adaptive
+seven-day dose is in `feeding-access-recovery-followup.R`; figures are rendered
+only by explicit calls in `feeding-access-figures.R`. See Decision 0062 for
+limits of the non-nested counterfactuals.
+
+`feeding-access-sensitivity.R` carries the 063 coefficient/policy matrix with
+shared day-60 baselines, analytic reporting ratios and historical replay checks.
+Its figure helper writes only to an explicit path. See
+[Decision 0063](decisions/0063-encounter-and-policy-sensitivity.md).
+
+The area-supported study is composed in `experiments/spatial-grazing-fixtures.R`,
+with a frozen factorial in `spatial-grazing-study.R`, integration controls in
+`spatial-grazing-validation.R`, and an explicit plotting helper in
+`spatial-grazing-figures.R`. It uses a fixed local threshold/cyclic grazing rule;
+the informed current-stock rule is a diagnostic comparator. These are a new
+spatial representation experiment, distinct from the earlier memory-policy
+comparisons below.
 
 The [diagnostic index](../experiments/README.md) identifies current executable
 comparisons. Repeated choice and forcing policies are compositions of the
@@ -119,21 +141,22 @@ suite, current diagnostics, an external `R CMD build`, and
 
 ## Current Stop
 
-Arcs 01–04 are closed. Arc 05 has accepted experience-based food choice,
-body-water accounting, prescribed evaporative loss, and causal familiar-source
-drinking. Goal 060 varied water-route expenditure with trip duration fixed.
-Halving cost allows all heated coupled branches to complete 126 d; at the
-inherited cost they all stop before heat removal. Doubling cost also stops the
-no-added-heat coupled branches around day 85. Lower expenditure need not raise
-energy at every checkpoint because appetite and forage feedback alter intake.
-Reactive drinking remains the default, with both fallible anticipatory rules
-retained. See [Decision 0060](decisions/0060-water-route-expenditure.md) and the
-[handover](../HANDOVER.md).
+Arcs 01–04 are closed. Arc 05 now includes metric area-supported forage,
+fixed physical feeding footprints, responsive production/senescence and
+fractional travel. Decision 0062 separates pooled-stock feasibility from the
+observed physical-access exits and records the limits of those controls.
+The encounter/policy sensitivity study is closed under
+[the 063 specification](feeding-access-sensitivity-specification.md).
+All four missing undisturbed policy controls complete; sustained completion
+depends jointly on policy and the sampled encounter coefficient. The
+[recovered empirical-case assessment](rebecca-archive-assessment.md) is complete;
+its proposed animal-grounding and plant-response tranche remains a scientific
+discussion, with no new model implementation authorised by the assessment.
 
-A water-trip duration comparison at fixed round-trip expenditure is proposed
-next and awaits approval. Its late-departure, forecast, and day-boundary
-conventions need an explicit contract before implementation. Heat balance,
-general activity scheduling, dynamic plant moisture, renal response, multiple
-sources, search, mortality, and species calibration remain deferred. The
+Reactive drinking remains the default. Heat balance, general activity
+scheduling, dynamic plant moisture, renal response, multiple water sources,
+calibrated search behaviour, mortality, and species calibration remain
+deferred. The earlier duration-only proposal was superseded by the spatial
+programme. The
 [roadmap](roadmap.md) and [Arc 05](arcs/05-landscape-constraints-and-scenarios.md)
 retain the progression and scientific decision gates.

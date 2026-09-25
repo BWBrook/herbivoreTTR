@@ -8,7 +8,7 @@
 | 2. Isolated plant-forage | Can a simple forage biomass stock remain stable under growth, loss, and later seasonal forcing without herbivory? | Closed; controlled forcing deferred until required |
 | 3. Non-spatial coupling | How do herbivore intake and forage depletion alter one another in a homogeneous system? | Closed |
 | 4. Explicit patches and movement | How do location, patch choice, travel time, and travel energy change intake and state? | Closed |
-| 5. Landscape constraints and scenarios | How do water, depletion, heterogeneity, climate, and disturbance produce chronic stress? | In progress; experienced forage choice, body water, temperature-loss forcing, and a causal drinking-policy comparison established |
+| 5. Landscape constraints and scenarios | How do water, depletion, heterogeneity, climate, and disturbance produce chronic stress? | In progress; encounter/policy sensitivity established (0063); recovered empirical cases assessed, animal grounding remains open |
 
 The detailed contracts are stored under `docs/arcs/`.
 
@@ -249,3 +249,40 @@ dynamic plant moisture, explicit mass feedback, gut composition, reproductive
 allocation, and survival thresholds remain scientifically important. They
 should be added one at a time when a new ecological question can distinguish
 their contribution.
+
+## Area-Supported Spatial Programme (061)
+
+The approved broader programme supersedes the narrow duration-only proposal
+above. It adds one focal animal, explicit area/XY geometry, travel time in
+physical units, responsive edible biomass, and a 16-branch chronic-condition
+factorial plus five structural controls. Habitat and plant forcing drive
+energy-domain exits while water remains above its interpretation boundary.
+Policy and feeding support affect exit timing; this is a synthetic conditional
+result, not species viability. See [Decision 0061](decisions/0061-area-supported-spatial-grazing.md).
+
+## Physical Feeding Support and Access (062)
+
+Fixed footprints now preserve biological search support under numerical
+subdivision. The main 53-branch matrix and two adaptive follow-up branches
+distinguish pooled-stock feasibility from encounter/behavioural limits, with
+explicitly non-nested access controls. Short-term reserve recovery can precede
+later decline. The representation is accepted at its synthetic scope; reward
+memory and encounter scales need empirical grounding before further enrichment.
+See [Decision 0062](decisions/0062-physical-feeding-support-and-access.md).
+
+## Encounter and Policy Sensitivity (063)
+
+The four missing undisturbed informed/cyclic controls complete near baseline
+reserve. Across the five sampled encounter rates, sustained informed branches
+complete from 1.5 m²/h upward while experienced branches exit throughout.
+More search is not monotonically beneficial under the experienced rule.
+The 90-branch comparison, dimensionless diagnostics and stationary analytical
+benchmark are closed at their synthetic scope; see
+[Decision 0063](decisions/0063-encounter-and-policy-sensitivity.md).
+The [recovered empirical-case assessment](rebecca-archive-assessment.md) is
+complete. The four studies chiefly constrain vegetation responses to herbivory;
+none directly calibrates search or memory. A matched animal reference and an
+Ash-based qualitative plant-response comparison are the proposed next tranche,
+before adding another behavioural or physiological layer. Borer treatment
+mapping and a conflicting livestock flag require resolution before its supplied
+data can support factorial comparisons.

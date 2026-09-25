@@ -1,5 +1,33 @@
 # Experiments
 
+## Current encounter/policy sensitivity (063)
+
+`feeding-access-sensitivity.R` wraps the unchanged 062 model in the frozen
+90-branch design. Five search rates apply from day 1; policy comparisons share
+each rate/layout's experienced day-60 baseline. It checks conservation, bounds
+and 14 exact historical overlaps. `feeding-access-sensitivity-figures.R` renders
+the three-page figure only when given a path. See
+[Decision 0063](../docs/decisions/0063-encounter-and-policy-sensitivity.md),
+[the design](../docs/feeding-access-sensitivity-specification.md), and
+[the analytical ratios](../docs/feeding-access-ratios.md).
+
+From the project root, using the installed project package:
+
+```r
+source("experiments/feeding-access-sensitivity.R")
+result <- run_feeding_access_sensitivity(cores = 3)
+# Optional explicit output; generated evidence remains ignored.
+write_feeding_access_sensitivity_outputs(result, "outputs/feeding-access-063",
+  "outputs/feeding-access-063/encounter-policy-sensitivity.pdf")
+```
+
+The default historical comparison reads `outputs/feeding-access-062/study.rds`.
+If that cache is unavailable, `check_reference=FALSE` permits reproduction
+without the historical comparison; conservation, bounds and matched-state
+checks still run. Direct script execution prints results and writes nothing.
+
+## Retained diagnostic clients
+
 The active experiments are compact, no-write scientific clients of the
 installed package:
 
@@ -106,3 +134,57 @@ README.
 The former `rebuild-*` scripts were development evidence. Their accepted
 conclusions remain in `docs/decisions/`, and their exact source remains in Git
 through commit `ab063ce`.
+
+## Area-supported spatial grazing (061)
+
+After `R CMD INSTALL .`, run `Rscript experiments/spatial-grazing-validation.R`
+for the integration controls or `Rscript experiments/spatial-grazing-study.R`
+for the 16-branch factorial plus five structural controls. The study returns
+complete hourly/daily records and explicitly records domain exits. Sourcing
+these files defines functions and writes nothing.
+
+For an optional local review artifact:
+
+```r
+source("experiments/spatial-grazing-study.R")
+source("experiments/spatial-grazing-figures.R")
+result <- run_spatial_grazing_study(progress = TRUE)
+# Choose an existing local output directory; generated evidence stays out of Git.
+plot_spatial_grazing_study(result, "outputs/spatial-grazing-061/condition-and-supply.pdf")
+```
+
+The figure shades treatment days 61-144; crosses mark model-domain exits, not
+biological deaths. Phase means from stopped runs have different observation
+horizons and must not be treated as matched causal contrasts. See
+[Decision 0061](../docs/decisions/0061-area-supported-spatial-grazing.md).
+
+## Physical feeding support and access (062)
+
+Use the project-root R session/renv library after `R CMD INSTALL .`.
+`Rscript experiments/feeding-access-validation.R` runs memory, integration and
+fixed-field refinement controls. `Rscript experiments/feeding-access-study.R`
+runs the original frozen 53-branch study and prints compact results. Neither
+command writes evidence files. Optional parallel execution and rendering:
+
+```r
+source("experiments/feeding-access-study.R")
+source("experiments/feeding-access-recovery-followup.R")
+source("experiments/feeding-access-figures.R")
+result <- run_feeding_access_study(cores = 3L, progress = TRUE)
+followup <- run_feeding_access_recovery_followup(result)
+# Supply an existing output directory; these explicit calls write PDFs.
+plot_feeding_access_study(result, "outputs/feeding-access-062/feeding-support-and-recovery.pdf")
+plot_feeding_access_followup(result, followup, "outputs/feeding-access-062/recovery-followup.pdf")
+```
+
+The seven-day follow-up is deliberately separate: its dose was declared only
+after the original 28-day pulse failed to recover. The main figure shades
+days61–88 more darkly and days89–144 lightly. Growth-pulse treatment ends day88,
+sustained treatment ends day144; water-access changes reset after day144.
+Crosses mark domain exits, not deaths. Pooled-search and zero-transit effects
+are not pure component subtractions or upper access bounds. See
+[Decision0062](../docs/decisions/0062-physical-feeding-support-and-access.md).
+
+`Rscript --vanilla` bypasses project renv activation; it requires an explicit
+path to the intended installed library. The retained runners themselves do not
+change library paths or install packages.

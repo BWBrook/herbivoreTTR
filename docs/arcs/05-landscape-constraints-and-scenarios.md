@@ -315,3 +315,37 @@ reproduction, mortality, and extinction risk remain separate decisions. A
 synthetic coupled model may itself be the first scientific product; Diprotodon
 or modern macropod parameterization follows only after the machinery is stable
 and its sensitivities are understood.
+
+## Spatial Grazing Programme (061)
+
+The approved broader programme supersedes the duration-only proposal: metric
+area-supported forage, exact responsive biomass growth, fractional/multihour
+travel and separately prescribed water time/expenditure now support one focal
+animal. Sixteen factorial branches and five structural controls establish a
+conditional chronic energy boundary. Plant/area limits dominate this grid;
+policy changes timing. [Decision 0061](../decisions/0061-area-supported-spatial-grazing.md)
+records the conclusions and limits. Empirical habitat support and search
+footprint should be discussed before further behaviour tuning.
+
+## Physical Feeding Support (062)
+
+The next completed programme holds physical habitat and feeding supports fixed
+under numerical refinement. Fifty-three frozen branches and a separately
+declared two-branch short-pulse follow-up establish feasible pooled-stock
+trajectories alongside physical encounter/behavioural failures. The controls
+do not identify additive components or general fragmentation effects.
+[Decision 0062](../decisions/0062-physical-feeding-support-and-access.md) records
+the result, including late decline after apparent early recovery.
+
+## Encounter and Policy Sensitivity (063)
+
+The authorised follow-up completes 90 planned comparisons with no new model
+equations. Alternative policies prevent the undisturbed .6 m²/h layout exits;
+informed sustained runs complete at the sampled rates of 1.5, 3 and 5 m²/h,
+whereas experienced runs still exit. This supports conditional joint effects
+of encounter rate and policy, not a calibrated fragmentation or viability
+claim. Completion, endpoint reserve recovery and final reserve trend remain
+separate outcomes. The one-block analytical benchmark establishes a support-
+area deficit, not a universal chronic-decline criterion.
+[Decision 0063](../decisions/0063-encounter-and-policy-sensitivity.md) closes the
+diagnostic and directs the next discussion toward empirical case constraints.
