@@ -17,9 +17,10 @@ does not establish stable recovery or calibrated behaviour. The original
 
 Red kangaroos in arid rangeland and cattle in northern tall grass are the agreed
 complementary [empirical anchors](docs/empirical-anchor-evidence.md). The source
-audit records the corrected Munn intake estimates, expenditure accounting,
-biomass support and residual/search uncertainties. Species calibration and new
-plant structure have not been implemented.
+audit now includes the full Short (1985), Munn (2009) and Munn (2016) methods.
+The [draft observation contracts](docs/empirical-anchor-contracts.md) distinguish
+shared forage, measured vegetation, feeding effort and diet-energy definitions.
+Species calibration and new plant structure have not been implemented.
 
 The [Rebecca archive assessment](docs/rebecca-archive-assessment.md) recovers
 four field-study candidates and separates the C++/R history from the current

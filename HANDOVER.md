@@ -1,7 +1,7 @@
 # Successor Brief: Herbivore TTR
 
-Updated 2026-09-25 after the plant-matched recovery repair (064), Fable's
-review and the empirical-anchor source audit.
+Updated 2026-09-26 after Fable's review of 064, a cached phase audit and
+full-text reading of the three supplied anchor papers.
 This is a compact entry point, not a new
 scientific contract. Check live files and Git state before acting; you do not
 need the predecessor's conversation or its full chronological history.
@@ -30,7 +30,8 @@ Read in this order, stopping when you have enough context:
 3. The stage-map table in [Roadmap](docs/roadmap.md), then
    [Decision 0064](docs/decisions/0064-plant-matched-return-expectation.md), with
    Decision 0062 for physical representation and 0063 for the frozen old rule.
-4. Read the [anchor evidence](docs/empirical-anchor-evidence.md), then the
+4. Read the [anchor evidence](docs/empirical-anchor-evidence.md) and
+   [draft observation contracts](docs/empirical-anchor-contracts.md), then the
    [archive assessment](docs/rebecca-archive-assessment.md) when history matters.
 5. Consult [Model specification](docs/model-specification.md) by topic and
    [Experiments](experiments/README.md) when planning the next implementation.
@@ -101,7 +102,14 @@ No clock tuning or further trajectory search followed the results.
 A universal fixed replacement clock was rejected: exact baseline recovery
 from 200 to 250 kJ/h takes 14.246 days at q=.6, while 250 is unreachable at
 q=.3. The current prior respects that baseline geometry, but may remain wrong
-during unobserved drought. See the [064 contract](docs/feeding-access-recovery-specification.md).
+during unobserved drought. The 26 September review also finds post-forcing
+opening overprediction: agreement of the median forecast and median opening
+potential at the appetite cap does not mean each forecast is exact. Of 19
+inadequate post-forcing revisits, 17 have opening overprediction; 14 start
+adequate and lose capacity during feeding, with overlap between these causes.
+The daily-mean return proxy exceeds true departure-day closing stock even for
+the tested absences wholly after forcing. See Decision 0064's dated addendum;
+the frozen [064 contract](docs/feeding-access-recovery-specification.md) is unchanged.
 
 Red kangaroos and cattle are the agreed complementary empirical systems.
 Munn's 2011 corrigendum replaces the original 994 g/day kangaroo intake with
@@ -204,25 +212,31 @@ verified checksum, primary references, inspection limits and reproducible R
 data inventory. No legacy model was executed and no model code or parameter
 was changed during this assessment.
 
-The archive synthesis is correspondence thread 28, message 539. Fable's reply
-is thread 56, messages 540–545; the 064 result is returned there. Barry's three
-authorisations are recorded in message 549. Read that thread for subsequent
-critique; the earlier review was marked read through message 545. Do not treat
-reviewer agreement as model validation or a broader implementation mandate.
-The last strict catch-up checkpoint was 553; pass it as `after` to
+The archive synthesis is correspondence thread 28, message 539. The 064 result
+is in thread 56, Astra message 554; Fable's review is 556–558 and his supplied-PDF
+note is 563. Barry's three authorisations are recorded in message 549. The
+thread has been read contiguously and acknowledged through message 563.
+Do not treat reviewer agreement as model validation or a broader implementation
+mandate. The last strict catch-up checkpoint was 568; pass it as `after` to
 `read_updates`, not as a `mark_read` message ID.
 
 ## Next Scientific Discussion
 
-The next step is Fable's review of 064 and the corrected source mapping, then
-two coherent animal/plant observation contracts. Specify edible-biomass support,
-feeding time, total expenditure, residual/search relationship and a grazed
-reference trajectory for each. The current day-60 transient was intentionally
+The next step is Fable's review of the drafted observation contracts and the
+phase-audit correction. Short's full text supplies the two-animal/400-m2 pen
+design and fitted daily curve, but separates the below-20-kg/ha fine pasture
+residue from rejected material. Munn 2016 supplies an assumed 10% DE-to-ME
+reduction and shows that its preferred western-grey FMR is a selected subset.
+The current synthetic intake ceiling and water pool also need coherent
+species scaling before calibration. The contracts are proposals, not accepted
+new equations. The current day-60 transient was intentionally
 retained for causal attribution; future disturbance studies need an explicit
 stability or periodicity check where a grazed attractor exists. Roots/crowns,
 live/dead tissue, TTR coupling, additional physiology and demography remain
 scientific choices, not automatic extensions. The anchor selection does not
-authorise an empirical fit or publication.
+authorise an empirical fit or publication. Rain-conditioned cues and shared
+consumers belong in the proposed observation model; their implementation is
+not approved by this documentation step.
 
 ## How To Collaborate
 
@@ -263,6 +277,14 @@ function writes only to an explicit path. The 25 September release gate passed
 441 package tests and external build/check with Status OK; 064 affects only
 experimental composition and docs, with targeted policy/integration/refinement
 and analytical checks. The installed exported function definitions match source.
+
+The 26 September audit reads the existing cache only; its R calculation and
+tables are in `outputs/recovery-clock-064/phase-review-20260926/`. The three
+supplied published PDFs are local in ignored `references/papers/`, with
+filenames/checksums in `references/README.md`; extracts and key-page renders
+are in `outputs/recovery-clock-064/fulltext-review-20260926/`. Access is resolved,
+but observation-model and evidence gaps remain. No new trajectories or package
+changes were made, and no release gate was repeated for these documentation updates.
 
 The 063 numerical evidence is in `outputs/feeding-access-063/`: `sensitivity.rds`,
 summary and baseline CSVs, `analytic.csv`, execution/provenance logs and the

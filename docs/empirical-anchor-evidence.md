@@ -1,6 +1,6 @@
 # Empirical anchor evidence: arid kangaroos, sheep and northern cattle
 
-Assessment date: 25 September 2026.
+Assessed 25 September 2026; full-text methods update 26 September 2026.
 
 This is a bounded source assessment, not an empirical fit or a change to the
 model contract. The immediate question is whether the nominated studies can
@@ -19,10 +19,12 @@ space use. It does not directly estimate area searched per feeding hour. Short
 (1985) materially challenges `R = 200 kg DM/ha` as a universal ungrazable
 residual: its arid chenopod graze-down trial reports that red kangaroos, Merino
 sheep and rabbits could reduce pasture to an ungrazable residual below 20 kg/ha.
-That result does not prove `R = 20` for the current model, because Short's
-pasture measure, diet mixture and small-pen daily depletion are not the model's
-instantaneous edible stock. It does rule out treating 200 kg DM/ha as an
-empirical consequence of this red-kangaroo system.
+That result does not prove `R = 20` for the current model. The full text
+distinguishes the fine/sparse ungrazable pasture residue from physically
+available but rejected standing material; the fitted intake response uses
+combined pasture and shrub biomass. These are not the model's instantaneous
+edible stock. It does rule out treating 200 kg DM/ha as an empirical consequence
+of this red-kangaroo system.
 
 Munn et al. (2009, 2010 and 2013) provide aligned red-kangaroo and Merino-sheep
 evidence at Fowlers Gap. The 2010 enclosure study measured feeding time, diet
@@ -52,30 +54,62 @@ search.
 in an arid grazing system*, Journal of Applied Ecology 22:435-447,
 [JSTOR](https://www.jstor.org/stable/2403176).
 
-- Taxa and setting: red kangaroo (*Macropus rufus*), Merino sheep (*Ovis
-  aries*) and European rabbit (*Oryctolagus cuniculus*) in arid western New
-  South Wales, on chenopod shrubland with *Maireana pyramidata*, annual forbs
-  and grasses. This is a kangaroo-sheep-rabbit comparison, not cattle.
-- Response and scale: food intake against pasture biomass in a graze-down
-  trial. The accessible primary abstract reports maximum intake in
-  `g kg^-0.75 day^-1` and pasture biomass in `kg/ha`: 62 for kangaroos, 61 for
-  sheep and 68 for rabbits at the asymptote; diet switching as biomass fell;
-  and an ungrazable residual below 20 kg/ha for all three species. Thus the
-  response is daily intake over a declining small pasture, not instantaneous
-  bite rate, interception rate or area swept.
-- Design details: full JSTOR text was blocked by its client challenge in this
-  assessment, so sample sex, body mass, pen dimensions, exact replication,
-  season and the fitted coefficients were not independently verified from the
-  primary full text. They must not be silently imported into a calibration.
-- Interpretation for `R`: the reported `<20 kg/ha` residual is an order of
-  magnitude below 200 kg DM/ha. It is direct evidence against assigning 200 as
-  this system's empirically observed ungrazable residual. It is not proof that
-  all biomass below 20 was edible, nor that a heterogeneous landscape has the
-  same residual.
-- Interpretation for `q`: the functional response combines searching,
-  harvesting, diet switching, satiation and a whole day's feeding opportunity.
-  Without matched feeding hours and a defensible edible-density observation,
-  it cannot identify `q` in m2 per feeding hour.
+- Full text: Barry's supplied JSTOR PDF, checked by title, journal pages and
+  checksum in [`references/README.md`](../references/README.md). Equations,
+  design and residual definitions were checked on rendered pages 437, 440 and
+  442. The earlier abstract-only access limitation is closed.
+- Setting and design (pp. 436–438, 444): Kinchega National Park, western NSW,
+  in *Maireana pyramidata* shrubland with annual forbs and grasses. The trial
+  occurred in spring; a calendar year is not specified in the inspected
+  description. Adult female red kangaroos averaged 25.6 kg after six months'
+  holding/acclimation. Each of two replicate 20 × 20 m yards held two
+  kangaroos, with shade, unrestricted water and a separate 5 × 20 m holding
+  yard used during vegetation assessment. Merino wethers averaged 57.5 kg
+  fleece-free, with the same two-per-yard design; rabbits averaged 1.25 kg,
+  with eight per 10 × 10 m yard. Animal observations within a yard are not
+  independent replicates of depletion.
+- Observation process (pp. 436–437): starting vegetation was about 500–700
+  kg DM/ha and was grazed down over roughly 10–12 days. Pasture biomass was
+  estimated from 60 random 0.25-m2 quadrats per yard/occasion, with a correction
+  for 20% visual underestimation. Shrub biomass was assessed separately with
+  harvested reference shrubs. Kangaroo yards were assessed every two days,
+  whereas sheep/rabbit yards were assessed daily. Intake is the loss of
+  **combined pasture and shrub biomass** between observations, adjusted for
+  trampling, divided by animals and elapsed time, and smoothed by running
+  two-point averages. The trampling correction came from muzzled sheep and
+  assumed equal effects for kangaroos; the paper calls it crude. Intake and
+  biomass therefore share measurement error, and adjacent smoothed points
+  are dependent. Intake was not measured directly on individuals.
+- Fitted response (Fig. 4, p. 440): `c(V) = 709 * (1 - exp(-V/84))` in
+  g DM/animal/day, with `V` the combined vegetation density in kg DM/ha.
+  Fig. 5 gives `62.3 * (1 - exp(-V/84))` in g DM/kg^0.75/day. The analogous
+  sheep/rabbit asymptotes are 1,275/80 g/day and density scales 111/138 kg/ha.
+  The text rounds kangaroo intake to 710 g/day. These are descriptive
+  least-squares fits to the yard series, not independent individual feeding
+  curves or a measured hourly encounter law. Short explicitly could not
+  distinguish ramp, inverted-exponential, Michaelis–Menten and sigmoidal
+  forms (p. 444); the evidence supports saturation without selecting its
+  mechanism. The interspecific efficiency differences were not statistically
+  testable (p. 441).
+- Residual definition (p. 442): physically present but rejected material
+  included green/flowering plants and unpalatable dead tussocks/stalks.
+  Separately, normally eaten species left a fine/sparse residue below
+  20 kg/ha. The latter is **not all remaining aboveground biomass**, a measured
+  root/crown reserve, or a fitted offset in Fig. 4 (whose curve has no positive
+  intercept threshold). It challenges 200 as a universal grazing residual
+  but does not directly set the current model's `R`.
+- Diet and recovery (pp. 440–444): bluebush use rose as pasture declined;
+  its chemistry and palatability also varied seasonally. Rabbit-defoliated
+  bluebush recovered within eight months, an observation about shrubs, not
+  an annual-pasture recovery curve. Thus this experiment neither estimates a
+  fixed plant relaxation rate nor identifies a universal regeneration pool.
+- Interpretation for `q`: the response includes searching, harvesting, diet
+  switching, satiation and unmeasured feeding duration in shared yards.
+  `1/84` has units ha/kg DM, not m2/hour. Even a low-density slope conversion
+  requires a matched edible-biomass definition and feeding duration, as well
+  as allowance for depletion during the observation interval. Munn's 10.4-h
+  value is from a different study and must not silently supply that missing
+  denominator.
 
 ### Munn et al. (2009): enclosed field metabolic rate and water turnover
 
@@ -84,28 +118,45 @@ kangaroos and sheep in an arid rangeland: an empirically derived
 dry-sheep-equivalent for kangaroos*, Australian Journal of Zoology 57:23-28,
 [DOI](https://doi.org/10.1071/ZO08063).
 
-- Taxa and setting: mature, non-pregnant, non-lactating female red kangaroos
-  and Merino sheep at Fowlers Gap, NSW, in a naturally vegetated 16-ha
-  herbivore-proof chenopod enclosure. The full-text companion study states an
-  April 2007 mild-autumn trial, seven animals introduced per species, initial
-  mean masses `23.4 +/- 0.8 kg` and `47.8 +/- 2.8 kg`, and energy/water
-  measurements over 5-9 days after acclimation.
-- Measurements: doubly labelled water field metabolic rate and water turnover.
-  The linked 2010 primary paper reports the retained estimates from this study:
-  `4,872 +/- 364 kJ/day` for six kangaroos and `16,664 +/- 1,314 kJ/day` for
-  five sheep, and water use of approximately 1.5 versus 12 L/day. These are
-  whole-animal interval averages.
+- Full text: the supplied CSIRO published PDF was checked against its methods
+  and rendered Tables 1–2 (pp. 24–25). The earlier access limitation is closed.
+- Setting (p. 24): mature, non-pregnant, non-lactating female red kangaroos
+  and Merino sheep shared a 16-ha chenopod enclosure at Fowlers Gap, NSW,
+  with shade and an unrestricted shared trough. The enclosure had been
+  ungrazed for more than five years before acclimation. The trial ran
+  2–10 April 2007 in mild autumn (mean daily temperature 21.7 C), after
+  roughly three weeks' acclimation. Clipped standing biomass at the start
+  of the metabolic trial was `44 +/- 8 g DM/m2`, based on 60 random 0.25-m2
+  quadrats. It is not evidence of a long-established grazed equilibrium.
+- Counts: this paper reports six kangaroos and five sheep in Methods and
+  Tables 1–2. The concurrent 2010 paper reports seven introduced per species
+  but six/five in its intake table. The reason for that discrepancy or any
+  exclusions is not given. Keep analysis sample size distinct from a complete
+  co-consumer census; do not assign total grazing pressure from `n = 6/5`
+  without resolving or representing that uncertainty. There is only one
+  enclosure, despite repeated animal-level measurements.
+- Measurements (pp. 24–25): doubly labelled water, with about eight hours'
+  equilibration and 6–8 days of free ranging between blood samples. A fixed
+  `21.7 kJ/L CO2` converts carbon-dioxide production to FMR; no measured
+  respiratory quotient is reported. Sheep values include methane corrections;
+  kangaroo methane was assumed negligible. FMR averages were
+  `4,872 +/- 364 kJ/day` for kangaroos and `16,664 +/- 1,314` for sheep.
+  Mean initial/final masses were `23.6 +/- 0.8 kg` and `50.2 +/- 2.2 kg`
+  (sheep fleece-free). Water turnover was `1.5 +/- 0.1 L/day` versus
+  `11.5 +/- 0.8`; total body water was `66.7 +/- 0.5%` versus `66.2 +/- 2.1%`.
+  At the kangaroo mean mass the reported fraction corresponds to about
+  15.7 kg of body water, far below the synthetic 28-kg pool. Turnover is a
+  whole-animal water flux, not a separately measured ordinary-loss component.
 - Intake status: the paper treats FMR as an index of food requirement. It did
   not measure daily dry-matter removal directly. The 2010 companion converts
   FMR to intake using measured apparent digestibility and assumed gross energy
   content. The original calculation was subsequently corrected by the 2011
   publisher corrigendum detailed below.
-- Access limit: the publisher and repository exposed the primary abstract;
-  the current full-text download endpoint returned an HTML access page. Study
-  design and numerical detail above were checked in the full text of Munn et
-  al. (2010), which explicitly identifies the measurements as concurrent, and
-  against the full Munn et al. (2013) comparison. This is strong linkage but
-  not a substitute for auditing every equation in the 2009 article.
+- Energy-scale interpretation: roughly 12–14 kg is an illustrative equivalent
+  under the paper's body-mass scaling and this study's FMR:BMR, not a measured
+  mass or a coherent calibration of the synthetic animal. Similarity between
+  1.56 kg/day model ordinary loss and 1.5 L/day measured turnover cannot repair
+  the mismatched water pool or identify all water inputs/losses.
 
 ### Munn et al. (2010): feeding biology in the 16-ha enclosure
 
@@ -227,24 +278,46 @@ grazing pressures by western grey kangaroos (Macropus fuliginosus melanops) and
 Merino sheep (Ovis aries) in semi-arid Australia*, Mammalian Biology 81:423-430,
 [DOI](https://doi.org/10.1016/j.mambio.2016.04.001).
 
-- Taxon and setting: western grey kangaroos and Merino sheep grazed
-  sympatrically in a large, naturally vegetated enclosure in semi-arid
-  Australia. This is not a red-kangaroo study.
-- Measurements reported by the primary abstract: doubly labelled water FMR and
-  fine-scale GPS movement. Western-grey FMR rose substantially with longer
-  daily movement, unlike sheep. Kangaroos with ordinary mammalian FMR:BMR ratios
-  had daily expenditure around `6,245 kJ/day`, compared with sheep at
-  `22,799 kJ/day`; the abstract reports a 35-kg common-mass ratio of 0.46 and a
-  standard 25-kg female kangaroo to mature non-breeding ewe ratio of 0.31.
-- Applicability: the paper reinforces that movement is already expressed in
-  FMR and that broad allometry is unsafe. Its species, energetics and habitat
-  cannot be pooled with red kangaroos without an explicit cross-species model.
-- Access limit: Springer/ScienceDirect and the university repository exposed
-  abstract and metadata only. The ResearchGate page labelled as this 2016
-  article exposes a different full paper, the 2014 western-grey water-use
-  study (DOI `10.1016/j.mambio.2013.03.003`). Body masses, sex composition,
-  season, sample size, diet and raw numerical data for the 2016 article are
-  therefore not verified here. The abstract supplies summary results only.
+- Full text: Barry supplied the Elsevier published PDF. Methods, equations,
+  Tables 1–3 and Fig. 1 were inspected (pp. 424–428), closing the access gap.
+  This is the actual 2016 paper, not the different 2014 water-use paper
+  previously exposed under its title on ResearchGate.
+- Setting (p. 424): **western grey**, not red, kangaroos and Merino sheep in
+  one shared 16-ha Fowlers Gap enclosure in February–March 2009, late summer.
+  It had `33 +/- 13 g DM/m2` standing biomass and a shared unrestricted
+  trough. Mean temperature was 28.2 C. Long-term annual rain is reported,
+  but antecedent/trial rain does not supply an observable regrowth cue series.
+  Eleven mature dry female western greys were captured; FMR was reported for
+  seven (`25.2 +/- 1.3 kg`) and seven maiden Merino ewes (`55.2 +/- 1.5 kg`,
+  fleece-free). The capture-to-analysis exclusions are not explained here.
+- Energy (pp. 425–428): DLW integrates over multiple days. Sheep FMR was not adjusted
+  for methane in this paper, unlike the 2009 calculation. All seven kangaroos
+  averaged `8,599 +/- 1,301 kJ/day`, versus `22,799 +/- 2,471` for sheep.
+  The abstract's `6,245 +/- 544` is a **selected subset of four** kangaroos
+  whose FMR:BMR was at most three (Table 3). Western-grey BMR was unavailable,
+  so that ratio used a red-kangaroo BMR relationship. The selected mean is not
+  an unqualified species average.
+- Intake and energy definitions (p. 425): marker-based apparent DM
+  digestibility and assumed gross energy of 18 kJ/g give DE densities of
+  `11.1 +/- 0.4` and `12.5 +/- 0.3 kJ/g DM`. The authors then assume a further
+  **10% loss** for urine/methane, using ME densities of 10.0 and 11.2 kJ/g DM.
+  These losses were not measured on these animals. DMI is FMR divided by that
+  assumed ME, hence is not independent of FMR. This supplies a published
+  conversion assumption, not a measured red-kangaroo ME:DE factor or evidence
+  for a 10–20% range. Applying a 0.9 ratio to the 2010 red-kangaroo 9.4-kJ/g
+  DE value would give 8.46-kJ/g ME and about 576 g/day, **a new conditional
+  calculation**, not a further correction to the published 518-g/day result.
+- Movement (pp. 425–428): GPS collars on six kangaroos/five sheep sampled at
+  10-min intervals; distances are relative and omit between-fix paths.
+  Mean daily distances were `2,410 +/- 373` and `4,291 +/- 44 m/day`.
+  The FMR-distance comparison used five of each; the kangaroo association
+  was one-tailed Spearman `r_s = .83, P = .03`. Fence-walking was observed
+  without assigning it to individuals. Thus travel was associated with high
+  FMR, not experimentally isolated as its cause. The printed sheep coefficient
+  `r_s = -1.05` in Fig. 1 is impossible and must not be reused numerically.
+- Applicability: retain the full-sample and selected-subset distinction and
+  use this as a cross-species comparator. It cannot supply red-kangaroo
+  parameters, a feeding-only search distance or independent intake validation.
 
 ### Ash and McIvor (1998): northern tall-grass cattle response
 
@@ -280,9 +353,10 @@ recovered Rebecca archive.
 ## What is jointly constrained
 
 1. **A daily red-kangaroo acquisition response exists and is saturating.**
-   Short links daily intake to declining pasture biomass and reports a very low
-   terminal residual. It constrains the shape and rough daily scale of an arid
-   graze-down response, conditional on its pen, diet and season.
+   Short links interval-derived intake to declining combined vegetation
+   biomass and reports a low fine/sparse pasture residue. It constrains
+   saturation and daily scale conditional on its shared pens, diet and spring
+   trial; it does not distinguish competing saturating equations.
 2. **Matched feeding time and energetic demand are available for one coherent
    red-kangaroo context.** Munn (2009/2010) supplies about 10.4 feeding hours,
    whole-animal FMR and diet digestibility for mature dry females in the same
@@ -290,10 +364,11 @@ recovered Rebecca archive.
    which remains an assumption-derived energy requirement rather than observed
    intake. Munn (2013) supplies a free-living replication of FMR plus movement
    and space use in a different mild-autumn year.
-3. **`q` and `R` remain confounded.** Under the current homogeneous encounter
-   ceiling, a daily observation constrains only
-   `q * feeding_hours * (B - R) / 10000`, and only when encounter is the binding
-   ceiling. None of these studies observes all four terms as edible forage,
+3. **`q` and `R` remain confounded.** At constant homogeneous density, a daily
+   observation constrains only `q * feeding_hours * (B - R) / 10000`, and only
+   when encounter is binding. In a depleting block this expression must be
+   integrated along changing density and competing intake limits. None of
+   these studies observes all four terms as edible forage,
    feeding-only area swept, realized intake and binding status. The studies can
    define plausible consistency checks or bounds after an explicit observation
    model, but they do not identify a unique `q`.
@@ -315,14 +390,14 @@ recovered Rebecca archive.
 
 ## Remaining evidence gap
 
-The next empirical decision still requires either individual-scale concurrent
-measurements of edible biomass, realized dry-matter intake and feeding time, or
-a declared observation model that converts the available daily pen response
-into interval-censored bounds on `q` and `R`. Full-text retrieval of Short
-(1985) is needed before using its fitted coefficients or sample metadata, and
-full-text retrieval of Munn et al. (2016) is needed before using anything beyond
-its abstract summaries. The Table 1 spatial-support ambiguity must be resolved
-or represented explicitly in any numerical calibration. The superseded
-original Table 5 values must be excluded
-in favour of the 2011 corrigendum. No source reviewed here measures the model's
-memory or recovery clock.
+The three requested full texts are now available and their methods have been
+read. Remaining gaps are observational, not PDF access: edible versus total
+vegetation, the time assigned to Short's density/intake pairs, within-interval
+plant changes and trampling uncertainty, feeding-only effort, shared consumers,
+and rain-conditioned growth. The 2010 Table 1 spatial-support ambiguity and
+the 2009/2010 consumer-count discrepancy must be resolved or represented in
+any numerical calibration. The superseded original Table 5 intake values must
+be excluded in favour of the 2011 corrigendum; a DE-to-ME adjustment remains
+a separate assumption. No source reviewed here measures the model's memory
+or recovery clock. The [draft observation contracts](empirical-anchor-contracts.md)
+specify these boundaries before any fit or new plant/consumer mechanism.

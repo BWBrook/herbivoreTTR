@@ -136,12 +136,62 @@ seasonal forcing is not established. No Ash simulation or plant compartments
 were added. Future disturbance studies need a declared grazed reference
 trajectory and a stability/periodicity check where that reference exists.
 
+## Review addendum: opening potential and depletion, 26 September 2026
+
+Fable accepted the bounded intervention and split the high-search revisits by
+forcing phase (correspondence 56, messages 556–558). A read-only reconstruction
+from the existing cache reproduces that table but corrects the inference that
+the forecast becomes exact after forcing. Equal medians at the 250-kJ/h cap
+hide substantial disagreement on individual revisits.
+
+Here opening potential is `min(250, 10000 * encounter_ceiling / feeding_h)`
+in the first **full** feeding hour at the revisited station, matching Fable's
+definition. Every such visit first has a partial feeding opportunity at hour
+0; the first full hour is hour 1. Potential is neither actual appetite nor
+the day's mean return.
+
+| q | Phase | Revisits | First-day return below 200 | Median forecast / opening potential / first-day return (kJ/h) | Forecast equals capped opening potential |
+| ---: | --- | ---: | ---: | --- | ---: |
+| 3 | days 61–144, forced | 15 | 14 | 250 / 106 / 88 | 1 |
+| 5 | days 61–144, forced | 14 | 14 | 250 / 107 / 79 | 0 |
+| 3 | days 145–228, after forcing | 29 | 11 | 250 / 250 / 210 | 17 |
+| 5 | days 145–228, after forcing | 26 | 8 | 250 / 250 / 228 | 20 |
+
+Of the 19 inadequate post-forcing revisits, five open below 200, twelve open
+between 200 and 250, and two open at the cap. The latter fourteen lose enough
+encounter capacity during the day to fall below 200; all fourteen also finish
+with encounter potential below 200. Forecast overprediction co-occurs in
+seventeen of the nineteen cases, including the twelve that open adequate but
+below 250. Thus depletion matters, but it is not the sole explanation of an
+otherwise exact forecast. The two cap-agreement cases are q=5 on days 208 and
+219. Using the first positive feeding opportunity instead of the first full
+hour gives 18/29 and 20/26 capped agreements, preserving the conclusion.
+
+Eleven of the 55 post-forcing returns have absences crossing the forcing
+boundary, so arrival after day 144 alone does not isolate baseline regrowth.
+Even for the 44 returns whose previous observation is after day 144, the
+return-equivalent starting proxy exceeds reconstructed last-observed-day
+closing biomass in every case: median excess 11.34 kg DM/ha at q=3 and 8.54
+at q=5. Propagation over the same complete absent days leaves median uncapped
+return overprediction of 37.9/53.0 kJ/h at the next pre-day-opening state.
+This is the already-declared limitation of converting a daily realised mean,
+which averages over depletion and may be appetite-censored, into an endpoint
+proxy. Exact plant propagation does not make that proxy an exact state estimate.
+
+Independent calculation covered all 84 repaired high-search revisits, matched
+the recorded forecasts within 1e-8 kJ/h, and reconstructed block stocks from
+the cached hourly intake/forcing ledger with aggregate forage-mass discrepancy
+below 1e-9 kg. No behavioural or physiological trajectory was rerun or changed.
+The reproducible R calculation and per-visit tables are in ignored
+`outputs/recovery-clock-064/phase-review-20260926/` (`audit-phase-claim.R`).
+
 ## Next review boundary
 
-Ask Fable to assess the bounded intervention and the corrected evidence mapping.
-Then specify coherent animal/plant and observation contracts for the two
-anchors, including the residual/search relationship and a justified grazed
-initialization. Retrieving Short's full methods is necessary before using its
-fitted coefficients. No further clock/encounter sweep, empirical fitting,
-additional physiology, plant compartments or manuscript publication follows
-automatically from this repair.
+All three requested full texts have now been supplied and read. The updated
+[source assessment](../empirical-anchor-evidence.md) and
+[proposed observation contracts](../empirical-anchor-contracts.md) distinguish
+edible material, rejected standing stock, regrowth capacity, shared consumers,
+diet energy and observed feeding effort. Fable's next review should narrow
+those contracts before a structural proposal goes to Barry. No further
+clock/encounter sweep, empirical fitting, additional physiology, plant
+compartments or manuscript publication follows automatically from this repair.
