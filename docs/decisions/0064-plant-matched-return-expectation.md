@@ -185,13 +185,79 @@ below 1e-9 kg. No behavioural or physiological trajectory was rerun or changed.
 The reproducible R calculation and per-visit tables are in ignored
 `outputs/recovery-clock-064/phase-review-20260926/` (`audit-phase-claim.R`).
 
+## Review addendum: last-hour observation, 27 September 2026
+
+Fable proposed using the last full feeding-hour rate instead of the daily
+mean (correspondence 56, message 571). A read-only diagnostic of the two
+repaired high-search paths supports testing that proposal. It does not
+establish the result of changing the controller: all observations below are
+computed along the existing trajectories.
+
+All 100 recorded forage departures at q=3/5 follow an encounter-limited last
+full feeding hour. That is selected evidence; many ordinary day endings are
+appetite-limited. The daily departure decision occurs at hour 0 after plant
+growth, using memory updated at the previous hour 23. Thus this is generally
+a previous-evening observation, not an instantaneous marginal-value departure
+rule. One departure follows a partial hour-23 water excursion and feeding,
+making hour 22 the last full feeding hour despite a newer partial observation.
+
+For the 44 revisits whose preceding observation occurred after forcing, the
+candidate proxy is closer to the true final biomass of that preceding day
+in every case:
+
+| q (m2/h) | Revisits | Median daily-mean proxy excess (kg DM/ha) | Median last-full-hour proxy excess (kg DM/ha) |
+| ---: | ---: | ---: | ---: |
+| 3 | 24 | 11.34 | 1.51 |
+| 5 | 20 | 8.54 | 1.07 |
+
+The reference here is the reconstructed stock after hour 23, including the
+partial final hour when present. Even an uncensored hourly rate identifies
+the stock before that hour's intake, not after it. For an encounter-limited
+full hour on the 100-m2 block at the fixture's 10,000-kJ/kg food ME,
+`c = q * (B_open - R)` kJ/h, so `R + c/q` recovers opening biomass;
+grazing then reduces density by `c/100` kg DM/ha.
+This explains the remaining positive bias without a new trajectory.
+
+Using the existing complete-absent-day clock, the candidate's median uncapped
+return error at the hour-0 choice remains +4.38/+5.70 kJ/h for those q=3/5
+post-forcing observations. During forcing the corresponding errors are
++219/+337 kJ/h, and for absences crossing the forcing boundary +165/+166.
+An observation change cannot reveal hidden drought. As a numerical control,
+propagating true final stock for `24 * complete_absent_days + 1` plant
+transitions recovers the post-forcing choice state to numerical precision;
+the extra transition is choice-day hour 0. Any new observation contract must
+state both its sampling time and its propagation clock.
+
+The current `last_return` field also controls current-station adequacy,
+historical best and accumulated inadequacy. On five q=3 and ten q=5
+post-forcing days, the daily mean is at least 200 kJ/h while the candidate
+last-full-hour rate is below 200. Replacing the scalar would open departure
+gates that the current rule leaves closed. The cached calculation therefore
+cannot predict resulting movement or reserve trajectories.
+
+Recommendation: a separate prospective observation comparison, fixing the
+daily adequacy/deficit calculation while distinguishing it from the remembered
+endpoint observation. Compare the daily mean, latest duration-normalised
+rate and an endpoint-corrected diagnostic with explicit information
+requirements. Predeclare historical-best semantics, timing and censoring;
+do not describe the candidate as exact recovery, an optimal giving-up rule
+or a proven behavioural repair. No anchor comparison currently needs it.
+
+The calculation and compact outputs are in ignored
+`outputs/anchor-review-20260927/departure-review/`
+(`audit-departure-rate.R`, `diagnostic-summary.csv`, `diagnostic-note.md`).
+The block reconstruction agrees with cached total forage to below 1e-9 kg;
+input hashes are recorded there. Source, the frozen 064 specification and
+all cached trajectories are unchanged.
+
 ## Next review boundary
 
 All three requested full texts have now been supplied and read. The updated
 [source assessment](../empirical-anchor-evidence.md) and
-[proposed observation contracts](../empirical-anchor-contracts.md) distinguish
-edible material, rejected standing stock, regrowth capacity, shared consumers,
-diet energy and observed feeding effort. Fable's next review should narrow
-those contracts before a structural proposal goes to Barry. No further
+[proposed observation contracts](../empirical-anchor-contracts.md) now recommend
+Munn daily budget closure, Short pooled-yard acquisition and then a separate
+Ash plant comparison. The latter should compare fixed and dynamic regrowth
+capacity within the same live/dead stock representation, with exposure and
+boundary behaviour resolved before approval. No further
 clock/encounter sweep, empirical fitting, additional physiology, plant
 compartments or manuscript publication follows automatically from this repair.

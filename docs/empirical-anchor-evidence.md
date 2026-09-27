@@ -1,6 +1,7 @@
 # Empirical anchor evidence: arid kangaroos, sheep and northern cattle
 
-Assessed 25 September 2026; full-text methods update 26 September 2026.
+Assessed 25 September 2026; full-text methods update 26 September and
+observation-contract review 27 September 2026.
 
 This is a bounded source assessment, not an empirical fit or a change to the
 model contract. The immediate question is whether the nominated studies can
@@ -79,7 +80,12 @@ in an arid grazing system*, Journal of Applied Ecology 22:435-447,
   two-point averages. The trampling correction came from muzzled sheep and
   assumed equal effects for kangaroos; the paper calls it crude. Intake and
   biomass therefore share measurement error, and adjacent smoothed points
-  are dependent. Intake was not measured directly on individuals.
+  are dependent. Intake was not measured directly on individuals. The methods
+  describe no correction for plant growth during the spring trial. Positive
+  production makes stock-loss intake underestimate ingestion, while other
+  uncorrected stock losses can act oppositely. Its relative importance along
+  the response curve depends on growth and measurement error; spring alone
+  does not establish that the largest relative bias is at low density.
 - Fitted response (Fig. 4, p. 440): `c(V) = 709 * (1 - exp(-V/84))` in
   g DM/animal/day, with `V` the combined vegetation density in kg DM/ha.
   Fig. 5 gives `62.3 * (1 - exp(-V/84))` in g DM/kg^0.75/day. The analogous
@@ -97,19 +103,32 @@ in an arid grazing system*, Journal of Applied Ecology 22:435-447,
   20 kg/ha. The latter is **not all remaining aboveground biomass**, a measured
   root/crown reserve, or a fitted offset in Fig. 4 (whose curve has no positive
   intercept threshold). It challenges 200 as a universal grazing residual
-  but does not directly set the current model's `R`.
+  but does not directly set the current model's `R`. In particular, `<20`
+  is not a lower bound, and low terminal combined biomass does not identify
+  a hard zero-intake threshold. A proposed `20–100 kg/ha` range for model `R`
+  is a reviewer hypothesis, not a measured interval.
 - Diet and recovery (pp. 440–444): bluebush use rose as pasture declined;
   its chemistry and palatability also varied seasonally. Rabbit-defoliated
   bluebush recovered within eight months, an observation about shrubs, not
   an annual-pasture recovery curve. Thus this experiment neither estimates a
   fixed plant relaxation rate nor identifies a universal regeneration pool.
+- Longer-term context (p. 444): Short cites G. Robertson's personal
+  communication for 3.5 years with pasture biomass 9–1,090 kg/ha, below
+  180 kg/ha for 47% of the time, and annual rain at 112%, 90% and 50% of the
+  average. This is a reported summary, not a retrieved time series. It concerns
+  pasture, whereas Short's intake curve includes bluebush. Equating the
+  statistic directly with time below the model's edible-stock threshold would
+  discard that distinction and does not establish time without food.
 - Interpretation for `q`: the response includes searching, harvesting, diet
   switching, satiation and unmeasured feeding duration in shared yards.
   `1/84` has units ha/kg DM, not m2/hour. Even a low-density slope conversion
   requires a matched edible-biomass definition and feeding duration, as well
   as allowance for depletion during the observation interval. Munn's 10.4-h
   value is from a different study and must not silently supply that missing
-  denominator.
+  denominator. The curve's zero-density slope converts to `q * hours =
+  84.4 m2/day` only if biomass definitions match, no positive threshold
+  intervenes and encounters bind without interval distortion. This is a
+  conditional algebraic conversion, not an empirical estimate or bound on q.
 
 ### Munn et al. (2009): enclosed field metabolic rate and water turnover
 
@@ -147,6 +166,12 @@ dry-sheep-equivalent for kangaroos*, Australian Journal of Zoology 57:23-28,
   At the kangaroo mean mass the reported fraction corresponds to about
   15.7 kg of body water, far below the synthetic 28-kg pool. Turnover is a
   whole-animal water flux, not a separately measured ordinary-loss component.
+- Basal reference (Table 1): red-kangaroo BMR is predicted as
+  `2,141 +/- 52 kJ/day`, using `200 * mass_kg^0.75`. It is not a field
+  maintenance measurement. The 2016 paper instead prints a red-kangaroo
+  relation `230 * mass_kg^0.72`; do not silently interchange those
+  normalizations. FMR minus the 2009 mean BMR is 2,731 kJ/day, an unresolved
+  nonbasal budget, not a measurement of locomotion alone.
 - Intake status: the paper treats FMR as an index of food requirement. It did
   not measure daily dry-matter removal directly. The 2010 companion converts
   FMR to intake using measured apparent digestibility and assumed gross energy
@@ -199,11 +224,22 @@ interpretation also uses the publisher's 2011
   contained about 64% round-leafed chenopods and 15% each grass and flat
   chenopods, whereas sheep had about 45% each flat- and round-leafed chenopods
   and 2% grass.
+- Whole-enclosure depletion scale: at the reported 440-kg/ha mean stock,
+  eight days of inferred intake by seven sheep at 1.572 kg/day and seven
+  kangaroos at 0.518–0.576 kg/day represents about 1.66–1.71% of total
+  standing DM. The kangaroo range spans the corrected published conversion
+  and the separately assumed 0.9 ME:DE conversion below. This supports a
+  simple nonlimiting-food budget benchmark, without modelling individual
+  competitors. It is not the fraction removed from the selectively eaten
+  stock and does not verify spatial food availability.
 - Measurements: three complete 24-h behavioural observation days with scan
   sampling; vegetation cover, height and clipped biomass; forestomach diet;
   faecal-marker apparent DM digestibility; blood and urine chemistry. Both
   species spent `10.4 h/day` in food harvesting, defined to include searching,
-  moving, cropping and chewing. Apparent DM digestibility was
+  moving, cropping and chewing. The behavioural definitions explicitly include
+  fast walking between food patches; water-directed travel is classified
+  separately. A model must not subtract food-directed travel a second time
+  when using the observed harvesting total. Apparent DM digestibility was
   `52.1 +/- 3.9%` for kangaroos and `59.1 +/- 2.4%` for sheep.
 - Intake status: daily intake was inferred, not weighed or recovered from
   pasture depletion. In the inspected author manuscript, the original conversion
@@ -396,8 +432,15 @@ vegetation, the time assigned to Short's density/intake pairs, within-interval
 plant changes and trampling uncertainty, feeding-only effort, shared consumers,
 and rain-conditioned growth. The 2010 Table 1 spatial-support ambiguity and
 the 2009/2010 consumer-count discrepancy must be resolved or represented in
-any numerical calibration. The superseded original Table 5 intake values must
+any depletion/acquisition calibration. They do not prevent a first daily
+energy/water accounting benchmark with prescribed nonlimiting food. The
+synthetic moisture yield also requires revision in any species fixture:
+at the inferred intake it supplies more food water than the mean measured
+turnover; the conditional balance is set out in the observation contract.
+The superseded original Table 5 intake values must
 be excluded in favour of the 2011 corrigendum; a DE-to-ME adjustment remains
 a separate assumption. No source reviewed here measures the model's memory
-or recovery clock. The [draft observation contracts](empirical-anchor-contracts.md)
+or recovery clock. The multi-season pasture summary is a lead for a later
+data-feasibility assessment; matched rain, forage and animal-condition records
+have not been obtained. The [draft observation contracts](empirical-anchor-contracts.md)
 specify these boundaries before any fit or new plant/consumer mechanism.

@@ -1,7 +1,7 @@
 # Successor Brief: Herbivore TTR
 
-Updated 2026-09-26 after Fable's review of 064, a cached phase audit and
-full-text reading of the three supplied anchor papers.
+Updated 2026-09-27 after Fable's contract critique, a cached departure-rate
+diagnostic and revision of the proposed empirical comparisons.
 This is a compact entry point, not a new
 scientific contract. Check live files and Git state before acting; you do not
 need the predecessor's conversation or its full chronological history.
@@ -111,6 +111,14 @@ The daily-mean return proxy exceeds true departure-day closing stock even for
 the tested absences wholly after forcing. See Decision 0064's dated addendum;
 the frozen [064 contract](docs/feeding-access-recovery-specification.md) is unchanged.
 
+The 27 September cached diagnostic supports testing a last-hour observation:
+across 44 post-forcing-origin revisits, median biomass-proxy excess falls
+from 11.34 to 1.51 kg/ha at q=3 and from 8.54 to 1.07 at q=5. It remains
+an opening-hour observation, and it does not reveal drought. Replacing the
+existing scalar would also change daily adequacy and accumulated deficit;
+no new policy trajectories were run. Any prospective observation comparison
+must separate endpoint memory from daily energy adequacy and fix its clock.
+
 Red kangaroos and cattle are the agreed complementary empirical systems.
 Munn's 2011 corrigendum replaces the original 994 g/day kangaroo intake with
 518 ± 39 g/day; this is energy-derived, not directly observed intake. Field
@@ -215,28 +223,41 @@ was changed during this assessment.
 The archive synthesis is correspondence thread 28, message 539. The 064 result
 is in thread 56, Astra message 554; Fable's review is 556–558 and his supplied-PDF
 note is 563. Barry's three authorisations are recorded in message 549. The
-thread has been read contiguously and acknowledged through message 563.
+phase/full-text response is Astra 569; Fable's contract critique is 571–573.
+The thread has been read contiguously and acknowledged through message 573.
 Do not treat reviewer agreement as model validation or a broader implementation
-mandate. The last strict catch-up checkpoint was 568; pass it as `after` to
+mandate. The last strict catch-up checkpoint was 575; pass it as `after` to
 `read_updates`, not as a `mark_read` message ID.
 
 ## Next Scientific Discussion
 
-The next step is Fable's review of the drafted observation contracts and the
-phase-audit correction. Short's full text supplies the two-animal/400-m2 pen
-design and fitted daily curve, but separates the below-20-kg/ha fine pasture
-residue from rejected material. Munn 2016 supplies an assumed 10% DE-to-ME
-reduction and shows that its preferred western-grey FMR is a selected subset.
-The current synthetic intake ceiling and water pool also need coherent
-species scaling before calibration. The contracts are proposals, not accepted
-new equations. The current day-60 transient was intentionally
-retained for causal attribution; future disturbance studies need an explicit
-stability or periodicity check where a grazed attractor exists. Roots/crowns,
-live/dead tissue, TTR coupling, additional physiology and demography remain
-scientific choices, not automatic extensions. The anchor selection does not
-authorise an empirical fit or publication. Rain-conditioned cues and shared
-consumers belong in the proposed observation model; their implementation is
-not approved by this documentation step.
+The revised contracts recommend Munn daily energy/water closure first, with
+prescribed nonlimiting food and no individual competitors, then Short's two
+consumers drawing on one 400-m2 yard. Munn's inferred eight-day removal is
+about 1.7% of total standing stock, but this does not quantify selected edible
+stock. The synthetic food-water yield exceeds mean turnover at the inferred
+intake. A documented red-kangaroo record must distinguish measured totals,
+energy-conversion assumptions and unmeasured reserve/feedback parameters.
+
+Short does not establish a 20–100-kg/ha bound on model R. Its stock-loss
+estimator omits an explicit growth correction and has unresolved density
+pairing. Its cited 47% low-pasture statistic excludes shrubs and is a personal
+communication summary, not a retrieved series or a direct zero-food fraction.
+
+For Ash, Fable's G/D/C proposal needs a fixed-capacity G/D null with identical
+forcing, restart and observation structure. Resolve zero-stock removal,
+season-gated capacity damage and common exposure before asking Barry to
+approve the plant. Two blocks cannot uniquely identify roots, reserves or
+composition from an improved fit. Fable's next useful contribution is to
+settle that comparison, rather than further general critique of the anchors.
+
+Species parameterization, the plant extension and a multi-season kangaroo
+comparison remain separate scientific choices. No anchor validates chronic
+decline; matched rain, forage and animal-condition records remain to be
+located. The current day-60 transient remains frozen for causal attribution;
+future disturbance studies need a grazed-reference or periodicity check where
+such a reference exists. No empirical fit or publication is authorised by
+this documentation review.
 
 ## How To Collaborate
 
@@ -285,6 +306,14 @@ filenames/checksums in `references/README.md`; extracts and key-page renders
 are in `outputs/recovery-clock-064/fulltext-review-20260926/`. Access is resolved,
 but observation-model and evidence gaps remain. No new trajectories or package
 changes were made, and no release gate was repeated for these documentation updates.
+
+The 27 September read-only calculations are in ignored
+`outputs/anchor-review-20260927/`: `check-anchor-arithmetic.R` and
+`departure-review/audit-departure-rate.R`, with compact tables and input hashes.
+The latter uses prior-day final hour-23 biomass as its endpoint and separates
+baseline day 60 from forcing days 61–144. The frozen 064 source/input hashes
+still match. Retained R parses and the documentation diff passes whitespace
+checks; a package release gate is unnecessary for this review.
 
 The 063 numerical evidence is in `outputs/feeding-access-063/`: `sensitivity.rds`,
 summary and baseline CSVs, `analytic.csv`, execution/provenance logs and the
