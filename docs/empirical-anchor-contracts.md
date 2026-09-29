@@ -1,11 +1,13 @@
-# Proposed observation contracts for the two empirical anchors
+# Observation contracts for the two empirical anchors
 
-Draft revised after Fable's review, 27 September 2026. Barry approved red
-kangaroos and northern cattle as anchor systems. The species parameter set,
-plant formulation and multi-season comparison below remain proposals. This
-review changes documentation only; it adds no animal fixture, trajectory,
-empirical fit or plant/consumer mechanism. Methods and printed-page locators
-are in the [evidence assessment](empirical-anchor-evidence.md).
+Revised after Fable's review on 27–29 September 2026. Barry approved the bounded
+red-kangaroo accounting/acquisition work on 29 September; its executable
+scope and fixed comparisons are in the
+[065 specification](red-kangaroo-benchmark-specification.md), and the completed
+result is in [Decision 0065](decisions/0065-red-kangaroo-budget-and-acquisition.md).
+The Ash plant, full dynamic animal physiology and multi-season comparison
+remain separate proposals. Methods and printed-page locators are in the
+[evidence assessment](empirical-anchor-evidence.md).
 
 The proposed sequence is **Munn daily budget closure, Short pooled-yard
 acquisition, then a separately specified Ash plant comparison**. The first two
@@ -59,8 +61,9 @@ counting that same total as an independent prediction.
 
 The initial 16-ha stock is approximately 7,040 kg DM. Seven kangaroos at
 0.518–0.576 kg/day plus seven sheep at the corrected 1.572 kg/day remove about
-1.66–1.71% of that total in eight days. This supports a simple nonlimiting-food
-benchmark. It does not measure availability of the selectively eaten fraction:
+1.66–1.71% of that total in eight days. Applying the assumed 0.9 energy ratio
+to both species instead raises the upper comparison to 1.85%. This supports
+a simple nonlimiting-food benchmark. It does not measure availability of the selectively eaten fraction:
 if that fraction were one tenth of standing stock, the same removal would be
 about 17% of it. Preserve the consumer-count discrepancy as provenance; it
 need not block this first accounting task. A later depletion or acquisition
@@ -233,8 +236,8 @@ It does not follow automatically from these empirical contracts. None of the
 anchor papers identifies the animal's information set, rain-cue learning or
 memory rule.
 
-The recommendation for Barry is a bounded red-kangaroo budget/acquisition
-parameterization alongside the synthetic reference, with the above
-observation limits. The G/D/C plant and multi-season comparison remain
-separate later choices. First settle the plant comparator and exposure;
-do not ask for approval of an undefined regeneration mechanism.
+Barry approved the bounded red-kangaroo budget/acquisition parameterization
+alongside the synthetic reference, with the above observation limits. The
+G/D/C plant and multi-season comparison remain separate later choices.
+Fable's revised Ash proposal is recorded in correspondence 56, message 645;
+it needs its own scientific review before implementation.

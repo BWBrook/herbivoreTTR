@@ -1,7 +1,9 @@
 # Empirical anchor evidence: arid kangaroos, sheep and northern cattle
 
 Assessed 25 September 2026; full-text methods update 26 September and
-observation-contract review 27 September 2026.
+observation-contract review 27–29 September 2026. The completed bounded
+red-kangaroo comparison is recorded separately in
+[Decision 0065](decisions/0065-red-kangaroo-budget-and-acquisition.md).
 
 This is a bounded source assessment, not an empirical fit or a change to the
 model contract. The immediate question is whether the nominated studies can
@@ -105,8 +107,9 @@ in an arid grazing system*, Journal of Applied Ecology 22:435-447,
   intercept threshold). It challenges 200 as a universal grazing residual
   but does not directly set the current model's `R`. In particular, `<20`
   is not a lower bound, and low terminal combined biomass does not identify
-  a hard zero-intake threshold. A proposed `20–100 kg/ha` range for model `R`
-  is a reviewer hypothesis, not a measured interval.
+  a hard zero-intake threshold. The proposed `20–100 kg/ha` range for model
+  `R` was a reviewer hypothesis, not a measured interval; Fable withdrew it
+  in correspondence 56, message 644.
 - Diet and recovery (pp. 440–444): bluebush use rose as pasture declined;
   its chemistry and palatability also varied seasonally. Rabbit-defoliated
   bluebush recovered within eight months, an observation about shrubs, not

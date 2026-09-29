@@ -2,8 +2,16 @@
 
 Source interpretation and page-level evidence belong in
 [`docs/empirical-anchor-evidence.md`](../docs/empirical-anchor-evidence.md).
-The proposed observation contracts are separate from empirical findings and
-from the implemented synthetic model.
+The [observation contracts](../docs/empirical-anchor-contracts.md) are separate
+from empirical findings and the implemented synthetic model. The approved
+red-kangaroo benchmark is recorded in
+[Decision 0065](../docs/decisions/0065-red-kangaroo-budget-and-acquisition.md).
+
+`short-1985-figure4.csv` retains 12 approximate intake-response point readings;
+`short-1985-figure1c.csv` separately retains 32 pasture/bluebush stock readings.
+Their pixel coordinates, reading allowances and limitations are documented
+in [the reconstruction note](short-1985-digitization.md). These compact source
+inputs may be used to reproduce the benchmark without redistributing the PDF.
 
 Barry supplied three published PDFs on 26 September 2026; Fable placed them in
 the local `papers/` folder (correspondence discussion 56, message 563). The

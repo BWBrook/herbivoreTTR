@@ -1,6 +1,30 @@
 # Experiments
 
-## Current encounter/policy sensitivity (063)
+## Red-kangaroo budget and acquisition benchmark (065)
+
+`red-kangaroo-benchmark.R` runs Munn's daily accounting followed by Short's
+declared shared-yard response grid. The study records, budget, acquisition,
+checks and figures are separate clients of the installed package.
+The [specification](../docs/red-kangaroo-benchmark-specification.md) fixes the
+scenarios and observation rules; [Decision 0065](../docs/decisions/0065-red-kangaroo-budget-and-acquisition.md)
+records the qualified result. This does not instantiate a dynamic animal or
+change the synthetic reference.
+
+From the project root with the project package installed:
+
+```r
+source("experiments/red-kangaroo-benchmark.R")
+result <- run_red_kangaroo_benchmark()
+# Optional explicit output; generated evidence remains ignored.
+write_red_kangaroo_benchmark_outputs(result, "outputs/red-kangaroo-065")
+```
+
+Direct `Rscript experiments/red-kangaroo-benchmark.R` prints a summary and
+writes nothing. Reconstruction inputs are in `references/short-1985-figure4.csv`
+and `references/short-1985-figure1c.csv`, with reading provenance alongside.
+No original PDFs or 061–064 output caches are required to execute 065.
+
+## Frozen encounter/policy sensitivity (063)
 
 `feeding-access-sensitivity.R` wraps the unchanged 062 model in the frozen
 90-branch design. Five search rates apply from day 1; policy comparisons share

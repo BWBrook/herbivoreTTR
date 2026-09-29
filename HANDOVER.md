@@ -1,7 +1,7 @@
 # Successor Brief: Herbivore TTR
 
-Updated 2026-09-27 after Fable's contract critique, a cached departure-rate
-diagnostic and revision of the proposed empirical comparisons.
+Updated 2026-09-29 after Barry approved and Astra completed the bounded
+red-kangaroo budget/acquisition benchmark (065).
 This is a compact entry point, not a new
 scientific contract. Check live files and Git state before acting; you do not
 need the predecessor's conversation or its full chronological history.
@@ -17,21 +17,25 @@ anchors. The authorised 063 diagnostic is closed; its original trajectories
 remain explicit historical controls. Barry's
 recovered archive and four empirical cases have now been assessed; see the
 [assessment](docs/rebecca-archive-assessment.md) before proposing another
-scientific layer. The recovery repair and source assessment are complete; species
-calibration, new plant structure and manuscript publication remain separate
-decisions. Fable's review is in correspondence thread 56, messages 540–545;
-Astra recorded Barry's authorisation in message 549.
+scientific layer. The recovery repair and source assessment are complete.
+Barry approved the red-kangaroo accounting/acquisition tranche on 29 September
+(message 774); Decision 0065 records its completed result. Full dynamic species
+physiology, new plant structure and manuscript publication remain separate
+decisions. Fable's original review is in correspondence thread 56, messages
+540–545; Astra recorded the earlier authorisations in message 549.
 
 Read in this order, stopping when you have enough context:
 
 1. Current `~/.codex/AGENTS.md` and this repo's `AGENTS.md`.
 2. [Model charter](docs/model-charter.md) and the current-model section of
    [README](README.md).
-3. The stage-map table in [Roadmap](docs/roadmap.md), then
+3. [Decision 0065](docs/decisions/0065-red-kangaroo-budget-and-acquisition.md)
+   and its [specification](docs/red-kangaroo-benchmark-specification.md), then
+   the stage-map table in [Roadmap](docs/roadmap.md) and
    [Decision 0064](docs/decisions/0064-plant-matched-return-expectation.md), with
    Decision 0062 for physical representation and 0063 for the frozen old rule.
 4. Read the [anchor evidence](docs/empirical-anchor-evidence.md) and
-   [draft observation contracts](docs/empirical-anchor-contracts.md), then the
+   [observation contracts](docs/empirical-anchor-contracts.md), then the
    [archive assessment](docs/rebecca-archive-assessment.md) when history matters.
 5. Consult [Model specification](docs/model-specification.md) by topic and
    [Experiments](experiments/README.md) when planning the next implementation.
@@ -83,6 +87,28 @@ plant moisture, mechanistic thermoregulation, demographics,
 and calibrated viability claims remain deferred, not abandoned.
 
 ## Latest Scientific Decision
+
+The red-kangaroo benchmark (065) is complete. Munn's corrected energy-derived
+intake is reproduced at 518 g DM/day under the printed DE conversion, or
+576 g/day with assumed ME:DE=0.9. At the central values, synthetic food-water
+yield 3.28 exceeds total measured water turnover before drinking or metabolic
+water. The declared SE corners qualify this result; they are not confidence
+intervals. Energy closure is an accounting check of a derived intake.
+
+Short's 12 reconstructed Fig. 4 points retain yard identity and dependence.
+The primary shared-yard midpoint comparison gives descriptive RMSE 224.5
+g DM/animal/day, versus 197.9 for the published in-sample curve. The opening
+and closing biomass alternatives give 188.9 and 239.4; none is selected by fit.
+No primary prediction overlaps the digitization-only rectangles, but these
+exclude larger unquantified observation errors. Matched R/J offsets are
+aliased, so the response does not identify a unique edible residual or search
+coefficient. R=200 gives midpoint RMSE 466.2 and is not an empirical anchor.
+
+Study-specific records and experiment clients are retained alongside the
+unchanged synthetic reference. No full animal fixture, new plant process,
+memory change or chronic-decline simulation was added.
+
+## Recovery Repair (064)
 
 All five predeclared repaired trajectories complete day 228, removing the four
 selected historical failures: undisturbed clustered/fragmented at q=.6 and
@@ -224,40 +250,42 @@ The archive synthesis is correspondence thread 28, message 539. The 064 result
 is in thread 56, Astra message 554; Fable's review is 556–558 and his supplied-PDF
 note is 563. Barry's three authorisations are recorded in message 549. The
 phase/full-text response is Astra 569; Fable's contract critique is 571–573.
-The thread has been read contiguously and acknowledged through message 573.
+Fable's subsequent agreements and Ash specification are messages 644–645;
+his proposed 20–100-kg/ha bound on the edible residual was withdrawn. Barry's
+red-kangaroo approval is Astra message 774. The thread has been read
+contiguously and acknowledged through message 774.
 Do not treat reviewer agreement as model validation or a broader implementation
-mandate. The last strict catch-up checkpoint was 575; pass it as `after` to
+mandate. The last strict catch-up checkpoint was 779; pass it as `after` to
 `read_updates`, not as a `mark_read` message ID.
 
 ## Next Scientific Discussion
 
-The revised contracts recommend Munn daily energy/water closure first, with
-prescribed nonlimiting food and no individual competitors, then Short's two
-consumers drawing on one 400-m2 yard. Munn's inferred eight-day removal is
-about 1.7% of total standing stock, but this does not quantify selected edible
-stock. The synthetic food-water yield exceeds mean turnover at the inferred
-intake. A documented red-kangaroo record must distinguish measured totals,
-energy-conversion assumptions and unmeasured reserve/feedback parameters.
+Fable's next review should assess the completed 065 interpretation and its
+observation limits. Munn's budget and Short's acquisition comparisons are
+closed at the declared scope; do not expand the grid or tune parameters to
+repair the observed discrepancies. The source-derived records do not supply
+unmeasured reserve, gut, feedback or dehydration parameters for a full
+dynamic species fixture.
 
 Short does not establish a 20–100-kg/ha bound on model R. Its stock-loss
 estimator omits an explicit growth correction and has unresolved density
 pairing. Its cited 47% low-pasture statistic excludes shrubs and is a personal
 communication summary, not a retrieved series or a direct zero-food fraction.
 
-For Ash, Fable's G/D/C proposal needs a fixed-capacity G/D null with identical
-forcing, restart and observation structure. Resolve zero-stock removal,
-season-gated capacity damage and common exposure before asking Barry to
-approve the plant. Two blocks cannot uniquely identify roots, reserves or
-composition from an improved fit. Fable's next useful contribution is to
-settle that comparison, rather than further general critique of the anchors.
+For Ash, Fable's revised message 645 specifies fixed capacity and two dynamic
+capacity variants, stock-bounded removal, achieved-utilisation matching and
+a proposed discrimination check. It has been received, not yet accepted or
+implemented. Review common forcing, the consequences of model-specific
+exposure calibration, the claimed low-green-stock limit and what two blocks
+can discriminate before presenting the separate concrete plant proposal.
 
-Species parameterization, the plant extension and a multi-season kangaroo
-comparison remain separate scientific choices. No anchor validates chronic
+Full dynamic species parameterization, the plant extension and a multi-season
+kangaroo comparison remain separate scientific choices. No anchor validates chronic
 decline; matched rain, forage and animal-condition records remain to be
 located. The current day-60 transient remains frozen for causal attribution;
 future disturbance studies need a grazed-reference or periodicity check where
-such a reference exists. No empirical fit or publication is authorised by
-this documentation review.
+such a reference exists. No fitted dynamic model or publication follows
+automatically from the completed accounting/acquisition benchmark.
 
 ## How To Collaborate
 
@@ -289,7 +317,17 @@ they do not enlarge its authority or create extra approval gates.
 
 ## Evidence And Practical Notes
 
-Current evidence is in ignored `outputs/recovery-clock-064/`: `repair.rds`,
+Current 065 evidence is in ignored `outputs/red-kangaroo-065/`: `benchmark.rds`,
+budget/response/prediction/RMSE/check tables and the two-page
+`red-kangaroo-benchmark.pdf`. Source `experiments/red-kangaroo-benchmark.R`
+and call `run_red_kangaroo_benchmark()`; optional output is explicit. The
+runner requires only the installed project package and committed numerical
+source inputs, not historical caches or PDFs. The PDF and numerical checks
+were reviewed independently; targeted package tests, R parsing and whitespace
+checks passed. A package release gate was unnecessary because package source
+and API did not change. Frozen 064 source/input hashes still match.
+
+The 064 evidence is in ignored `outputs/recovery-clock-064/`: `repair.rds`,
 summary, revisit and common-horizon CSVs, source/input checksums, audit notes
 and `recovery-expectation.pdf`. The no-write runner is
 `run_feeding_access_recovery_repair(cores=3)` after sourcing its matching

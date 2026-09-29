@@ -7,6 +7,16 @@ inspectable stock-flow accounting.
 
 ## Current Model
 
+The approved [red-kangaroo benchmark](docs/decisions/0065-red-kangaroo-budget-and-acquisition.md)
+now separates Munn's daily energy/water accounting from Short's shared-yard
+acquisition comparison. Corrected intake is 518 g DM/day under the published
+DE conversion, or 576 g/day with assumed ME:DE=0.9. At the central values the
+synthetic food-water yield exceeds measured turnover. Short's noisy, smoothed
+stock-loss observations do not identify a unique search rate or residual;
+the primary comparison has descriptive RMSE 224 g/day. These are documented
+study records and bounded diagnostics, not a full species physiology fixture
+or validation of chronic decline.
+
 The [return-expectation repair](docs/decisions/0064-plant-matched-return-expectation.md)
 removes all four selected historical failures in a five-case matched comparison.
 The current experienced rule propagates remembered return using baseline plant
@@ -18,9 +28,10 @@ does not establish stable recovery or calibrated behaviour. The original
 Red kangaroos in arid rangeland and cattle in northern tall grass are the agreed
 complementary [empirical anchors](docs/empirical-anchor-evidence.md). The source
 audit now includes the full Short (1985), Munn (2009) and Munn (2016) methods.
-The [draft observation contracts](docs/empirical-anchor-contracts.md) distinguish
+The [observation contracts](docs/empirical-anchor-contracts.md) distinguish
 shared forage, measured vegetation, feeding effort and diet-energy definitions.
-Species calibration and new plant structure have not been implemented.
+The red-kangaroo accounting/acquisition tranche is complete; the Ash plant
+proposal and full dynamic species calibration remain separate decisions.
 
 The [Rebecca archive assessment](docs/rebecca-archive-assessment.md) recovers
 four field-study candidates and separates the C++/R history from the current
