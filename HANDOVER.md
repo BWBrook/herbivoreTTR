@@ -1,7 +1,7 @@
 # Successor Brief: Herbivore TTR
 
-Updated 2026-09-29 after Barry approved and Astra completed the bounded
-red-kangaroo budget/acquisition benchmark (065).
+Updated 2026-10-01 after Barry approved the matched-records search and Astra
+completed the feasibility assessment and interpretation review of benchmark 065.
 This is a compact entry point, not a new
 scientific contract. Check live files and Git state before acting; you do not
 need the predecessor's conversation or its full chronological history.
@@ -19,8 +19,12 @@ recovered archive and four empirical cases have now been assessed; see the
 [assessment](docs/rebecca-archive-assessment.md) before proposing another
 scientific layer. The recovery repair and source assessment are complete.
 Barry approved the red-kangaroo accounting/acquisition tranche on 29 September
-(message 774); Decision 0065 records its completed result. Full dynamic species
-physiology, new plant structure and manuscript publication remain separate
+(message 774); Decision 0065 records its completed result. On 1 October Barry
+approved searching for long-term matched kangaroo records (message 801).
+The [feasibility assessment](docs/chronic-decline-records-feasibility.md) identifies
+Kinchega–Tandou and Fowlers Gap study windows; original animal/pasture data
+access remains unresolved. Full dynamic species physiology, new plant structure
+and manuscript publication remain separate
 decisions. Fable's original review is in correspondence thread 56, messages
 540–545; Astra recorded the earlier authorisations in message 549.
 
@@ -29,7 +33,8 @@ Read in this order, stopping when you have enough context:
 1. Current `~/.codex/AGENTS.md` and this repo's `AGENTS.md`.
 2. [Model charter](docs/model-charter.md) and the current-model section of
    [README](README.md).
-3. [Decision 0065](docs/decisions/0065-red-kangaroo-budget-and-acquisition.md)
+3. The [matched-records assessment](docs/chronic-decline-records-feasibility.md),
+   [Decision 0065](docs/decisions/0065-red-kangaroo-budget-and-acquisition.md)
    and its [specification](docs/red-kangaroo-benchmark-specification.md), then
    the stage-map table in [Roadmap](docs/roadmap.md) and
    [Decision 0064](docs/decisions/0064-plant-matched-return-expectation.md), with
@@ -100,13 +105,26 @@ The primary shared-yard midpoint comparison gives descriptive RMSE 224.5
 g DM/animal/day, versus 197.9 for the published in-sample curve. The opening
 and closing biomass alternatives give 188.9 and 239.4; none is selected by fit.
 No primary prediction overlaps the digitization-only rectangles, but these
-exclude larger unquantified observation errors. Matched R/J offsets are
-aliased, so the response does not identify a unique edible residual or search
-coefficient. R=200 gives midpoint RMSE 466.2 and is not an empirical anchor.
+exclude larger unquantified observation errors; Short's fitted curve overlaps
+only one. The 18 no-growth, J=0 cases span RMSE 188–242. This does not establish
+model failure or statistical equivalence. The 1 October addendum rejects an
+empirically estimated error floor and a confidence interpretation of the
+tested 42–170-m2/day search range. Matched R/J offsets are structurally aliased;
+their numerical agreement checks the implementation. R=200 gives midpoint
+RMSE 466.2 and is not an empirical anchor.
 
 Study-specific records and experiment clients are retained alongside the
 unchanged synthetic reference. No full animal fixture, new plant process,
 memory change or chronic-decline simulation was added.
+
+The approved records search found quarterly Kinchega–Tandou pasture/count
+overlap during 1980–84, condition/recruitment sampling during 1982–84, and
+complementary Fowlers Gap condition/pasture/rain records from 1988–92 and
+demographic records from 1994–97. A downstream copy of 41 paired Kinchega
+count occasions was downloaded and its R schema checked; full primary-source
+verification is pending. No original individual condition or site-level
+pasture payload was obtained. Published reconstruction and targeted records
+inquiries are concrete next routes; no external inquiry has been sent.
 
 ## Recovery Repair (064)
 
@@ -252,20 +270,32 @@ note is 563. Barry's three authorisations are recorded in message 549. The
 phase/full-text response is Astra 569; Fable's contract critique is 571–573.
 Fable's subsequent agreements and Ash specification are messages 644–645;
 his proposed 20–100-kg/ha bound on the edible residual was withdrawn. Barry's
-red-kangaroo approval is Astra message 774. The thread has been read
-contiguously and acknowledged through message 774.
+red-kangaroo approval is Astra message 774. Fable's 065 critique and records
+proposal are 798–799; Barry's search approval is recorded in Astra 801. The
+thread has been read contiguously through 801 and acknowledged through 799.
 Do not treat reviewer agreement as model validation or a broader implementation
-mandate. The last strict catch-up checkpoint was 779; pass it as `after` to
+mandate. The last strict catch-up checkpoint was 801; pass it as `after` to
 `read_updates`, not as a `mark_read` message ID.
 
 ## Next Scientific Discussion
 
-Fable's next review should assess the completed 065 interpretation and its
-observation limits. Munn's budget and Short's acquisition comparisons are
+Fable's next review should assess the matched-records access routes and the
+qualified Short interpretation. Munn's budget and Short's acquisition
+comparisons are
 closed at the declared scope; do not expand the grid or tune parameters to
 repair the observed discrepancies. The source-derived records do not supply
 unmeasured reserve, gut, feedback or dehydration parameters for a full
 dynamic species fixture.
+
+The search has answered the feasibility question positively for published
+aggregate observations, conditionally for original records. Prioritise the
+Kinchega 1980–84 overlap and Fowlers 1988–92 condition series when defining a
+bounded recovery tranche. The latter's detailed methods were read through a
+transcription; recover the publisher PDF before numerical extraction. The
+1994–97 Fowlers articles explicitly offer summaries on request. Do not infer
+that institutional custodians retain every original sheet, or that the
+downstream count copy has been completely checked. See the assessment for
+specific sources, access states and the acquired file hash.
 
 Short does not establish a 20–100-kg/ha bound on model R. Its stock-loss
 estimator omits an explicit growth correction and has unresolved density
@@ -281,8 +311,9 @@ can discriminate before presenting the separate concrete plant proposal.
 
 Full dynamic species parameterization, the plant extension and a multi-season
 kangaroo comparison remain separate scientific choices. No anchor validates chronic
-decline; matched rain, forage and animal-condition records remain to be
-located. The current day-60 transient remains frozen for causal attribution;
+decline; matched studies have been located, but a validated dataset and an
+observation contract remain to be assembled. The current day-60 transient
+remains frozen for causal attribution;
 future disturbance studies need a grazed-reference or periodicity check where
 such a reference exists. No fitted dynamic model or publication follows
 automatically from the completed accounting/acquisition benchmark.

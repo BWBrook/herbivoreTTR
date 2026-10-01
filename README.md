@@ -13,9 +13,16 @@ acquisition comparison. Corrected intake is 518 g DM/day under the published
 DE conversion, or 576 g/day with assumed ME:DE=0.9. At the central values the
 synthetic food-water yield exceeds measured turnover. Short's noisy, smoothed
 stock-loss observations do not identify a unique search rate or residual;
-the primary comparison has descriptive RMSE 224 g/day. These are documented
-study records and bounded diagnostics, not a full species physiology fixture
+the primary comparison has descriptive RMSE 224 g/day versus 198 for Short's
+fitted curve. This does not establish failure of the intake function. These
+are documented study records and bounded diagnostics, not a full species physiology fixture
 or validation of chronic decline.
+
+The approved [matched-records search](docs/chronic-decline-records-feasibility.md)
+found overlapping rain, pasture and kangaroo observations at Kinchega–Tandou
+(1980s drought) and Fowlers Gap (1988–92 and 1994–97). Published summaries and
+a downstream Kinchega count copy are accessible; original condition and
+pasture records still need to be recovered and checked before model comparison.
 
 The [return-expectation repair](docs/decisions/0064-plant-matched-return-expectation.md)
 removes all four selected historical failures in a five-case matched comparison.

@@ -12,10 +12,12 @@ Retain separate empirical records for the Fowlers Gap autumn budget and
 Kinchega spring graze-down. Munn's daily accounts reproduce the corrected
 energy-derived intake, but rule out the synthetic food-water yield under the
 central steady-budget assumptions. Short's reconstruction exposes substantial
-scatter and observation dependence: the primary acquisition comparison does
-not closely reproduce its individual plotted points, and changing biomass
-timestamp changes the apparent response. Neither comparison identifies a
-unique hourly search coefficient or residual.
+scatter and observation dependence. Both its published curve and the declared
+acquisition comparisons have large descriptive discrepancies; this does not
+establish failure of the model's intake function. Changing biomass timestamp
+changes the apparent response. Neither comparison identifies a unique hourly
+search coefficient or residual. The 1 October review below qualifies what
+can be inferred from the scatter without changing the frozen calculations.
 
 These are daily accounting and shared-stock acquisition clients of the
 existing package, not a complete dynamic red-kangaroo physiology fixture.
@@ -78,8 +80,8 @@ component sums support strong trial depletion; they do not distinguish
 ingestion, trampling, growth or rejected stock and are not joined to Fig. 4.
 
 The primary model uses two consumers per 400-m2 yard, a declared daily cap
-of 709 g DM/animal and effective daily search exposure
-`S = (0.709 / 84) * 10000 = 84.4047619 m2/day`. This uses the published curve's
+of 709 g DM/animal and effective daily search exposure about 84 m2/day
+(`S = (0.709 / 84) * 10000` in the calculation). This uses the published curve's
 low-density slope, conditionally on no edible residual or rejected offset.
 It is not an observed hourly q, and Munn's harvesting hours are not imported
 across seasons to manufacture one. The capped minimum differs structurally
@@ -115,7 +117,8 @@ by ∓50 g/animal/day when stock does not bound loss, even though it also
 changes true ingestion. R=20 and J=84 are stress values, not source-estimated
 bounds. No additional search or growth scenarios were run to improve fit.
 
-Most decisively for identifiability, the matched no-growth cases
+As a check of the representation's structural non-identifiability, the
+matched no-growth cases
 `(R,J)=(0,84)` and `(20,64)` give the same response over common combined-stock
 support: maximum disagreement is about 1.2e-12 g/animal/day. Short's combined
 vegetation response cannot distinguish an edible unavailable residual from a
@@ -124,6 +127,55 @@ control illustrates why the synthetic threshold cannot be transferred
 uncritically: it predicts no intake at combined stocks at or below 200 when
 J=0 and net plant flux is zero. Short supplies no established 20–100-kg/ha
 replacement interval.
+
+## Interpretation review, 1 October 2026
+
+Fable's correspondence message 798 correctly challenges a reading of the
+point discrepancies as model failure. The published fitted curve intersects
+only one of the 12 digitization rectangles (K09), compared with zero for the
+primary midpoint comparison. Across the 18 declared no-growth, J=0 cases
+(three search exposures, two residuals and three biomass pairings), RMSE is
+188–242 g/animal/day, compared with 198 for Short's fitted curve. These are
+similar descriptive discrepancies. They establish neither statistical
+equivalence nor a supported preference among forms, pairings or search
+exposures. The heuristic `RMSE / sqrt(2*n)` is not an uncertainty estimate for
+these dependent, smoothed observations with unknown measurement errors.
+
+The tested search exposures span about 42–170 m2/day. That is a declared
+sensitivity range, not an estimated compatible interval or confidence bound.
+Matching the initial slope makes the unaveraged capped ramp exceed the
+inverted exponential, by at most the asymptote divided by e. This algebra
+does not make 84 m2/day an upper bound on search exposure after shared-stock
+depletion and the observation transformation.
+
+For the uncorrected stock-loss component, the two adjacent two-day estimates
+average to `5 * (V_start - V_end)` g/animal/day at 50 animals/ha. If the two
+endpoint stock errors are independent with equal SD `sigma_V`, the resulting
+SD is `5 * sqrt(2) * sigma_V`. Hypothetical endpoint SDs of 15–30 kg/ha would
+therefore produce about 106–212 g/day of error. But the bluebush rise from
+about 86 to 101 kg/ha in one yard cannot estimate that SD: sampling variation,
+real growth and digitization remain mixed. Correlated endpoint errors change
+the calculation, and adjacent smoothed points are dependent. Thus 100–200
+g/day is an illustrative sensitivity, not an empirically established error
+floor or a demonstration that measurement error explains the scatter.
+
+The 709-g/day asymptote remains conditional on Short's sheep-derived trampling
+correction, which the paper describes as crude. The six-day raw vegetation
+decline cannot be subtracted from unmatched Fig. 4 points to identify a
+20–50% correction or its bias; their dates and biomass pairing are unknown.
+Growth and other stock losses are also unresolved. The correction is a
+material uncertainty, but its magnitude has not been reconstructed here.
+
+Finally, with no net plant flux and on common accessible-stock support,
+`V = B + J` and intake depending on `B - R` make R and J enter through their
+sum. Numerical agreement verifies this identity; it is not a new empirical
+result. R=200 transfers poorly in the declared comparison and has no source
+calibration. Unknown biomass timing, non-ingestion losses and observation
+error prevent a formal threshold-rejection claim from the low-stock points
+alone. In particular, closing stock does not represent stock throughout an
+intake interval. Short supports investigating a saturating acquisition
+response at the scale of several hundred g/day; it does not determine a
+replacement residual or validate chronic decline.
 
 ## Verification and reproducibility
 
@@ -159,5 +211,6 @@ The source PDF stays local and is not redistributed.
 
 The accepted stopping point is a reproducible, qualified benchmark. These
 data do not validate memory, drought recovery, chronic decline or viability.
-The next plant proposal must be judged separately on the Ash observation
-contract and the information available from two experimental blocks.
+Barry subsequently approved the [matched-records feasibility search](../chronic-decline-records-feasibility.md)
+on 1 October. Ash plant structure and any chronic-decline model comparison
+still require their own scientific contracts.
