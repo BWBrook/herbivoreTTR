@@ -119,21 +119,40 @@ these accessible tables are regional context rather than a matched Kinchega
 condition record. Survey changes, zone boundaries, harvest and movement
 would need explicit treatment in any longer population comparison.
 
-## Next recoverable tranche
+## Next recoverable tranche: review on 2 October 2026
 
-Start with the overlapping Kinchega–Tandou window, while checking access to
-the Fowlers Gap condition records, preserving site, species, sex, date and
-sampling unit. A small source inventory should distinguish
-original observations, transcribed tables and digitized figure summaries.
-Do not create individual records from plotted means or turn quarterly
-observations into a daily measured trajectory.
+Following Fable's message 815, prioritise the condition observations from
+Shepherd's Kinchega–Tandou work and Moss–Croft's Fowlers Gap study, together
+with their matched pasture observations. The recovered count matrix is
+supporting context; further count verification can wait until a comparison
+needs it. Preserve site, species, sex, reproductive state, date and sampling
+unit. Distinguish original observations, transcribed tables and digitized
+figure summaries. Do not create individual records from plotted means.
 
-The concrete recovery order is the dated count appendix, the matching pasture
-and condition summaries with their methods, then rainfall aligned to those
-dates. Retain raw versus corrected counts, replicate identity, original units,
-sampling denominators and figure-reading uncertainty. Check access to the
-original animal and pasture records before treating aggregate reconstruction
-as the only available route.
+The immediate route combines recovery of published condition/pasture methods
+and summaries with targeted inquiries about the originals. The
+[email drafts and checked contacts](kangaroo-data-request-drafts.md) are ready
+for Barry. He explicitly reserves sending emails to people to himself; no
+inquiry has been sent by an agent. The papers' offers of data on request do
+not establish that UNSW, NPWS or CSIRO holds every original record.
+
+A first animal comparison driven by observed pasture is a useful proposed
+design. It can defer plant-structure choices and avoid treating an uncertain
+plant model as measured exposure. Interpolation, edible fractions, forage
+quality, water access and the condition-observation mapping still need a
+declared contract. Observed pasture already reflects field herbivory; removing
+simulated intake from that prescribed trajectory would count depletion again.
+Quarterly surveys cannot be treated as daily measured forcing, and rainfall
+alone does not establish drinking-water availability or food moisture.
+
+Decline and recovery lags are relevant outcomes. A longer recovery lag would
+be consistent with persistent depletion, but would not uniquely diagnose
+chronic decline: reproductive costs, changing sample composition, movement,
+forage quality and coarse observation times can also produce apparent
+asymmetry. Nor is asymmetric lag necessary for sustained reserve loss.
+Moss–Croft's reported pasture–condition lag does not by itself establish a
+separate decline-versus-recovery contrast. Retain both directions as candidate
+comparisons rather than declaring their outcome from the published lag.
 
 Only after that inventory can a comparison contract choose outcomes and
 separate calibration from held-out evaluation. Multiple seasons integrate

@@ -1,7 +1,7 @@
 # Successor Brief: Herbivore TTR
 
-Updated 2026-10-01 after Barry approved the matched-records search and Astra
-completed the feasibility assessment and interpretation review of benchmark 065.
+Updated 2026-10-02 after independent review of Short's candidate dates and
+preparation of the data-request drafts and checked contact routes for Barry.
 This is a compact entry point, not a new
 scientific contract. Check live files and Git state before acting; you do not
 need the predecessor's conversation or its full chronological history.
@@ -27,6 +27,11 @@ access remains unresolved. Full dynamic species physiology, new plant structure
 and manuscript publication remain separate
 decisions. Fable's original review is in correspondence thread 56, messages
 540–545; Astra recorded the earlier authorisations in message 549.
+On 2 October Barry requested email drafts and a current Peter Bayliss contact
+search. The [drafts](docs/kangaroo-data-request-drafts.md) include two institutional
+inquiries, an optional personal note and a CSIRO forwarding request. Peter's
+published addresses remain historical and unconfirmed. Barry explicitly
+reserves sending emails to people to himself; agents draft them only.
 
 Read in this order, stopping when you have enough context:
 
@@ -35,7 +40,8 @@ Read in this order, stopping when you have enough context:
    [README](README.md).
 3. The [matched-records assessment](docs/chronic-decline-records-feasibility.md),
    [Decision 0065](docs/decisions/0065-red-kangaroo-budget-and-acquisition.md)
-   and its [specification](docs/red-kangaroo-benchmark-specification.md), then
+   and its [specification](docs/red-kangaroo-benchmark-specification.md), including
+   the dated [Short timing audit](references/short-1985-digitization.md#cross-figure-timing-audit-2-october-2026), then
    the stage-map table in [Roadmap](docs/roadmap.md) and
    [Decision 0064](docs/decisions/0064-plant-matched-return-expectation.md), with
    Decision 0062 for physical representation and 0063 for the frozen old rule.
@@ -113,6 +119,16 @@ tested 42–170-m2/day search range. Matched R/J offsets are structurally aliase
 their numerical agreement checks the implementation. R=200 gives midpoint
 RMSE 466.2 and is not an empirical anchor.
 
+The 2 October cross-figure audit supports eleven candidate date matches, with
+median x discrepancy 3.1 kg/ha, but some low-stock assignments and K09 remain
+unresolved. Under the plotted schedule, six candidate points use two-day or
+three-day windows, with equal weights on adjacent daily loss rates and x
+paired to their shared sampling occasion. The four-day benchmark is a frozen
+synthetic comparison, not a faithful reconstruction of every historical
+window. Central correction-equivalent losses span 9.9–56.6% of raw loss;
+the fitted 5.51%/day law is not Short's recovered trampling method. Neither
+the correction nor the cause of scatter is identified. No benchmark was rerun.
+
 Study-specific records and experiment clients are retained alongside the
 unchanged synthetic reference. No full animal fixture, new plant process,
 memory change or chronic-decline simulation was added.
@@ -124,7 +140,10 @@ demographic records from 1994–97. A downstream copy of 41 paired Kinchega
 count occasions was downloaded and its R schema checked; full primary-source
 verification is pending. No original individual condition or site-level
 pasture payload was obtained. Published reconstruction and targeted records
-inquiries are concrete next routes; no external inquiry has been sent.
+inquiries are concrete next routes. Prioritise matched condition and pasture
+over further count recovery. Decline/recovery lags and prescribed observed
+pasture are useful proposed comparison choices, but lag asymmetry alone
+does not diagnose chronic decline. No external inquiry has been sent.
 
 ## Recovery Repair (064)
 
@@ -271,17 +290,19 @@ phase/full-text response is Astra 569; Fable's contract critique is 571–573.
 Fable's subsequent agreements and Ash specification are messages 644–645;
 his proposed 20–100-kg/ha bound on the edible residual was withdrawn. Barry's
 red-kangaroo approval is Astra message 774. Fable's 065 critique and records
-proposal are 798–799; Barry's search approval is recorded in Astra 801. The
-thread has been read contiguously through 801 and acknowledged through 799.
+proposal are 798–799; Barry's search approval is recorded in Astra 801.
+Fable's cross-figure dating and condition-first proposals are 814–815. The
+thread has been read contiguously through 815 and acknowledged through 815.
 Do not treat reviewer agreement as model validation or a broader implementation
-mandate. The last strict catch-up checkpoint was 801; pass it as `after` to
+mandate. The last strict catch-up checkpoint was 816; pass it as `after` to
 `read_updates`, not as a `mark_read` message ID.
 
 ## Next Scientific Discussion
 
-Fable's next review should assess the matched-records access routes and the
-qualified Short interpretation. Munn's budget and Short's acquisition
-comparisons are
+The independent review of Fable's Short reconstruction is complete, and
+Barry has the email drafts. His next contact decision can use the verified
+institutional routes or the optional personal note once Peter's address is
+confirmed. Munn's budget and Short's acquisition comparisons are
 closed at the declared scope; do not expand the grid or tune parameters to
 repair the observed discrepancies. The source-derived records do not supply
 unmeasured reserve, gut, feedback or dehydration parameters for a full
@@ -289,18 +310,25 @@ dynamic species fixture.
 
 The search has answered the feasibility question positively for published
 aggregate observations, conditionally for original records. Prioritise the
-Kinchega 1980–84 overlap and Fowlers 1988–92 condition series when defining a
-bounded recovery tranche. The latter's detailed methods were read through a
+Kinchega condition/pasture overlap and Fowlers 1988–92 condition series when
+defining a bounded recovery tranche. The latter's detailed methods were read through a
 transcription; recover the publisher PDF before numerical extraction. The
 1994–97 Fowlers articles explicitly offer summaries on request. Do not infer
 that institutional custodians retain every original sheet, or that the
 downstream count copy has been completely checked. See the assessment for
-specific sources, access states and the acquired file hash.
+specific sources, access states and the acquired file hash. An animal test
+driven by observed pasture can defer plant structure, but still needs explicit
+interpolation, forage-quality, water-access and condition-observation choices.
+Do not remove simulated consumption again from prescribed observed pasture.
+Keep decline/recovery lag asymmetry as a candidate outcome, not a unique or
+necessary signature of chronic decline.
 
 Short does not establish a 20–100-kg/ha bound on model R. Its stock-loss
 estimator omits an explicit growth correction and has unresolved density
-pairing. Its cited 47% low-pasture statistic excludes shrubs and is a personal
-communication summary, not a retrieved series or a direct zero-food fraction.
+pairing despite the candidate reconstruction. Any historical rerun must
+declare variable windows, ambiguous assignments and K09 before computing
+new comparisons. Its cited 47% low-pasture statistic excludes shrubs and is
+a personal communication summary, not a retrieved series or a direct zero-food fraction.
 
 For Ash, Fable's revised message 645 specifies fixed capacity and two dynamic
 capacity variants, stock-bounded removal, achieved-utilisation matching and
@@ -341,6 +369,8 @@ Chief of Staff and Goal Composer are not required reading for this project.
   integer kJ, except when precision is warranted for a specified rate.
 - End closing messages to Barry with the date and time in Australia/Hobart;
   he uses this to track whose turn it is in the Fable/Astra exchange.
+- Draft emails directed at people for Barry to review and send himself. His
+  2 October standing instruction applies even when a research inquiry is approved.
 
 The governing principle is **rigour at the scientific decision boundary;
 proportional engineering everywhere else**. Skills support the requested work;
@@ -357,6 +387,14 @@ source inputs, not historical caches or PDFs. The PDF and numerical checks
 were reviewed independently; targeted package tests, R parsing and whitespace
 checks passed. A package release gate was unnecessary because package source
 and API did not change. Frozen 064 source/input hashes still match.
+
+The 2 October Short audit read the unchanged figure CSVs and inspected source
+pages, without running the animal benchmark. Its R arithmetic, candidate
+mapping, reading-range propagation and source renders are in ignored
+`outputs/short-dating-review-20261002/`; the retained digitization note contains
+the compact mapping and formula. Contact-source checks are recorded beside
+the email drafts. The standing email rule was also saved as a personal
+instruction update at Barry's explicit request.
 
 The 064 evidence is in ignored `outputs/recovery-clock-064/`: `repair.rds`,
 summary, revisit and common-horizon CSVs, source/input checksums, audit notes

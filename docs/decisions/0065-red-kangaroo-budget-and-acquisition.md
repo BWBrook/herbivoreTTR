@@ -16,8 +16,8 @@ scatter and observation dependence. Both its published curve and the declared
 acquisition comparisons have large descriptive discrepancies; this does not
 establish failure of the model's intake function. Changing biomass timestamp
 changes the apparent response. Neither comparison identifies a unique hourly
-search coefficient or residual. The 1 October review below qualifies what
-can be inferred from the scatter without changing the frozen calculations.
+search coefficient or residual. The 1 and 2 October reviews below qualify
+the scatter and recover candidate dates without changing the frozen calculations.
 
 These are daily accounting and shared-stock acquisition clients of the
 existing package, not a complete dynamic red-kangaroo physiology fixture.
@@ -72,12 +72,14 @@ retains all 12 visible Fig. 4 points: five from yard 1 and seven from yard 2.
 They are already smoothed stock-loss estimates, not direct instantaneous
 intakes or twelve independent replicates. Reading allowances of ±10 kg DM/ha
 and ±20 g DM/animal/day cover digitization only. Dates and the vegetation
-timestamp paired with each point cannot be recovered.
+timestamp were unresolved in the original benchmark; the 2 October audit
+below records candidate matches for eleven points.
 
 Separately, Fig. 1(c) shows combined pasture and bluebush falling from about
 588/610 to 79/98 kg DM/ha in yards 1/2 between plotted days 1 and 12. These
 component sums support strong trial depletion; they do not distinguish
-ingestion, trampling, growth or rejected stock and are not joined to Fig. 4.
+ingestion, trampling, growth or rejected stock. The original benchmark did
+not join them to Fig. 4.
 
 The primary model uses two consumers per 400-m2 yard, a declared daily cap
 of 709 g DM/animal and effective daily search exposure about 84 m2/day
@@ -176,6 +178,39 @@ alone. In particular, closing stock does not represent stock throughout an
 intake interval. Short supports investigating a saturating acquisition
 response at the scale of several hundred g/day; it does not determine a
 replacement residual or validate chronic decline.
+
+## Cross-figure review, 2 October 2026
+
+Fable's message 814 identifies useful timing evidence missed in the original
+benchmark. Independent source inspection and R arithmetic reproduce eleven
+candidate same-yard matches between Fig. 4 and the combined Fig. 1(c) stocks;
+the [digitization note](../../references/short-1985-digitization.md#cross-figure-timing-audit-2-october-2026)
+retains their mapping, calculations and limitations. Median absolute x
+disagreement is 3.1 kg/ha, and all eleven reading ranges overlap. Some
+low-stock assignments remain ambiguous and K09 is unresolved, so this
+supersedes the earlier blanket inability to date points without establishing
+a uniquely dated series.
+
+The plotted sampling schedule implies 2+1-day and 1+1-day pairs for six
+low-stock points. Their two daily loss rates receive equal weights, with
+candidate x pairing at the shared sampling occasion. For unequal intervals
+this is neither the temporal midpoint nor a duration-weighted loss rate.
+The methods' every-two-day statement does not explain the graph's apparent
+late daily sampling. The frozen four-day comparison remains reproducible as
+a declared synthetic response locus; it must not be presented as the actual
+observation window for every Short point. A revised historical comparison
+requires a new observation contract before a rerun.
+
+Central raw-minus-plotted losses span 9.9–56.6% of raw loss. A fitted
+0.05514/day combined-stock correction reproduces those differences with
+76.6-g/day in-sample RMSE, but the paper's crude sheep-derived correction
+used pasture and reports no numerical factor or functional form. Only two
+propagated pointwise correction ranges exclude zero; both proportional and
+constant predictions fit within all pointwise visual-reading ranges. The
+reconstruction does not identify Short's correction law or isolate the cause
+of scatter. It supports a candidate stock-based reconstruction, not a claim
+that measurement noise explains all scatter or that later processing added
+none. No model, input CSV, frozen specification or benchmark output changed.
 
 ## Verification and reproducibility
 
