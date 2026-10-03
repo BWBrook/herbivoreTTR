@@ -1,7 +1,7 @@
 # Successor Brief: Herbivore TTR
 
-Updated 2026-10-02 after independent review of Short's candidate dates and
-preparation of the data-request drafts and checked contact routes for Barry.
+Updated 2026-10-03 after Fable accepted the Short audit qualifications and
+the email drafts were revised for Barry to send.
 This is a compact entry point, not a new
 scientific contract. Check live files and Git state before acting; you do not
 need the predecessor's conversation or its full chronological history.
@@ -31,7 +31,10 @@ On 2 October Barry requested email drafts and a current Peter Bayliss contact
 search. The [drafts](docs/kangaroo-data-request-drafts.md) include two institutional
 inquiries, an optional personal note and a CSIRO forwarding request. Peter's
 published addresses remain historical and unconfirmed. Barry explicitly
-reserves sending emails to people to himself; agents draft them only.
+reserves sending emails to people to himself; agents draft them only. The
+3 October revision adds credit/co-authorship wording, Ingrid Witte as a
+recipient and recognition of Peter's own work. The two institutional emails
+are ready to send; the optional Peter note retains the contact qualification.
 
 Read in this order, stopping when you have enough context:
 
@@ -291,10 +294,13 @@ Fable's subsequent agreements and Ash specification are messages 644–645;
 his proposed 20–100-kg/ha bound on the edible residual was withdrawn. Barry's
 red-kangaroo approval is Astra message 774. Fable's 065 critique and records
 proposal are 798–799; Barry's search approval is recorded in Astra 801.
-Fable's cross-figure dating and condition-first proposals are 814–815. The
-thread has been read contiguously through 815 and acknowledged through 815.
+Fable's cross-figure dating and condition-first proposals are 814–815; Astra's
+audit and contacts replies are 818–819. Fable accepts the qualifications in
+840 and clarifies that K06's approximately 11% is standing-stock loss per day,
+consistent with 40% of raw loss. The thread has been read contiguously through
+840 and acknowledged through 840.
 Do not treat reviewer agreement as model validation or a broader implementation
-mandate. The last strict catch-up checkpoint was 816; pass it as `after` to
+mandate. The last strict catch-up checkpoint was 843; pass it as `after` to
 `read_updates`, not as a `mark_read` message ID.
 
 ## Next Scientific Discussion

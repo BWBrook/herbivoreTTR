@@ -101,9 +101,12 @@ day 8.5. Thus a common four-day operator is not a faithful reconstruction of
 all historical intervals, even if retained as a declared synthetic benchmark.
 
 The central raw-minus-plotted differences are all positive, spanning 63–672
-g DM/animal/day or 9.9–56.6% of raw loss. K06 is 40%; the approximately
-10–11% values belong to K02/K03. Fitting these differences through the origin
-against shared-event combined stock gives a coefficient of 1.10285
+g DM/animal/day or 9.9–56.6% of raw loss. K06 is 40% of raw loss, equivalent
+to 11.3% of its shared-event standing stock per day. Fable clarified on
+3 October (message 840) that his earlier 11% referred to the latter quantity;
+there is no disagreement once the denominators are distinguished. Fitting
+these differences through the origin against shared-event combined stock
+gives a coefficient of 1.10285
 g/animal/day per kg/ha, equivalent to a stock-loss rate of 0.05514/day. The
 in-sample RMSE is 76.6 g/animal/day; Short's published curve evaluated at these
 eleven reconstructed stocks gives 207.4. This is an exploratory correction

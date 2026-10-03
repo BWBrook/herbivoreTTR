@@ -1,7 +1,8 @@
 # Kangaroo data inquiries: drafts for Barry to send
 
-Prepared 2 October 2026. Nothing has been sent. Barry's standing instruction
-is that agents draft emails to people and Barry sends them himself.
+Prepared 2 October and revised 3 October 2026. Nothing has been sent. Barry's
+standing instruction is that agents draft emails to people and Barry sends
+them himself.
 
 ## Addresses and verification
 
@@ -9,6 +10,7 @@ is that agents draft emails to people and Barry sends them himself.
 | --- | --- | --- |
 | UNSW Fowlers Gap Research Station | `fowlersgap@unsw.edu.au` | Listed on the [current station contact page](https://www.unsw.edu.au/research/fowlers-gap/contact), checked 2 October 2026. |
 | David B. Croft | `zooroo@bigpond.com` | Corresponding-author address in both 2025 papers: [Wild publisher XML](https://mdpi-res.com/d_attachment/wild/wild-02-00005/article_deploy/wild-02-00005.xml) and [Diversity publisher XML](https://mdpi-res.com/d_attachment/diversity/diversity-17-00389/article_deploy/diversity-17-00389.xml). Both offer original data summaries on request. The authors list a current address as independent researchers; UNSW's possession of the original records is unconfirmed. |
+| Ingrid Witte | `roosearch@protonmail.com` | Author contact published alongside Croft's separate correspondence address in both 2025 publisher XML files above. Witte is first author of the Wild paper and is credited with its data collection; Croft is first author of the Diversity paper. Checked against the retained publisher files on 3 October 2026. |
 | NSW Environment and Heritage, for routing to NPWS research records | `info@environment.nsw.gov.au` | General-query address on the [department's contact page](https://www.environment.nsw.gov.au/about-us/contact-us), updated 1 July 2026 and checked 2 October. This is a routing address, not a confirmed archive custodian. |
 | CSIRO Enquiries Team | `EnquiriesTeam@csiro.au` | Published in CSIRO's [enquiries-team guidance](https://wp.csiro.au/cef/files/2024/02/Our-enquiries-team-helping-you.pdf) and on a [live CSIRO service page](https://effectorp.csiro.au/effectorgenep.html). It can route a historical-records inquiry or a request to forward a message to Peter. |
 | Peter Bayliss | `peter.bayliss@csiro.au` — historical, current use unconfirmed | Corresponding-author address in a [paper published 20 July 2016](https://nesplandscapes.edu.au/wp-content/uploads/2017/03/Bayliss-et-al-2016.pdf), page 1. No recent official staff listing or 2022–26 publication confirming this address was found. Do not describe it as verified current. |
@@ -27,11 +29,11 @@ an alternative first approach for Kinchega once his contact is confirmed.
 
 **To:** fowlersgap@unsw.edu.au
 
-**Cc:** zooroo@bigpond.com
+**Cc:** roosearch@protonmail.com; zooroo@bigpond.com
 
 **Subject:** Historical Fowlers Gap kangaroo condition and pasture records
 
-Dear Fowlers Gap team and David,
+Dear Ingrid, David and Fowlers Gap team,
 
 I'm an ecologist at the University of Tasmania, working on a mechanistic
 model of how prolonged forage shortages affect herbivore condition and
@@ -54,6 +56,9 @@ for research? Existing spreadsheets, scans or seasonal summaries would all
 be useful, together with the sampling methods and any conditions on use and
 attribution. If the records are held elsewhere, a pointer to the appropriate
 person would be much appreciated.
+
+We would of course acknowledge the original data collectors, and would welcome
+discussing co-authorship if the records contribute substantially.
 
 Best wishes,
 
@@ -95,6 +100,9 @@ or the name of a former project custodian would help. If records are
 available, I would welcome advice on research access, formats, attribution
 and any conditions on reuse.
 
+We would of course acknowledge the original data collectors, and would welcome
+discussing co-authorship if the records contribute substantially.
+
 Many thanks,
 
 Barry Brook, Professor of Environmental Sustainability
@@ -103,6 +111,8 @@ University of Tasmania
 
 ## Personal alternative: Peter Bayliss
 
+Barry: add your own recollection of the Darwin days to the opening if you wish.
+
 **To:** Peter Bayliss — confirm his current address first; the historical
 CSIRO address is listed above.
 
@@ -110,19 +120,21 @@ CSIRO address is listed above.
 
 Hi Peter,
 
-I hope you're well. It would be good to hear how you're going — I have fond
-memories of our Darwin days and the work we did together.
+I hope you're well.
 
 I'm working on a mechanistic model of herbivore condition during prolonged
 forage shortages and recovery, and it has led me back to the Kinchega and
 Tandou studies through the 1982–83 drought.
 
+Your own survey work and the kangaroo dynamics chapter have been invaluable.
+I'm hoping some of the original records from that programme, yours included,
+still survive.
+
 Do you happen to know whether the original condition and reproduction
 records collected by Shepherd, and Robertson's pasture measurements, still
-exist, and who might have them? I've located the published chapters and
-counts, but the most useful records for this work would be dated animal
-condition measurements matched to pasture and rainfall through the drought
-and recovery.
+exist, and who might have them? The most useful records for this work would
+be dated animal condition measurements matched to pasture and rainfall
+through the drought and recovery.
 
 I'm not expecting you to track the files down yourself — even a name or a
 likely archive would be a great help.
