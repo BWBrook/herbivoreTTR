@@ -1,5 +1,7 @@
 # herbivoreTTR
 
+> **Status:** developed in the open as a working record. This is work in progress: contents may change, and nothing here is peer-reviewed unless stated.
+
 `herbivoreTTR` is a small functional R package for transparent hourly models
 of herbivore energetics, body water, and forage biomass. It is a clean
 scientific rebuild with explicit units, plain records, pure transitions, and
