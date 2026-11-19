@@ -24,7 +24,8 @@ repository is historical evidence, not scientific or architectural authority.
 - Record scientific assumptions and consequential design choices in `docs/`.
 - Work in small goals: one principal question, one subsystem, compact
   predeclared outputs, proportionate tests, and an explicit stopping point.
-- Discuss and approve the next layer before implementing it.
+- Agree material scientific or scope changes before starting a new modelling
+  layer. Implement routine work within the accepted scope autonomously.
 - Keep active goal working material minimal. On closeout, retain accepted
   conclusions in `docs/decisions/` and the current contract in the model docs;
   retire Goal, Plan, Runbook, and Log machinery.
